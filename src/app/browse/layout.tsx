@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from "react";
-import { CategoryCheckbox } from "../components/CategoryCheckbox";
+import { CategoryCheckbox } from "@/components/CategoryCheckbox";
 import { handleSubmitFilter } from "../actions";
-import FilterContextProvider from "../components/FilterContext";
-import BrowseSearch from "../components/BrowseSearch";
+import FilterContextProvider from "@/components/FilterContext";
+import BrowseSearch from "@/components/BrowseSearch";
 
 const categories = [
   { name: "action" },
@@ -34,8 +34,8 @@ const categories = [
 const layout = async ({ children }: PropsWithChildren) => {
   return (
     <div className="grid grid-cols-4 gap-8">
-      <div className="col-start-1 col-end-4 text-white_primary">{children}</div>
-      <form className="col-start-4 col-end-5" action={handleSubmitFilter}>
+      <div className="col-start-1 col-end-5 md:col-end-4 text-white_primary">{children}</div>
+      <form className="col-start-4 col-end-5 hidden md:block" action={handleSubmitFilter}>
         <noscript>
           <button
             className="w-full py-2 rounded mb-4

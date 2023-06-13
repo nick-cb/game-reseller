@@ -1,11 +1,10 @@
-import { document } from "postcss";
-
 export async function getPageContent(url: any) {
   // This is a really scrappy way to do this.
   // Don't do this in production!
   const response = await fetch(url);
   const text = await response.text();
   // Particularly as it uses regexp
+  //@ts-ignore
   return /<body[^>]*>([\w\W]*)<\/body>/.exec(text)[1];
 }
 
@@ -18,6 +17,7 @@ function isBackNavigation(navigateEvent: any) {
   }
   if (
     navigateEvent.destination.index !== -1 &&
+    //@ts-ignore
     navigateEvent.destination.index < window.navigation.currentEntry.index
   ) {
     return true;
@@ -26,6 +26,7 @@ function isBackNavigation(navigateEvent: any) {
 }
 
 export async function onLinkNavigate(callback: Function) {
+    //@ts-ignore
   window.navigation.addEventListener("navigate", (event: any) => {
     const toUrl = new URL(event.destination.url);
     if (location.origin !== toUrl.origin) return;

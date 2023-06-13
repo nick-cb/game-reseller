@@ -21,9 +21,11 @@ module.exports = {
       },
       screens: {
         'xs': '384px',
+        'xs-right-pad': '400px',
+        '3/4sm': '480px',
         '3xl': '1792px',
         '4xl': '2048px',
-      }
+      },
     },
   },
   plugins: [],

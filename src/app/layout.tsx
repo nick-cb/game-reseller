@@ -1,11 +1,13 @@
 import "./globals.css";
 import { Atkinson_Hyperlegible } from "next/font/google";
 import Image from "next/image";
-import Searchbar from "./components/searchbar";
-import QueryContext from "./components/QueryContext";
+import Searchbar from "../components/searchbar";
+import QueryContext from "../components/QueryContext";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import ActiveLink from "./components/ActiveLink";
+import ActiveLink from "../components/ActiveLink";
+// import OfflineBanner from "@/components/OfflineBanner";
+// import "@/worker/offline_worker";
 
 const atkinsonHyper = Atkinson_Hyperlegible({
   weight: ["400", "700"],
@@ -29,7 +31,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={atkinsonHyper.className + " bg-default"}>
+      <body
+        className={
+          atkinsonHyper.className +
+          " bg-default overflow-y-auto h-screen"
+        }
+      >
         <QueryContext>
           <header
             className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 py-2
@@ -76,7 +83,8 @@ export default function RootLayout({
               </Link>
             </ActiveLink>
           </nav>
-          <main className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 pb-8 pt-[108px]">
+          <main className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 pb-8 pt-[108px] h-screen">
+            {/* <OfflineBanner /> */}
             {children}
           </main>
         </QueryContext>

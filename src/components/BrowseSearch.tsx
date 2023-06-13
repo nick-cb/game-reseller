@@ -4,11 +4,17 @@ import React from "react";
 import SearchIcon from "./SearchIcon";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const BrowseSearch = () => {
+const BrowseSearch = ({ className = "" }: { className?: string }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   return (
-    <div className="bg-white/[0.15] hover:bg-white/25 transition-colors rounded flex items-center px-4">
+    <div
+      className={
+        className +
+        " " +
+        "bg-white/[0.15] hover:bg-white/25 transition-colors rounded flex items-center px-4"
+      }
+    >
       <SearchIcon />
       <input
         type="search"

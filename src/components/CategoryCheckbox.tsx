@@ -13,11 +13,17 @@ export const CategoryCheckbox = ({
 > & { categoryName: string }) => {
   const router = useRouter();
   const pathname = usePathname();
+
   const { filters, searchParams } = useContext(FilterContext);
   const filteredByThisCat = useMemo(() => {
     return filters.findIndex((cat) => cat === categoryName);
   }, [filters]);
   const [_checked, setChecked] = useState(filteredByThisCat > -1);
+  if (filteredByThisCat === -1 && _checked) {
+    setChecked(false);
+  } else if (filteredByThisCat !== -1 && !_checked) {
+    setChecked(true);
+  }
 
   return (
     <>

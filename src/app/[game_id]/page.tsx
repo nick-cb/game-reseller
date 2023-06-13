@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import Gamecard from "../components/game/gamecard";
+import GameCard from "@/components/game/GameCard";
+import Carousel3D from "@/components/game/Carousel3D";
 
 const page = async ({ params }: { params: any }) => {
   const { game_id: gameId } = params;
@@ -16,40 +17,7 @@ const page = async ({ params }: { params: any }) => {
       <h1 className="text-2xl text-white_primary pb-6">{data.name}</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-[min-content_auto] gap-4 lg:gap-8">
         <section className="col-start-1 col-end-3 row-start-1 row-end-2">
-          <div className="flex overflow-hidden w-auto">
-            <ul className="flex w-full">
-              {landscapeImages.map((image: any) => (
-                <li className="w-full shrink-0">
-                  <div className="relative w-full aspect-video">
-                    <Image
-                      src={image.url}
-                      alt={`${data.type} of ${data.name}`}
-                      className="rounded"
-                      fill
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <ul
-            className="mt-4 overflow-hidden
-          col-start-1 col-end-3
-          flex gap-4 justify-center"
-          >
-            {landscapeImages.map((image: any) => (
-              <li>
-                <div className="relative w-4 h-1 rounded bg-paper sm:h-auto sm:w-24 sm:aspect-video">
-                  <Image
-                    src={image.url}
-                    alt={`${data.type} of ${data.name}`}
-                    className="rounded hidden sm:block"
-                    fill
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
+          <Carousel3D data={landscapeImages} />
         </section>
         <section className="col-start-1 col-end-3">
           <summary className="text-sm sm:text-base list-none text-white_primary">
@@ -74,7 +42,7 @@ const page = async ({ params }: { params: any }) => {
             <h2 className="text-xl text-white_primary pb-4">Editions</h2>
             <div className="flex flex-col gap-4">
               {data.included_in.map((edition: any) => (
-                <Gamecard game={edition} type="edition" />
+                <GameCard game={edition} type="edition" />
               ))}
             </div>
           </section>
@@ -83,7 +51,7 @@ const page = async ({ params }: { params: any }) => {
           <section className="col-start-1 col-end-3">
             <h2 className="text-xl text-white_primary pb-4">Add-on</h2>
             {data.includes.map((edition: any) => (
-              <Gamecard game={edition} type="add-on" />
+              <GameCard game={edition} type="add-on" />
             ))}
           </section>
         )}

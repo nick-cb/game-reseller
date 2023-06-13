@@ -20,6 +20,7 @@ const FilterContextProvider = ({ children }: PropsWithChildren) => {
     }),
     [filters, searchParams]
   );
+
   return (
     <FilterContext.Provider value={value}>{children}</FilterContext.Provider>
   );

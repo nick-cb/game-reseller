@@ -20,10 +20,41 @@
   @apply text-white_primary;
 }
 
-input[type="checkbox"]:checked+label {
+input[type="checkbox"]:checked + label {
   @apply bg-white/[.15] text-white_primary;
 }
 
-input[type="checkbox"]:focus+label {
+input[type="checkbox"]:focus + label {
   @apply text-white_primary;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-scene {
+  perspective: 1000px;
+}
+
+.carousel-3d {
+  @apply transition-transform duration-300;
+  transform-style: preserve-3d;
+}
+
+@keyframes animate-full-width {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.gameid-preview-outline {
+  @apply absolute top-[1px] bottom-[1px] outline outline-1 outline-white/60 rounded left-[1px];
+  width: 96px;
+  transition-property: width;
+  transition-timing-function: ease-in-out;
+  transition-duration: 300ms;
 }

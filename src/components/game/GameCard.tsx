@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Gamecard = ({
+const GameCard = ({
   game,
   type,
 }: {
@@ -41,10 +41,10 @@ const Gamecard = ({
         </div>
       </Link>
       <div
-        className="row-start-3 col-start-1 col-end-6 sm:row-start-2 
-        border-t border-white/20 
-        py-2 sm:py-4 px-4 
-        flex sm:flex-row flex-col justify-end sm:items-center 
+        className="row-start-3 col-start-1 col-end-6 sm:row-start-2
+        border-t border-white/20
+        py-2 sm:py-4 px-4
+        flex sm:flex-row flex-col justify-end sm:items-center
         gap-2 sm:gap-4"
       >
         <p className="text-white_primary">${game.sale_price}</p>
@@ -63,4 +63,4 @@ const Gamecard = ({
   );
 };
 
-export default Gamecard;
+export default GameCard;
