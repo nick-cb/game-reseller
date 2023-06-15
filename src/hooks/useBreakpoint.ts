@@ -1,3 +1,5 @@
+"use client";
+
 import { useLayoutEffect, useState } from "react";
 
 const createBreakpoints = <T extends number>(
@@ -5,6 +7,9 @@ const createBreakpoints = <T extends number>(
   against?: number,
   previous?: { [k in `b${T}`]: -1 | 0 | 1 }
 ) => {
+  if (typeof window === undefined) {
+    return { result: {} as any, changed: false };
+  }
   const innerAgainst = against || window.innerWidth;
   let flag = false;
   if (previous && breakpoints.length !== Object.keys(previous).length) {
@@ -45,19 +50,21 @@ export const useBreakpoints = <T extends number>(
   );
 
   useLayoutEffect(() => {
-    window.addEventListener("resize", () => {
-      setResult((prev) => {
-        const { result, changed } = createBreakpoints(
-          breakpoints,
-          against,
-          prev
-        );
-        if (changed) {
-          return result;
-        }
-        return prev;
+    if (typeof window !== undefined) {
+      window.addEventListener("resize", () => {
+        setResult((prev) => {
+          const { result, changed } = createBreakpoints(
+            breakpoints,
+            against,
+            prev
+          );
+          if (changed) {
+            return result;
+          }
+          return prev;
+        });
       });
-    });
+    }
   }, [breakpoints, against]);
 
   return result;

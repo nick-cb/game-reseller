@@ -58,3 +58,7 @@ input[type="checkbox"]:focus + label {
   transition-timing-function: ease-in-out;
   transition-duration: 300ms;
 }
+
+.infinite-carousel {
+  @apply transition-transform duration-300;
+}

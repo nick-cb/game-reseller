@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import GameCard from "@/components/game/GameCard";
-import Carousel3D from "@/components/game/Carousel3D";
+import InfiniteCarousel from "@/components/game/InfiniteCarousel";
 
 const page = async ({ params }: { params: any }) => {
   const { game_id: gameId } = params;
@@ -17,7 +17,7 @@ const page = async ({ params }: { params: any }) => {
       <h1 className="text-2xl text-white_primary pb-6">{data.name}</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-[min-content_auto] gap-4 lg:gap-8">
         <section className="col-start-1 col-end-3 row-start-1 row-end-2">
-          <Carousel3D data={landscapeImages} />
+          <InfiniteCarousel data={landscapeImages} />
         </section>
         <section className="col-start-1 col-end-3">
           <summary className="text-sm sm:text-base list-none text-white_primary">
