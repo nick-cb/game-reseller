@@ -14,8 +14,8 @@ const Carousel = ({ data }: { data: any[] }) => {
       <div
         ref={listRef}
         className="flex gap-4 overflow-x-auto snap-x snap-mandatory
-      xs-right-pad:contents [scrollbar-width:none] [-ms-overflw-style:none]
-      xs-right-pad:[scrollbar-width:auto] xs-right-pad:[-ms-overflw-style:auto]"
+        xs-right-pad:contents [scrollbar-width:none] [-ms-overflw-style:none]
+        xs-right-pad:[scrollbar-width:auto] xs-right-pad:[-ms-overflw-style:auto]"
         onScroll={() => {
           const { current } = listRef;
           if (!current) {
@@ -78,7 +78,7 @@ const Carousel = ({ data }: { data: any[] }) => {
         <ChevronButton
           direction="right"
           className="block
-        top-[calc(calc(100%-84px)/2)] -translate-y-1/2 xs-right-pad:hidden opacity-100"
+          top-[calc(calc(100%-84px)/2)] -translate-y-1/2 xs-right-pad:hidden opacity-100"
           ref={rightButtonRef}
           onClick={() => {
             const { current } = listRef;

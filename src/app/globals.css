@@ -62,3 +62,210 @@ input[type="checkbox"]:focus + label {
 .infinite-carousel {
   @apply transition-transform duration-300;
 }
+
+.star-button {
+  /* background: radial-gradient( */
+  /*   circle farthest-side at 50% 270%, */
+  /*   rgba(255, 255, 255, 0.34), */
+  /*   rgba(255, 255, 255, 0) */
+  /* ); */
+  color: white;
+  @apply border-white/25 border bg-paper_2;
+  background-image: radial-gradient(
+    farthest-corner circle at 50% 50% in oklab,
+    hsl(0 0% 20%) 0%,
+    hsl(0 0% 11%) 100%
+  );
+}
+
+.button-wrapper {
+  background-image: radial-gradient(
+    farthest-corner circle at 50% 50% in oklab,
+    hsl(0 0% 20%) 0%,
+    hsl(0 0% 11%) 100%
+  );
+}
+
+.star-button:active {
+  transform: scale(0.98);
+}
+
+.star-button-text {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.3), #fff 75%);
+}
+
+.star-button-glow-line {
+  width: 100%;
+  height: 1px;
+  background-image: radial-gradient(
+    circle farthest-side at 50% 150%,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0) 103%
+  );
+}
+
+.star-button-glow-line-blur {
+  height: 2px;
+  background-image: radial-gradient(
+    circle farthest-side at 50% 150%,
+    #fff,
+    rgba(255, 255, 255, 0.54) 0%,
+    rgba(255, 255, 255, 0) 67%
+  );
+}
+
+.blob {
+  background-color: white;
+  height: 50px;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: linear-gradient(to right, aquamarine, mediumpurple);
+  animation: rotate 20s infinite;
+  opacity: 0.8;
+}
+
+@keyframes rotate {
+  from {
+    rotate: 0deg;
+  }
+
+  50% {
+    scale: 1 1.5;
+  }
+
+  to {
+    rotate: 360deg;
+  }
+}
+
+.star {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  opacity: 0;
+}
+
+.star:nth-of-type(1) {
+  top: 25%;
+  left: 16%;
+}
+
+.star:nth-of-type(2) {
+  top: 68%;
+  left: 3%;
+}
+
+.star:nth-of-type(3) {
+  top: 30%;
+  left: 45%;
+}
+
+.star:nth-of-type(4) {
+  top: 80%;
+  left: 50%;
+}
+
+.star:nth-of-type(5) {
+  top: 75%;
+  left: 75%;
+}
+
+.star:nth-of-type(6) {
+  top: 60%;
+  left: 90%;
+}
+
+.star:nth-of-type(7) {
+  top: 20%;
+  left: 80%;
+}
+
+.star:nth-of-type(8) {
+  top: 90%;
+  left: 20%;
+}
+
+.star svg {
+  fill: white;
+}
+
+.star-cover {
+  background-image: url(https://uploads-ssl.webflow.com/6408bea3de5aef58b7e197d4/64222325005a73f615ab18aa_button-stars-2.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  inset: 0;
+  position: absolute;
+}
+
+.star::before {
+  content: "";
+  position: absolute;
+  height: 1.5px;
+  width: 20px;
+  background: linear-gradient(
+    -90deg,
+    rgba(0, 0, 255, 0),
+    rgba(255, 255, 255, 1),
+    rgba(0, 0, 255, 0)
+  );
+  border-radius: 100%;
+  top: 50%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%) rotate(-90deg);
+}
+
+.star::after {
+  content: "";
+  position: absolute;
+  height: 1.5px;
+  width: 20px;
+  background: linear-gradient(
+    -90deg,
+    rgba(0, 0, 255, 0),
+    rgba(255, 255, 255, 1),
+    rgba(0, 0, 255, 0)
+  );
+  border-radius: 100%;
+  top: 50%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.5;
+  }
+  35% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.dot {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: #fff;
+  position: absolute;
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  opacity: var(--opacity);
+  transition: transform 0.3s ease-out;
+}

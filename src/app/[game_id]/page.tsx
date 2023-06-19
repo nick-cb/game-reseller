@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import GameCard from "@/components/game/GameCard";
 import InfiniteCarousel from "@/components/game/InfiniteCarousel";
+import StarButton from "@/components/StarButton";
 
 const page = async ({ params }: { params: any }) => {
   const { game_id: gameId } = params;
@@ -77,12 +78,20 @@ const page = async ({ params }: { params: any }) => {
           </p>
           <p className="text-white_primary">${data.sale_price}</p>
           <div className="flex flex-col gap-2">
-            <button
-              className="w-full py-4 rounded
-              bg-primary text-white shadow-white/10 shadow-md hover:brightness-105 transition-[filter]"
-            >
-              Buy now
-            </button>
+            <StarButton className="h-14">
+              <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-transparent [text-shadow:_2px_2px_2px_#000000]">
+                BUY NOW
+              </div>
+              <div className="star-button-text absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                BUY NOW
+              </div>
+            </StarButton>
+            {/* <button */}
+            {/*   className="w-full py-4 rounded */}
+            {/*   bg-primary text-white shadow-white/10 shadow-md hover:brightness-105 transition-[filter]" */}
+            {/* > */}
+            {/*   Buy now */}
+            {/* </button> */}
             <button
               className="text-sm py-2 w-full rounded border
               border-white/60 text-white hover:bg-paper transition-colors"

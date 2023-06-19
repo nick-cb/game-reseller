@@ -17,14 +17,14 @@ const InfiniteCarousel = ({ data }: { data: any[] }) => {
   const first = data[0];
 
   useEffect(() => {
-    const list = listRef.current;
-    if (!list) {
+    const previewList = previewListRef.current;
+    if (!previewList) {
       return;
     }
-    if (currentIndex === data.length) {
-      list.style.setProperty("", `translateX(0)`);
+    if (previewList.scrollWidth <= previewList.offsetWidth) {
+      rightButtonRef.current?.style.setProperty("opacity", "0");
     }
-  }, [currentIndex, data]);
+  }, [data]);
 
   useEffect(() => {
     const list = listRef.current;
@@ -51,6 +51,7 @@ const InfiniteCarousel = ({ data }: { data: any[] }) => {
     if (toElement) {
       observer.observe(toElement);
     }
+
     let id: ReturnType<typeof setTimeout>;
     const animationId = requestAnimationFrame(() => {
       if (currentIndex === data.length) {
