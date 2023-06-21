@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { StarContainer } from "@/components/StarContainer";
+import StarContainer from "@/components/StarContainer";
 
 const StarButton = ({
   children,
   className = "",
-  onMouseUp,
-  onMouseDown,
+  onPointerUp,
+  onPointerDown,
   ...props
 }: React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -15,19 +15,22 @@ const StarButton = ({
 >) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [particleAnimations, setParticleAnimations] = useState<Animation[]>([]);
+  // const [buttonAnimation, setButtonAnimation] = useState<Animation>();
+  const [particles, setParticles] = useState<
+    { target: HTMLDivElement; visible: boolean }[]
+  >([]);
+  // const [animation, setAnimations] = useState<Animation[]>([]);
+  const buttonAnimation = useRef<Animation>();
+  const animations = useRef<Animation[]>([]);
 
   useEffect(() => {
+    const ids: NodeJS.Timeout[] = [];
     const stars = buttonRef.current?.querySelectorAll(".star");
     if (stars) {
       const animate = (star: HTMLDivElement) => {
         star.animate(
           {
             opacity: [0, 0.5, 1, 1, 1, 1, 0.5, 0],
-            // rotate: [
-            //   `${Math.random() * 45}deg`,
-            //   `${Math.random() * 90 - 45}deg`,
-            // ],
           },
           {
             duration: 3000,
@@ -35,99 +38,118 @@ const StarButton = ({
           }
         );
       };
-      // stars.forEach((star, index) => {
-      //   requestAnimationFrame(() => {
-      //     setTimeout(() => {
-      //       animate(star as HTMLDivElement);
-      //       setInterval(() => {
-      //         animate(star as HTMLDivElement);
-      //       }, index + stars.length * 4000);
-      //     }, index * 5000);
-      //   });
-      // });
+      stars.forEach((star, index) => {
+        requestAnimationFrame(() => {
+          const id = setTimeout(() => {
+            animate(star as HTMLDivElement);
+            setInterval(() => {
+              animate(star as HTMLDivElement);
+            }, index + stars.length * 4000);
+          }, index * 5000);
+          ids.push(id);
+        });
+      });
     }
+    return () => {
+      for (const id of ids) {
+        clearTimeout(id);
+      }
+    };
   }, []);
 
-  const getAddition = (translateDistance: number) => {
-    return (
-      Math.random() * -translateDistance +
-      (Math.max(1, translateDistance) - Math.min(1, translateDistance))
-    );
-  };
+  useEffect(() => {
+    const button = buttonRef.current;
+    const container = containerRef.current;
+    if (!button || !container) {
+      return;
+    }
+    const visibleLeftBound = (container.clientWidth - button.clientWidth) / 2;
+    const visibleRightBound = visibleLeftBound + button.clientWidth;
+    const visibleTopBound = (container.clientHeight - button.clientHeight) / 2;
+    const visibleBottomBound = visibleTopBound + button.clientHeight;
+    const dots: NodeListOf<HTMLDivElement> = button?.querySelectorAll(".dot");
+
+    const particles: { target: HTMLDivElement; visible: boolean }[] =
+      Array.from(dots).map((dot, index) => {
+        return {
+          target: dot,
+          visible:
+            dot.offsetLeft > visibleLeftBound &&
+            dot.offsetLeft < visibleRightBound &&
+            dot.offsetTop > visibleTopBound &&
+            dot.offsetTop < visibleBottomBound,
+          index,
+        };
+      });
+    setParticles(particles);
+  }, []);
 
   return (
     <button
       ref={buttonRef}
       className={`star-button group w-full py-4 rounded 
       flex justify-center shadow-black shadow-md
-      relative overflow-hidden transition-transform duration-75 ${className}`}
-      onMouseDown={(event) => {
-        onMouseDown?.(event);
+      relative overflow-hidden transition-transform ${className}`}
+      onPointerDown={(event) => {
+        event.currentTarget.setPointerCapture(event.pointerId);
+        const animation = buttonRef.current?.animate(
+          {
+            transform: ["scale(1)", "scale(0.98)"],
+          },
+          {
+            duration: 200,
+            easing: "ease-out",
+            fill: "forwards",
+          }
+        );
+        Object.assign(buttonAnimation, { current: animation });
         const container = containerRef.current as HTMLDivElement;
         if (!container) {
           return;
         }
-        const center = container.querySelector(".particle-container-center");
-        const centerLeft = (center as HTMLDivElement).offsetLeft;
-        const centerRight = container.clientWidth - centerLeft;
-        const centerTop = (center as HTMLDivElement).offsetTop;
-        const centerBottom = container.clientHeight - centerTop;
+        const pointerPosition = {
+          x: event.clientX,
+          y: event.clientY,
+        };
         const dots: NodeListOf<HTMLDivElement> =
           container.querySelectorAll(".dot");
-        const animations: Animation[] = [];
+        const _animations: Animation[] = [];
         dots.forEach((dot) => {
-          let translate = "";
-          if (dot.offsetLeft < centerLeft) {
-            const translateDistance = centerLeft / dot.offsetLeft;
-            translate =
-              translate +
-              `translateX(${translate + getAddition(translateDistance)}px) `;
-          }
-          if (dot.offsetLeft > centerRight) {
-            const translateDistance =
-              centerRight / (container.clientWidth - dot.offsetLeft);
-            translate =
-              translate +
-              `translateX(-${
-                translateDistance + getAddition(translateDistance)
-              }px) `;
-          }
-          if (dot.offsetTop < centerTop) {
-            const translateDistance = centerTop / dot.offsetTop;
-            translate =
-              translate +
-              `translateY(${
-                translateDistance + getAddition(translateDistance)
-              }px) `;
-          }
-          if (dot.offsetTop > centerBottom) {
-            const translateDistance =
-              centerBottom / (container.clientHeight - dot.offsetTop);
-            translate =
-              translate +
-              `translateY(-${
-                translateDistance + getAddition(translateDistance)
-              }px) `;
-          }
+          const { left, top } = dot.getBoundingClientRect();
+          const dotPosition = {
+            x: left,
+            y: top,
+          };
+          const distanceX = pointerPosition.x - dotPosition.x;
+          const distanceY = pointerPosition.y - dotPosition.y;
           const animation = dot.animate(
             {
-              transform: translate,
+              transform: [
+                `translateX(0px) translateY(0px)`,
+                `translateX(${distanceX * 0.1}px) translateY(${
+                  distanceY * 0.25
+                }px)`,
+              ],
             },
             {
-              duration: 1000,
-              easing: "ease-out",
+              duration: 200,
               fill: "forwards",
             }
           );
-          animations.push(animation);
+          _animations.push(animation);
         });
-        setParticleAnimations(animations);
+        Object.assign(animations, { current: _animations });
+        onPointerUp?.(event);
       }}
-      onMouseUp={(event) => {
-        onMouseUp?.(event);
-        for (const animation of particleAnimations) {
-          animation.reverse();
-        }
+      onPointerUp={(event) => {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+        buttonAnimation.current?.finished.then(() => {
+          buttonAnimation.current?.cancel();
+          for (const animation of animations.current) {
+            animation.reverse();
+          }
+        });
+        onPointerDown?.(event);
       }}
       {...props}
     >
@@ -139,14 +161,12 @@ const StarButton = ({
       <div className="star" />
       <div className="star" />
       <div className="star" />
-      <StarContainer ref={containerRef} root={buttonRef.current} />
+      <StarContainer
+        ref={containerRef}
+        particles={particles}
+        root={buttonRef.current}
+      />
       {children}
-      {/* <div className="star-cover" /> */}
-      {/* <div className="star-button-glow absolute left-0 right-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity"> */}
-      {/*   <div className="star-button-glow-line" /> */}
-      {/*   <div className="star-button-glow-line-blur absolute bottom-0 left-0 right-0" /> */}
-      {/* </div> */}
-      {/* <div className="star-button-text w-max text-lg">Buy now</div> */}
     </button>
   );
 };

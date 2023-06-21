@@ -31,6 +31,7 @@ const InfiniteCarousel = ({ data }: { data: any[] }) => {
     if (!list) {
       return;
     }
+    list.parentElement?.style.setProperty("overflow", "hidden")
     const { width } = list.getBoundingClientRect();
     list.style.setProperty(
       "transform",

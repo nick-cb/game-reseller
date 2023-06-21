@@ -1,23 +1,21 @@
 import React, { useEffect, useRef } from "react";
 
-export const StarContainer = React.forwardRef<
+const StarContainer = React.forwardRef<
   HTMLDivElement,
   {
+    particles: { target: HTMLDivElement; visible: boolean }[];
     reGenerateOpacity?: boolean;
     root?: HTMLElement | null;
   }
->(({ reGenerateOpacity, root }, ref) => {
+>(({ particles, reGenerateOpacity, root }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const _containerRef = ref && typeof ref !== "function" ? ref : containerRef;
   useEffect(() => {
     if (!reGenerateOpacity) {
       return;
     }
-    _containerRef.current?.querySelectorAll(".dot")?.forEach((dot) => {
-      (dot as HTMLDivElement)?.style.setProperty(
-        "opacity",
-        Math.random().toString()
-      );
+    particles?.forEach((dot) => {
+      dot.target?.style.setProperty("opacity", Math.random().toString());
     });
   }, [reGenerateOpacity]);
 
@@ -26,90 +24,82 @@ export const StarContainer = React.forwardRef<
     if (!container) {
       return;
     }
-    const particles = container.querySelectorAll(".dot");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const inViewItems = entries.filter((item) => {
-          return item.intersectionRatio > 0;
-        });
-        observer.disconnect();
-        const animate = () => {
-          const numberOfParticles = Math.floor(Math.random() * 4 + 1);
-          for (let i = 0; i <= numberOfParticles; i++) {
-            const target =
-              inViewItems[Math.floor(Math.random() * inViewItems.length - 1)]
-                ?.target;
-            if (!target) {
-              continue;
-            }
-            const opacity = parseFloat(
-              getComputedStyle(target).getPropertyValue("opacity")
-            );
-            const toVisible = [
-              opacity.toString(),
-              opacity < 0.5 ? "1" : (Math.random() * (opacity || 1)).toString(),
-              "1",
-            ];
-            const toHide = [
-              opacity.toString(),
-              opacity < 0.5 ? "1" : (Math.random() * opacity).toString(),
-              "1",
-              (Math.random() * opacity).toString(),
-              "0",
-            ];
-            const types = [toVisible, toHide];
-            const index = Math.floor(Math.random() + 0.3);
-            const type = types[index];
-            requestAnimationFrame(() => {
-              const id = setTimeout(() => {
-                const animation = target.animate(
-                  {
-                    opacity: type,
-                  },
-                  {
-                    duration: 1000,
-                    fill: "forwards",
-                  }
-                );
-                if (i === numberOfParticles - 1) {
-                  animation.onfinish = () => {
-                    clearTimeout(id);
-                    animate();
-                  };
-                } else {
-                  animation.onfinish = () => {
-                    clearTimeout(id);
-                  };
-                }
-              }, i * 1000);
-            });
-          }
-        };
-
-        // animate();
-      },
-      {
-        root: root || container,
+    const visibleParticles = particles.filter((part) => part.visible);
+    const animate = (id?: NodeJS.Timeout) => {
+      if (id) {
+        clearTimeout(id);
       }
-    );
-    for (const part of particles) {
-      observer.observe(part);
-    }
-    return () => {
-      observer.disconnect();
+      const numberOfParticles = Math.floor(Math.random() * 5 + 3);
+      for (let i = 0; i <= numberOfParticles; i++) {
+        const target =
+          visibleParticles[
+            Math.floor(Math.random() * visibleParticles.length - 1)
+          ]?.target;
+        if (!target) {
+          continue;
+        }
+        const opacity = parseFloat(
+          getComputedStyle(target).getPropertyValue("opacity")
+        );
+        const toVisible = [
+          opacity.toString(),
+          opacity < 0.5 ? "1" : (Math.random() * (opacity || 1)).toString(),
+          "1",
+        ];
+        const toHide = [
+          opacity.toString(),
+          opacity < 0.5 ? "1" : (Math.random() * opacity).toString(),
+          "1",
+          "1",
+          (Math.random() * opacity).toString(),
+          "0",
+        ];
+        const types = [toVisible, toHide];
+        const index = Math.floor(Math.random() - 0.1);
+        const type = types[index];
+        requestAnimationFrame(() => {
+          // if (i === numberOfParticles - 1) {
+          //   console.log(performance.now());
+          // }
+          const animation = target.animate(
+            {
+              opacity: type,
+            },
+            {
+              duration: 1000,
+              fill: "forwards",
+              delay: index * 100,
+            }
+          );
+          animation.commitStyles();
+          if (i === numberOfParticles - 1) {
+            // animation.onfinish = () => {
+            // console.log(performance.now())
+            // animate();
+            //   animation.cancel();
+            // };
+            const totalDelay = Array(numberOfParticles)
+              .fill(undefined)
+              .reduce((acc, _) => {
+                return acc + 1000;
+              }, 0);
+            // console.log({ totalDelay });
+            const id = setTimeout(() => {
+              animate(id);
+            }, totalDelay);
+          }
+        });
+      }
     };
-  }, []);
+
+    animate();
+  }, [particles]);
 
   return (
     <div
       ref={ref || containerRef}
       className="particle-container absolute w-[110%] h-[150%] -top-[25%]"
     >
-      <div
-        className={
-          "particle-container-center absolute h-1/5 w-1/5 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
-        }
-      />
       <div
         className="dot [--opacity:0.687303]"
         style={{
@@ -1013,3 +1003,5 @@ export const StarContainer = React.forwardRef<
     </div>
   );
 });
+
+export default React.memo(StarContainer);

@@ -86,10 +86,6 @@ input[type="checkbox"]:focus + label {
   );
 }
 
-.star-button:active {
-  transform: scale(0.98);
-}
-
 .star-button-text {
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
@@ -268,4 +264,20 @@ input[type="checkbox"]:focus + label {
   /* transform: translate(-50%, -50%); */
   opacity: var(--opacity);
   transition: transform 0.3s ease-out;
+}
+
+button {
+  --duration: 200ms;
+}
+.btn-default-scale:active {
+  animation: btn-default-scale-animation var(--duration) forwards;
+}
+
+@keyframes btn-default-scale-animation {
+  0% {
+    scale: 1;
+  }
+  100% {
+    scale: 0.98;
+  }
 }
