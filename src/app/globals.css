@@ -281,3 +281,50 @@ button {
     scale: 0.98;
   }
 }
+
+/* .hero-carousel-preview-item.active { */
+/*   @apply bg-paper_2; */
+/* } */
+/* .hero-carousel-preview-item.active > div { */
+/*   animation: scale-up-down 500ms linear; */
+/* } */
+/* .hero-carousel-preview-item.active:hover { */
+/*   @apply bg-paper_2; */
+/* } */
+/* .hero-carousel-preview-item.active::after { */
+/*   @apply transition-opacity duration-300 delay-500; */
+/*   opacity: 1; */
+/*   animation: expand-width 10s linear forwards; */
+/*   animation-delay: 500ms; */
+/* } */
+
+@keyframes expand-width {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes scale-up-down {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes opacity-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+

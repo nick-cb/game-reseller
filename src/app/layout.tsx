@@ -30,11 +30,11 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-pt-[116px]">
       <body
         className={
           atkinsonHyper.className +
-          " bg-default overflow-y-auto h-screen"
+          " bg-default overflow-y-auto"
         }
       >
         <QueryContext>
@@ -83,7 +83,7 @@ export default function RootLayout({
               </Link>
             </ActiveLink>
           </nav>
-          <main className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 pb-8 pt-[108px] h-screen">
+          <main className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 pt-[116px]">
             {/* <OfflineBanner /> */}
             {children}
           </main>

@@ -7,7 +7,7 @@ const createBreakpoints = <T extends number>(
   against?: number,
   previous?: { [k in `b${T}`]: -1 | 0 | 1 }
 ) => {
-  if (typeof window === undefined) {
+  if (typeof window === "undefined") {
     return { result: {} as any, changed: false };
   }
   const innerAgainst = against || window.innerWidth;

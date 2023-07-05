@@ -1,5 +1,7 @@
 import Carousel from "@/components/discover/Carousel";
 import Link from "next/link";
+import HeroCarousel from "@/components/HeroCarousel";
+import HeroCarousel2 from "@/components/HeroCarousel2";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(
@@ -7,13 +9,16 @@ const getCollections = async (names: string[]) => {
       `http://localhost:5001/api/collections/name?names[]=${names.join(
         "&names[]="
       )}`
-    )
+    ),
+    {
+      cache: "no-store",
+    }
   ).then((res) => res.json());
   return data;
 };
 
 export default async function Home() {
-  const data = await getCollections([
+  const data: any[] = await getCollections([
     "top+sale",
     "new+release",
     "most+popular",
@@ -22,7 +27,8 @@ export default async function Home() {
 
   return (
     <>
-      {data.map((collection: any) => (
+      <HeroCarousel2 data={data} />
+      {data.slice(1).map((collection: any) => (
         <section key={collection._id} className="pb-8 relative">
           <Link
             className="text-white text-lg flex items-center group gap-2 pb-2 w-max pr-4"
