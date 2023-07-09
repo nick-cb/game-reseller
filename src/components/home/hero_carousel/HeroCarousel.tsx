@@ -1,10 +1,10 @@
 "use client";
-import "./hero-carousel2.css";
+import "./hero-carousel.css";
 import Image from "next/image";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const HeroCarousel2 = ({ data }: { data: any[] }) => {
+const HeroCarousel = ({ data }: { data: any[] }) => {
   const [index, setIndex] = useState(-1);
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
@@ -54,14 +54,14 @@ const HeroCarousel2 = ({ data }: { data: any[] }) => {
       ?.classList.add("active");
     prev.current = index === -1 ? 0 : index;
 
-    const id = setTimeout(() => {
-      requestAnimationFrame(() => {
-        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % _data.length));
-      });
-    }, 10000);
-    return () => {
-      clearTimeout(id);
-    };
+    // const id = setTimeout(() => {
+    //   requestAnimationFrame(() => {
+    //     setIndex((prev) => (index === -1 ? 1 : (prev + 1) % _data.length));
+    //   });
+    // }, 10000);
+    // return () => {
+    //   clearTimeout(id);
+    // };
   }, [index]);
 
   const onClick = (index: number) => {
@@ -69,8 +69,8 @@ const HeroCarousel2 = ({ data }: { data: any[] }) => {
   };
 
   return (
-    <div className="flex gap-8">
-      <div className="w-4/5 aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
+    <div className="flex gap-4 lg:gap-8">
+      <div className="w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
           {_data.map((item: any) => (
             <li key={item._id} className={"main-item snap-start"}>
@@ -85,7 +85,7 @@ const HeroCarousel2 = ({ data }: { data: any[] }) => {
           ))}
         </ul>
       </div>
-      <ul ref={previewListRef} className="flex flex-col flex-grow gap-2">
+      <ul ref={previewListRef} className="flex flex-col gap-2 flex-1">
         {_data.map((item: any, itemIndex: any) => (
           <li
             key={item._id}
@@ -99,14 +99,11 @@ const HeroCarousel2 = ({ data }: { data: any[] }) => {
             }}
           >
             <a
-              className="flex items-center gap-4 h-full focus:bg-paper_2 p-3"
+              className="flex items-center gap-4 h-full w-full focus:bg-paper_2 p-2 lg:p-3"
               href="#"
             >
-              <div className="relative h-full aspect-[0.75] rounded-lg overflow-hidden z-[1]">
-                <img
-                  className="absolute h-full aspect-[0.75]"
-                  src={item.image.portrait.url}
-                />
+              <div className="relative h-full shrink-0 aspect-[0.75] rounded-lg overflow-hidden z-[1]">
+                <Image alt="" className="absolute" src={item.image.portrait.url} fill />
               </div>
               <p className="text-sm text-white_primary z-[1]">{item.name}</p>
             </a>
@@ -119,17 +116,17 @@ const HeroCarousel2 = ({ data }: { data: any[] }) => {
 
 const Cover = ({ game }: { game: any }) => {
   return (
-    <div className="main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-8">
+    <div className="main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8">
       <div className="flex gap-4">
         <a
           href={`${game._id}`}
-          className="bg-white text-default w-40 py-4 rounded text-sm text-center"
+          className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
         >
           BUY NOW
         </a>
         <a
           href="#"
-          className="relative overflow-hidden text-white w-40 py-4 rounded text-sm z-10
+          className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
           hover:bg-white/[0.16] transition-colors duration-200 
           text-center"
         >
@@ -137,11 +134,18 @@ const Cover = ({ game }: { game: any }) => {
         </a>
       </div>
       <div className="max-w-sm flex flex-col justify-evenly flex-grow">
-        <img
-          src={game.image?.logo.url}
-          className="w-44 aspect-square object-contain"
-        />
-        <p className="text-white_primary text-lg">
+        <div
+          className="w-36 lg:w-80 aspect-video relative logo"
+          style={{
+            backgroundImage: `url(${game.image?.logo.url})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "bottom left",
+          }}
+        >
+          {/* <Image src={} alt="" fill className="object-contain" /> */}
+        </div>
+        <p className="text-white_primary lg:text-lg">
           {game.description.split(".")[0]}
         </p>
       </div>
@@ -149,4 +153,4 @@ const Cover = ({ game }: { game: any }) => {
   );
 };
 
-export default HeroCarousel2;
+export default HeroCarousel;

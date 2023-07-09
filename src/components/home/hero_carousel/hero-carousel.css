@@ -39,7 +39,7 @@
   opacity: 0;
 }
 
-.stack-fade-carousel.main-list li.active .main-item-cover img {
+.stack-fade-carousel.main-list li.active .main-item-cover .logo {
   opacity: 0;
   animation: 200ms cubic-bezier(0.17, 0.17, 0.23, 1) 300ms 1 normal forwards
     running hero-carousel-item-go-in;

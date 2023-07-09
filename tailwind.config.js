@@ -1,3 +1,5 @@
+const gridColRepeatMinMax = require('./minmax');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -26,7 +28,21 @@ module.exports = {
         '3xl': '1792px',
         '4xl': '2048px',
       },
+      gridTemplateColumns: {
+        '1': "repeat(1, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '2': "repeat(2, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '3': "repeat(3, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '4': "repeat(4, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '5': "repeat(5, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '6': "repeat(6, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '7': "repeat(7, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '8': "repeat(8, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '9': "repeat(9, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '10': "repeat(10, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '11': "repeat(11, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+        '12': "repeat(12, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+      }
     },
   },
-  plugins: [],
+  plugins: [gridColRepeatMinMax],
 };

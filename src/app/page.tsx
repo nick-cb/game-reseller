@@ -1,7 +1,7 @@
 import Carousel from "@/components/discover/Carousel";
 import Link from "next/link";
-import HeroCarousel from "@/components/HeroCarousel";
-import HeroCarousel2 from "@/components/HeroCarousel2";
+import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
+import Image from "next/image";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(
@@ -27,32 +27,86 @@ export default async function Home() {
 
   return (
     <>
-      <HeroCarousel2 data={data} />
-      {data.slice(1).map((collection: any) => (
-        <section key={collection._id} className="pb-8 relative">
-          <Link
-            className="text-white text-lg flex items-center group gap-2 pb-2 w-max pr-4"
-            href={`/browse?category=${collection._id}`}
-          >
-            {collection.name[0].toUpperCase() + collection.name.substring(1)}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              width="14px"
-              height="14px"
-              className="group-hover:translate-x-2 transition-transform mt-[2px]"
-            >
-              <g id="Icon">
-                <path
-                  fill="white"
-                  d="M5.53,14.53l6,-6c0.293,-0.293 0.293,-0.767 0,-1.06l-6,-6c-0.292,-0.293 -0.768,-0.293 -1.06,-0c-0.293,0.292 -0.293,0.768 -0,1.06l5.469,5.47c0,0 -5.469,5.47 -5.469,5.47c-0.293,0.292 -0.293,0.768 -0,1.06c0.292,0.293 0.768,0.293 1.06,0Z"
-                />
-              </g>
-            </svg>
-          </Link>
-          <Carousel data={collection.list_game} />
-        </section>
+      <HeroCarousel data={data} />
+      <hr className="my-4 border-default" />
+      {data.slice(1, 2).map((collection: any) => (
+        <Carousel collection={collection} className="pb-8 relative" />
       ))}
+      <hr className="my-4 border-default" />
+      <section>
+        <ul className={"flex gap-8"}>
+          <li className="w-full group cursor-pointer">
+            <Link href={"#"}>
+              <div
+                className={`relative overflow-hidden aspect-video cols-min-1
+                  after:rounded after:absolute after:inset-0 after:w-full after:h-full
+                  after:transition-opacity after:bg-white after:opacity-0
+                  group-hover:after:opacity-[0.1] bg-white/25 rounded
+                  `}
+              >
+                <Image
+                  className="rounded"
+                  src="https://cdn2.unrealengine.com/egs-valorant-ep-7-act-1-breaker-1920x1080-39b521ddfc68.jpg"
+                  alt={""}
+                  fill
+                />
+              </div>
+              <h2 className="text-white_primary py-4">VALORANT</h2>
+              <p className="text-white/60 text-sm">
+                Adapt. Overcome. Evolve. Come and ensnare your prey with
+                Norwegian Agent Deadlock in EP_07: EVOLUTION // ACT I.
+              </p>
+            </Link>
+          </li>
+          <li className="w-full group cursor-pointer">
+            <Link href={"#"}>
+              <div
+                className={`relative overflow-hidden aspect-video
+                  after:rounded after:absolute after:inset-0 after:w-full after:h-full
+                  after:transition-opacity after:bg-white after:opacity-0
+                  group-hover:after:opacity-[0.1] bg-white/25 rounded
+                  `}
+              >
+                <Image
+                  className="rounded"
+                  src="https://cdn2.unrealengine.com/egs-ratchet-and-clank-rift-apart-breaker-1920x1080-c3c113bb27fd.jpg"
+                  alt={""}
+                  fill
+                />
+              </div>
+              <h2 className="text-white_primary py-4">
+                Ratchet and Clank: Rift Apart - Coming July 26
+              </h2>
+              <p className="text-white/60 text-sm">
+                Go dimension-hopping and take on an evil emperor from another
+                reality. Pre-purchase now to get early access in-game items.
+              </p>
+            </Link>
+          </li>
+          <li className="w-full group cursor-pointer">
+            <Link href={"#"}>
+              <div
+                className={`relative overflow-hidden aspect-video
+                  after:rounded after:absolute after:inset-0 after:w-full after:h-full
+                  after:transition-opacity after:bg-white after:opacity-0
+                  group-hover:after:opacity-[0.1] bg-white/25 rounded
+                  `}
+              >
+                <Image
+                  className="rounded"
+                  src="https://cdn2.unrealengine.com/egs-amnesia-the-bunker-pdp-breaker-1920x1080-0e84b62b2744.jpg"
+                  alt={""}
+                  fill
+                />
+              </div>
+              <h2 className="text-white_primary py-4">Amnesia: The Bunker</h2>
+              <p className="text-white/60 text-sm">
+                Overcome fear, persevere, and make your way out alive.
+              </p>
+            </Link>
+          </li>
+        </ul>
+      </section>
     </>
   );
 }

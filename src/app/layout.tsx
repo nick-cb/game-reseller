@@ -83,7 +83,7 @@ export default function RootLayout({
               </Link>
             </ActiveLink>
           </nav>
-          <main className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 pt-[116px]">
+          <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary">
             {/* <OfflineBanner /> */}
             {children}
           </main>
