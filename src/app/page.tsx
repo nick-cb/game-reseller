@@ -2,6 +2,7 @@ import Carousel from "@/components/discover/Carousel";
 import Link from "next/link";
 import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import Image from "next/image";
+import {Pillar} from "@/components/home/pillar";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(
@@ -24,6 +25,7 @@ export default async function Home() {
     "most+popular",
     "recently+update",
   ]);
+  console.log(data);
 
   return (
     <>
@@ -52,10 +54,11 @@ export default async function Home() {
                 />
               </div>
               <h2 className="text-white_primary py-4">VALORANT</h2>
-              <p className="text-white/60 text-sm">
+              <p className="text-white/60 text-sm mb-2">
                 Adapt. Overcome. Evolve. Come and ensnare your prey with
                 Norwegian Agent Deadlock in EP_07: EVOLUTION // ACT I.
               </p>
+              <p>Free</p>
             </Link>
           </li>
           <li className="w-full group cursor-pointer">
@@ -77,10 +80,11 @@ export default async function Home() {
               <h2 className="text-white_primary py-4">
                 Ratchet and Clank: Rift Apart - Coming July 26
               </h2>
-              <p className="text-white/60 text-sm">
+              <p className="text-white/60 text-sm mb-2">
                 Go dimension-hopping and take on an evil emperor from another
                 reality. Pre-purchase now to get early access in-game items.
               </p>
+              <p>Free</p>
             </Link>
           </li>
           <li className="w-full group cursor-pointer">
@@ -100,12 +104,19 @@ export default async function Home() {
                 />
               </div>
               <h2 className="text-white_primary py-4">Amnesia: The Bunker</h2>
-              <p className="text-white/60 text-sm">
+              <p className="text-white/60 text-sm mb-2">
                 Overcome fear, persevere, and make your way out alive.
               </p>
+              <p>Fee</p>
             </Link>
           </li>
         </ul>
+      </section>
+      <hr className="my-6 border-default" />
+      <section className="flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
+        <Pillar data={data.find(c => c.name === "top sale")} />
+        <Pillar data={data.find(c => c.name === "most popular")} />
+        <Pillar data={data.find(c => c.name === "new release")} />
       </section>
     </>
   );

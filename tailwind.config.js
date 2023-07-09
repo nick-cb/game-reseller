@@ -28,6 +28,9 @@ module.exports = {
         '3xl': '1792px',
         '4xl': '2048px',
       },
+      height: {
+        18: "4.5rem /* 72px */"
+      },
       gridTemplateColumns: {
         '1': "repeat(1, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
         '2': "repeat(2, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
