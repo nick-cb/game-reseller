@@ -195,7 +195,8 @@ const Carousel = ({
               className="snap-start flex-shrink-0
               w-[calc(calc(100vw_-_32px)_-_13px)]
               xs:w-[calc(calc(100vw_-_32px)/2_-_13px)]
-              3/4xs:w-[calc(calc(100vw_-_32px)/3_-_13px)]
+              3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]
+              sm:w-[calc(calc(100vw_-_32px)/4_-_13px)]
               md:w-[calc(calc(100vw_-_32px)/4_-_13px)]
               lg:w-[calc(calc(100vw_-_192px)/5_-_13px)]
               xl:w-[calc(calc(100vw_-_352px)/5_-_13px)]

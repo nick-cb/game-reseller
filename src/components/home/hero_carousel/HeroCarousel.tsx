@@ -3,12 +3,14 @@ import "./hero-carousel.css";
 import Image from "next/image";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useBreakpoints } from "@/hooks/useBreakpoint";
 
 const HeroCarousel = ({ data }: { data: any[] }) => {
   const [index, setIndex] = useState(-1);
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
+  const { b768 } = useBreakpoints([768]);
 
   const _data = useMemo(() => {
     return data[0]?.list_game.slice(0, 6).map((game: any) => ({
@@ -54,14 +56,14 @@ const HeroCarousel = ({ data }: { data: any[] }) => {
       ?.classList.add("active");
     prev.current = index === -1 ? 0 : index;
 
-    // const id = setTimeout(() => {
-    //   requestAnimationFrame(() => {
-    //     setIndex((prev) => (index === -1 ? 1 : (prev + 1) % _data.length));
-    //   });
-    // }, 10000);
-    // return () => {
-    //   clearTimeout(id);
-    // };
+    const id = setTimeout(() => {
+      requestAnimationFrame(() => {
+        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % _data.length));
+      });
+    }, 10000);
+    return () => {
+      clearTimeout(id);
+    };
   }, [index]);
 
   const onClick = (index: number) => {
@@ -69,8 +71,8 @@ const HeroCarousel = ({ data }: { data: any[] }) => {
   };
 
   return (
-    <div className="flex gap-4 lg:gap-8">
-      <div className="w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
+    <div className="md:flex gap-4 lg:gap-8">
+      <div className="w-full md:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
           {_data.map((item: any) => (
             <li key={item._id} className={"main-item snap-start"}>
@@ -85,31 +87,54 @@ const HeroCarousel = ({ data }: { data: any[] }) => {
           ))}
         </ul>
       </div>
-      <ul ref={previewListRef} className="flex flex-col gap-2 flex-1">
-        {_data.map((item: any, itemIndex: any) => (
-          <li
-            key={item._id}
-            className="hero-carousel-preview-item w-full h-full relative rounded-xl overflow-hidden
+      {b768 === -1 && (
+        <ul
+          ref={previewListRef}
+          className="flex justify-center items-center gap-2 w-full py-2"
+        >
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+          <li className="hero-carousel-pos-indicator relative overflow-hidden w-20 h-1 bg-paper rounded"></li>
+        </ul>
+      )}
+      {b768 === 1 && (
+        <ul
+          ref={previewListRef}
+          className="md:flex flex-col gap-2 flex-1 hidden"
+        >
+          {_data.map((item: any, itemIndex: any) => (
+            <li
+              key={item._id}
+              className="hero-carousel-preview-item w-full h-full relative rounded-xl overflow-hidden
             after:absolute after:inset-0 hover:bg-paper_2 after:bg-paper"
-            onClick={() => {
-              if (itemIndex === prev.current) {
-                return;
-              }
-              onClick(itemIndex);
-            }}
-          >
-            <a
-              className="flex items-center gap-4 h-full w-full focus:bg-paper_2 p-2 lg:p-3"
-              href="#"
+              onClick={() => {
+                if (itemIndex === prev.current) {
+                  return;
+                }
+                onClick(itemIndex);
+              }}
             >
-              <div className="relative h-full shrink-0 aspect-[0.75] rounded-lg overflow-hidden z-[1]">
-                <Image alt="" className="absolute" src={item.image.portrait.url} fill />
-              </div>
-              <p className="text-sm text-white_primary z-[1]">{item.name}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
+              <a
+                className="flex items-center gap-4 h-full w-full focus:bg-paper_2 p-2 lg:p-3"
+                href="#"
+              >
+                <div className="relative h-full shrink-0 aspect-[0.75] rounded-lg overflow-hidden z-[1]">
+                  <Image
+                    alt=""
+                    className="absolute"
+                    src={item.image.portrait.url}
+                    fill
+                  />
+                </div>
+                <p className="text-sm text-white_primary z-[1]">{item.name}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

@@ -113,9 +113,11 @@ export default async function Home() {
         </ul>
       </section>
       <hr className="my-6 border-default" />
-      <section className="flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
+      <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
         <Pillar data={data.find(c => c.name === "top sale")} />
+        <hr className="my-4 border-default md:hidden" />
         <Pillar data={data.find(c => c.name === "most popular")} />
+        <hr className="my-4 border-default md:hidden" />
         <Pillar data={data.find(c => c.name === "new release")} />
       </section>
     </>

@@ -135,3 +135,11 @@
     #0b0b0b00 65% 65%
   );
 }
+
+.hero-carousel-pos-indicator {
+  @apply after:absolute after:w-0 after:inset-0 after:bg-white/25;
+}
+
+.hero-carousel-pos-indicator.active::after {
+  animation: expand-width 10s linear forwards;
+}
