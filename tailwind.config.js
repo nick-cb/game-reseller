@@ -31,6 +31,9 @@ module.exports = {
       height: {
         18: "4.5rem /* 72px */"
       },
+      width: {
+        54: "13.5rem /* 216px; */"
+      },
       gridTemplateColumns: {
         '1': "repeat(1, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
         '2': "repeat(2, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
@@ -44,6 +47,9 @@ module.exports = {
         '10': "repeat(10, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
         '11': "repeat(11, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
         '12': "repeat(12, minmax(var(--tw-cols-min), var(--tw-cols-max)))",
+      },
+      scrollbar: {
+        hidden: "scrollbar-width: none"
       }
     },
   },

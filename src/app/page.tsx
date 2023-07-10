@@ -2,7 +2,8 @@ import Carousel from "@/components/discover/Carousel";
 import Link from "next/link";
 import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import Image from "next/image";
-import {Pillar} from "@/components/home/pillar";
+import { Pillar } from "@/components/home/pillar";
+import { HeroSlider } from "@/components/home/hero-slider";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(
@@ -29,7 +30,8 @@ export default async function Home() {
 
   return (
     <>
-      <HeroCarousel data={data} />
+      <HeroCarousel data={data} className="hidden md:block" />
+      <HeroSlider data={data[0]} className="md:hidden" />
       <hr className="my-4 border-default" />
       {data.slice(1, 2).map((collection: any) => (
         <Carousel collection={collection} className="pb-8 relative" />
@@ -114,11 +116,11 @@ export default async function Home() {
       </section>
       <hr className="my-6 border-default" />
       <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
-        <Pillar data={data.find(c => c.name === "top sale")} />
+        <Pillar data={data.find((c) => c.name === "top sale")} />
         <hr className="my-4 border-default md:hidden" />
-        <Pillar data={data.find(c => c.name === "most popular")} />
+        <Pillar data={data.find((c) => c.name === "most popular")} />
         <hr className="my-4 border-default md:hidden" />
-        <Pillar data={data.find(c => c.name === "new release")} />
+        <Pillar data={data.find((c) => c.name === "new release")} />
       </section>
     </>
   );
