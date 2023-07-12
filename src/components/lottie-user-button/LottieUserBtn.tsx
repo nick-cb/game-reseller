@@ -52,8 +52,9 @@ export function LottieUserButton() {
       contentPrevious();
     }
   );
+  const translateRef = useRef<HTMLDivElement>(null);
   const { next: contentNext, previous: contentPrevious } = useAnimatedSize(
-    contentContainerRef,
+    translateRef,
     [
       {
         translateX: 0,
@@ -61,7 +62,7 @@ export function LottieUserButton() {
       },
       {
         translateX: -404,
-        height: 400,
+        height: 372,
       },
     ]
   );
@@ -98,31 +99,31 @@ export function LottieUserButton() {
           "bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary p-0 transition-[height,_width] duration-200 ease-out overflow-hidden "
         }
       >
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
-          width={64}
-          height={64}
-          alt=""
-          className="mx-auto my-8"
-        />
-        <p className="text-xl mt-4 text-center">Login</p>
-        <div
-          ref={contentContainerRef}
-          className={
-            "px-5 py-8 flex gap-5 transition-transform duration-200 w-max "
-          }
-        >
-          <StrategyList
-            onClickStrategy={() => {
-              next();
-              contentNext();
-            }}
+        <div className="h-max" ref={contentContainerRef}>
+          <Image
+            src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
+            width={64}
+            height={64}
+            alt=""
+            className="mx-auto my-8"
           />
-          <EmailLoginForm />
+          <p className="text-xl mt-4 text-center">Login</p>
+          <div
+            className="flex px-5 py-8 transition-transform duration-200 gap-5"
+            ref={translateRef}
+          >
+            <StrategyList
+              onClickStrategy={() => {
+                next();
+                contentNext();
+              }}
+            />
+            <EmailLoginForm />
+          </div>
+          <p className="text-white_primary/60 text-center pb-8 text-sm">
+            Don't have an account? Signup now!
+          </p>
         </div>
-        <p className="text-white_primary/60 text-center pb-8 text-sm">
-          Don't have an account? Signup now!
-        </p>
       </dialog>
     </>
   );
