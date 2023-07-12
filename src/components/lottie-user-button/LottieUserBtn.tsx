@@ -270,6 +270,30 @@ const EmailLoginForm = React.forwardRef<
       }
       {...props}
     >
+      <label htmlFor="first-name" className="w-max my-auto">
+        Fist name
+      </label>
+      <InterposedInput
+        id="first-name"
+        leftIconProps={{
+          className: "fill-transparent stroke-white ml-3",
+        }}
+        leftIcon="/svg/sprites/actions.svg#user-generic-1"
+        className="p-3"
+        placeholder="First name"
+      />
+      <label htmlFor="last-name" className="w-max my-auto">
+        Last name
+      </label>
+      <InterposedInput
+        id="last-name"
+        leftIconProps={{
+          className: "fill-transparent stroke-white ml-3",
+        }}
+        leftIcon="/svg/sprites/actions.svg#user-generic-1"
+        className="p-3"
+        placeholder="Last name"
+      />
       <label htmlFor="display-name" className="w-max my-auto">
         Display name
       </label>
