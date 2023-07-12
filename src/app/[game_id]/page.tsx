@@ -17,52 +17,17 @@ const page = async ({ params }: { params: any }) => {
   return (
     <div className="pt-6">
       <h1 className="text-2xl text-white_primary pb-6">{data.name}</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-[min-content_auto] gap-4 lg:gap-8">
-        <section className="col-start-1 col-end-3 row-start-1 row-end-2">
+      <div className="grid grid-cols-2 md:grid-cols-7 lg:grid-cols-3  grid-rows-[min-content_auto] gap-4 md:gap-8">
+        <section className="col-start-1 col-end-3 md:col-end-5 lg:col-end-3 row-start-1 row-end-2">
           <InfiniteCarousel data={landscapeImages} />
         </section>
-        <section className="col-start-1 col-end-3">
-          <summary className="text-sm sm:text-base list-none text-white_primary">
-            {data.title}
-          </summary>
-          <div className="border-l border-white/60 pl-4 py-3 mt-4">
-            <p className="text-sm text-white/60">Genres</p>
-            <p className="text-white text-sm">
-              {data.tag
-                .map((tag: string) => tag[0].toUpperCase() + tag.substring(1))
-                .join(", ")}
-            </p>
-          </div>
-        </section>
-        <section className="col-start-1 col-end-3">
-          <article className="text-sm text-white/60 hover:text-white_primary transition-colors">
-            {data.description}
-          </article>
-        </section>
-        {data.included_in.length > 0 && (
-          <section className="col-start-1 col-end-3">
-            <h2 className="text-xl text-white_primary pb-4">Editions</h2>
-            <div className="flex flex-col gap-4">
-              {data.included_in.map((edition: any) => (
-                <GameCard game={edition} type="edition" />
-              ))}
-            </div>
-          </section>
-        )}
-        {data.includes.length > 0 && (
-          <section className="col-start-1 col-end-3">
-            <h2 className="text-xl text-white_primary pb-4">Add-on</h2>
-            {data.includes.map((edition: any) => (
-              <GameCard game={edition} type="add-on" />
-            ))}
-          </section>
-        )}
         <section
           className="w-full flex flex-col gap-4
           row-start-3 col-start-1 col-end-3
-          sm:col-start-3 sm:row-start-1 sm:row-end-3"
+          md:col-start-5 md:col-end-8
+          lg:col-start-3 lg:col-end-4 md:row-start-1 sm:row-end-3"
         >
-          <div className="relative w-full aspect-[3/2] hidden sm:block">
+          <div className="relative w-full aspect-[3/2] hidden md:block">
             <Image
               src={
                 data.images.find((img: any) => {
@@ -122,6 +87,42 @@ const page = async ({ params }: { params: any }) => {
             </div>
           </div>
         </section>
+        <section className="col-start-1 col-end-3 md:col-end-5 lg:col-end-3">
+          <summary className="text-sm sm:text-base list-none text-white_primary">
+            {data.title}
+          </summary>
+          <div className="border-l border-white/60 pl-4 py-3 mt-4">
+            <p className="text-sm text-white/60">Genres</p>
+            <p className="text-white text-sm">
+              {data.tag
+                .map((tag: string) => tag[0].toUpperCase() + tag.substring(1))
+                .join(", ")}
+            </p>
+          </div>
+        </section>
+        <section className="col-start-1 col-end-3 md:col-end-5 lg:col-end-3">
+          <article className="text-sm text-white/60 hover:text-white_primary transition-colors">
+            {data.description}
+          </article>
+        </section>
+        {data.included_in.length > 0 && (
+          <section className="col-start-1 col-end-3 md:col-end-5 lg:col-end-3">
+            <h2 className="text-xl text-white_primary pb-4">Editions</h2>
+            <div className="flex flex-col gap-4">
+              {data.included_in.map((edition: any) => (
+                <GameCard game={edition} type="edition" />
+              ))}
+            </div>
+          </section>
+        )}
+        {data.includes.length > 0 && (
+          <section className="col-start-1 col-end-3 md:col-end-5 lg:col-end-3">
+            <h2 className="text-xl text-white_primary pb-4">Add-on</h2>
+            {data.includes.map((edition: any) => (
+              <GameCard game={edition} type="add-on" />
+            ))}
+          </section>
+        )}
       </div>
     </div>
   );

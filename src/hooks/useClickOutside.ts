@@ -35,7 +35,7 @@ export const useClickOutsideCallback = <T extends HTMLElement>(
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [ref]);
+  }, []);
 
   return ref;
 };

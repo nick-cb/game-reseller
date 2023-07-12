@@ -26,7 +26,6 @@ export default async function Home() {
     "most+popular",
     "recently+update",
   ]);
-  console.log(data);
 
   return (
     <>

@@ -1,0 +1,39 @@
+dialog {
+  opacity: 0;
+  inset: 0;
+  margin: auto;
+  position: fixed;
+}
+
+dialog:not([open]) {
+  pointer-events: none;
+}
+
+dialog[open] {
+  animation: slide-in-down, 400ms fade-in;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.5, -0.3, 0.1, 1.5);
+  animation-duration: 300ms;
+}
+
+dialog[open]::backdrop {
+  @apply backdrop-blur-xl backdrop-brightness-50;
+}
+
+@keyframes slide-in-down {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slide-out-up {
+  to {
+    transform: translate(0%);
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}

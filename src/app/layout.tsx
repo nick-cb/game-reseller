@@ -1,16 +1,17 @@
 import "./globals.css";
-import { Atkinson_Hyperlegible } from "next/font/google";
+import { Atkinson_Hyperlegible, Inter } from "next/font/google";
 import Image from "next/image";
 import Searchbar from "../components/searchbar";
 import QueryContext from "../components/QueryContext";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ActiveLink from "../components/ActiveLink";
+import {LottieUserButton} from "@/components/lottie-user-button/LottieUserBtn";
 // import OfflineBanner from "@/components/OfflineBanner";
 // import "@/worker/offline_worker";
 
-const atkinsonHyper = Atkinson_Hyperlegible({
-  weight: ["400", "700"],
+const atkinsonHyper = Inter({
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
   subsets: ["latin"],
 });
 
@@ -31,12 +32,10 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="scroll-pt-[116px]">
-      <body
-        className={
-          atkinsonHyper.className +
-          " bg-default overflow-y-auto"
-        }
-      >
+      {/* <header> */}
+      {/*   <link rel="preload" as="image/svg+xml" href="/actions.svg" /> */}
+      {/* </header> */}
+      <body className={atkinsonHyper.className + " bg-default overflow-y-auto"}>
         <QueryContext>
           <header
             className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 py-2
@@ -54,9 +53,12 @@ export default function RootLayout({
                 height={40}
               />
             </Link>
-            <form action={handleSubmitSearch}>
-              <Searchbar />
-            </form>
+            <div className="flex gap-2 text-sm h-full px-4 text-white_primary">
+              <form action={handleSubmitSearch}>
+                <Searchbar />
+              </form>
+              <LottieUserButton />
+            </div>
           </header>
           <nav
             className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 

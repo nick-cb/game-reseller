@@ -1,15 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-const StandardButton = () => {
+const StandardButton = ({
+  className = "",
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>) => {
   return (
     <button
-      className="w-full py-4 rounded 
-              bg-primary text-white shadow-black shadow-md hover:brightness-125 transition-[filter]
-      btn-default-scale [--duration:150ms]"
+      className={`w-full py-4 rounded 
+      bg-primary text-white shadow-black shadow-md hover:brightness-125 transition-[filter]
+      btn-default-scale [--duration:150ms] ${className}`}
+      {...props}
     >
-      Buy now
+      {children}
     </button>
   );
 };
