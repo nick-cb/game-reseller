@@ -2,7 +2,7 @@
 
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { useLottie } from "lottie-react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useCallback, useRef, useState } from "react";
 import lottieuser from "../../../public/user-lottie.json";
 import { InterposedInput, PasswordInput } from "../Input";
@@ -11,17 +11,22 @@ import Image from "next/image";
 import "./dialog.css";
 
 export function LottieUserButton() {
+  const [strategy, setStrategy] = useState<
+    "email" | "facebook" | "google" | "apple"
+  >();
+  const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { next, previous } = useAnimatedSize(dialogRef, [
-    {
-      width: 424,
-      height: 567,
-    },
-    {
-      width: 499.12,
-      height: 588,
-    },
-  ]);
+  const translateRef = useRef<HTMLDivElement>(null);
+  const ref1 = useRef<HTMLDivElement>(null);
+  const ref2 = useRef<HTMLFormElement>(null);
+
+  const { View, goToAndPlay } = useLottie({
+    animationData: lottieuser,
+    autoplay: false,
+    loop: false,
+    style: { width: "20px", height: "20px" },
+  });
+
   const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
     async () => {
       const dialog = dialogRef.current;
@@ -48,35 +53,79 @@ export function LottieUserButton() {
       ]);
       dialog.classList.add("close");
       dialogRef.current?.close();
-      previous();
-      contentPrevious();
+      setVisible(false);
+      setStrategy(undefined);
     }
   );
-  const translateRef = useRef<HTMLDivElement>(null);
-  const { next: contentNext, previous: contentPrevious } = useAnimatedSize(
-    translateRef,
-    [
-      {
-        translateX: 0,
-        height: 340,
-      },
-      {
-        translateX: -404,
-        height: 372,
-      },
-    ]
-  );
-  const [visible, setVisible] = useState(false);
-  const { View, goToAndPlay } = useLottie({
-    animationData: lottieuser,
-    autoplay: false,
-    loop: false,
-    style: { width: "20px", height: "20px" },
-  });
 
   const handler = useCallback(() => {
     goToAndPlay(0);
   }, [goToAndPlay]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const strategyContainer = translateRef.current;
+    const strategyList = ref1.current;
+    const emailStrategy = ref2.current;
+    if (!dialog || !strategyContainer || !strategyList || !emailStrategy) {
+      return;
+    }
+    if (!visible) {
+      dialog.style.removeProperty("height");
+      dialog.style.removeProperty("width");
+      strategyContainer.style.removeProperty("height");
+      strategyContainer.style.removeProperty("wdith");
+      strategyContainer.style.removeProperty("transform");
+      return;
+    }
+    const dialogHeight = dialog.clientHeight;
+    const dialogWidth = dialog.clientWidth;
+    const strategyContainerHeight = strategyContainer.clientHeight;
+    const strategyContainerWidth = strategyContainer.clientWidth;
+    const emptyDialogHeight = dialogHeight - strategyContainerHeight;
+    const emptyDialogWidth = dialogWidth - strategyContainerWidth;
+
+    if (strategy === undefined) {
+      dialog.style.setProperty(
+        "height",
+        emptyDialogHeight + strategyList.clientHeight + 64 + "px"
+      );
+      strategyContainer.style.setProperty(
+        "height",
+        strategyList.clientHeight + 64 + "px"
+      );
+      dialog.style.setProperty(
+        "width",
+        emptyDialogWidth + strategyList.clientWidth + 40 + "px"
+      );
+      strategyContainer.style.setProperty(
+        "width",
+        strategyList.clientWidth + 40 + "px"
+      );
+    }
+    if (strategy === "email") {
+      strategyContainer.style.setProperty(
+        "transform",
+        `translateX(-${strategyList.clientWidth + 20}px)`
+      );
+      dialog.style.setProperty(
+        "height",
+        emptyDialogHeight + emailStrategy.clientHeight + 64 + "px"
+      );
+      strategyContainer.style.setProperty(
+        "height",
+        emailStrategy.clientHeight + 64 + "px"
+      );
+      dialog.style.setProperty(
+        "width",
+        emptyDialogWidth + emailStrategy.clientWidth + 40 + "px"
+      );
+      strategyContainer.style.setProperty(
+        "width",
+        emailStrategy.clientWidth + 40 + "px"
+      );
+    }
+  }, [strategy, visible]);
 
   return (
     <>
@@ -113,12 +162,12 @@ export function LottieUserButton() {
             ref={translateRef}
           >
             <StrategyList
-              onClickStrategy={() => {
-                next();
-                contentNext();
+              onClickStrategy={(_, s) => {
+                setStrategy(s);
               }}
+              ref={ref1}
             />
-            <EmailLoginForm />
+            <EmailLoginForm ref={ref2} className={"h-max"} />
           </div>
           <p className="text-white_primary/60 text-center pb-8 text-sm">
             Don't have an account? Signup now!
@@ -129,16 +178,17 @@ export function LottieUserButton() {
   );
 }
 
-function StrategyList({
-  onClickStrategy,
-}: {
-  onClickStrategy: (
-    event: React.MouseEvent<HTMLButtonElement, any>,
-    strategy: "email" | "facebook" | "google" | "apple"
-  ) => void;
-}) {
+const StrategyList = React.forwardRef<
+  HTMLDivElement,
+  {
+    onClickStrategy: (
+      event: React.MouseEvent<HTMLButtonElement, any>,
+      strategy: "email" | "facebook" | "google" | "apple"
+    ) => void;
+  }
+>(function ({ onClickStrategy }, ref) {
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div ref={ref} className="flex flex-col justify-center items-center h-max">
       <button
         onClick={(event) => {
           onClickStrategy(event, "email");
@@ -203,7 +253,7 @@ function StrategyList({
       </button>
     </div>
   );
-}
+});
 
 const EmailLoginForm = React.forwardRef<
   HTMLFormElement,
@@ -277,58 +327,3 @@ const EmailLoginForm = React.forwardRef<
     </form>
   );
 });
-
-function useAnimatedSize<T extends HTMLElement>(
-  ref: React.RefObject<T>,
-  steps: { width?: number; height?: number; translateX?: number }[]
-) {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) {
-      return;
-    }
-    element.style.setProperty("width", steps[0].width + "px");
-    element.style.setProperty("height", steps[0].height + "px");
-  }, []);
-
-  const next = useCallback(() => {
-    const element = ref.current;
-    if (!element) {
-      return;
-    }
-    setCurrentStep((prev) => {
-      const current = prev === steps.length ? prev : prev + 1;
-      element.style.setProperty("width", steps[current].width + "px");
-      element.style.setProperty("height", steps[current].height + "px");
-      element.style.setProperty(
-        "transform",
-        `translateX(${steps[current].translateX}px)`
-      );
-      return current;
-    });
-  }, [steps]);
-
-  const previous = useCallback(() => {
-    const element = ref.current;
-    if (!element) {
-      return;
-    }
-    setCurrentStep((prev) => {
-      const current = prev === 0 ? prev : prev - 1;
-      element.style.setProperty("width", steps[current].width + "px");
-      element.style.setProperty("height", steps[current].height + "px");
-      element.style.setProperty(
-        "transform",
-        `translateX(${steps[current].translateX}px)`
-      );
-      return current;
-    });
-  }, [steps]);
-
-  return useMemo(
-    () => ({ currentStep, next, previous }),
-    [next, previous, currentStep]
-  );
-}
