@@ -49,20 +49,23 @@ export const createNewUser = async (values: EmailLoginFormPayload) => {
       null,
     ]
   );
-  const newUser = values;
+  let newUser: any;
   if ("insertId" in result) {
     const token = await generateToken({ userId: result.insertId });
     await connection.query(
       "UPDATE `users` SET `refresh_token` = ? WHERE ID = ?;",
       [token, result.insertId]
     );
-    Object.assign(values, {
-      id: result.insertId,
-      refresh_token: token,
-    });
-    cookies().set("refresh_token", token || "", COOKIES_OPTIONS);
+    const [users] = await connection.query(
+      "SELECT * from `users` WHERE `ID` = ? ",
+      result.insertId
+    );
+    if (Array.isArray(users)) {
+      newUser = users[0];
+    }
     connection.destroy();
   }
+  cookies().set("refresh_token", newUser.refresh_token || "", COOKIES_OPTIONS);
 
-  return newUser as EmailLoginFormPayload & { id: number };
+  return newUser;
 };

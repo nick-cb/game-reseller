@@ -1,0 +1,25 @@
+.snack {
+  width: 0px;
+  opacity: 0;
+  animation: 300ms animate-width, 200ms fade-in;
+  animation-timing-function: cubic-bezier(0.5, -0.3, 0.1, 1.5);
+  animation-fill-mode: forwards;
+}
+
+@keyframes animate-width {
+  from {
+    width: 0ch;
+  }
+  to {
+    width: 35ch;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -2,20 +2,17 @@
 
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { useLottie } from "lottie-react";
-import React, { useEffect, useTransition } from "react";
+import React, { startTransition, useContext, useEffect } from "react";
 import { useCallback, useRef, useState } from "react";
 import lottieuser from "../../../public/user-lottie.json";
 import { InterposedInput, PasswordInput } from "../Input";
 import StandardButton from "../StandardButton";
 import Image from "next/image";
 import "./dialog.css";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { connectDB, connection, pool } from "@/app/layout";
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import dayjs from "dayjs";
+import { SnackContext, SnackContextProvider } from "../SnackContext";
 import { createNewUser } from "@/actions/users";
 
 export function LottieUserButton() {
@@ -35,36 +32,33 @@ export function LottieUserButton() {
     style: { width: "20px", height: "20px" },
   });
 
-  const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
-    async () => {
-      const dialog = dialogRef.current;
-      if (!dialog || !dialog?.open) {
-        return;
-      }
-      const slideOutAnimation = dialog.animate(
-        [{ transform: "translateY(0%)" }, { transform: "translateY(-100%)" }],
-        {
-          easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
-          duration: 300,
-        }
-      );
-      const fadeOutAnimation = dialog.animate(
-        [{ opacity: 1 }, { opacity: 0 }],
-        {
-          easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
-          duration: 350,
-        }
-      );
-      await Promise.allSettled([
-        slideOutAnimation.finished,
-        fadeOutAnimation.finished,
-      ]);
-      dialog.classList.add("close");
-      dialogRef.current?.close();
-      setVisible(false);
-      setStrategy(undefined);
+  const closeDialog = async () => {
+    const dialog = dialogRef.current;
+    if (!dialog || !dialog?.open) {
+      return;
     }
-  );
+    const slideOutAnimation = dialog.animate(
+      [{ transform: "translateY(0%)" }, { transform: "translateY(-100%)" }],
+      {
+        easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
+        duration: 300,
+      }
+    );
+    const fadeOutAnimation = dialog.animate([{ opacity: 1 }, { opacity: 0 }], {
+      easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
+      duration: 350,
+    });
+    await Promise.allSettled([
+      slideOutAnimation.finished,
+      fadeOutAnimation.finished,
+    ]);
+    dialogRef.current?.close();
+    setVisible(false);
+    setStrategy(undefined);
+  };
+
+  const contentContainerRef =
+    useClickOutsideCallback<HTMLDivElement>(closeDialog);
 
   const handler = useCallback(() => {
     goToAndPlay(0);
@@ -135,6 +129,35 @@ export function LottieUserButton() {
     }
   }, [strategy, visible]);
 
+  const { showMessage } = useContext(SnackContext);
+  const form = useForm<EmailLoginFormPayload>({
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    resolver: zodResolver(
+      z
+        .object({
+          firstname: z.string().nonempty(),
+          lastname: z.string().nonempty(),
+          displayname: z.string().nonempty(),
+          email: z.string().nonempty(),
+          password: z.string().nonempty(),
+          confirm_password: z.string().nonempty(),
+        })
+        .refine((obj) => obj.password === obj.confirm_password, {
+          message: "Password not match",
+          path: ["password", "confirm_password"],
+        })
+    ),
+  });
+  const { handleSubmit } = form;
+
+  const submitHandler = async (values: EmailLoginFormPayload) => {
+    const user = await createNewUser(values);
+    showMessage({ message: "Login successful", type: "success" });
+    localStorage.setItem("user", JSON.stringify(user));
+    closeDialog();
+  };
+
   return (
     <>
       <button
@@ -153,34 +176,51 @@ export function LottieUserButton() {
         ref={dialogRef}
         open={visible}
         className={
-          "bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary p-0 transition-[height,_width] duration-200 ease-out overflow-hidden "
+          "bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary p-0 transition-[height,_width] duration-200 ease-out overflow-hidden " +
+          "opacity-0 inset-0 m-auto fixed " +
+          "backdrop:backdrop-blur-xl backdrop-brightness-50 " +
+          "animate-[300ms_slide-in-down,_400ms_fade-in] [animation-fill-mode:_forwards] " +
+          "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)]" +
+          (!visible ? "" : "pointer-events-none")
         }
       >
-        <div className="h-max" ref={contentContainerRef}>
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
-            width={64}
-            height={64}
-            alt=""
-            className="mx-auto my-8"
-          />
-          <p className="text-xl mt-4 text-center">Login</p>
-          <div
-            className="flex px-5 py-8 transition-transform duration-200 gap-5"
-            ref={translateRef}
-          >
-            <StrategyList
-              onClickStrategy={(_, s) => {
-                setStrategy(s);
-              }}
-              ref={ref1}
+        <SnackContextProvider>
+          <div className="h-max" ref={contentContainerRef}>
+            <Image
+              src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
+              width={64}
+              height={64}
+              alt=""
+              className="mx-auto my-8"
             />
-            <EmailLoginForm ref={ref2} className={"h-max"} />
+            <p className="text-xl mt-4 text-center">Login</p>
+            <div
+              className="flex px-5 py-8 transition-transform duration-200 gap-5"
+              ref={translateRef}
+            >
+              <StrategyList
+                onClickStrategy={(_, s) => {
+                  setStrategy(s);
+                }}
+                ref={ref1}
+              />
+              <EmailLoginForm
+                ref={ref2}
+                form={form}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  startTransition(() => {
+                    handleSubmit(submitHandler)(e);
+                  });
+                }}
+                className={"h-max"}
+              />
+            </div>
+            <p className="text-white_primary/60 text-center pb-8 text-sm">
+              Don't have an account? Signup now!
+            </p>
           </div>
-          <p className="text-white_primary/60 text-center pb-8 text-sm">
-            Don't have an account? Signup now!
-          </p>
-        </div>
+        </SnackContextProvider>
       </dialog>
     </>
   );
@@ -276,44 +316,13 @@ const EmailLoginForm = React.forwardRef<
   React.DetailedHTMLProps<
     React.FormHTMLAttributes<HTMLFormElement>,
     HTMLFormElement
-  >
->(function ({ className = "", ...props }, ref) {
-  const [submitTransition, startSubmit] = useTransition();
-  const form = useForm<EmailLoginFormPayload>({
-    mode: "onBlur",
-    reValidateMode: "onChange",
-    resolver: zodResolver(
-      z
-        .object({
-          firstname: z.string().nonempty(),
-          lastname: z.string().nonempty(),
-          displayname: z.string().nonempty(),
-          email: z.string().nonempty(),
-          password: z.string().nonempty(),
-          confirm_password: z.string().nonempty(),
-        })
-        .refine((obj) => obj.password === obj.confirm_password, {
-          message: "Password not match",
-          path: ["password", "confirm_password"],
-        })
-    ),
-  });
-  const { register, handleSubmit } = form;
-
-  const submitHandler = async (values: EmailLoginFormPayload) => {
-    startSubmit(async () => {
-      const user = await createNewUser(values);
-      console.log(user);
-    });
-  };
+  > & { form: UseFormReturn<EmailLoginFormPayload, any, undefined> }
+>(function ({ form, className = "", ...props }, ref) {
+  const { register } = form;
 
   return (
     <form
       ref={ref}
-      onSubmit={handleSubmit(submitHandler, (error) => {
-        console.log(form.getValues());
-        console.log(error);
-      })}
       className={
         "grid grid-cols-[max-content_min-content] gap-x-4 gap-y-5 " + className
       }
@@ -400,6 +409,7 @@ const EmailLoginForm = React.forwardRef<
       <StandardButton
         type="submit"
         className="col-span-2 shadow shadow-default mt-2"
+        loading={form.formState.isSubmitting}
       >
         Login
       </StandardButton>
