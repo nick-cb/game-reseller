@@ -1,4 +1,5 @@
-import { LabelHTMLAttributes, useMemo, useState } from "react";
+import React from "react";
+import { LabelHTMLAttributes, useState } from "react";
 
 export function InputLabel({
   className = "",
@@ -18,25 +19,31 @@ export function InputLabel({
   );
 }
 
-export function InterposedInput({
-  leftIcon,
-  leftIconProps,
-  rightIconProps,
-  rightIcon,
-  className = "",
-  containerProps,
-  ...props
-}: {
-  leftIcon?: string;
-  rightIcon?: string;
-  leftIconProps?: React.SVGProps<SVGSVGElement>;
-  rightIconProps?: React.SVGProps<SVGSVGElement>;
-  containerProps?: React.ComponentProps<typeof InputWrapper>;
-  containerClassName?: string;
-} & React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->) {
+export const InterposedInput = React.forwardRef<
+  HTMLInputElement,
+  {
+    leftIcon?: string;
+    rightIcon?: string;
+    leftIconProps?: React.SVGProps<SVGSVGElement>;
+    rightIconProps?: React.SVGProps<SVGSVGElement>;
+    containerProps?: React.ComponentProps<typeof InputWrapper>;
+    containerClassName?: string;
+  } & React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >
+>(function (
+  {
+    leftIcon,
+    leftIconProps,
+    rightIconProps,
+    rightIcon,
+    className = "",
+    containerProps,
+    ...props
+  },
+  ref
+) {
   const { className: leftIconCl = "" } = leftIconProps || {};
   const { className: rightIconCl = "" } = rightIconProps || {};
 
@@ -47,7 +54,7 @@ export function InterposedInput({
           <use xlinkHref={leftIcon}></use>
         </svg>
       )}
-      <Input className={className} {...props} />
+      <Input className={className} {...props} ref={ref} />
       {rightIcon && (
         <svg {...rightIconProps} className={"w-5 h-5 " + rightIconCl}>
           <use xlinkHref={rightIcon}></use>
@@ -55,7 +62,7 @@ export function InterposedInput({
       )}
     </InputWrapper>
   );
-}
+});
 
 function InputWrapper({
   className,
@@ -77,15 +84,16 @@ function InputWrapper({
   );
 }
 
-function Input({
-  className,
-  ...props
-}: React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->) {
+const Input = React.forwardRef<
+  HTMLInputElement,
+  React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >
+>(function ({ className, ...props }, ref) {
   return (
     <input
+      ref={ref}
       name="keyword"
       className={`p-2 border-0 outline-offset-0 outline-0
         bg-transparent text-sm text-white
@@ -93,11 +101,12 @@ function Input({
       {...props}
     />
   );
-}
+});
 
-export function PasswordInput(
-  props: React.ComponentProps<typeof InterposedInput>
-) {
+export const PasswordInput = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<typeof InterposedInput>
+>(function (props, ref) {
   const [show, setShow] = useState(false);
 
   return (
@@ -119,7 +128,8 @@ export function PasswordInput(
         },
       }}
       placeholder="Enter your password"
+      ref={ref}
       {...props}
     />
   );
-}
+});

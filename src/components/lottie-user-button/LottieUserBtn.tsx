@@ -2,13 +2,21 @@
 
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { useLottie } from "lottie-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useTransition } from "react";
 import { useCallback, useRef, useState } from "react";
 import lottieuser from "../../../public/user-lottie.json";
 import { InterposedInput, PasswordInput } from "../Input";
 import StandardButton from "../StandardButton";
 import Image from "next/image";
 import "./dialog.css";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { connectDB, connection, pool } from "@/app/layout";
+import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import dayjs from "dayjs";
+import { createNewUser } from "@/actions/users";
 
 export function LottieUserButton() {
   const [strategy, setStrategy] = useState<
@@ -255,6 +263,14 @@ const StrategyList = React.forwardRef<
   );
 });
 
+export type EmailLoginFormPayload = {
+  firstname: string;
+  lastname: string;
+  displayname: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+};
 const EmailLoginForm = React.forwardRef<
   HTMLFormElement,
   React.DetailedHTMLProps<
@@ -262,9 +278,42 @@ const EmailLoginForm = React.forwardRef<
     HTMLFormElement
   >
 >(function ({ className = "", ...props }, ref) {
+  const [submitTransition, startSubmit] = useTransition();
+  const form = useForm<EmailLoginFormPayload>({
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    resolver: zodResolver(
+      z
+        .object({
+          firstname: z.string().nonempty(),
+          lastname: z.string().nonempty(),
+          displayname: z.string().nonempty(),
+          email: z.string().nonempty(),
+          password: z.string().nonempty(),
+          confirm_password: z.string().nonempty(),
+        })
+        .refine((obj) => obj.password === obj.confirm_password, {
+          message: "Password not match",
+          path: ["password", "confirm_password"],
+        })
+    ),
+  });
+  const { register, handleSubmit } = form;
+
+  const submitHandler = async (values: EmailLoginFormPayload) => {
+    startSubmit(async () => {
+      const user = await createNewUser(values);
+      console.log(user);
+    });
+  };
+
   return (
     <form
       ref={ref}
+      onSubmit={handleSubmit(submitHandler, (error) => {
+        console.log(form.getValues());
+        console.log(error);
+      })}
       className={
         "grid grid-cols-[max-content_min-content] gap-x-4 gap-y-5 " + className
       }
@@ -281,6 +330,7 @@ const EmailLoginForm = React.forwardRef<
         leftIcon="/svg/sprites/actions.svg#user-generic-1"
         className="p-3"
         placeholder="First name"
+        {...register("firstname")}
       />
       <label htmlFor="last-name" className="w-max my-auto">
         Last name
@@ -293,6 +343,7 @@ const EmailLoginForm = React.forwardRef<
         leftIcon="/svg/sprites/actions.svg#user-generic-1"
         className="p-3"
         placeholder="Last name"
+        {...register("lastname")}
       />
       <label htmlFor="display-name" className="w-max my-auto">
         Display name
@@ -305,6 +356,7 @@ const EmailLoginForm = React.forwardRef<
         leftIcon="/svg/sprites/actions.svg#spartan-helmet"
         className="p-3"
         placeholder="Darth vader"
+        {...register("displayname")}
       />
       <label htmlFor="email" className="w-max my-auto">
         Email
@@ -318,6 +370,7 @@ const EmailLoginForm = React.forwardRef<
         leftIcon="/svg/sprites/actions.svg#email"
         placeholder="Enter your email"
         className="p-3"
+        {...register("email")}
       />
       <label htmlFor="password" className="w-max my-auto">
         Password
@@ -329,6 +382,7 @@ const EmailLoginForm = React.forwardRef<
         }}
         placeholder="Enter your password"
         className="p-3"
+        {...register("password")}
       />
       <label htmlFor="confirm-password" className="w-max my-auto">
         Confirm password
@@ -341,6 +395,7 @@ const EmailLoginForm = React.forwardRef<
         leftIcon={"/svg/sprites/actions.svg#password-retry"}
         placeholder="Re-Enter your password"
         className="p-3"
+        {...register("confirm_password")}
       />
       <StandardButton
         type="submit"

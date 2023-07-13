@@ -1,15 +1,16 @@
 "use client";
 
-import React, { PropsWithChildren } from "react";
+import React from "react";
 
 const StandardButton = ({
   className = "",
   children,
+  loading,
   ...props
 }: React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
->) => {
+> & { loading?: boolean }) => {
   return (
     <button
       className={`w-full py-4 rounded 
