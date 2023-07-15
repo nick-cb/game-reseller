@@ -6,12 +6,10 @@ import QueryContext from "../components/QueryContext";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ActiveLink from "../components/ActiveLink";
-import { LottieUserButton } from "@/components/lottie-user-button/LottieUserBtn";
 // import OfflineBanner from "@/components/OfflineBanner";
 // import "@/worker/offline_worker";
 import mysql from "mysql2/promise";
 import { SnackContextProvider } from "@/components/SnackContext";
-import { Test } from "@/components/Test";
 import { AuthControls } from "@/components/AuthControls";
 
 const atkinsonHyper = Inter({

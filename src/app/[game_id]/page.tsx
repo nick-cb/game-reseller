@@ -2,10 +2,8 @@ import React from "react";
 import Image from "next/image";
 import GameCard from "@/components/game/GameCard";
 import InfiniteCarousel from "@/components/game/InfiniteCarousel";
-import StarButton from "@/components/StarButton";
 import StandardButton from "@/components/StandardButton";
-import { cookies } from "next/dist/client/components/headers";
-import { randomUUID } from "crypto";
+import { getLoggedInStatus } from "@/actions/users";
 
 const page = async ({ params }: { params: any }) => {
   const { game_id: gameId } = params;
@@ -18,22 +16,11 @@ const page = async ({ params }: { params: any }) => {
 
   const buyNow = async (data: FormData) => {
     "use server";
-    const cardId = cookies().get("cardId");
-    if (!cardId) {
-      const id = randomUUID();
-      await fetch("http://localhost:5002", {
-        method: "POST",
-        body: JSON.stringify({
-
-        })
-      })
-      cookies().set({
-        name: "cardId",
-        value: id,
-        httpOnly: true,
-        path: "/",
-      });
+    const status = await getLoggedInStatus();
+    if (!status) {
+      // show login dialog
     }
+
   };
 
   return (
@@ -66,7 +53,7 @@ const page = async ({ params }: { params: any }) => {
           </p>
           <p className="text-white_primary">${data.sale_price}</p>
           <div className="flex flex-col gap-2">
-            <form>
+            <form action={buyNow}>
               <StandardButton type="submit" className="text-sm">
                 BUY NOW
               </StandardButton>

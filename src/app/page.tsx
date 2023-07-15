@@ -4,6 +4,7 @@ import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import Image from "next/image";
 import { Pillar } from "@/components/home/pillar";
 import { HeroSlider } from "@/components/home/hero-slider";
+import React, { JSX, ElementType } from "react";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(
@@ -114,6 +115,7 @@ export default async function Home() {
         </ul>
       </section>
       <hr className="my-6 border-default" />
+      <div></div>
       <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
         <Pillar data={data.find((c) => c.name === "top sale")} />
         <hr className="my-4 border-default md:hidden" />

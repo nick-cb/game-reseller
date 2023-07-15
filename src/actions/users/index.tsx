@@ -69,3 +69,17 @@ export const createNewUser = async (values: EmailLoginFormPayload) => {
 
   return newUser;
 };
+
+export const getLoggedInStatus = async () => {
+  const cookie = cookies().get("refresh_token");
+  if (!cookie) {
+    return false;
+  }
+
+  const verifiedToken = jwt.verify(cookie.value, process.env.JWT_SECRET!);
+  if (typeof verifiedToken === "string") {
+    return false;
+  }
+
+  return true;
+};
