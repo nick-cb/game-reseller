@@ -42,8 +42,10 @@ export const connectDB = async () => {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const handleSubmitSearch = async (data: FormData) => {
     "use server";
@@ -110,6 +112,7 @@ export default function RootLayout({
               {/* <OfflineBanner /> */}
               {children}
             </main>
+            {modal}
           </SnackContextProvider>
         </QueryContext>
       </body>

@@ -21,7 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginModal() {
   const [strategy, setStrategy] = useState<
@@ -30,7 +30,7 @@ export default function LoginModal() {
   const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const translateRef = useRef<HTMLDivElement>(null);
-  // const router = useRouter();
+  const router = useRouter();
 
   const closeDialog = async () => {
     const dialog = dialogRef.current;
@@ -55,9 +55,9 @@ export default function LoginModal() {
     dialogRef.current?.close();
     setVisible(false);
     setStrategy(undefined);
-    // startTransition(() => {
-    //   router.back();
-    // });
+    startTransition(() => {
+      router.back();
+    });
   };
 
   const contentContainerRef =
@@ -93,8 +93,8 @@ export default function LoginModal() {
   };
 
   useEffect(() => {
-    // setVisible(true);
-    // dialogRef.current?.showModal();
+    dialogRef.current?.showModal();
+    setVisible(true);
   }, []);
 
   return (

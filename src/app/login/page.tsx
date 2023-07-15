@@ -14,7 +14,7 @@ import {
 import { EmailLoginFormPayload, EmailLoginForm } from "@/components/auth/email";
 import { StrategyList } from "@/components/auth/list";
 
-export default function index() {
+export default function Login() {
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
   >();
