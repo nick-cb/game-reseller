@@ -3,6 +3,7 @@ import { CategoryCheckbox } from "@/components/CategoryCheckbox";
 import { handleSubmitFilter } from "../actions";
 import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
+import "./browse.css";
 
 const categories = [
   { name: "action" },

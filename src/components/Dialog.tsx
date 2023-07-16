@@ -14,7 +14,7 @@ export const Dialog = React.forwardRef<
         "opacity-0 inset-0 m-auto fixed " +
         "backdrop:backdrop-blur-xl backdrop-brightness-50 " +
         "animate-[300ms_slide-in-down,_400ms_fade-in] [animation-fill-mode:_forwards] " +
-        "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] relative " +
+        "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] " +
         className
       }
       {...props}

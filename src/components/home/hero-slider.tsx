@@ -91,7 +91,7 @@ export function HeroSlider({
       <ul
         ref={listRef}
         className={
-          "w-full flex gap-4 overflow-scroll snap-x snap-mandatory " + className
+          "w-full flex gap-4 overflow-scroll scrollbar-hidden snap-x snap-mandatory " + className
         }
       >
         {_data.map((item: any, index: number) => (

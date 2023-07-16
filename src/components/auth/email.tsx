@@ -1,9 +1,9 @@
 import React from "react";
-import {UseFormReturn} from "react-hook-form";
-import {InterposedInput, PasswordInput} from "../Input";
+import { UseFormReturn } from "react-hook-form";
+import { InterposedInput, PasswordInput } from "../Input";
 import StandardButton from "../StandardButton";
 
-export type EmailLoginFormPayload = {
+export type EmailSignupFormPayload = {
   firstname: string;
   lastname: string;
   displayname: string;
@@ -11,12 +11,12 @@ export type EmailLoginFormPayload = {
   password: string;
   confirm_password: string;
 };
-export const EmailLoginForm = React.forwardRef<
+export const EmailSignupForm = React.forwardRef<
   HTMLFormElement,
   React.DetailedHTMLProps<
     React.FormHTMLAttributes<HTMLFormElement>,
     HTMLFormElement
-  > & { form: UseFormReturn<EmailLoginFormPayload, any, undefined> }
+  > & { form: UseFormReturn<EmailSignupFormPayload, any, undefined> }
 >(function ({ form, className = "", ...props }, ref) {
   const { register } = form;
 
@@ -106,6 +106,68 @@ export const EmailLoginForm = React.forwardRef<
         className="p-3"
         {...register("confirm_password")}
       />
+      <StandardButton
+        type="submit"
+        className="col-span-2 shadow shadow-default mt-2"
+        loading={form.formState.isSubmitting}
+      >
+        Signup
+      </StandardButton>
+    </form>
+  );
+});
+
+export type EmailLoginFormPayload = {
+  email: string;
+  password: string;
+};
+export const EmailLoginForm = React.forwardRef<
+  HTMLFormElement,
+  React.DetailedHTMLProps<
+    React.FormHTMLAttributes<HTMLFormElement>,
+    HTMLFormElement
+  > & { form: UseFormReturn<EmailLoginFormPayload, any, undefined> }
+>(function ({ form, className = "", ...props }, ref) {
+  const { register } = form;
+
+  return (
+    <form
+      ref={ref}
+      className={
+        "grid grid-cols-[max-content_min-content] gap-x-4 gap-y-5 " + className
+      }
+      {...props}
+    >
+      <label htmlFor="email" className="w-max my-auto">
+        Email
+      </label>
+      <InterposedInput
+        id="email"
+        type={"email"}
+        leftIconProps={{
+          className: "fill-transparent stroke-white ml-3",
+        }}
+        leftIcon="/svg/sprites/actions.svg#email"
+        placeholder="Enter your email"
+        className="p-3"
+        {...register("email")}
+      />
+      <label htmlFor="password" className="w-max my-auto">
+        Password
+      </label>
+      <PasswordInput
+        id={"password"}
+        leftIconProps={{
+          className: "fill-white !stroke-white ml-3",
+        }}
+        placeholder="Enter your password"
+        className="p-3"
+        {...register("password")}
+      />
+      <div className="col-span-2 flex items-center gap-2">
+        <input type="checkbox" />
+        <label>Remember me</label>
+      </div>
       <StandardButton
         type="submit"
         className="col-span-2 shadow shadow-default mt-2"

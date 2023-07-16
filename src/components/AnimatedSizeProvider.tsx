@@ -39,7 +39,12 @@ export const AnimatedSizeProvider = React.forwardRef(function <
   const _ref = useRef<any>(null);
   const componentRef = ref || _ref;
   const Component = typeof as === "string" ? `${as}` : as;
-  const updateSize = async (element: HTMLElement, width: number, height: number) => {
+  const updateSize = async (
+    element: HTMLElement,
+    width: number,
+    height: number
+  ) => {
+    console.log("RUN");
     // @ts-ignore
     const current = componentRef.current;
     if (!current) {
@@ -60,7 +65,7 @@ export const AnimatedSizeProvider = React.forwardRef(function <
         fill: "forwards",
       }
     );
-      
+
     // await ani.finished;
     // ani.commitStyle();
   };
@@ -79,8 +84,9 @@ export const AnimatedSizeItem = function ({
   children,
   active,
   className = "",
+  updateOnInactive = false,
   ...props
-}: { active: boolean } & React.DetailedHTMLProps<
+}: { active: boolean; updateOnInactive: boolean } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >) {
@@ -93,7 +99,13 @@ export const AnimatedSizeItem = function ({
       const { width, height } = current.getBoundingClientRect();
       updateSize(current, width, height);
     }
-  }, [active]);
+
+    return () => {
+      if (updateOnInactive) {
+        updateSize(current, 0, 0);
+      }
+    };
+  }, [active, updateOnInactive]);
 
   return (
     <div ref={ref} className={" " + className} {...props}>

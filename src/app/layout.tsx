@@ -85,9 +85,9 @@ export default function RootLayout({
             </header>
             <nav
               className="px-4 sm:px-8 md:px-12 lg:px-24 xl:px-44 
-            flex gap-4 
-            bg-default/90 backdrop-blur-lg 
-            fixed w-full top-[56px] z-10"
+              flex gap-4 
+              bg-default/90 backdrop-blur-lg 
+              fixed w-full top-[56px] z-10"
             >
               <ActiveLink
                 matches={[{ name: "/", exact: true }, { name: "discover" }]}
@@ -111,8 +111,8 @@ export default function RootLayout({
             <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary">
               {/* <OfflineBanner /> */}
               {children}
+              {modal}
             </main>
-            {modal}
           </SnackContextProvider>
         </QueryContext>
       </body>

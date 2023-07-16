@@ -24,14 +24,6 @@
   @apply text-white_primary;
 }
 
-input[type="checkbox"]:checked + label {
-  @apply bg-white/[.15] text-white_primary;
-}
-
-input[type="checkbox"]:focus + label {
-  @apply text-white_primary;
-}
-
 .scrollbar-hidden {
   scrollbar-width: none;
   -ms-overflow-style: none;

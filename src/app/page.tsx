@@ -4,7 +4,7 @@ import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import Image from "next/image";
 import { Pillar } from "@/components/home/pillar";
 import { HeroSlider } from "@/components/home/hero-slider";
-import React, { JSX, ElementType } from "react";
+import React from "react";
 
 const getCollections = async (names: string[]) => {
   const data = await fetch(

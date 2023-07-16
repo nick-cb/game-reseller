@@ -4,6 +4,7 @@ import GameCard from "@/components/game/GameCard";
 import InfiniteCarousel from "@/components/game/InfiniteCarousel";
 import StandardButton from "@/components/StandardButton";
 import { getLoggedInStatus } from "@/actions/users";
+import { redirect } from "next/navigation";
 
 const page = async ({ params }: { params: any }) => {
   const { game_id: gameId } = params;
@@ -14,13 +15,13 @@ const page = async ({ params }: { params: any }) => {
     (image: any) => image.type === "landscape"
   );
 
-  const buyNow = async (data: FormData) => {
+  const buyNow = async () => {
     "use server";
     const status = await getLoggedInStatus();
     if (!status) {
-      // show login dialog
+      redirect(`/login?gameId=${gameId}`);
     }
-
+    redirect(`/${gameId}/order`);
   };
 
   return (

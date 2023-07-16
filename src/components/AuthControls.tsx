@@ -2,12 +2,29 @@
 
 import { LottieUserButton } from "./lottie-user-button/LottieUserBtn";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function AuthControls() {
-  const user =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("user") || "null")
-      : null;
+  let storedUser = null;
+  try {
+    storedUser =
+      typeof window !== "undefined"
+        ? // @ts-ignore
+          JSON.parse(localStorage.getItem("user"))
+        : null;
+  } catch (error) {}
+
+  const [user, setUser] = useState(storedUser);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    window.addEventListener("storage", () => {
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      setUser(user);
+    });
+  }, []);
 
   return (
     <>

@@ -11,7 +11,7 @@ import {
   AnimatedSizeProvider,
   AnimatedSizeItem,
 } from "@/components/AnimatedSizeProvider";
-import { EmailLoginFormPayload, EmailLoginForm } from "@/components/auth/email";
+import { EmailSignupFormPayload, EmailSignupForm } from "@/components/auth/email";
 import { StrategyList } from "@/components/auth/list";
 
 export default function Login() {
@@ -19,7 +19,7 @@ export default function Login() {
     "email" | "facebook" | "google" | "apple"
   >();
   const translateRef = useRef<HTMLDivElement>(null);
-  const form = useForm<EmailLoginFormPayload>({
+  const form = useForm<EmailSignupFormPayload>({
     mode: "onBlur",
     reValidateMode: "onChange",
     resolver: zodResolver(
@@ -42,7 +42,7 @@ export default function Login() {
   const { showMessage } = useContext(SnackContext);
   const { handleSubmit } = form;
 
-  const submitHandler = async (values: EmailLoginFormPayload) => {
+  const submitHandler = async (values: EmailSignupFormPayload) => {
     const user = await createNewUser(values);
     showMessage({ message: "Login successful", type: "success" });
     localStorage.setItem("user", JSON.stringify(user));
@@ -102,7 +102,7 @@ export default function Login() {
         active={strategy === "email"}
         className={"absolute left-full px-5 py-8 "}
       >
-        <EmailLoginForm
+        <EmailSignupForm
           form={form}
           onSubmit={(e) => {
             e.preventDefault();

@@ -8,8 +8,11 @@ export const StrategyList = React.forwardRef<
       event: React.MouseEvent<HTMLButtonElement, any>,
       strategy: "email" | "facebook" | "google" | "apple"
     ) => void;
+    type: "signup" | "login";
   }
->(function ({ onClickStrategy }, ref) {
+>(function ({ onClickStrategy, type }, ref) {
+  const text = type === "login" ? "Login" : "Signup";
+
   return (
     <div ref={ref} className="flex flex-col justify-center items-center">
       <button
@@ -26,7 +29,7 @@ export const StrategyList = React.forwardRef<
             alt=""
           />
         </div>
-        <p className="px-4">Login with Email</p>
+        <p className="px-4">{text} with Email</p>
       </button>
       <hr className="border-paper_2 my-2" />
       <button
@@ -43,7 +46,7 @@ export const StrategyList = React.forwardRef<
             alt=""
           />
         </div>
-        <p className="px-4">Login with Facebook</p>
+        <p className="px-4">{text} with Facebook</p>
       </button>
       <hr className="border-paper_2 my-2" />
       <button
@@ -60,7 +63,7 @@ export const StrategyList = React.forwardRef<
             alt=""
           />
         </div>
-        <p className="px-4">Login with Google</p>
+        <p className="px-4">{text} with Google</p>
       </button>
       <hr className="border-paper_2 my-2" />
       <button
@@ -72,7 +75,7 @@ export const StrategyList = React.forwardRef<
         <div className="w-20 py-4 bg-white flex justify-center items-center">
           <Image src="/images/apple-black.png" width={24} height={24} alt="" />
         </div>
-        <p className="px-4">Login with Apple</p>
+        <p className="px-4">{text} with Apple</p>
       </button>
     </div>
   );

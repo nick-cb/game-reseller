@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  AnimatedSizeProvider,
-  AnimatedSizeItem,
-} from "@/components/AnimatedSizeProvider";
-import { EmailLoginForm, EmailLoginFormPayload } from "@/components/auth/email";
-import { StrategyList } from "@/components/auth/list";
 import { Dialog } from "@/components/Dialog";
 import { SnackContext, SnackContextProvider } from "@/components/SnackContext";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import {
   startTransition,
   useContext,
@@ -17,23 +11,63 @@ import {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
+import {
+  AnimatedSizeProvider,
+  AnimatedSizeItem,
+} from "@/components/AnimatedSizeProvider";
+import {
+  EmailSignupForm,
+  EmailSignupFormPayload,
+} from "@/components/auth/email";
+import { StrategyList } from "@/components/auth/list";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { createNewUser } from "@/actions/users";
 import Link from "next/link";
 
-export default function LoginModal() {
+export default function SignUpModal() {
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
   >();
   const [visible, setVisible] = useState(false);
+  const { showMessage } = useContext(SnackContext);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const gameId = searchParams.get("gameId");
+
+  const form = useForm<EmailSignupFormPayload>({
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    resolver: zodResolver(
+      z
+        .object({
+          firstname: z.string().nonempty(),
+          lastname: z.string().nonempty(),
+          displayname: z.string().nonempty(),
+          email: z.string().nonempty(),
+          password: z.string().nonempty(),
+          confirm_password: z.string().nonempty(),
+        })
+        .refine((obj) => obj.password === obj.confirm_password, {
+          message: "Password not match",
+          path: ["password", "confirm_password"],
+        })
+    ),
+  });
+  const { handleSubmit } = form;
+
+  const submitHandler = async (values: EmailSignupFormPayload) => {
+    const user = await createNewUser(values);
+    showMessage({ message: "Signup successful", type: "success" });
+    localStorage.setItem("user", JSON.stringify(user));
+    closeDialog();
+  };
 
   const closeDialog = async () => {
+    if (form.formState.isSubmitting) {
+      return;
+    }
     const dialog = dialogRef.current;
     if (!dialog || !dialog?.open) {
       return;
@@ -58,41 +92,24 @@ export default function LoginModal() {
     setStrategy(undefined);
     startTransition(() => {
       router.back();
+      router.back();
     });
   };
 
   const contentContainerRef =
     useClickOutsideCallback<HTMLDivElement>(closeDialog);
 
-  const { showMessage } = useContext(SnackContext);
-  const form = useForm<EmailLoginFormPayload>({
-    mode: "onBlur",
-    reValidateMode: "onChange",
-    resolver: zodResolver(
-      z.object({
-        email: z.string().nonempty(),
-      })
-    ),
-  });
-  const { handleSubmit } = form;
-
-  const submitHandler = async (values: EmailLoginFormPayload) => {
-    // const user = await createNewUser(values);
-    // showMessage({ message: "Login successful", type: "success" });
-    // localStorage.setItem("user", JSON.stringify(user));
-    // closeDialog();
-  };
-
   useEffect(() => {
-    dialogRef.current?.showModal();
     setVisible(true);
+    dialogRef.current?.showModal();
+
+    return () => {
+      dialogRef.current?.close();
+    };
   }, []);
 
   return (
-    <Dialog
-      ref={dialogRef}
-      className={!visible ? "pointer-events-none opacity-0 px-0" : ""}
-    >
+    <Dialog ref={dialogRef}>
       <SnackContextProvider>
         <div className="h-max" ref={contentContainerRef}>
           <Image
@@ -115,7 +132,7 @@ export default function LoginModal() {
                 Go back
               </button>
             )}
-            <p className="text-xl text-center">Login</p>
+            <p className="text-xl text-center">Signup</p>
           </div>
           <AnimatedSizeProvider
             key={visible.toString()}
@@ -162,7 +179,7 @@ export default function LoginModal() {
               active={visible && !strategy}
             >
               <StrategyList
-                type={"login"}
+                type={"signup"}
                 onClickStrategy={(_, s) => {
                   setStrategy(s);
                 }}
@@ -174,7 +191,7 @@ export default function LoginModal() {
                 "absolute left-full px-5 py-8 " + (visible ? "block" : "hidden")
               }
             >
-              <EmailLoginForm
+              <EmailSignupForm
                 form={form}
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -187,15 +204,15 @@ export default function LoginModal() {
             </AnimatedSizeItem>
           </AnimatedSizeProvider>
           <p className="text-white_primary/60 text-center pb-8 text-sm">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href={gameId ? `/signup?gameId=${gameId}` : `/signup`}
+              href={"/login"}
               className="text-white_primary cursor-pointer"
               // onClick={() => {
               //   router.push();
               // }}
             >
-              Signup now!
+              Login
             </Link>
           </p>
         </div>

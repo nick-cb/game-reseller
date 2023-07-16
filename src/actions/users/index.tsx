@@ -3,10 +3,10 @@
 import { connectDB } from "@/app/layout";
 import dayjs from "dayjs";
 import bcrypt from "bcryptjs";
-import { EmailLoginFormPayload } from "@/components/lottie-user-button/LottieUserBtn";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { COOKIES_OPTIONS } from "@/utils/config";
+import {EmailSignupFormPayload} from "@/components/auth/email";
 
 export const generateToken = async (payload: Object) => {
   const secret = process.env.JWT_SECRET;
@@ -18,7 +18,7 @@ export const generateToken = async (payload: Object) => {
 };
 
 /*TODO: Move this into a model*/
-export const createNewUser = async (values: EmailLoginFormPayload) => {
+export const createNewUser = async (values: EmailSignupFormPayload) => {
   const connection = await connectDB();
   const [existUser] = await connection.execute(
     "SELECT `email` FROM `users` WHERE `email` = ?",
