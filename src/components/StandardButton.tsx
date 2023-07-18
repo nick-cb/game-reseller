@@ -20,7 +20,6 @@ const StandardButton = ({
     loop: true,
     style: { width: 22, height: 22 },
   });
-  console.log({loading});
 
   return (
     <button

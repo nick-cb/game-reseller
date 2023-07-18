@@ -86,7 +86,7 @@ export const AnimatedSizeItem = function ({
   className = "",
   updateOnInactive = false,
   ...props
-}: { active: boolean; updateOnInactive: boolean } & React.DetailedHTMLProps<
+}: { active: boolean; updateOnInactive?: boolean } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >) {
@@ -97,6 +97,7 @@ export const AnimatedSizeItem = function ({
     const current = ref.current;
     if (current && active) {
       const { width, height } = current.getBoundingClientRect();
+      console.log({current, width, height});
       updateSize(current, width, height);
     }
 

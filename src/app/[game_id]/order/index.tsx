@@ -1,10 +1,65 @@
-import { AccordionItem } from "@/components/Accordion";
-import StandardButton from "@/components/StandardButton";
-import Image from "next/image";
+"use client";
 
-export function ItemOrder({ game }: { game: any }) {
+import PaymentMethods from "@/components/PaymentMethods";
+import StandardButton from "@/components/StandardButton";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+type PaymentMethodFormPayload = {
+  type: "card" | "paypal";
+};
+
+export function ItemOrder({
+  game,
+  stripeSecret,
+}: {
+  game: any;
+  stripeSecret?: string;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const form = useForm<PaymentMethodFormPayload>({
+    mode: "onSubmit",
+    resolver: zodResolver(
+      z.object({
+        type: z.string().nonempty(),
+      })
+    ),
+  });
+  const { handleSubmit } = form;
+
+  const onSubmit = async () => {
+    const cardElement = elements?.getElement(CardElement);
+    if (!cardElement) {
+      return;
+    }
+    const paymentMethod = await stripe!.createPaymentMethod({
+      type: "card",
+      card: cardElement,
+    });
+    if (!paymentMethod.paymentMethod) {
+      return;
+    }
+    const payload = await stripe!.confirmCardPayment(stripeSecret, {
+      payment_method: paymentMethod.paymentMethod!.id,
+    });
+    if (payload.error) {
+      return;
+    }
+  };
+
   return (
-    <div className="grid grid-cols-[65%_auto] grid-rows-[minmax(0px,auto)_auto] gap-8">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        console.log("RUN");
+      }}
+      className="grid grid-cols-[65%_auto] grid-rows-[minmax(0px,auto)_auto] gap-8"
+    >
       {/* <div className="col-start-1 row-start-1"> */}
       {/*   <h1 className="relative text-2xl w-1/2 py-4 border-b-4 border-primary"> */}
       {/*     Checkout */}
@@ -12,48 +67,7 @@ export function ItemOrder({ game }: { game: any }) {
       {/* </div> */}
       <div className="col-start-1 row-start-1">
         <h2 className="uppercase mb-4 text-xl">Payment methods</h2>
-        <div className="">
-          <div className="rounded overflow-hidden">
-            <AccordionItem />
-            <hr className="border-white/25" />
-            <div className="bg-paper_2">
-              <h3
-                className="text-lg relative
-                after:bg-white/[0.10] after:absolute after:inset-0 
-                after:opacity-0 hover:after:opacity-100 after:transition-opacity"
-                data-component={"collapsibles"}
-                aria-expanded={false}
-              >
-                <button className="flex justify-between items-center w-full py-4 px-6 ">
-                  <div className="flex gap-4 items-center">
-                    <div className="relative">
-                      <img
-                        width="34"
-                        height="34"
-                        src="https://img.icons8.com/external-justicon-flat-justicon/64/external-paypal-social-media-justicon-flat-justicon.png"
-                        alt="external-paypal-social-media-justicon-flat-justicon"
-                      />
-
-                      {/* <img */}
-                      {/*   width="34" */}
-                      {/*   height="94" */}
-                      {/*   src="https://img.icons8.com/3d-fluency/94/paypal-app.png" */}
-                      {/*   alt="paypal-app" */}
-                      {/* /> */}
-                    </div>
-                    <span>Paypal</span>
-                  </div>
-                  <svg fill="transparent" stroke="white" width={24} height={24}>
-                    <use xlinkHref="/svg/sprites/actions.svg#chevron-down" />
-                  </svg>
-                </button>
-              </h3>
-              <div className="hidden" arira-hidden={true}>
-                Stripe contetn
-              </div>
-            </div>
-          </div>
-        </div>
+        <PaymentMethods stripeSecret={stripeSecret} form={form} />
       </div>
       <div className="col-start-2 row-start-1">
         <h2 className="uppercase text-lg mb-4">Order summary</h2>
@@ -92,11 +106,11 @@ export function ItemOrder({ game }: { game: any }) {
               <p className="font-bold">{game.sale_price}</p>
             </div>
           </div>
-          <div className={'mt-4'}>
-            <StandardButton>Place order</StandardButton>
+          <div className={"mt-4"}>
+            <StandardButton disabled={false}>Place order</StandardButton>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
