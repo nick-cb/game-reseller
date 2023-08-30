@@ -25,7 +25,8 @@ export function LottieUserButton() {
         onMouseEnter={handler}
         className="relative flex items-center gap-2 px-4 rounded overflow-hidden 
         after:absolute after:inset-0 after:bg-white/[.15] after:opacity-0
-        hover:after:opacity-100 after:transition-opacity"
+        hover:after:opacity-100 after:transition-opacity after:rounded"
+        prefetch={true}
       >
         {View} Login
       </Link>

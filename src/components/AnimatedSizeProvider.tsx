@@ -15,10 +15,16 @@ export const AnimatedSizeProvider = React.forwardRef(function <
 >(
   {
     as,
+    animationOptions = {
+      duration: 150,
+      easing: "ease-out",
+      fill: "forwards",
+    },
     onStartAnimate,
     ...props
   }: {
     as: C;
+    animationOptions?: number | KeyframeAnimationOptions | undefined;
     onStartAnimate?: (
       element: HTMLElement,
       prev: { element: HTMLElement | null; width: number; height: number },
@@ -27,6 +33,9 @@ export const AnimatedSizeProvider = React.forwardRef(function <
   } & JSX.IntrinsicElements[C],
   ref: JSX.IntrinsicElements[C]["ref"]
 ) {
+  // duration: 150,
+  // easing: "ease-out",
+  // fill: "forwards",
   const activeElRef = useRef<{
     element: HTMLElement | null;
     width: number;
@@ -44,7 +53,6 @@ export const AnimatedSizeProvider = React.forwardRef(function <
     width: number,
     height: number
   ) => {
-    console.log("RUN");
     // @ts-ignore
     const current = componentRef.current;
     if (!current) {
@@ -59,11 +67,7 @@ export const AnimatedSizeProvider = React.forwardRef(function <
           height: `${height}px`,
         },
       ],
-      {
-        duration: 150,
-        easing: "ease-out",
-        fill: "forwards",
-      }
+      animationOptions
     );
 
     // await ani.finished;
@@ -80,13 +84,18 @@ export const AnimatedSizeProvider = React.forwardRef(function <
   );
 });
 
-export const AnimatedSizeItem = function ({
+export const AnimatedSizeItem = React.memo(function ({
   children,
   active,
   className = "",
   updateOnInactive = false,
+  delay,
   ...props
-}: { active: boolean; updateOnInactive?: boolean } & React.DetailedHTMLProps<
+}: {
+  active: boolean;
+  updateOnInactive?: boolean;
+  delay?: number;
+} & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >) {
@@ -97,8 +106,14 @@ export const AnimatedSizeItem = function ({
     const current = ref.current;
     if (current && active) {
       const { width, height } = current.getBoundingClientRect();
-      console.log({current, width, height});
-      updateSize(current, width, height);
+      // console.log({ current, width, height });
+      if (!!delay) {
+        setTimeout(() => {
+          updateSize(current, width, height);
+        }, delay);
+      } else {
+        updateSize(current, width, height);
+      }
     }
 
     return () => {
@@ -106,11 +121,23 @@ export const AnimatedSizeItem = function ({
         updateSize(current, 0, 0);
       }
     };
-  }, [active, updateOnInactive]);
+  }, [active, updateOnInactive, delay]);
+
+  useEffect(() => {
+    console.log({ ref, active });
+  }, [active]);
+
+  useEffect(() => {
+    console.log({ ref, updateOnInactive });
+  }, [updateOnInactive]);
+
+  useEffect(() => {
+    console.log({ ref, delay });
+  }, [delay]);
 
   return (
     <div ref={ref} className={" " + className} {...props}>
       {children}
     </div>
   );
-};
+});

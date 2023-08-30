@@ -84,7 +84,7 @@ function InputWrapper({
   );
 }
 
-const Input = React.forwardRef<
+export const Input = React.forwardRef<
   HTMLInputElement,
   React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,

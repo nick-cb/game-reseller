@@ -5,6 +5,7 @@ import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 
+const breakPoints = [640] as const;
 const Carousel3D = ({ data }: { data: any[] }) => {
   const prevIndex = useRef(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,7 +86,7 @@ const Carousel3D = ({ data }: { data: any[] }) => {
     };
   }, [currentIndex]);
 
-  const { b640 } = useBreakpoints([640]);
+  const { b640 } = useBreakpoints(breakPoints);
 
   useEffect(() => {
     if (b640 >= 0) {

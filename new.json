@@ -1,0 +1,2 @@
+INSERT INTO users (name, short_name, type, title, description, developer, publisher, release_date, platform, purchase_price, sale_price, discount_price, purchase_count)
+VALUES ('$title', '', 'base', '$description', '', '$developerDisplayName', '$publisherDisplayName', '$releaseDate', '$originalPrice', '$originalPrice', 0, 0)

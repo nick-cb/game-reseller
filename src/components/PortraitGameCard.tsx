@@ -12,7 +12,7 @@ const PortraitGameCard = ({
   contentContainerClassName?: string;
 }) => {
   return (
-    <Link href={`/${game._id}`} key={game._id} className={className + " group"}>
+    <Link href={`/${game.slug}`} key={game.slug} className={className + " group"}>
       <figure
         className={
           contentContainerClassName +
@@ -30,9 +30,7 @@ const PortraitGameCard = ({
         >
           <Image
             src={
-              game.images.find((img: any) => {
-                return img.type === "portrait";
-              })?.url
+              game.images.portrait?.url
             }
             alt={`portrait of ${game.name}`}
             className={
@@ -42,9 +40,7 @@ const PortraitGameCard = ({
           />
           <Image
             src={
-              game.images.find((img: any) => {
-                return img.type === "landscape";
-              })?.url
+              game.images.landscape?.url
             }
             alt={`portrait of ${game.name}`}
             className={

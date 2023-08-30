@@ -1,4 +1,5 @@
 const gridColRepeatMinMax = require('./minmax');
+const lineClamp = require('@tailwindcss/line-clamp');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -18,6 +19,7 @@ module.exports = {
         default: "hsl(0, 0%, 11%)",
         paper: "hsl(0, 0%, 20%)",
         paper_2: "hsl(0, 0%, 16%)",
+        paper_3: "hsl(0, 0%, 4%)",
         white_primary: "hsl(0, 0%, 96%)",
         primary: "hsl(209, 100%, 45%)",
       },
@@ -29,7 +31,10 @@ module.exports = {
         '4xl': '2048px',
       },
       height: {
-        18: "4.5rem /* 72px */"
+        18: "4.5rem /* 72px */",
+        112: "28rem /* 448px */",
+        128: "32rem /* 512px */",
+        144: "36rem /* 576px */"
       },
       width: {
         54: "13.5rem /* 216px; */"
@@ -53,5 +58,5 @@ module.exports = {
       }
     },
   },
-  plugins: [gridColRepeatMinMax],
+  plugins: [gridColRepeatMinMax, lineClamp],
 };

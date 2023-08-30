@@ -1,8 +1,16 @@
 "use client";
+import { useBreakpoints } from "@/hooks/useBreakpoint";
 import "./hero-carousel.css";
 import Image from "next/image";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+const breakpoints = [768] as const;
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const HeroCarousel = ({
   data,
@@ -11,23 +19,16 @@ const HeroCarousel = ({
   data: any[];
   className?: string;
 }) => {
+  const { b768: md } = useBreakpoints(breakpoints);
   const [index, setIndex] = useState(-1);
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
 
-  const _data = useMemo(() => {
-    return data[0]?.list_game.slice(0, 6).map((game: any) => ({
-      ...game,
-      image: {
-        landscape: game.images.find((img: any) => img.type === "landscape"),
-        portrait: game.images.find((img: any) => img.type === "portrait"),
-        logo: game.images.find((img: any) => img.type === "logo"),
-      },
-    }));
-  }, [data]);
-
   useEffect(() => {
+    if (md < 0) {
+      return;
+    }
     const mainList = mainListRef.current;
     const previewList = previewListRef.current;
     if (!mainList || !previewList) {
@@ -42,6 +43,9 @@ const HeroCarousel = ({
   }, []);
 
   useEffect(() => {
+    if (md < 0) {
+      return;
+    }
     const mainList = mainListRef.current;
     const previewList = previewListRef.current;
     if (!mainList || !previewList) {
@@ -62,7 +66,7 @@ const HeroCarousel = ({
 
     const id = setTimeout(() => {
       requestAnimationFrame(() => {
-        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % _data.length));
+        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % data.length));
       });
     }, 10000);
     return () => {
@@ -74,25 +78,33 @@ const HeroCarousel = ({
     setIndex(index);
   };
 
+  if (md < 0) {
+    return null;
+  }
   return (
     <div className={"md:flex gap-4 lg:gap-8 " + className}>
       <div className="w-full md:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
-          {_data.map((item: any) => (
+          {data.map((item: any) => (
             <li key={item._id} className={"main-item snap-start"}>
-              <Image
-                className="rounded-lg"
-                src={item.image.landscape.url}
-                alt=""
-                fill
-              />
-              <Cover game={item} />
+              {item.images?.landscape.url && (
+                <Image
+                  className="rounded-lg"
+                  src={decodeURIComponent(item.images?.landscape.url)}
+                  alt=""
+                  fill
+                />
+              )}
+              <Cover>
+                <ButtonGroup game={item} />
+                <Description game={item} />
+              </Cover>
             </li>
           ))}
         </ul>
       </div>
       <ul ref={previewListRef} className="md:flex flex-col gap-2 flex-1 hidden">
-        {_data.map((item: any, itemIndex: any) => (
+        {data.map((item: any, itemIndex: any) => (
           <li
             key={item._id}
             className="hero-carousel-preview-item w-full h-full relative rounded-xl overflow-hidden
@@ -103,20 +115,25 @@ const HeroCarousel = ({
               }
               onClick(itemIndex);
             }}
+            title={item.name}
           >
             <a
               className="flex items-center gap-4 h-full w-full focus:bg-paper_2 p-2 lg:p-3"
               href="#"
             >
               <div className="relative h-full shrink-0 aspect-[0.75] rounded-lg overflow-hidden z-[1]">
-                <Image
-                  alt=""
-                  className="absolute"
-                  src={item.image.portrait.url}
-                  fill
-                />
+                {item.images?.portrait.url && (
+                  <Image
+                    alt=""
+                    className="absolute"
+                    src={decodeURIComponent(item.images?.portrait.url)}
+                    fill
+                  />
+                )}
               </div>
-              <p className="text-sm text-white_primary z-[1]">{item.name}</p>
+              <p className="text-sm text-white_primary z-[1] line-clamp-2">
+                {item.name}
+              </p>
             </a>
           </li>
         ))}
@@ -125,41 +142,54 @@ const HeroCarousel = ({
   );
 };
 
-export const Cover = ({ game }: { game: any }) => {
+const ButtonGroup = ({ game }: { game: any }) => {
   return (
-    <div className="main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8">
-      <div className="flex gap-4">
-        <a
-          href={`${game._id}`}
-          className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
-        >
-          BUY NOW
-        </a>
-        <a
-          href="#"
-          className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
+    <div className="flex gap-4">
+      <a
+        href={`${game._id}`}
+        className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
+      >
+        BUY NOW
+      </a>
+      <a
+        href="#"
+        className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
           hover:bg-white/[0.16] transition-colors duration-200 
           text-center"
-        >
-          ADD TO WISHLIST
-        </a>
+      >
+        ADD TO WISHLIST
+      </a>
+    </div>
+  );
+};
+
+const Description = ({ game }: { game: any }) => {
+  return (
+    <div className="max-w-sm flex flex-col justify-evenly flex-grow">
+      <div
+        className="w-36 lg:w-80 aspect-video relative logo"
+        style={{
+          backgroundImage: game.images?.logo?.url
+            ? `url(${decodeURIComponent(game.images?.logo.url)})`
+            : "",
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "bottom left",
+        }}
+      >
+        {/* <Image src={} alt="" fill className="object-contain" /> */}
       </div>
-      <div className="max-w-sm flex flex-col justify-evenly flex-grow">
-        <div
-          className="w-36 lg:w-80 aspect-video relative logo"
-          style={{
-            backgroundImage: `url(${game.image?.logo.url})`,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "bottom left",
-          }}
-        >
-          {/* <Image src={} alt="" fill className="object-contain" /> */}
-        </div>
-        <p className="text-white_primary lg:text-lg hidden sm:block">
-          {game.description.split(".")[0]}
-        </p>
-      </div>
+      <p className="text-white_primary lg:text-lg hidden sm:block">
+        {game.description?.split(".")[0]}
+      </p>
+    </div>
+  );
+};
+
+export const Cover = ({ children }: PropsWithChildren) => {
+  return (
+    <div className="main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8">
+      {children}
     </div>
   );
 };

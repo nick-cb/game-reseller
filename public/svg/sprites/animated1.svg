@@ -1,0 +1,14 @@
+<svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<symbol id="checkmark" class="active" viewBox="0 0 32 32" width="32" height="32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M22.867 26.267c-1.933 1.333-4.333 2.067-6.867 2.067-6.8 0-12.333-5.533-12.333-12.333 0-2.933 1.067-5.667 2.733-7.8" class="svg-elem-1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M13.4 3.933c0.867-0.2 1.733-0.267 2.6-0.267 6.8 0 12.333 5.533 12.333 12.333 0 1.933-0.467 3.733-1.2 5.333" class="svg-elem-2"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M11 16.333l3.333 3.333 6.667-6.667" class="svg-elem-3"></path>
+</symbol>
+<symbol id="checkmark-2" viewBox="0 0 32 32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M22.867 26.267c-1.933 1.333-4.333 2.067-6.867 2.067-6.8 0-12.333-5.533-12.333-12.333 0-2.933 1.067-5.667 2.733-7.8"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M13.4 3.933c0.867-0.2 1.733-0.267 2.6-0.267 6.8 0 12.333 5.533 12.333 12.333 0 1.933-0.467 3.733-1.2 5.333"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="2" d="M11 16.333l3.333 3.333 6.667-6.667"></path>
+</symbol>
+</defs>
+</svg>

@@ -2,35 +2,33 @@
 
 import { useLayoutEffect, useState } from "react";
 
-const createBreakpoints = <T extends number>(
-  breakpoints: T[],
+const createBreakpoints = <
+  T extends number[] | Readonly<number[]>,
+  R = { [k in `b${T[number]}`]: -1 | 0 | 1 }
+>(
+  breakpoints: T,
   against?: number,
-  previous?: { [k in `b${T}`]: -1 | 0 | 1 }
-) => {
+  previous?: R
+): {
+  result: R;
+  changed: boolean;
+} => {
   if (typeof window === "undefined") {
-    return { result: {} as any, changed: false };
+    return { result: {} as R, changed: false };
   }
   const innerAgainst = against || window.innerWidth;
   let flag = false;
-  if (previous && breakpoints.length !== Object.keys(previous).length) {
-    flag = true;
-  }
-  const result: { [k in `b${T}`]: -1 | 0 | 1 } = breakpoints.reduce(
-    (prev, breakpoint) => {
-      const current =
-        breakpoint === innerAgainst ? 0 : breakpoint > innerAgainst ? -1 : 1;
-      if (previous && !flag) {
-        if (previous[`b${breakpoint}`] !== current) {
-          flag = true;
-        }
+  const result = {} as R;
+  for (const breakpoint of breakpoints) {
+    const current =
+      breakpoint === innerAgainst ? 0 : breakpoint > innerAgainst ? -1 : 1;
+    if (previous && !flag) {
+      if (previous[`b${breakpoint}` as keyof R] !== current) {
+        flag = true;
       }
-      return {
-        ...prev,
-        [`b${breakpoint}`]: current,
-      };
-    },
-    {} as any
-  );
+    }
+    result[`b${breakpoint}` as keyof R] = current as R[keyof R];
+  }
 
   return { result, changed: previous ? flag : true };
 };
@@ -42,7 +40,7 @@ const createBreakpoints = <T extends number>(
  * - `1`: **Greater** than the breakpoint
  * */
 export const useBreakpoints = <T extends number>(
-  breakpoints: T[],
+  breakpoints: T[] | readonly T[],
   against?: number
 ) => {
   const [result, setResult] = useState<{ [K in `b${T}`]: -1 | 0 | 1 }>(

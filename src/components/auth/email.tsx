@@ -28,7 +28,7 @@ export const EmailSignupForm = React.forwardRef<
       }
       {...props}
     >
-      <label htmlFor="first-name" className="w-max my-auto">
+      <label htmlFor="first-name" className="w-max my-auto block">
         Fist name
       </label>
       <InterposedInput
@@ -41,7 +41,7 @@ export const EmailSignupForm = React.forwardRef<
         placeholder="First name"
         {...register("firstname")}
       />
-      <label htmlFor="last-name" className="w-max my-auto">
+      <label htmlFor="last-name" className="w-max my-auto block">
         Last name
       </label>
       <InterposedInput
@@ -54,7 +54,7 @@ export const EmailSignupForm = React.forwardRef<
         placeholder="Last name"
         {...register("lastname")}
       />
-      <label htmlFor="display-name" className="w-max my-auto">
+      <label htmlFor="display-name" className="w-max my-auto block">
         Display name
       </label>
       <InterposedInput
@@ -67,7 +67,7 @@ export const EmailSignupForm = React.forwardRef<
         placeholder="Darth vader"
         {...register("displayname")}
       />
-      <label htmlFor="email" className="w-max my-auto">
+      <label htmlFor="email" className="w-max my-auto block">
         Email
       </label>
       <InterposedInput
@@ -81,7 +81,7 @@ export const EmailSignupForm = React.forwardRef<
         className="p-3"
         {...register("email")}
       />
-      <label htmlFor="password" className="w-max my-auto">
+      <label htmlFor="password" className="w-max my-auto block">
         Password
       </label>
       <PasswordInput
@@ -93,7 +93,7 @@ export const EmailSignupForm = React.forwardRef<
         className="p-3"
         {...register("password")}
       />
-      <label htmlFor="confirm-password" className="w-max my-auto">
+      <label htmlFor="confirm-password" className="w-max my-auto block">
         Confirm password
       </label>
       <PasswordInput
@@ -134,11 +134,11 @@ export const EmailLoginForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid grid-cols-[max-content_min-content] gap-x-4 gap-y-5 " + className
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " + className
       }
       {...props}
     >
-      <label htmlFor="email" className="w-max my-auto">
+      <label htmlFor="email" className="w-max my-auto block">
         Email
       </label>
       <InterposedInput
@@ -152,7 +152,8 @@ export const EmailLoginForm = React.forwardRef<
         className="p-3"
         {...register("email")}
       />
-      <label htmlFor="password" className="w-max my-auto">
+      <hr className="3/4sm:hidden my-1 border-paper_2" />
+      <label htmlFor="password" className="w-max my-auto block">
         Password
       </label>
       <PasswordInput
@@ -164,13 +165,14 @@ export const EmailLoginForm = React.forwardRef<
         className="p-3"
         {...register("password")}
       />
-      <div className="col-span-2 flex items-center gap-2">
+      <hr className="3/4sm:hidden my-1 border-paper_2" />
+      <div className="3/4sm:col-span-2 flex items-center gap-2">
         <input type="checkbox" />
         <label>Remember me</label>
       </div>
       <StandardButton
         type="submit"
-        className="col-span-2 shadow shadow-default mt-2"
+        className="3/4sm:col-span-2 shadow shadow-default mt-2"
         loading={form.formState.isSubmitting}
       >
         Login

@@ -1,0 +1,809 @@
+[
+  {
+    "id": 0,
+    "name": "sample",
+    "list_game": [
+      {
+        "ID": 0.5452660565433765,
+        "name": "Rain World",
+        "developer": "Videocult",
+        "publisher": "Akupara Games",
+        "sale_price": 261000,
+        "discount_price": 261000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2023-01-25T06:00:00.000Z",
+        "slug": "rain-world-4c860c",
+        "description": "You are a nomadic slugcat, both predator and prey in a broken ecosystem. Grab your spear and brave the industrial wastes, hunting enough food to survive, but be wary— other, bigger creatures have the same plan... and slugcats look delicious.",
+        "rating": {
+           "averageRating": 4.94
+        },
+        "images": {
+          "logo": {
+            "type": "ProductLogo",
+            "url": "https://cdn1.epicgames.com/spt-assets/da2d8e4b946b4b50b1ad818727469873/rain-world-logo-1whaj.png"
+          },
+          "landscape": {
+            "type": "OfferImageWide",
+            "url": "https://cdn1.epicgames.com/spt-assets/da2d8e4b946b4b50b1ad818727469873/rain-world-1j3hz.png"
+          },
+          "portrait": {
+            "type": "OfferImageTall",
+            "url": "https://cdn1.epicgames.com/spt-assets/da2d8e4b946b4b50b1ad818727469873/rain-world-28tjl.png"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-fmp4",
+            "mediaRefId": "f4529cc1a6b243598ab3ea20dae46748",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b.mpd",
+                "resVariant": [
+                  {
+                    "duration": 77,
+                    "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b-audio.m4a",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "audio/m4a"
+                  },
+                  {
+                    "duration": 77,
+                    "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b-high.fmp4",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 77,
+                    "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b-medium.fmp4",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 77,
+                    "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b-low.fmp4",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "video/mp4"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/ac0ee6f4ad064ac296f62f1edeab319b/ac0ee6f4ad064ac296f62f1edeab319b-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.6517596569407149,
+        "name": "Red Dead Redemption 2",
+        "developer": "Rockstar Games",
+        "publisher": "Rockstar Games",
+        "sale_price": 1000000,
+        "discount_price": 1000000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2019-11-05T13:00:00.000Z",
+        "slug": "red-dead-redemption-2",
+        "description": "Winner of over 175 Game of the Year Awards and recipient of over 250 perfect scores, Red Dead Redemption 2 is an epic tale of honor and loyalty at the dawn of the modern age. Includes Red Dead Redemption 2: Story Mode and Red Dead Online.",
+        "rating": {
+           "averageRating": 4.88
+        },
+        "images": {
+          "logo": {
+            "type": "logo",
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fheather%2Fhome%2FEGS_RockstarGames_RedDeadRedemption2_IC1-625x625-38ae1bca6b89370d01ac3ed3a17daf7dd004f9f5.png"
+          },
+          "landscape": {
+            "type": "landscape",
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fheather%2Fhome%2FEGS_RockstarGames_RedDeadRedemption2_S1-2560x1440-d5fade458c9ba3c3726d578b18486f08e1a47999.jpg"
+          },
+          "portrait": {
+            "type": "portrait",
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fheather%2Fhome%2FEGS_RockstarGames_RedDeadRedemption2_S2-1280x1440-f9f0acfcf17937512ea608837e0f470c482db13f.jpg"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-fmp4",
+            "mediaRefId": "9435a2dd2b784239b28469c1bc07d082",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438.mpd",
+                "resVariant": [
+                  {
+                    "duration": 61,
+                    "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438-high.fmp4",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 61,
+                    "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438-medium.fmp4",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 61,
+                    "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438-low.fmp4",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 61,
+                    "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438-audio.m4a",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "audio/m4a"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/b429cadec26a4aaea81f97d63c2b6438/b429cadec26a4aaea81f97d63c2b6438-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.8762357583142923,
+        "name": "Sid Meier’s Civilization® VI",
+        "developer": "Firaxis Games",
+        "publisher": "2K",
+        "sale_price": 999000,
+        "discount_price": 999000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2020-05-21T15:00:00.000Z",
+        "slug": "sid-meiers-civilization-vi",
+        "description": "Civilization VI offers new ways to interact with your world, expand your empire across the map, advance your culture, and compete against history’s greatest leaders to build a civilization that will stand the test of time.",
+        "rating": {
+          "averageRating": 4.74
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fsid-meiers-civilization-vl%2Fhome%2FEGS_SidMeiersCivilizationVI_FiraxisGames_IC1-200x80-1bf24a5fd6b0e729a99547a9149043156d40534c.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fsid-meiers-civilization-vl%2Fhome%2FEGS_SidMeiersCivilizationVI_FiraxisGames_S2-860x1148-61e11c241a0ace459d14df2d7a4f2d9dc67ab8d7.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fsid-meiers-civilization-vl%2Fhome%2FEGS_SidMeiersCivilizationVI_FiraxisGames_S1-2560x1440-7e8a0f1640e279cecbf9d4470c4e77e511645639.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-webm",
+            "mediaRefId": "68c227acb8b04852bbd10baf550c78c5",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84.mpd",
+                "resVariant": [
+                  {
+                    "duration": 30,
+                    "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84-high.webm",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 30,
+                    "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84-medium.webm",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 30,
+                    "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84-low.webm",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 31,
+                    "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84-audio.webm",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "audio/webm"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/d0312ab0c4f14c9cb212afa09ae49f84/d0312ab0c4f14c9cb212afa09ae49f84-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.8622539424225473,
+        "name": "Grand Theft Auto V: Premium Edition",
+        "developer": "Rockstar Games",
+        "publisher": "Rockstar Games",
+        "sale_price": 455500,
+        "discount_price": 455500,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2020-05-14T15:00:00.000Z",
+        "slug": "grand-theft-auto-v",
+        "description": "The Grand Theft Auto V: Premium Edition includes the complete GTAV story, Grand Theft Auto Online and all existing gameplay upgrades and content. You’ll also get the Criminal Enterprise Starter Pack, the fastest way to jumpstart your criminal empire in GTA Online.",
+        "rating": {
+          "averageRating": 4.68
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fgrand-theft-auto-v%2Fhome%2FGTAV_EGS_Artwork_400x400_GameLogo-1000x1000-f6c47a98454049a5e63959f7b6f898c4fc22829c.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fgrand-theft-auto-v%2Fhome%2FGTAV_EGS_Artwork_1200x1600_Portrait-Store-Banner_V03-1200x1600-0541fdc9362c33ab08e9be38aade0e0cebdd8a90.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fgrand-theft-auto-v%2Fhome%2FGTAV_EGS_Artwork_2560x1440_Landscaped-Store_V04-2560x1440-d7f23be49b805a0b526997293b019274dcafb20e.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": []
+      },
+      {
+        "ID": 0.2569275335235681,
+        "name": "God of War",
+        "developer": "Santa Monica Studio",
+        "publisher": "PlayStation PC LLC",
+        "sale_price": 1159000,
+        "discount_price": 1159000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2022-01-14T16:00:00.000Z",
+        "slug": "god-of-war",
+        "description": "His vengeance against the Gods of Olympus years behind him, Kratos now lives as a man in the realm of Norse Gods and monsters. It is in this harsh, unforgiving world that he must fight to survive… and teach his son to do the same. ",
+        "rating": {
+          "averageRating": 4.88
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/egs-godofwar-santamonicastudio-ic1-400x400-5819bbf696c5.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/egs-godofwar-santamonicastudio-s2-1200x1600-98b66bbc7c87.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/egs-godofwar-santamonicastudio-s1-2560x1440-e10605ff65f6.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-webm",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/efa0b0b79f684ed4beccb3496ec1ff4c/efa0b0b79f684ed4beccb3496ec1ff4c.mpd",
+                "resVariant": [
+                  {
+                    "contentType": "video/webm",
+                    "duration": 172,
+                    "height": 720,
+                    "width": 1280,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/efa0b0b79f684ed4beccb3496ec1ff4c/efa0b0b79f684ed4beccb3496ec1ff4c-medium.webm"
+                  },
+                  {
+                    "contentType": "video/webm",
+                    "duration": 172,
+                    "height": 480,
+                    "width": 854,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/efa0b0b79f684ed4beccb3496ec1ff4c/efa0b0b79f684ed4beccb3496ec1ff4c-low.webm"
+                  },
+                  {
+                    "contentType": "video/webm",
+                    "duration": 172,
+                    "height": 1080,
+                    "width": 1920,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/efa0b0b79f684ed4beccb3496ec1ff4c/efa0b0b79f684ed4beccb3496ec1ff4c-high.webm"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://cdn2.unrealengine.com/egs-godofwar-santamonicastudio-g1c-00-1920x1080-e34808c28444.jpg"
+              }
+            ],
+            "mediaRefId": "b62ea4cf71bf42d3a24ff6dc4a27ca17"
+          }
+        ]
+      },
+      {
+        "ID": 0.4916357848000348,
+        "name": "Fortnite",
+        "developer": "Epic Games",
+        "publisher": "Epic Games",
+        "sale_price": 0,
+        "discount_price": 0,
+        "purchase_count": 0,
+        "type": "OTHERS",
+        "release_date": "2017-07-21T09:00:00.000Z",
+        "slug": "fortnite",
+        "description": "Grab all of your friends and drop into Epic Games' Fortnite, a massive 100-player face-off that combines looting, crafting, shootouts and chaos. The result is a completely unpredictable competitive online experience that gets bigger and even wilder with every new season.",
+        "rating": {
+          "averageRating": 4.29
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/24br-s24-egs-launcher-logo-350x100-350x100-b63249f937d9.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/25br-s25-egs-launcher-blade-1200x1600-1200x1600-f0f09727d7b8.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/25br-s25-egs-launcher-blade-2560x1440-2560x1440-837ec5aedb9f.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-fmp4",
+            "mediaRefId": "14e27b23dadf4d2ba7609465fc8387d5",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279.mpd",
+                "resVariant": [
+                  {
+                    "duration": 111,
+                    "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279-high.fmp4",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 111,
+                    "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279-medium.fmp4",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 111,
+                    "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279-low.fmp4",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "video/mp4"
+                  },
+                  {
+                    "duration": 111,
+                    "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279-audio.m4a",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "audio/m4a"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/273089ad3fb2410e831e751cc288c279/273089ad3fb2410e831e751cc288c279-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.6932470158528665,
+        "name": "EA SPORTS™ FIFA 23 Standard Edition",
+        "developer": "EA Canada",
+        "publisher": "Electronic Arts",
+        "sale_price": 1090000,
+        "discount_price": 1090000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2022-09-30T07:00:00.000Z",
+        "slug": "fifa-23",
+        "description": "Kick off your season with a boost! FIFA 23 Ultimate Edition includes 4600 FIFA Points.",
+        "rating": {
+          "averageRating": 4.25
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/egs-easportsfifa23standardedition-eacanada-ic1-400x400-1f497410e5cd.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/egs-easportsfifa23standardedition-eacanada-s2-1200x1600-8717b24e27a7.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/egs-easportsfifa23standardedition-eacanada-s1-2560x1440-51d6f797c8b5.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-hls",
+            "outputs": [
+              {
+                "contentType": "application/x-mpegURL",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/0f23f64d6fb5474faddbc561d1236411/0f23f64d6fb5474faddbc561d1236411.m3u8"
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://cdn2.unrealengine.com/egs-easportsfifa23standardedition-eacanada-g1c-00-1920x1080-3322566b4906.jpg"
+              }
+            ],
+            "mediaRefId": "0df43b775fc640c8865996e65f0b92ef"
+          }
+        ]
+      },
+      {
+        "ID": 0.45527663880424907,
+        "name": "Borderlands 3",
+        "developer": "Gearbox Software",
+        "publisher": "2K",
+        "sale_price": 990000,
+        "discount_price": 990000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2019-09-13T15:00:00.000Z",
+        "slug": "borderlands-3",
+        "description": "The original shooter-looter returns, packing bazillions of guns and a mayhem-fueled adventure! Blast through new worlds & enemies and save your home from the most ruthless cult leaders in the galaxy.",
+        "rating": {
+          "averageRating": 4.69
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproduct%2Fcatnip%2FEGS_2K_OAK_IC1_Logo_Transparent_400x800-800x400-847db268641618b804c2dc3e64f0055387fd10e5.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproduct%2Fcatnip%2FOak_StandardEdition_S3-1280x1440-fe3c8b95f94e6e26b87b4225011ffe07ad34bc81.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/Diesel%2Fproduct%2Fcatnip%2FOak_StandardEdition_G1-1920x1080-4187bb7d0fa3f472c97bfe855096e06093af815f.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-hls",
+            "mediaRefId": "0b833a43e52445089a607fb85458018b",
+            "outputs": [
+              {
+                "contentType": "application/x-mpegURL",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684.m3u8",
+                "resVariant": [
+                  {
+                    "duration": 129,
+                    "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684-audio_v4.m3u8",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "application/x-mpegURL"
+                  },
+                  {
+                    "duration": 129,
+                    "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684-high_v4.m3u8",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "application/x-mpegURL"
+                  },
+                  {
+                    "duration": 129,
+                    "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684-medium_v4.m3u8",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "application/x-mpegURL"
+                  },
+                  {
+                    "duration": 129,
+                    "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684-low_v4.m3u8",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "application/x-mpegURL"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/43861e844cdd416db27d075f5810b684/43861e844cdd416db27d075f5810b684-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.20129662726714193,
+        "name": "Far Cry 6 Standard Edition",
+        "developer": "Ubisoft Toronto",
+        "publisher": "Ubisoft",
+        "sale_price": 990000,
+        "discount_price": 990000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2022-11-29T15:00:00.000Z",
+        "slug": "far-cry-6",
+        "description": "Includes game + Season Pass \"A nonstop thrill ride from start to finish\" —GAME INFORMER Play the Far Cry® 6 FREE TRIAL!",
+        "rating": {
+          "averageRating": 4.45
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/fc6-logo-400x150-7808789f6a13.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/uk-template-std---game-epic-store-portrait-1200x1600-1200x1600-3b48f0d5dcfe.png",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/uk-template-std---game-epic-store-landscape-2560x1440-2560x1440-752921f51917.png",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-webm",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/17a9eff02d574f54a52deefc19b0a297/17a9eff02d574f54a52deefc19b0a297.mpd",
+                "resVariant": [
+                  {
+                    "contentType": "video/webm",
+                    "duration": 96,
+                    "height": 1080,
+                    "width": 1920,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/17a9eff02d574f54a52deefc19b0a297/17a9eff02d574f54a52deefc19b0a297-high.webm"
+                  },
+                  {
+                    "contentType": "video/webm",
+                    "duration": 96,
+                    "height": 720,
+                    "width": 1280,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/17a9eff02d574f54a52deefc19b0a297/17a9eff02d574f54a52deefc19b0a297-medium.webm"
+                  },
+                  {
+                    "contentType": "video/webm",
+                    "duration": 96,
+                    "height": 480,
+                    "width": 854,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/17a9eff02d574f54a52deefc19b0a297/17a9eff02d574f54a52deefc19b0a297-low.webm"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://cdn2.unrealengine.com/fc-background-1920x1080-1920x1080-90a7d76b5ca2.jpg"
+              }
+            ],
+            "mediaRefId": "a6ea606c6cb241e585c876bb56a4f113"
+          }
+        ]
+      },
+      {
+        "ID": 0.5312503497934744,
+        "name": "Cyberpunk 2077",
+        "developer": "CD PROJEKT RED",
+        "publisher": "CD PROJEKT RED",
+        "sale_price": 971000,
+        "discount_price": 971000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2020-12-10T00:00:00.000Z",
+        "slug": "cyberpunk-2077",
+        "description": "Cyberpunk 2077 is an open-world, action-adventure RPG set in the dark future of Night City — a dangerous megalopolis obsessed with power, glamor, and ceaseless body modification.",
+        "rating": {
+          "averageRating": 4.62
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/egs-cyberpunk2077-cdprojektred-ic1-400x400-82b90aa9a275.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/egs-cyberpunk2077-cdprojektred-s2-03-22-22-1200x1600-829751b50fec.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/egs-cyberpunk2077-cdprojektred-s1-03-22-22-2560x1440-8b29e725f1ef.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-webm",
+            "mediaRefId": "3a85dba8f93e424986e865172280a866",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28.mpd",
+                "resVariant": [
+                  {
+                    "duration": 94,
+                    "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28-high.webm",
+                    "width": 1920,
+                    "height": 1080,
+                    "key": "high",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 94,
+                    "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28-medium.webm",
+                    "width": 1280,
+                    "height": 720,
+                    "key": "medium",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 94,
+                    "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28-low.webm",
+                    "width": 854,
+                    "height": 480,
+                    "key": "low",
+                    "contentType": "video/webm"
+                  },
+                  {
+                    "duration": 94,
+                    "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28-audio.webm",
+                    "width": null,
+                    "height": null,
+                    "key": "audio",
+                    "contentType": "audio/webm"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://media-cdn.epicgames.com/8594a1a6456e4da686b54bb937fe0d28/8594a1a6456e4da686b54bb937fe0d28-00001-thumb.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 0.5877711378257033,
+        "name": "Marvel’s Spider-Man: Miles Morales",
+        "developer": "Insomniac Games, Nixxes Software",
+        "publisher": "PlayStation PC LLC",
+        "sale_price": 1159000,
+        "discount_price": 1159000,
+        "purchase_count": 0,
+        "type": "BASE_GAME",
+        "release_date": "2022-11-18T16:00:00.000Z",
+        "slug": "marvels-spider-man-miles-morales",
+        "description": "Teenage Miles Morales is adjusting to his new home while following in the footsteps of his mentor, Peter Parker, as a new Spider-Man. When a fierce power struggle threatens to destroy his home, Miles must take up the mantle of Spider-Man and own it.",
+        "rating": {
+          "averageRating": 4.78
+        },
+        "images": {
+          "logo": {
+            "url": "https://cdn2.unrealengine.com/egs-marvelsspidermanmilesmorales-insomniacgamesnixxessoftware-ic1-400x400-32513a3f95a0.png",
+            "type": "logo"
+          },
+          "portrait": {
+            "url": "https://cdn2.unrealengine.com/egs-marvelsspidermanmilesmorales-insomniacgamesnixxessoftware-s2-1200x1600-4b278dbf1147.jpg",
+            "type": "portrait"
+          },
+          "landscape": {
+            "url": "https://cdn2.unrealengine.com/egs-marvelsspidermanmilesmorales-insomniacgamesnixxessoftware-s1-2560x1440-b08e12192140.jpg",
+            "type": "landscape"
+          }
+        },
+        "videos": [
+          {
+            "recipe": "video-fmp4",
+            "outputs": [
+              {
+                "contentType": "application/dash+xml",
+                "key": "manifest",
+                "url": "https://media-cdn.epicgames.com/a459f4eef4ff4d0498fb0deb317b435e/a459f4eef4ff4d0498fb0deb317b435e.mpd",
+                "resVariant": [
+                  {
+                    "contentType": "audio/m4a",
+                    "duration": 98,
+                    "height": null,
+                    "width": null,
+                    "key": "audio",
+                    "url": "https://media-cdn.epicgames.com/a459f4eef4ff4d0498fb0deb317b435e/a459f4eef4ff4d0498fb0deb317b435e-audio.m4a"
+                  },
+                  {
+                    "contentType": "video/fmp4",
+                    "duration": 98,
+                    "height": 1080,
+                    "width": 1920,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/a459f4eef4ff4d0498fb0deb317b435e/a459f4eef4ff4d0498fb0deb317b435e-high.fmp4"
+                  },
+                  {
+                    "contentType": "video/fmp4",
+                    "duration": 98,
+                    "height": 720,
+                    "width": 1280,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/a459f4eef4ff4d0498fb0deb317b435e/a459f4eef4ff4d0498fb0deb317b435e-medium.fmp4"
+                  },
+                  {
+                    "contentType": "video/fmp4",
+                    "duration": 98,
+                    "height": 480,
+                    "width": 854,
+                    "key": "",
+                    "url": "https://media-cdn.epicgames.com/a459f4eef4ff4d0498fb0deb317b435e/a459f4eef4ff4d0498fb0deb317b435e-low.fmp4"
+                  }
+                ]
+              },
+              {
+                "contentType": "image/png",
+                "key": "thumbnail",
+                "url": "https://cdn2.unrealengine.com/egs-marvelsspidermanmilesmorales-insomniacgamesnixxessoftware-g1c-00-1920x1080-52018259cb64.jpg"
+              }
+            ],
+            "mediaRefId": "6d21bd72296f48f19717d657285913d8"
+          }
+        ]
+      }
+    ]
+  }
+]
