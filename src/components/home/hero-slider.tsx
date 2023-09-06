@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useInfiniteScrollText } from "../InfiniteScrollText";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
+import { useCarousel } from "../carousel/useCarousel";
 
 const breakpoints = [768] as const;
 export function HeroSlider({
@@ -15,79 +16,25 @@ export function HeroSlider({
   className?: string;
 }) {
   const listRef = useRef<HTMLUListElement>(null);
-  const indicatorListRef = useRef<HTMLUListElement>(null);
-  const prevIndex = useRef(0);
   const { b768: md } = useBreakpoints(breakpoints);
+  const carouselConfig = useMemo(() => {
+    return {
+      containerRef: listRef,
+      itemSelector: 'li',
+      enabled: md < 0,
+      config: {
+        method: "scroll",
+      } as const,
+    };
+  }, [md]);
+  const { active, goToIndex } = useCarousel<HTMLUListElement, HTMLLIElement>(
+    carouselConfig
+  );
 
   const _data = useMemo(() => {
     return data?.list_game.slice(0, 6);
   }, [data]);
 
-  useEffect(() => {
-    if (md >= 0) {
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.intersectionRatio > 0.5) {
-            const target = entry.target as HTMLButtonElement;
-            const dataIndex = target.dataset.index;
-            if (!dataIndex) {
-              continue;
-            }
-            const index = parseInt(dataIndex);
-            indicatorListRef.current?.children
-              .item(index)
-              ?.children.item(0)
-              ?.classList.add("bg-white/60");
-          } else {
-            const target = entry.target as HTMLButtonElement;
-            const dataIndex = target.dataset.index;
-            if (!dataIndex) {
-              continue;
-            }
-            const index = parseInt(dataIndex);
-            indicatorListRef.current?.children
-              .item(index)
-              ?.children.item(0)
-              ?.classList.remove("bg-white/60");
-          }
-        }
-      },
-      {
-        root: listRef.current,
-      }
-    );
-    if (listRef.current) {
-      for (const item of listRef.current.children) {
-        const button = item.children.item(0);
-        if (button) {
-          observer.observe(button);
-        }
-      }
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [md]);
-
-  const goToIndex = (event: MouseEvent<HTMLButtonElement>, index: number) => {
-    if (index === prevIndex.current) {
-      return;
-    }
-    event.currentTarget.classList.add("bg-white/60");
-    indicatorListRef.current?.children
-      .item(prevIndex.current)
-      ?.children.item(0)
-      ?.classList.remove("bg-white/60");
-    listRef.current?.scroll({
-      left: index * (listRef.current.children.item(0)?.clientWidth || 0),
-      behavior: "smooth",
-    });
-    prevIndex.current = index;
-  };
 
   if (md >= 0) {
     return null;
@@ -103,19 +50,21 @@ export function HeroSlider({
         }
       >
         {_data.map((item: any, index: number) => (
-          <SliderItem key={index} item={item} index={index} />
+          <SliderItem key={item.ID} item={item} index={index} />
         ))}
       </ul>
       <ul
-        ref={indicatorListRef}
         className="flex w-full justify-center items-center gap-4 pt-4 md:hidden"
       >
-        {[0, 1, 2, 3, 4, 5].map((index) => (
+        {_data.map((item: any, index: number) => (
           <li key={index} className="group">
             <button
-              data-index={index}
-              onClick={(event) => goToIndex(event, index)}
-              className="bg-paper_2 w-2 h-2 rounded-md transition-colors"
+              key={item.ID}
+              onClick={() => goToIndex(index)}
+              className={
+                "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
+                (active.index === index ? " bg-white/60 " : "")
+              }
             ></button>
           </li>
         ))}
@@ -148,7 +97,7 @@ function SliderItem({ item, index }: { item: any; index: number }) {
         className={
           "bg-gradient-to-t from-paper_3 via-40% via-paper_3/80 to-transparent " +
           " h-1/2  absolute w-full bottom-0 flex items-end " +
-          " pointer-events-none "
+          " pointer-events-none"
         }
       ></div>
       <div className="h-max w-full grid gap-x-4 [grid-template-columns:max-content_auto] p-4 mt-auto relative">
@@ -202,7 +151,9 @@ function SliderItem({ item, index }: { item: any; index: number }) {
                   xlinkHref="/svg/sprites/actions.svg#star"
                 />
               </svg>
-              {item.rating.averageRating}
+              {item.avg_rating.toString().split(".")[0] +
+                "." +
+                item.avg_rating.toString().split(".")[1].substring(0, 1)}
             </p>
           </div>
           <button className="text-sm px-4 py-2 bg-white rounded text-default">

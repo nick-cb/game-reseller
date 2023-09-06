@@ -36,7 +36,7 @@ from
       json_arrayagg(
         json_object(
           'ID', g.ID, 'name', g.name, 'slug', g.slug,'sale_price', 
-          g.sale_price, 'developer', g.developer, 
+          g.sale_price, 'developer', g.developer, 'avg_rating', avg_rating,
           'images', g.images, 'videos', g.videos
         )
       ) as list_game 
@@ -131,21 +131,21 @@ from
         type.includes("tall")
       );
     });
-    const logo = images.find((img) => img.type === "logo");
+    const logo = images.find((img) => img.type.toLowerCase().includes("logo"));
     return {
       landscape,
       portrait,
       logo,
     };
   };
-  console.log(
-    result[0][0].list_game.map((g) => {
-      return {
-        ...g,
-        images: getImages(g.images),
-      };
-    })
-  );
+  // console.log(
+  //   result[0][0].list_game.map((g) => {
+  //     return {
+  //       ...g,
+  //       images: getImages(g.images),
+  //     };
+  //   })
+  // );
   const data = result[0].map((d) => ({
     ...d,
     list_game: d.list_game.map((g) => {
@@ -155,6 +155,7 @@ from
       };
     }),
   }));
+  console.log(data[0]);
 
   return (
     <>
@@ -164,7 +165,7 @@ from
       />
       <HeroSlider data={data[0]} className="md:hidden" />
       <hr className="my-4 border-default" />
-      {data.map((collection: any, index: number) => (
+      {data.slice(0, 1).map((collection: any, index: number) => (
         <Carousel
           key={index}
           collection={collection}

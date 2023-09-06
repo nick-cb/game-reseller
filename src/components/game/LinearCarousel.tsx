@@ -54,7 +54,7 @@ export default function LinearCarousel({
 
     // Don't schedule next transform if the current item is video
     // It will be handle by the onEnded event on video element
-    if (data[currentIndex] && Array.isArray(data[currentIndex])) {
+    if ('recipes' in data[currentIndex]) {
       return;
     }
     let id: ReturnType<typeof setTimeout>;
@@ -135,7 +135,7 @@ export default function LinearCarousel({
   return (
     <>
       <div className="relative overflow-hidden group">
-        <div className="absolute inset-0 controls">
+        {/* <div className="absolute inset-0 controls">
           <button
             className="absolute w-14 h-full left-0 transition-transform
           from-paper_3/40 bg-gradient-to-r to-default/0 z-10
@@ -150,7 +150,7 @@ export default function LinearCarousel({
           >
             right
           </button>
-        </div>
+        </div> */}
         <div className="overflow-scroll scrollbar-hidden game-linear-carousel snap-mandatory snap-x">
           <ul className="flex transition-transform duration-300" ref={listRef}>
             {videos.map((vid, index) => (
@@ -160,15 +160,13 @@ export default function LinearCarousel({
               >
                 <Video
                   video={vid}
-                  autoPlay
-                  muted
-                  onEnded={() => {
-                    setTimeout(() => {
-                      setCurrentIndex((prev) => {
-                        return (prev + 1) % data.length;
-                      });
-                    }, SLIDE_INTERVAL);
-                  }}
+                  // onEnded={() => {
+                  //   setTimeout(() => {
+                  //     setCurrentIndex((prev) => {
+                  //       return (prev + 1) % data.length;
+                  //     });
+                  //   }, SLIDE_INTERVAL);
+                  // }}
                 />
               </li>
             ))}

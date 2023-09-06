@@ -459,3 +459,10 @@ input[type="radio"]:checked + #checkmark .svg-elem-3 {
   stroke-dashoffset: 0;
 }
 
+.wrap-balance {
+  text-wrap: balance;
+}
+
+button:focus-visible {
+  @apply outline-1 outline outline-white_primary;
+}
