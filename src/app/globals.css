@@ -57,9 +57,9 @@
 .gameid-preview-outline {
   @apply absolute top-[1px] bottom-[1px] outline outline-1 outline-white/60 rounded left-[1px];
   width: 96px;
-  transition-property: width;
+  /* transition-property: width;
   transition-timing-function: ease-in-out;
-  transition-duration: 300ms;
+  transition-duration: 300ms; */
 }
 
 .infinite-carousel {
@@ -465,4 +465,14 @@ input[type="radio"]:checked + #checkmark .svg-elem-3 {
 
 button:focus-visible {
   @apply outline-1 outline outline-white_primary;
+}
+
+.anchor-right {
+  right: var(--anchor-right-offset);
+  left: unset;
+}
+
+.anchor-left {
+  left: var(--anchor-left-offset);
+  right: unset;
 }

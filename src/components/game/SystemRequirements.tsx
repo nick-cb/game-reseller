@@ -75,14 +75,14 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
               </h3>
               {system.details.map((detail: any) => {
                 return (
-                  <>
-                    <div key={detail.ID} className="text-sm">
+                  <React.Fragment key={detail.ID}>
+                    <div className="text-sm">
                       <div className="text-white_primary/60">
                         {detail.title}
                       </div>
                       <div>{detail.minimum}</div>
                     </div>
-                    <div key={detail.ID} className="text-sm">
+                    <div className="text-sm">
                       {detail.recommended && (
                         <>
                           <div className="text-white_primary/60">
@@ -92,7 +92,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                         </>
                       )}
                     </div>
-                  </>
+                  </React.Fragment>
                 );
               })}
             </li>

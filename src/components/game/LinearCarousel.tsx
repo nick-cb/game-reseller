@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Video from "../Video";
 import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
+import { Item, useScroll, useScrollFactory } from "../Scroll";
+import { Test } from "../Test";
 
 const SLIDE_INTERVAL = 5000;
 export default function LinearCarousel({
@@ -14,150 +23,119 @@ export default function LinearCarousel({
   images: any[];
   videos: any[];
 }) {
-  const prevIndex = useRef(0);
   const listRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
-  const leftButtonRef = useRef<HTMLButtonElement>(null);
-  const rightButtonRef = useRef<HTMLButtonElement>(null);
-  const outlineRef = useRef<HTMLDivElement>(null);
   const data = useMemo(() => videos.concat(images), [images, videos]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const { b640: sm } = useBreakpoints([640]);
-
-  useEffect(() => {
-    if (data.length <= 1) {
-      return;
+  const factory = useScrollFactory({
+    containerSelector: "#linear-carousel-indicator",
+    observerOptions: {
+      threshold: 0.9,
+    },
+  });
+  const { elements, scrollToIndex } = useScroll();
+  const indicatorScroll = useScroll(factory);
+  const active = useMemo(() => {
+    const index = elements.findIndex((el) => el.intersectionRatio >= 0.5);
+    if (index < 0) {
+      return {
+        index: 0,
+        element: undefined,
+      };
     }
-    const previewList = previewListRef.current;
-    if (!previewList) {
-      return;
-    }
-    if (previewList.scrollWidth <= previewList.offsetWidth) {
-      rightButtonRef.current?.style.setProperty("opacity", "0");
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (data.length <= 1) {
-      return;
-    }
-    const list = listRef.current;
-    if (!list) {
-      return;
-    }
-    const { width } = list.getBoundingClientRect();
-    console.log({ width, currentIndex });
-    list.style.setProperty(
-      "transform",
-      `translateX(-${width * currentIndex}px)`
-    );
-
-    // Don't schedule next transform if the current item is video
-    // It will be handle by the onEnded event on video element
-    if ('recipes' in data[currentIndex]) {
-      return;
-    }
-    let id: ReturnType<typeof setTimeout>;
-    const animationId = requestAnimationFrame(() => {
-      if (currentIndex === data.length) {
-        id = setTimeout(() => {
-          setCurrentIndex(0);
-        }, SLIDE_INTERVAL);
-      } else {
-        id = setTimeout(() => {
-          setCurrentIndex((prev) => (prev + 1) % data.length);
-        }, SLIDE_INTERVAL);
-      }
-    });
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      clearTimeout(id);
+    return {
+      index,
+      element: elements[index],
     };
-  }, [currentIndex, data]);
+  }, [elements]);
 
-  useEffect(() => {
-    if (data.length <= 1) {
+  const goToItem = (index: number) => {
+    if (index === active.index) {
       return;
     }
-    if (sm >= 0) {
-      const outline = outlineRef.current;
-      const fromIndex = prevIndex.current % data.length;
-      const toIndex = currentIndex % data.length;
-      const previewList = previewListRef.current;
-      if (!previewList || !outline) {
-        return;
-      }
-      const fromElement = previewListRef.current.querySelector<HTMLLIElement>(
-        `li:nth-of-type(${fromIndex + 1})`
-      );
-      const toElement = previewListRef.current.querySelector<HTMLLIElement>(
-        `li:nth-of-type(${toIndex + 1})`
-      );
-      if (!fromElement || !toElement) {
-        return;
-      }
-      if (toIndex > fromIndex) {
-        outline.style.setProperty("left", fromElement.offsetLeft + "px");
-        outline.style.setProperty("right", "unset");
-      } else {
-        outline.style.setProperty(
-          "right",
-          previewList.offsetWidth - fromElement.offsetLeft - 96 + "px"
-        );
-        outline.style.setProperty("left", "unset");
-      }
-      outline.style.setProperty("z-index", (1).toString());
-      outline.style.setProperty(
-        "width",
-        (
-          96 * (Math.abs(toIndex - fromIndex) + 1) +
-          Math.abs(toIndex - fromIndex) * 16
-        ).toString() + "px"
-      );
-      setTimeout(() => {
-        if (toIndex > fromIndex) {
-          outline.style.setProperty(
-            "right",
-            previewList.offsetWidth - toElement.offsetLeft - 96 + "px"
-          );
-          outline.style.setProperty("left", "unset");
-        } else {
-          outline.style.setProperty("left", toElement.offsetLeft + "px");
-          outline.style.setProperty("right", "unset");
-        }
-        outline.style.setProperty("width", "96px");
-        prevIndex.current = toIndex;
-      }, 250);
+    scrollToIndex(index);
+    indicatorScroll.scrollToIndex(index);
+  };
+
+  useEffect(() => {
+    if ("recipes" in data[active.index] && sm >= 0) {
+      return;
     }
-  }, [currentIndex]);
+    let timeOut: ReturnType<typeof setTimeout>;
+    const animationFrame = requestAnimationFrame(() => {
+      timeOut = setTimeout(() => {
+        // goToItem(active.index + 1);
+      }, SLIDE_INTERVAL);
+    });
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      clearTimeout(timeOut);
+    };
+  }, [active.index, data, sm]);
 
   return (
     <>
       <div className="relative overflow-hidden group">
-        {/* <div className="absolute inset-0 controls">
-          <button
-            className="absolute w-14 h-full left-0 transition-transform
-          from-paper_3/40 bg-gradient-to-r to-default/0 z-10
-          -translate-x-full group-hover:translate-x-0"
+        <div className="absolute inset-0 controls">
+          <div
+            className={
+              "w-12 h-full absolute flex justify-center items-center z-[1] " +
+              " left-0  bg-gradient-to-r " +
+              " from-paper_3/40 to-default/0 " +
+              " transition-transform -translate-x-full group-hover:translate-x-0 "
+            }
           >
-            left
-          </button>
-          <button
-            className="absolute w-14 h-full right-0 transition-transform
-          from-paper_3/40 bg-gradient-to-l to-default/0 z-10
-          translate-x-full group-hover:translate-x-0"
+            <button
+              onClick={() => {
+                goToItem(active.index - 1);
+              }}
+              className=" w-8 h-10 flex justify-center items-center focus:outline outline-1 rounded "
+            >
+              <svg width={24} height={24} fill="white" className="rotate-90">
+                <use
+                  width={24}
+                  height={24}
+                  xlinkHref="/svg/sprites/actions.svg#chevron-thin-down"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            className={
+              "w-12 h-full absolute flex justify-center items-center z-[1] " +
+              " right-0  bg-gradient-to-l " +
+              " from-paper_3/40 to-default/0 " +
+              " transition-transform translate-x-full group-hover:translate-x-0 "
+            }
           >
-            right
-          </button>
-        </div> */}
-        <div className="overflow-scroll scrollbar-hidden game-linear-carousel snap-mandatory snap-x">
-          <ul className="flex transition-transform duration-300" ref={listRef}>
-            {videos.map((vid, index) => (
-              <li
-                key={index}
-                className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
-              >
+            <button
+              onClick={() => {
+                goToItem(active.index + 1);
+              }}
+              className=" w-8 h-10 flex justify-center items-center focus:outline outline-1 rounded "
+            >
+              <svg width={24} height={24} fill="white" className="-rotate-90">
+                <use
+                  width={24}
+                  height={24}
+                  xlinkHref="/svg/sprites/actions.svg#chevron-thin-down"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <ul
+          id={"linear-carousel"}
+          ref={listRef}
+          className="flex overflow-scroll snap-mandatory snap-x scrollbar-hidden"
+        >
+          {videos.map((vid, index) => (
+            <Item
+              key={index}
+              as={"li"}
+              className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
+            >
+              {sm >= 0 ? (
                 <Video
                   video={vid}
                   // onEnded={() => {
@@ -168,156 +146,135 @@ export default function LinearCarousel({
                   //   }, SLIDE_INTERVAL);
                   // }}
                 />
-              </li>
-            ))}
-            {images.map((img, index) => (
-              <li
-                key={index}
-                className="rounded overflow-hidden w-full shrink-0 snap-start"
-              >
+              ) : (
                 <div className="relative w-full aspect-video">
-                  <Image src={img.url} alt={img.type} fill />
+                  <Image src={vid.thumbnail} alt={""} fill />
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+              )}
+            </Item>
+          ))}
+          {images.map((img, index) => (
+            <Item
+              key={index}
+              as={"li"}
+              className="rounded overflow-hidden w-full shrink-0 snap-start"
+            >
+              <div className="relative w-full aspect-video">
+                <Image src={img.url} alt={img.type} fill />
+              </div>
+            </Item>
+          ))}
+        </ul>
       </div>
       {data.length > 1 ? (
         <div className="relative flex justify-center mt-4">
           <ul
+            id={"linear-carousel-indicator"}
+            ref={previewListRef}
             className="py-[1px] px-[1px] relative
           overflow-auto snap-x snap-mandatory scrollbar-hidden
           col-start-1 col-end-3 scroll-p-2 [scrollbar-width:none] [-ms-overflw-style:none]
           gap-4 flex w-max max-w-full"
-            ref={previewListRef}
-            onScroll={() => {
-              const { current } = previewListRef;
-              if (!current) {
-                return;
-              }
-              if ((current.scrollLeft || 0) <= 0) {
-                leftButtonRef.current?.style.setProperty("opacity", "0");
-              } else {
-                leftButtonRef.current?.style.setProperty("opacity", "1");
-              }
-              if (
-                (current.scrollLeft || 0) >=
-                current.scrollWidth - current.clientWidth
-              ) {
-                rightButtonRef.current?.style.setProperty("opacity", "0");
-              } else {
-                rightButtonRef.current?.style.setProperty("opacity", "1");
-              }
-            }}
           >
-            <div
-              ref={outlineRef}
-              className={"gameid-preview-outline hidden sm:block"}
-            />
-            {videos.map((vid, index) => (
-              <li
-                key={index}
-                onClick={(e) => {
-                  setCurrentIndex(index);
-                  e.currentTarget.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "center",
-                  });
-                }}
-              >
-                <div
-                  className={`relative 
-                  w-4 h-1 rounded bg-paper sm:h-auto sm:w-24 sm:aspect-video snap-start
-                  md:after:content-[none] after:absolute after:top-0 after:bottom-0 after:bg-white/25 after:rounded
-                  ${
-                    currentIndex % data.length === index
-                      ? "sm:outline-1 after:animate-[animate-full-width_5s_linear]"
-                      : ""
-                  }`}
-                >
-                  <Image
-                    src={vid.thumbnail}
-                    alt={""}
-                    className="rounded hidden sm:block"
-                    fill
-                  />
-                </div>
-              </li>
-            ))}
-            {images.map((img, index) => (
-              <li
-                key={index + videos.length}
-                onClick={(e) => {
-                  setCurrentIndex(index + videos.length);
-                  e.currentTarget.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "center",
-                  });
-                }}
-              >
-                <div
-                  className={`relative 
-                  w-4 h-1 rounded bg-paper sm:h-auto sm:w-24 sm:aspect-video snap-start
-                  md:after:content-[none] after:absolute after:top-0 after:bottom-0 after:bg-white/25 after:rounded
-                  ${
-                    currentIndex % data.length === index + videos.length
-                      ? "sm:outline-1 after:animate-[animate-full-width_5s_linear]"
-                      : ""
-                  }`}
-                >
-                  <Image
-                    src={img.url}
-                    alt={img.type}
-                    className="rounded hidden sm:block"
-                    fill
-                  />
-                </div>
-              </li>
-            ))}
+            {sm >= 0
+              ? videos.map((vid, index) => {
+                  return (
+                    <Item
+                      key={index}
+                      as="li"
+                      factory={factory}
+                      onClick={(e) => {
+                        goToItem(index);
+                      }}
+                    >
+                      <div
+                        className={
+                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start " +
+                          (active.index === index
+                            ? " opacity-100 outline outline-1 "
+                            : "")
+                        }
+                      >
+                        <Image
+                          src={vid.thumbnail}
+                          alt={""}
+                          className="rounded sm:block"
+                          fill
+                        />
+                      </div>
+                    </Item>
+                  );
+                })
+              : null}
+            {sm >= 0
+              ? images.map((img, index) => {
+                  return (
+                    <Item
+                      key={index + videos.length}
+                      as="li"
+                      factory={factory}
+                      onClick={() => {
+                        goToItem(index + videos.length);
+                      }}
+                    >
+                      <div
+                        className={
+                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start " +
+                          (active.index === index + videos.length
+                            ? " opacity-100 outline outline-1 "
+                            : "")
+                        }
+                      >
+                        <Image
+                          src={img.url}
+                          alt={img.type}
+                          className="rounded hidden sm:block"
+                          fill
+                        />
+                      </div>
+                    </Item>
+                  );
+                })
+              : null}
+            {sm < 0
+              ? data.map((_, index) => {
+                  return (
+                    <li
+                      className={
+                        "relative w-4 h-1 rounded bg-paper " +
+                        " after:absolute after:inset-0 after:rounded " +
+                        " after:transition-[width] after:duration-[5s] after:delay-75 " +
+                        (active.index === index
+                          ? " after:w-4 after:bg-white_primary/25 "
+                          : " after:w-0 ")
+                      }
+                    ></li>
+                  );
+                })
+              : null}
           </ul>
           <ChevronButton
             direction="left"
-            className="top-1/2 -translate-y-1/2 hidden sm:block"
-            ref={leftButtonRef}
+            className={
+              "top-1/2 -translate-y-1/2 hidden sm:block " +
+              ((indicatorScroll.elements[0]?.intersectionRatio || 0) < 0.9
+                ? " opacity-100 "
+                : " opacity-0 ")
+            }
             onClick={() => {
-              const previewList = previewListRef.current;
-              if (!previewList) {
-                return;
-              }
-              if (previewList.scrollLeft <= 0) {
-                return;
-              }
-              // userInteract.current = true;
-              previewList.scroll({
-                left: previewList.scrollLeft - 100,
-                behavior: "smooth",
-              });
+              indicatorScroll.scrollToNextOffView("left");
             }}
           />
           <ChevronButton
             direction="right"
-            className="top-1/2 -translate-y-1/2 hidden sm:block opacity-100"
-            ref={rightButtonRef}
+            className={
+              "top-1/2 -translate-y-1/2 hidden sm:block " +
+              ((indicatorScroll.elements.at(-1)?.intersectionRatio || 0) < 0.9
+                ? " opacity-100 "
+                : " opacity-0 ")
+            }
             onClick={() => {
-              const previewList = previewListRef.current;
-              if (!previewList) {
-                return;
-              }
-
-              if (
-                previewList.scrollLeft >=
-                previewList.scrollWidth - previewList.clientWidth
-              ) {
-                return;
-              }
-              // userInteract.current = true;
-              previewListRef.current?.scroll({
-                left: previewList.scrollLeft + 100,
-                behavior: "smooth",
-              });
+              indicatorScroll.scrollToNextOffView("right");
             }}
           />
         </div>

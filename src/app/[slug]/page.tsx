@@ -6,12 +6,15 @@ import { getLoggedInStatus } from "@/actions/users";
 import { redirect } from "next/navigation";
 import remarkBreaks from "remark-breaks";
 import ExpandableDescription from "@/components/ExpandableDescription";
-import GameCard from "@/components/game/GameCard";
 import LinearCarousel from "@/components/game/LinearCarousel";
-import Link from "next/link";
-import { connectDB, sql } from "../layout";
 import rehypeRaw from "rehype-raw";
 import SystemRequirements from "@/components/game/SystemRequirements";
+import Scroll, { Item } from "@/components/Scroll";
+import {
+  ScrollBulletIndicator,
+} from "@/components/home/hero-slider";
+import {connectDB} from "@/database";
+import {findGameBySlug} from "@/database/repository/game/select";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -24,162 +27,10 @@ const criticRec = {
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const db = await connectDB();
-  const response = await db.execute(sql`
-select 
-  *, 
-  gi.images, 
-  if(
-    v.videos is null, 
-    json_array(), 
-    v.videos
-  ) as videos, 
-  s.systems as systems, 
-  td.tags as tags, 
-  r.reviews as reviews, 
-  p.polls as polls 
-from 
-  games 
-  left join (
-    select 
-      gi.game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', gi.ID, 'url', gi.url, 'type', 
-          gi.type, 'alt', gi.alt, 'row', gi.pos_row
-        )
-      ) as images 
-    from 
-      game_images gi 
-    group by 
-      game_id
-  ) gi on games.ID = gi.game_id 
-  left join (
-    select 
-      v.game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', v.ID, 'thumbnail', v.thumbnail, 
-          'recipes', vc.recipes
-        )
-      ) as videos 
-    from 
-      videos v 
-      left join (
-        select 
-          vr.video_id, 
-          json_arrayagg(
-            json_object(
-              'ID', vr.ID, 'media_ref_id', vr.media_ref_id, 
-              'recipe', vr.recipe, 'variants', 
-              vv.variants, 'manifest', vr.manifest
-            )
-          ) as recipes 
-        from 
-          video_recipes vr 
-          left join (
-            select 
-              recipe_id, 
-              json_arrayagg(
-                json_object(
-                  'ID', ID, 'key', media_key, 'content_type', 
-                  content_type, 'duration', duration, 
-                  'height', height, 'width', width, 
-                  'url', url
-                )
-              ) as variants 
-            from 
-              video_variants 
-            group by 
-              recipe_id
-          ) vv on vv.recipe_id = vr.ID 
-        group by 
-          vr.video_id
-      ) vc on vc.video_id = v.ID 
-    group by 
-      game_id
-  ) v on games.ID = v.game_id 
-  left join (
-    select 
-      s.game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', s.ID, 'os', s.os, 'details', sd.details
-        )
-      ) as systems 
-    from 
-      systems s 
-      left join (
-        select 
-          system_id, 
-          json_arrayagg(
-            json_object(
-              'ID', sd.ID, 'title', sd.title, 'minimum', 
-              sd.minimum, 'recommended', sd.recommended
-            )
-          ) as details 
-        from 
-          system_details sd 
-        group by 
-          system_id
-      ) sd on s.ID = sd.system_id 
-    group by 
-      game_id
-  ) s on games.ID = s.game_id 
-  left join (
-    select 
-      tag_details.game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', t.ID, 'name', t.name, 'group_name', 
-          t.group_name
-        )
-      ) as tags 
-    from 
-      tag_details 
-      join tags t on tag_details.tag_id = t.ID 
-    group by 
-      game_id
-  ) td on td.game_id = s.game_id 
-  left join (
-    select 
-      game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', reviews.ID, 'type', reviews.type, 
-          'outlet', reviews.outlet, 'total_score', 
-          reviews.total_score, 'earned_score', 
-          reviews.earned_score, 'body', reviews.body, 
-          'author', reviews.author, 'text', 
-          reviews.text
-        )
-      ) as reviews 
-    from 
-      reviews 
-    group by 
-      game_id
-  ) r on games.ID = r.game_id 
-  left join (
-    select 
-      game_id, 
-      json_arrayagg(
-        json_object(
-          'ID', polls.ID, 'text', polls.text, 
-          'result_title', polls.result_title, 
-          'result_text', polls.result_text, 
-          'result_emoji', polls.result_emoji, 
-          'emoji', polls.emoji
-        )
-      ) as polls 
-    from 
-      polls 
-    group by 
-      game_id
-  ) p on games.ID = p.game_id 
-where 
-  slug = '${slug}';
-`);
+  const response = await findGameBySlug(slug);
+
   const game = response[0][0];
-  const mappingResponse = await db.execute(sql`
+  /*const mappingResponse = await db.execute(sql`
 select *, gi.images
 from games
          left join (select game_id,
@@ -188,12 +39,12 @@ from games
                     from game_images gi
                     group by game_id) gi on games.ID = gi.game_id
 where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
-`);
-  const editions = mappingResponse[0].filter((g) => g.type.includes("edition"));
+`);*/
+/*  const editions = mappingResponse[0].filter((g) => g.type.includes("edition"));
   const dlc = mappingResponse[0].filter((g) => g.type.includes("dlc"));
   const addOns = mappingResponse[0].filter((g) => g.type.includes("add_on"));
-  const dlcAndAddons = dlc.concat(addOns);
-  console.info({ game });
+  const dlcAndAddons = dlc.concat(addOns);*/
+  console.info({response});
 
   const landscapeImages = game.images.reduce((acc: any[], curr: any) => {
     const type = curr.type.toLowerCase();
@@ -228,7 +79,9 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
       <h1 className="text-2xl text-white_primary pb-6">{game.name}</h1>
       <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-6 grid-rows-[min-content_auto] gap-4 md:gap-8 lg:gap-16">
         <section className="col-start-1 col-span-full md:[grid-column:-3/1] row-start-1 row-end-2">
-          <LinearCarousel videos={game.videos} images={[]} />
+          <Scroll containerSelector="#linear-carousel">
+            <LinearCarousel videos={game.videos} images={landscapeImages} />
+          </Scroll>
         </section>
         <section
           className="w-full 
@@ -338,7 +191,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
             </article>
           </ExpandableDescription>
         </section>
-        {editions.length > 0 ? (
+        {/*{editions.length > 0 ? (
           <>
             <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
               <h2 className="text-xl text-white_primary pb-4">Editions</h2>
@@ -421,7 +274,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
               })}
             </div>
           </section>
-        )}
+        )}*/}
         {game.polls && (
           <section className="col-start-1 col-span-full xl:[grid-column:-3/1] grid grid-cols-2 gap-8">
             {game.polls.slice(0, 6).map((poll: any) => {
@@ -454,8 +307,8 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
           </section>
         )}
         {game.reviews.length > 0 && (
-          <section className="col-start-1 col-span-full xl:[grid-column:-3/1] overflow-x-scroll scrollbar-hidden snap-mandatory snap-x">
-            <h2 className="text-xl text-white_primary pb-4">Ratings</h2>
+          <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
+            <h2 className="text-xl text-white_primary pb-4">{game.name} Ratings & Reviews</h2>
             <ul className="flex gap-4 mb-4">
               {game.critic_pct && (
                 <li className=" flex flex-col items-center">
@@ -469,7 +322,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       fill="none"
                     >
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
@@ -478,20 +331,20 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         fill="none"
                       ></circle>
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
                         stroke="rgb(242, 191, 86)"
-                        stroke-dasharray="226.1946710584651, 226.1946710584651"
-                        stroke-dashoffset={100 - game.critic_pct}
+                        strokeDasharray="226.1946710584651, 226.1946710584651"
+                        strokeDashoffset={100 - game.critic_pct}
                       ></circle>
                     </svg>
                     <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm">
                       {game.critic_pct + "%"}
                     </p>
                   </div>
-                  <p>Critics Recommend</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">Critics Recommend</p>
                 </li>
               )}
               {game.critic_avg && (
@@ -520,15 +373,15 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         cy="50%"
                         r="36"
                         stroke="rgb(242, 191, 86)"
-                        stroke-dasharray="226.1946710584651, 226.1946710584651"
-                        stroke-dashoffset={100 - game.critic_avg}
+                        strokeDasharray="226.1946710584651, 226.1946710584651"
+                        strokeDashoffset={100 - game.critic_avg}
                       ></circle>
                     </svg>
                     <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm">
                       {game.critic_avg}
                     </p>
                   </div>
-                  <p>Top Critic Average</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">Top Critic Average</p>
                 </li>
               )}
               {game.critic_pct && (
@@ -547,8 +400,8 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         cx="50%"
                         cy="50%"
                         r="36"
-                        stroke-dasharray="51.548667764616276, 5"
-                        stroke-dashoffset="-2.5"
+                        strokeDasharray="51.548667764616276, 5"
+                        strokeDashoffset="-2.5"
                         className="text-paper"
                         stroke="currentColor"
                         fill="none"
@@ -558,11 +411,11 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         cx="50%"
                         cy="50%"
                         r="36"
-                        stroke-dasharray={
+                        strokeDasharray={
                           criticRec[game.critic_rec.toLowerCase()] +
                           ", 226.1946710584651"
                         }
-                        stroke-dashoffset="-2.5"
+                        strokeDashoffset="-2.5"
                         stroke="rgb(242, 191, 86)"
                       ></circle>
                     </svg>
@@ -570,90 +423,104 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       {game.critic_rec}
                     </p>
                   </div>
-                  <p>OpenCritic Rating</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">OpenCritic Rating</p>
                 </li>
               )}
             </ul>
-            <ul className="flex gap-8">
-              {game.reviews.map((review: any) => {
-                return (
-                  <li className="w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 snap-center">
-                    <p>{review.outlet}</p>
-                    <p className="text-white_primary/60 text-sm">
-                      by {review.author}
-                    </p>
-                    <hr className="border-white_primary/25 my-4" />
-                    {review.type === "star" ? (
-                      <ul className="flex gap-2">
-                        {[1, 2, 3, 4, 5].map((starIndex) => {
-                          const remainder =
-                            review.earned_score < starIndex
-                              ? review.avg_rating % 1
-                              : 0;
-                          const starId = "star-rating-id-" + starIndex;
-                          return (
-                            <li>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="svg"
-                                viewBox="0 0 36 34"
-                                width={14}
-                                height={14}
-                                data-index={remainder}
-                                stroke="rgb(245, 245, 245)"
-                                strokeWidth={1}
-                              >
-                                {remainder && (
-                                  <defs>
-                                    <linearGradient
-                                      id={starId}
-                                      x1="0"
-                                      y1="0"
-                                      x2="1"
-                                      y2="0"
-                                    >
-                                      <stop
-                                        stopColor="rgb(245, 245, 245)"
-                                        offset={remainder.toString()}
-                                      ></stop>
-                                      <stop
-                                        className="text-transparent"
-                                        stopColor="currentColor"
-                                        offset={remainder.toString()}
-                                      ></stop>
-                                    </linearGradient>
-                                  </defs>
-                                )}
-                                <path
-                                  d="M17.7835 1.05234C17.8961 0.714958 18.3733 0.714958 18.4859 1.05234L22.4334 12.8804C22.4839 13.0316 22.6253 13.1335 22.7846 13.1335H35.5375C35.8985 13.1335 36.0461 13.5975 35.7513 13.806L25.4512 21.0917C25.318 21.1859 25.2622 21.3563 25.3138 21.5112L29.2521 33.3116C29.3654 33.651 28.9792 33.9377 28.6871 33.7311L18.3485 26.4182C18.2204 26.3276 18.049 26.3276 17.9209 26.4182L7.58236 33.7311C7.29026 33.9377 6.90407 33.651 7.01734 33.3116L10.9556 21.5112C11.0073 21.3563 10.9515 21.1859 10.8182 21.0917L0.518159 13.806C0.223381 13.5975 0.370904 13.1335 0.731971 13.1335H13.4848C13.6441 13.1335 13.7856 13.0316 13.836 12.8804L17.7835 1.05234Z"
-                                  fill={
-                                    remainder
-                                      ? `url(#${starId})`
-                                      : "currentColor"
-                                  }
-                                ></path>
-                              </svg>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <p>
-                        {review.earned_score}/{review.total_score}
+            <Scroll containerSelector="#review-list-scroll">
+              <ul id="review-list-scroll" className="flex gap-8  overflow-x-scroll scrollbar-hidden snap-mandatory snap-x">
+                {game.reviews.map((review: any) => {
+                  return (
+                    <Item
+                      as="li"
+                      className="w-4/5 sm:w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 snap-center"
+                    >
+                      <p>{review.outlet}</p>
+                      <p className="text-white_primary/60 text-sm">
+                        by {review.author}
                       </p>
-                    )}
-                    <br />
-                    <p className="text-sm text-white_primary/60 wrap-balance">
-                      {review.body}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
+                      <hr className="border-white_primary/25 my-4" />
+                      {review.type === "star" ? (
+                        <ul className="flex gap-2">
+                          {[1, 2, 3, 4, 5].map((starIndex) => {
+                            const remainder =
+                              review.earned_score < starIndex
+                                ? review.avg_rating % 1
+                                : 0;
+                            const starId = "star-rating-id-" + starIndex;
+                            return (
+                              <li>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="svg"
+                                  viewBox="0 0 36 34"
+                                  width={14}
+                                  height={14}
+                                  data-index={remainder}
+                                  stroke="rgb(245, 245, 245)"
+                                  strokeWidth={1}
+                                >
+                                  {remainder && (
+                                    <defs>
+                                      <linearGradient
+                                        id={starId}
+                                        x1="0"
+                                        y1="0"
+                                        x2="1"
+                                        y2="0"
+                                      >
+                                        <stop
+                                          stopColor="rgb(245, 245, 245)"
+                                          offset={remainder.toString()}
+                                        ></stop>
+                                        <stop
+                                          className="text-transparent"
+                                          stopColor="currentColor"
+                                          offset={remainder.toString()}
+                                        ></stop>
+                                      </linearGradient>
+                                    </defs>
+                                  )}
+                                  <path
+                                    d="M17.7835 1.05234C17.8961 0.714958 18.3733 0.714958 18.4859 1.05234L22.4334 12.8804C22.4839 13.0316 22.6253 13.1335 22.7846 13.1335H35.5375C35.8985 13.1335 36.0461 13.5975 35.7513 13.806L25.4512 21.0917C25.318 21.1859 25.2622 21.3563 25.3138 21.5112L29.2521 33.3116C29.3654 33.651 28.9792 33.9377 28.6871 33.7311L18.3485 26.4182C18.2204 26.3276 18.049 26.3276 17.9209 26.4182L7.58236 33.7311C7.29026 33.9377 6.90407 33.651 7.01734 33.3116L10.9556 21.5112C11.0073 21.3563 10.9515 21.1859 10.8182 21.0917L0.518159 13.806C0.223381 13.5975 0.370904 13.1335 0.731971 13.1335H13.4848C13.6441 13.1335 13.7856 13.0316 13.836 12.8804L17.7835 1.05234Z"
+                                    fill={
+                                      remainder
+                                        ? `url(#${starId})`
+                                        : "currentColor"
+                                    }
+                                  ></path>
+                                </svg>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <p>
+                          {review.earned_score}/{review.total_score}
+                        </p>
+                      )}
+                      <br />
+                      <p className="text-sm text-white_primary/60 wrap-balance">
+                        {review.body}
+                      </p>
+                    </Item>
+                  );
+                })}
+              </ul>
+              <ul className="flex gap-4 justify-center my-2">
+                {game.reviews.map((review: any, index: number) => {
+                  return (
+                    <li className={"sm:even:hidden"}>
+                      <ScrollBulletIndicator index={index} />
+                    </li>
+                  );
+                })}
+              </ul>
+            </Scroll>
           </section>
         )}
         {game.systems.length > 0 && (
-          <section className="col-start-1 col-span-full xl:[grid-column:-3/1] bg-paper px-4 py-2 rounded-md">
+          <section className="col-start-1 col-span-full xl:[grid-column:-3/1] bg-paper px-8 py-2 pb-8 rounded-md">
             <SystemRequirements systems={game.systems} />
           </section>
         )}

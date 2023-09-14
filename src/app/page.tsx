@@ -7,7 +7,8 @@ import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
 import { testServerAction } from "@/actions/test";
 import { HoverPlayVideo } from "@/components/HoverPlayVideo";
-import { connectDB, sql } from "./layout";
+import Scroll from "@/components/Scroll";
+import {connectDB, sql} from "@/database";
 
 export default async function Home() {
   // const data: any[] = await getCollections([
@@ -163,7 +164,9 @@ from
         data={data[0].list_game.slice(0, 6)}
         className="hidden md:block"
       />
-      <HeroSlider data={data[0]} className="md:hidden" />
+      <Scroll containerSelector="#hero-slider">
+        <HeroSlider data={data[0]} className="md:hidden" />
+      </Scroll>
       <hr className="my-4 border-default" />
       {data.slice(0, 1).map((collection: any, index: number) => (
         <Carousel

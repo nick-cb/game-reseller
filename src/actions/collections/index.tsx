@@ -1,4 +1,4 @@
-import { connectDB, sql } from "@/app/layout";
+import {connectDB, sql} from "@/database";
 
 export async function getCollections(query: { keys: string[] }) {
   const { keys } = query;

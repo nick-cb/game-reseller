@@ -1,11 +1,11 @@
 "use client";
 
-import { MouseEvent, useEffect, useMemo, useRef } from "react";
+import React, { PropsWithChildren, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useInfiniteScrollText } from "../InfiniteScrollText";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
-import { useCarousel } from "../carousel/useCarousel";
+import { Item, useScroll } from "../Scroll";
 
 const breakpoints = [768] as const;
 export function HeroSlider({
@@ -17,24 +17,11 @@ export function HeroSlider({
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   const { b768: md } = useBreakpoints(breakpoints);
-  const carouselConfig = useMemo(() => {
-    return {
-      containerRef: listRef,
-      itemSelector: 'li',
-      enabled: md < 0,
-      config: {
-        method: "scroll",
-      } as const,
-    };
-  }, [md]);
-  const { active, goToIndex } = useCarousel<HTMLUListElement, HTMLLIElement>(
-    carouselConfig
-  );
+  const { elements, scrollToIndex } = useScroll();
 
   const _data = useMemo(() => {
     return data?.list_game.slice(0, 6);
   }, [data]);
-
 
   if (md >= 0) {
     return null;
@@ -43,6 +30,7 @@ export function HeroSlider({
   return (
     <div>
       <ul
+        id={"hero-slider"}
         ref={listRef}
         className={
           "w-full flex gap-4 overflow-scroll scrollbar-hidden snap-x snap-mandatory " +
@@ -53,23 +41,55 @@ export function HeroSlider({
           <SliderItem key={item.ID} item={item} index={index} />
         ))}
       </ul>
-      <ul
-        className="flex w-full justify-center items-center gap-4 pt-4 md:hidden"
-      >
-        {_data.map((item: any, index: number) => (
-          <li key={index} className="group">
-            <button
-              key={item.ID}
-              onClick={() => goToIndex(index)}
-              className={
-                "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
-                (active.index === index ? " bg-white/60 " : "")
-              }
-            ></button>
-          </li>
-        ))}
+      <ul className="flex w-full justify-center items-center gap-4 pt-4 md:hidden">
+        {_data.map((item: any, index: number) => {
+          return (
+            <li>
+              <BulletIndicator
+                key={item.ID}
+                active={elements[index]?.intersectionRatio > 0.5}
+                onClick={() => {
+                  scrollToIndex(index);
+                }}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
+  );
+}
+
+function BulletIndicator({
+  active,
+  onClick,
+}: {
+  active: boolean;
+  onClick?: () => void;
+  groupClassname?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
+        (active ? " bg-white/60 " : "")
+      }
+    ></button>
+  );
+}
+
+export function ScrollBulletIndicator({ index }: { index: number }) {
+  const { elements, scrollToIndex } = useScroll();
+  const active = elements[index]?.isIntersecting;
+
+  return (
+    <BulletIndicator
+      active={active}
+      onClick={() => {
+        scrollToIndex(index);
+      }}
+    />
   );
 }
 
@@ -81,7 +101,8 @@ function SliderItem({ item, index }: { item: any; index: number }) {
   });
 
   return (
-    <li
+    <Item
+      as={"li"}
       className={
         "relative w-11/12 aspect-[9/11] flex-shrink-0 h-full snap-start rounded-xl overflow-hidden flex "
       }
@@ -161,6 +182,6 @@ function SliderItem({ item, index }: { item: any; index: number }) {
           </button>
         </div>
       </div>
-    </li>
+    </Item>
   );
 }
