@@ -50,10 +50,10 @@ const InfiniteCarousel = ({
     const { width } = list.getBoundingClientRect();
     list.style.setProperty(
       "transform",
-      `translateX(-${width * (currentIndex % (data.length + 1))}px)`
+      `translateX(-${width * (currentIndex % (data.length + 1))}px)`,
     );
     const toElement = previewListRef.current?.querySelector<HTMLLIElement>(
-      `li:nth-of-type(${currentIndex + 1})`
+      `li:nth-of-type(${currentIndex + 1})`,
     );
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0];
@@ -114,10 +114,10 @@ const InfiniteCarousel = ({
         return;
       }
       const fromElement = previewListRef.current.querySelector<HTMLLIElement>(
-        `li:nth-of-type(${fromIndex + 1})`
+        `li:nth-of-type(${fromIndex + 1})`,
       );
       const toElement = previewListRef.current.querySelector<HTMLLIElement>(
-        `li:nth-of-type(${toIndex + 1})`
+        `li:nth-of-type(${toIndex + 1})`,
       );
       if (!fromElement || !toElement) {
         return;
@@ -128,7 +128,7 @@ const InfiniteCarousel = ({
       } else {
         outline.style.setProperty(
           "right",
-          previewList.offsetWidth - fromElement.offsetLeft - 96 + "px"
+          previewList.offsetWidth - fromElement.offsetLeft - 96 + "px",
         );
         outline.style.setProperty("left", "unset");
       }
@@ -138,13 +138,13 @@ const InfiniteCarousel = ({
         (
           96 * (Math.abs(toIndex - fromIndex) + 1) +
           Math.abs(toIndex - fromIndex) * 16
-        ).toString() + "px"
+        ).toString() + "px",
       );
       setTimeout(() => {
         if (toIndex > fromIndex) {
           outline.style.setProperty(
             "right",
-            previewList.offsetWidth - toElement.offsetLeft - 96 + "px"
+            previewList.offsetWidth - toElement.offsetLeft - 96 + "px",
           );
           outline.style.setProperty("left", "unset");
         } else {
@@ -177,6 +177,7 @@ const InfiniteCarousel = ({
                       setCurrentIndex((prev) => prev + 1);
                     }, 3000);
                   }}
+                  customControls={false}
                 />
               </div>
             </li>
@@ -192,6 +193,7 @@ const InfiniteCarousel = ({
             Array.isArray(first) ? (
               <li className="w-full shrink-0 snap-start" key={"last"}>
                 <div className="relative w-full aspect-video">
+                  {/* @ts-ignore */}
                   <Video video={first} />
                 </div>
               </li>

@@ -11,7 +11,10 @@ import {
   AnimatedSizeProvider,
   AnimatedSizeItem,
 } from "@/components/AnimatedSizeProvider";
-import { EmailSignupFormPayload, EmailSignupForm } from "@/components/auth/email";
+import {
+  EmailSignupFormPayload,
+  EmailSignupForm,
+} from "@/components/auth/email";
 import { StrategyList } from "@/components/auth/list";
 
 export default function Login() {
@@ -35,7 +38,7 @@ export default function Login() {
         .refine((obj) => obj.password === obj.confirm_password, {
           message: "Password not match",
           path: ["password", "confirm_password"],
-        })
+        }),
     ),
   });
 
@@ -52,6 +55,7 @@ export default function Login() {
     <AnimatedSizeProvider
       as="div"
       className="flex gap-5"
+      // @ts-ignore
       ref={translateRef}
       onStartAnimate={async (_, { element: prevEl }, { element: currEl }) => {
         if (strategy === undefined) {
@@ -66,7 +70,7 @@ export default function Login() {
           {
             duration: 200,
             easing: "ease-out",
-          }
+          },
         );
         const ani2 = currEl?.animate(
           [
@@ -76,7 +80,7 @@ export default function Login() {
           {
             duration: 200,
             easing: "ease-out",
-          }
+          },
         );
         ani2?.finished.then(() => {
           currEl?.style.setProperty("transform", "translateX(-100%)");
@@ -96,6 +100,7 @@ export default function Login() {
           onClickStrategy={(_, s) => {
             setStrategy(s);
           }}
+          type={"login"}
         />
       </AnimatedSizeItem>
       <AnimatedSizeItem

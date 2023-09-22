@@ -16,8 +16,8 @@ import Stripe from "@/components/payment/Stripe";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
+import { ErrorOption, Field, FieldArray, FieldArrayPath, FieldError, FieldErrors, FieldValues, FormState, RegisterOptions, SubmitErrorHandler, SubmitHandler, UseFormRegisterReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 
 type PaymentMethodFormPayload = {
@@ -200,7 +200,7 @@ export function ItemOrder({
             className={"w-full shrink-0 snap-center stripe-card"}
           >
             <StripeElements clientSecret={clientSecret}>
-              <StripeCheckoutForm />
+              {/* <StripeCheckoutForm form={form} /> */}
             </StripeElements>
             <hr className="border-default my-2" />
             <SavePayment id="card" />

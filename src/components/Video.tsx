@@ -95,6 +95,7 @@ export default function Video({
       progress.setAttribute("max", video.duration.toString());
     }
     const ratio = video.currentTime / video.duration;
+    // @ts-ignore
     progress.children.item(0)!.style.width =
       progress.clientWidth * ratio + "px";
   };
@@ -153,10 +154,10 @@ export default function Video({
           .map((recipe) => {
             const lowestVariant = recipe.variants.sort(
               ({ media_key: a }, { media_key: b }) => {
-                if (a === 'audio') {
+                if (a === "audio") {
                   return 1;
                 }
-                if (b === 'audio') {
+                if (b === "audio") {
                   return -1;
                 }
                 if (
@@ -230,6 +231,7 @@ export default function Video({
               const rect = event.currentTarget.getBoundingClientRect();
               const pos = (event.pageX - rect.left) / progress.offsetWidth;
               video.currentTime = pos * video.duration;
+              // @ts-ignore
               progress.children.item(0)!.style.width =
                 event.pageX - rect.left + "px";
               if (audio) {

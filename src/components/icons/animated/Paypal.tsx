@@ -14,6 +14,7 @@ export function Paypal({ show }: { show: boolean }) {
         x="0px"
         y="0px"
         viewBox="0 0 48 48"
+        // @ts-ignore
         style={{ enableBackground: "new 0 0 48 48" }}
         xmlSpace="preserve"
         width={28}

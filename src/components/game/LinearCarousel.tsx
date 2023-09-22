@@ -136,6 +136,7 @@ export default function LinearCarousel({
                 >
                   {sm >= 0 ? (
                     <Video
+                      // @ts-ignore
                       video={vid}
                       // onEnded={() => {
                       //   setTimeout(() => {

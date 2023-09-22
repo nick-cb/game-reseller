@@ -5,7 +5,6 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -70,6 +69,7 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
       target,
     } = nextOffsetEntry;
     root.scroll({
+      // @ts-ignore
       left: target.offsetLeft,
       behavior: 'smooth',
     });

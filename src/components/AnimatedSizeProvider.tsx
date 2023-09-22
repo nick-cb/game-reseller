@@ -11,7 +11,7 @@ const AnimatedSizeContext = createContext<{
   updateSize: (element: HTMLElement, width: number, height: number) => void;
 }>({ container: undefined, updateSize: () => {} });
 export const AnimatedSizeProvider = React.forwardRef(function <
-  C extends keyof JSX.IntrinsicElements
+  C extends keyof JSX.IntrinsicElements,
 >(
   {
     as,
@@ -28,10 +28,10 @@ export const AnimatedSizeProvider = React.forwardRef(function <
     onStartAnimate?: (
       element: HTMLElement,
       prev: { element: HTMLElement | null; width: number; height: number },
-      next: { element: HTMLElement | null; width: number; height: number }
+      next: { element: HTMLElement | null; width: number; height: number },
     ) => void;
   } & JSX.IntrinsicElements[C],
-  ref: JSX.IntrinsicElements[C]["ref"]
+  ref: JSX.IntrinsicElements[C]["ref"],
 ) {
   // duration: 150,
   // easing: "ease-out",
@@ -51,7 +51,7 @@ export const AnimatedSizeProvider = React.forwardRef(function <
   const updateSize = async (
     element: HTMLElement,
     width: number,
-    height: number
+    height: number,
   ) => {
     // @ts-ignore
     const current = componentRef.current;
@@ -67,7 +67,7 @@ export const AnimatedSizeProvider = React.forwardRef(function <
           height: `${height}px`,
         },
       ],
-      animationOptions
+      animationOptions,
     );
 
     // await ani.finished;
@@ -118,6 +118,7 @@ export const AnimatedSizeItem = React.memo(function ({
 
     return () => {
       if (updateOnInactive) {
+        // @ts-ignore
         updateSize(current, 0, 0);
       }
     };
