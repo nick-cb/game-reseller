@@ -10,7 +10,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
         ...system,
         active: index === 0 ? true : false,
       };
-    })
+    }),
   );
 
   return (
@@ -20,22 +20,22 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
           return (
             <li key={system.ID}>
               <button
-              onClick={() => {
-                if (detailContainerRef.current) {
-                  detailContainerRef.current?.scroll({
-                    left: index * detailContainerRef.current.clientWidth,
-                    behavior: 'smooth',
-                  })
-                  setSystems((prev) => {
-                    const prevActiveIndex = prev.findIndex(p => !!p.active);
-                    if (prevActiveIndex > -1) {
-                      prev[prevActiveIndex].active = false;
-                    }
-                    prev[index].active = true;
-                    return [...prev];
-                  })
-                }
-              }}
+                onClick={() => {
+                  if (detailContainerRef.current) {
+                    detailContainerRef.current?.scroll({
+                      left: index * detailContainerRef.current.clientWidth,
+                      behavior: "smooth",
+                    });
+                    setSystems((prev) => {
+                      const prevActiveIndex = prev.findIndex((p) => !!p.active);
+                      if (prevActiveIndex > -1) {
+                        prev[prevActiveIndex].active = false;
+                      }
+                      prev[index].active = true;
+                      return [...prev];
+                    });
+                  }
+                }}
                 className={
                   "rounded-t border-b-[3px] py-7 px-2 text-sm font-bold uppercase " +
                   " transition-colors " +
@@ -44,7 +44,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                     : " border-b-paper  hover:border-b-white/60 ")
                 }
               >
-                <label>{system.os}</label>
+                <label className="whitespace-nowrap">{system.os}</label>
               </button>
             </li>
           );
@@ -59,10 +59,10 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
       >
         {_systems.map((system) => {
           const minimum = system.details.filter(
-            (detail: any) => !!detail.minimum
+            (detail: any) => !!detail.minimum,
           );
           const recommended = system.details.filter(
-            (detail: any) => !!detail.recommended
+            (detail: any) => !!detail.recommended,
           );
           return (
             <li
@@ -76,22 +76,22 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
               {system.details.map((detail: any) => {
                 return (
                   <React.Fragment key={detail.ID}>
-                    <div className="text-sm">
-                      <div className="text-white_primary/60">
-                        {detail.title}
+                    {detail.minimum ? (
+                      <div className="text-sm grid-cols-1">
+                        <div className="text-white_primary/60">
+                          {detail.title}
+                        </div>
+                        <div>{detail.minimum}</div>
                       </div>
-                      <div>{detail.minimum}</div>
-                    </div>
-                    <div className="text-sm">
-                      {detail.recommended && (
-                        <>
-                          <div className="text-white_primary/60">
-                            {detail.title}
-                          </div>
-                          <div>{detail.recommended}</div>
-                        </>
-                      )}
-                    </div>
+                    ) : null}
+                    {detail.recommended ? (
+                      <div className="text-sm grid-cols-2">
+                        <div className="text-white_primary/60">
+                          {detail.title}
+                        </div>
+                        <div>{detail.recommended}</div>
+                      </div>
+                    ) : null}
                   </React.Fragment>
                 );
               })}

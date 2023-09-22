@@ -1,26 +1,55 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import PortraitGameCard from "../PortraitGameCard";
 import Link from "next/link";
+import { Collections, Game, GameImages } from "@/database/models";
+import { FVideoFullInfo } from "@/database/repository/game/select";
+import { useScroll } from "../Scroll";
 
-const Carousel = ({
-  collection,
-  className,
-}: {
-  collection: any;
-  className?: string;
-}) => {
+type CarouselProps = {
+  collection: Collections & {
+    list_game: (Pick<
+      Game,
+      | "ID"
+      | "name"
+      | "slug"
+      | "developer"
+      | "avg_rating"
+      | "sale_price"
+      | "description"
+    > & {
+      images: {
+        portrait: GameImages;
+        landscape: GameImages | undefined;
+        logo: GameImages | undefined;
+      };
+      videos: FVideoFullInfo[];
+    })[];
+  };
+  className: string;
+};
+
+const Carousel = ({ collection, className }: CarouselProps) => {
   const listRef = useRef<HTMLDivElement>(null);
   const leftButtonRef = useRef<HTMLButtonElement>(null);
   const rightButtonRef = useRef<HTMLButtonElement>(null);
+  const { elements, scrollToIndex } = useScroll();
+  const active = useMemo(() => {
+    const newAtiveIndex = elements.findIndex((el) => el.isIntersecting);
+    return {
+      index: newAtiveIndex,
+      entry: elements[newAtiveIndex],
+    };
+  }, [elements]);
+  console.log({ active });
 
   return (
-    <section key={collection._id} className={className}>
+    <section className={className}>
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
-          href={`/browse?category=${collection._id}`}
+          href={`/browse?category=${collection.ID}`}
         >
           {collection.name[0].toUpperCase() + collection.name.substring(1)}
           <svg
@@ -41,61 +70,40 @@ const Carousel = ({
         </Link>
         <div className={"flex items-center gap-2"}>
           <button
-            // onClick={() => {
-            //   listRef.current?.scroll({
-            //     left: (listRef.current.scrollLeft || 0) - 288,
-            //     behavior: "smooth",
-            //   });
-            // }}
             ref={leftButtonRef}
             onClick={() => {
-              if ((listRef.current?.scrollLeft || 0) <= 0) {
-                return;
-              }
-              listRef.current?.scroll({
-                left: (listRef.current.scrollLeft || 0) - 288,
-                behavior: "smooth",
-              });
+              scrollToIndex(active.index - 1);
             }}
-            className="bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color"
+            className={
+              "bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color "
+            }
           >
             <svg
               fill={"transparent"}
-              stroke={"rgb(255 255 255 / 0.25)"}
+              stroke={
+                active.index === 0
+                  ? "rgb(255 255 255 / 0.25)"
+                  : "rgb(255 255 255)"
+              }
               className="-rotate-90 w-[32px] h-[32px]"
             >
               <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
             </svg>
           </button>
           <button
-            // onClick={() => {
-            //   listRef.current?.scroll({
-            //     left: (listRef.current.scrollLeft || 0) + 288,
-            //     behavior: "smooth",
-            //   });
-            // }}
             ref={rightButtonRef}
             onClick={() => {
-              const { current } = listRef;
-              if (!current) {
-                return;
-              }
-              if (
-                (current.scrollLeft || 0) >=
-                current.scrollWidth - current.clientWidth
-              ) {
-                return;
-              }
-              listRef.current?.scroll({
-                left: (listRef.current.scrollLeft || 0) + 288,
-                behavior: "smooth",
-              });
+              scrollToIndex(active.index + 1);
             }}
             className="bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color"
           >
             <svg
               fill={"transparent"}
-              stroke={"rgb(255 255 255)"}
+              stroke={
+                active.index === elements.length - 1
+                  ? "rgb(255 255 255 / 0.25)"
+                  : "rgb(255 255 255)"
+              }
               className="rotate-90 w-[32px] h-[32px]"
             >
               <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
@@ -104,66 +112,11 @@ const Carousel = ({
         </div>
       </div>
       <div className="relative">
-        {/* <div */}
-        {/*   ref={listRef} */}
-        {/*   className="flex gap-4 overflow-x-auto snap-x snap-mandatory */}
-        {/*   xs-right-pad:contents [scrollbar-width:none] [-ms-overflw-style:none] */}
-        {/*   xs-right-pad:[scrollbar-width:auto] xs-right-pad:[-ms-overflw-style:auto]" */}
-        {/*   onScroll={() => { */}
-        {/*     const { current } = listRef; */}
-        {/*     if (!current) { */}
-        {/*       return; */}
-        {/*     } */}
-        {/*     if ((current.scrollLeft || 0) <= 224) { */}
-        {/*       leftButtonRef.current?.style.setProperty("opacity", "0"); */}
-        {/*     } else { */}
-        {/*       leftButtonRef.current?.style.setProperty("opacity", "1"); */}
-        {/*     } */}
-        {/*     if ( */}
-        {/*       (current.scrollLeft || 0) + 224 >= */}
-        {/*       current.scrollWidth - current.clientWidth */}
-        {/*     ) { */}
-        {/*       rightButtonRef.current?.style.setProperty("opacity", "0"); */}
-        {/*     } else { */}
-        {/*       rightButtonRef.current?.style.setProperty("opacity", "1"); */}
-        {/*     } */}
-        {/*   }} */}
-        {/* > */}
         <div
           ref={listRef}
+          id={collection.collection_key + "-mobile-scroll-list"}
           className="flex gap-4 overflow-scroll scrollbar-hidden
           snap-x snap-mandatory grid-cols-10"
-          onScroll={() => {
-            const { current } = listRef;
-            if (!current) {
-              return;
-            }
-            if ((current.scrollLeft || 0) <= 224) {
-              const path = leftButtonRef.current?.querySelector("svg");
-              if (path) {
-                path.setAttribute("stroke", "rgb(255 255 255 / 0.25)");
-              }
-            } else {
-              const path = leftButtonRef.current?.querySelector("svg");
-              if (path) {
-                path.setAttribute("stroke", "rgb(255 255 255)");
-              }
-            }
-            if (
-              (current.scrollLeft || 0) + 224 >=
-              current.scrollWidth - current.clientWidth
-            ) {
-              const path = rightButtonRef.current?.querySelector("svg");
-              if (path) {
-                path.setAttribute("stroke", "rgb(255 255 255 / 0.25)");
-              }
-            } else {
-              const path = rightButtonRef.current?.querySelector("svg");
-              if (path) {
-                path.setAttribute("stroke", "rgb(255 255 255)");
-              }
-            }
-          }}
         >
           <div
             style={{ inlineSize: "208px" }}
@@ -173,8 +126,8 @@ const Carousel = ({
             <PortraitGameCard
               key={game._id}
               game={game}
-              className="snap-start last-of-type:snap-end flex-shrink-0
-              w-[calc(calc(100vw_-_32px)_-_1px)]
+              className="snap-center first-of-type:snap-start last-of-type:snap-end flex-shrink-0
+              w-[calc(calc(100vw_-_72px)_-_1px)]
               xs:w-[calc(calc(100vw_-_32px)/2_-_13px)]
               3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]
               sm:w-[calc(calc(100vw_-_32px)/4_-_13px)]

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { PropsWithChildren, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import Image from "next/image";
 import { useInfiniteScrollText } from "../InfiniteScrollText";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import { Item, useScroll } from "../Scroll";
 
-const breakpoints = [768] as const;
+const breakpoints = [640] as const;
 export function HeroSlider({
   data,
   className = "",
@@ -15,15 +15,14 @@ export function HeroSlider({
   data: any;
   className?: string;
 }) {
-  const listRef = useRef<HTMLUListElement>(null);
-  const { b768: md } = useBreakpoints(breakpoints);
+  const { b640: sm } = useBreakpoints(breakpoints);
   const { elements, scrollToIndex } = useScroll();
 
   const _data = useMemo(() => {
     return data?.list_game.slice(0, 6);
   }, [data]);
 
-  if (md >= 0) {
+  if (sm >= 0) {
     return null;
   }
 
@@ -31,7 +30,6 @@ export function HeroSlider({
     <div>
       <ul
         id={"hero-slider"}
-        ref={listRef}
         className={
           "w-full flex gap-4 overflow-scroll scrollbar-hidden snap-x snap-mandatory " +
           className
@@ -44,9 +42,8 @@ export function HeroSlider({
       <ul className="flex w-full justify-center items-center gap-4 pt-4 md:hidden">
         {_data.map((item: any, index: number) => {
           return (
-            <li>
+            <li key={item.ID}>
               <BulletIndicator
-                key={item.ID}
                 active={elements[index]?.intersectionRatio > 0.5}
                 onClick={() => {
                   scrollToIndex(index);

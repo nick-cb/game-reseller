@@ -4,21 +4,24 @@ import { useLayoutEffect, useState } from "react";
 
 const createBreakpoints = <
   T extends number[] | Readonly<number[]>,
-  R = { [k in `b${T[number]}`]: -1 | 0 | 1 }
+  R = { [k in `b${T[number]}`]: -1 | 0 | 1 },
 >(
   breakpoints: T,
   against?: number,
-  previous?: R
+  previous?: R,
 ): {
   result: R;
   changed: boolean;
 } => {
+  const result = {} as R;
   if (typeof window === "undefined") {
-    return { result: {} as R, changed: false };
+    for (const breakpoint of breakpoints) {
+      result[`b${breakpoint}` as keyof R] = 0 as R[keyof R];
+    }
+    return { result, changed: true };
   }
   const innerAgainst = against || window.innerWidth;
   let flag = false;
-  const result = {} as R;
   for (const breakpoint of breakpoints) {
     const current =
       breakpoint === innerAgainst ? 0 : breakpoint > innerAgainst ? -1 : 1;
@@ -41,10 +44,10 @@ const createBreakpoints = <
  * */
 export const useBreakpoints = <T extends number>(
   breakpoints: T[] | readonly T[],
-  against?: number
+  against?: number,
 ) => {
   const [result, setResult] = useState<{ [K in `b${T}`]: -1 | 0 | 1 }>(
-    createBreakpoints(breakpoints, against).result
+     createBreakpoints(breakpoints, against).result,
   );
 
   useLayoutEffect(() => {
@@ -54,7 +57,7 @@ export const useBreakpoints = <T extends number>(
           const { result, changed } = createBreakpoints(
             breakpoints,
             against,
-            prev
+            prev,
           );
           if (changed) {
             return result;

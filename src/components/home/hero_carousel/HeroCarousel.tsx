@@ -3,30 +3,34 @@ import { useBreakpoints } from "@/hooks/useBreakpoint";
 import "./hero-carousel.css";
 import Image from "next/image";
 
-const breakpoints = [768] as const;
-import React, {
-  PropsWithChildren,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+const breakpoints = [640] as const;
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { FCollectionByName } from "@/database/repository/collection/select";
+import { GameImages } from "@/database/models";
 
-const HeroCarousel = ({
-  data,
-  className = "",
-}: {
-  data: any[];
+type HeroCarouselData = Omit<
+  FCollectionByName["list_game"][number],
+  "images"
+> & {
+  images: {
+    portrait: GameImages | undefined;
+    landscape: GameImages | undefined;
+    logo: GameImages | undefined;
+  };
+};
+type HeroCarouselProps = {
+  data: HeroCarouselData[];
   className?: string;
-}) => {
-  const { b768: md } = useBreakpoints(breakpoints);
+};
+const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
+  const { b640: sm } = useBreakpoints(breakpoints);
   const [index, setIndex] = useState(-1);
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (md < 0) {
+    if (sm < 0) {
       return;
     }
     const mainList = mainListRef.current;
@@ -43,7 +47,7 @@ const HeroCarousel = ({
   }, []);
 
   useEffect(() => {
-    if (md < 0) {
+    if (sm < 0) {
       return;
     }
     const mainList = mainListRef.current;
@@ -78,19 +82,20 @@ const HeroCarousel = ({
     setIndex(index);
   };
 
-  if (md < 0) {
-    return null;
-  }
   return (
-    <div className={"md:flex gap-4 lg:gap-8 " + className}>
-      <div className="w-full md:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
+    <div
+      className={
+        "sm:flex gap-4 lg:gap-8 " + className + (sm < 0 ? "hidden" : "")
+      }
+    >
+      <div className="w-full sm:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
-          {data.map((item: any) => (
-            <li key={item._id} className={"main-item snap-start"}>
-              {item.images?.landscape.url && (
+          {data.map((item) => (
+            <li key={item.ID} className={"main-item snap-start"}>
+              {item.images.landscape?.url && (
                 <Image
                   className="rounded-lg"
-                  src={decodeURIComponent(item.images?.landscape.url)}
+                  src={decodeURIComponent(item.images.landscape.url)}
                   alt=""
                   fill
                 />
@@ -103,10 +108,10 @@ const HeroCarousel = ({
           ))}
         </ul>
       </div>
-      <ul ref={previewListRef} className="md:flex flex-col gap-2 flex-1 hidden">
-        {data.map((item: any, itemIndex: any) => (
+      <ul ref={previewListRef} className="sm:flex flex-col gap-2 flex-1 hidden">
+        {data.map((item, itemIndex) => (
           <li
-            key={item._id}
+            key={item.ID}
             className="hero-carousel-preview-item w-full h-full relative rounded-xl overflow-hidden
             after:absolute after:inset-0 hover:bg-paper_2 after:bg-paper"
             onClick={() => {
@@ -122,11 +127,11 @@ const HeroCarousel = ({
               href="#"
             >
               <div className="relative h-full shrink-0 aspect-[0.75] rounded-lg overflow-hidden z-[1]">
-                {item.images?.portrait.url && (
+                {item.images.portrait?.url && (
                   <Image
                     alt=""
                     className="absolute"
-                    src={decodeURIComponent(item.images?.portrait.url)}
+                    src={decodeURIComponent(item.images.portrait.url)}
                     fill
                   />
                 )}
@@ -142,11 +147,11 @@ const HeroCarousel = ({
   );
 };
 
-const ButtonGroup = ({ game }: { game: any }) => {
+const ButtonGroup = ({ game }: { game: HeroCarouselData }) => {
   return (
     <div className="flex gap-4">
       <a
-        href={`${game._id}`}
+        href={`${game.ID}`}
         className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
       >
         BUY NOW
@@ -163,14 +168,14 @@ const ButtonGroup = ({ game }: { game: any }) => {
   );
 };
 
-const Description = ({ game }: { game: any }) => {
+const Description = ({ game }: { game: HeroCarouselData }) => {
   return (
     <div className="max-w-sm flex flex-col justify-evenly flex-grow">
       <div
         className="w-36 lg:w-80 aspect-video relative logo"
         style={{
-          backgroundImage: game.images?.logo?.url
-            ? `url(${decodeURIComponent(game.images?.logo.url)})`
+          backgroundImage: game.images.logo?.url
+            ? `url(${decodeURIComponent(game.images.logo.url)})`
             : "",
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",

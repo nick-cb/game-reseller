@@ -1,31 +1,29 @@
 "use client";
 
-import {
-  startTransition,
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Video from "../Video";
 import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import { Item, useScroll, useScrollFactory } from "../Scroll";
-import { Test } from "../Test";
+import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
+import { GameImages } from "@/database/models";
 
 const SLIDE_INTERVAL = 5000;
 export default function LinearCarousel({
   images = [],
   videos = [],
 }: {
-  images: any[];
-  videos: any[];
+  images: OmitGameId<GameImages>[];
+  videos: OmitGameId<FVideoFullInfo>[];
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
-  const data = useMemo(() => videos.concat(images), [images, videos]);
+  const data = useMemo(() => {
+    const _data: (OmitGameId<FVideoFullInfo> | OmitGameId<GameImages>)[] = [];
+    return _data.concat(videos).concat(images);
+  }, [images, videos]);
+
   const { b640: sm } = useBreakpoints([640]);
   const factory = useScrollFactory({
     containerSelector: "#linear-carousel-indicator",
@@ -58,7 +56,7 @@ export default function LinearCarousel({
   };
 
   useEffect(() => {
-    if ("recipes" in data[active.index] && sm >= 0) {
+    if ("recipes" in (data[active.index] || {}) && sm >= 0) {
       return;
     }
     let timeOut: ReturnType<typeof setTimeout>;
@@ -129,30 +127,28 @@ export default function LinearCarousel({
           ref={listRef}
           className="flex overflow-scroll snap-mandatory snap-x scrollbar-hidden"
         >
-          {videos.map((vid, index) => (
-            <Item
-              key={index}
-              as={"li"}
-              className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
-            >
-              {sm >= 0 ? (
-                <Video
-                  video={vid}
-                  // onEnded={() => {
-                  //   setTimeout(() => {
-                  //     setCurrentIndex((prev) => {
-                  //       return (prev + 1) % data.length;
-                  //     });
-                  //   }, SLIDE_INTERVAL);
-                  // }}
-                />
-              ) : (
-                <div className="relative w-full aspect-video">
-                  <Image src={vid.thumbnail} alt={""} fill />
-                </div>
-              )}
-            </Item>
-          ))}
+          {sm >= 0
+            ? videos.map((vid, index) => (
+                <Item
+                  key={index}
+                  as={"li"}
+                  className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
+                >
+                  {sm >= 0 ? (
+                    <Video
+                      video={vid}
+                      // onEnded={() => {
+                      //   setTimeout(() => {
+                      //     setCurrentIndex((prev) => {
+                      //       return (prev + 1) % data.length;
+                      //     });
+                      //   }, SLIDE_INTERVAL);
+                      // }}
+                    />
+                  ) : null}
+                </Item>
+              ))
+            : null}
           {images.map((img, index) => (
             <Item
               key={index}
@@ -183,7 +179,7 @@ export default function LinearCarousel({
                       key={index}
                       as="li"
                       factory={factory}
-                      onClick={(e) => {
+                      onClick={() => {
                         goToItem(index);
                       }}
                     >
@@ -237,9 +233,13 @@ export default function LinearCarousel({
                 })
               : null}
             {sm < 0
-              ? data.map((_, index) => {
+              ? data.map((item, index) => {
+                  if ("recipes" in item) {
+                    return null;
+                  }
                   return (
                     <li
+                      key={item.ID}
                       className={
                         "relative w-4 h-1 rounded bg-paper " +
                         " after:absolute after:inset-0 after:rounded " +

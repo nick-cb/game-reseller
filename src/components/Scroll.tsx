@@ -69,7 +69,6 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     const {
       target,
     } = nextOffsetEntry;
-    console.log({ target });
     root.scroll({
       left: target.offsetLeft,
       behavior: 'smooth',

@@ -10,11 +10,16 @@ import LinearCarousel from "@/components/game/LinearCarousel";
 import rehypeRaw from "rehype-raw";
 import SystemRequirements from "@/components/game/SystemRequirements";
 import Scroll, { Item } from "@/components/Scroll";
+import { ScrollBulletIndicator } from "@/components/home/hero-slider";
+import { connectDB } from "@/database";
 import {
-  ScrollBulletIndicator,
-} from "@/components/home/hero-slider";
-import {connectDB} from "@/database";
-import {findGameBySlug} from "@/database/repository/game/select";
+  OmitGameId,
+  findGameBySlug,
+  findMappingById,
+} from "@/database/repository/game/select";
+import { CriticAvg, GameImages } from "@/database/models";
+import GameCard from "@/components/game/GameCard";
+import Link from "next/link";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -24,46 +29,52 @@ const criticRec = {
     "51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276",
 };
 
-const page = async ({ params }: { params: any }) => {
-  const { slug } = params;
-  const db = await connectDB();
-  const response = await findGameBySlug(slug);
+function groupImages(images: OmitGameId<GameImages>[]) {
+  const carousel: OmitGameId<GameImages>[] = [];
+  const longDescription: OmitGameId<GameImages>[][] = [];
 
-  const game = response[0][0];
-  /*const mappingResponse = await db.execute(sql`
-select *, gi.images
-from games
-         left join (select game_id,
-                           json_arrayagg(json_object('ID', gi.ID, 'type', gi.type, 'pos_row', gi.pos_row, 'alt', gi.alt,
-                                                     'url', gi.url)) as images
-                    from game_images gi
-                    group by game_id) gi on games.ID = gi.game_id
-where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
-`);*/
-/*  const editions = mappingResponse[0].filter((g) => g.type.includes("edition"));
-  const dlc = mappingResponse[0].filter((g) => g.type.includes("dlc"));
-  const addOns = mappingResponse[0].filter((g) => g.type.includes("add_on"));
-  const dlcAndAddons = dlc.concat(addOns);*/
-  console.info({response});
-
-  const landscapeImages = game.images.reduce((acc: any[], curr: any) => {
-    const type = curr.type.toLowerCase();
+  for (const image of images) {
+    const type = image.type.toLowerCase();
     if (
       (type.includes("wide") ||
         type.includes("carousel") ||
         type.includes("feature")) &&
-      !type.includes("video")
+      !type.includes("video") &&
+      !image.row
     ) {
-      const segments = curr.url.split("-");
-      const id = segments[segments.length - 1];
-      if (acc.some((item) => item.url.includes(id))) {
-        return acc;
-      }
-      acc.push(curr);
-      return acc;
+      carousel.push(image);
+      continue;
     }
-    return acc;
-  }, []);
+    if (image.row) {
+      if (!longDescription[image.row]) {
+        longDescription[image.row] = [];
+      }
+      longDescription[image.row].push(image);
+    }
+  }
+
+  return { carousel, longDescription };
+}
+
+const page = async ({ params }: { params: any }) => {
+  const { slug } = params;
+  const db = await connectDB();
+  const response = await findGameBySlug(slug, db);
+  const game = response[0][0];
+  const logo = game.images.find((img: any) => {
+    return img.type.toLowerCase().includes("logo");
+  });
+  const mappingResponse = await findMappingById(
+    game.type === "base_game" ? game.ID : game.base_game_id,
+  );
+  const editions = mappingResponse[0].filter((g) => g.type.includes("edition"));
+  const dlc = mappingResponse[0].filter((g) => g.type.includes("dlc"));
+  const addOns = mappingResponse[0].filter((g) => g.type.includes("add_on"));
+  const dlcAndAddons = dlc.concat(addOns);
+
+  const { carousel: carouselImages, longDescription: longDescriptionImages } =
+    groupImages(game.images);
+  console.log({ images: game.images });
 
   const buyNow = async () => {
     "use server";
@@ -80,7 +91,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
       <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-6 grid-rows-[min-content_auto] gap-4 md:gap-8 lg:gap-16">
         <section className="col-start-1 col-span-full md:[grid-column:-3/1] row-start-1 row-end-2">
           <Scroll containerSelector="#linear-carousel">
-            <LinearCarousel videos={game.videos} images={landscapeImages} />
+            <LinearCarousel videos={game.videos} images={carouselImages} />
           </Scroll>
         </section>
         <section
@@ -89,21 +100,19 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
           col-span-3 md:[grid-column:-1/-3] md:col-start-3 md:col-end-4"
         >
           <div className="flex flex-col gap-4 md:sticky top-[116px]">
-            <div className="relative w-full aspect-[3/2] hidden md:block">
-              <Image
-                src={
-                  game.images.find((img: any) => {
-                    return img.type.toLowerCase().includes("logo");
-                  })?.url
-                }
-                fill
-                alt={`logo of ${game.name}`}
-                className="object-contain"
-              />
-            </div>
-            {/* <p className="text-xs bg-yellow-300 text-default px-2 py-1 w-max rounded"> */}
-            {/*   {game.included_in.length > 0 ? "Add-on" : "Base game"} */}
-            {/* </p> */}
+            {logo ? (
+              <div className="relative w-full aspect-[3/2] hidden md:block">
+                <Image
+                  src={logo.url}
+                  fill
+                  alt={`logo of ${game.name}`}
+                  className="object-contain"
+                />
+              </div>
+            ) : null}
+            <p className="text-xs bg-yellow-300 text-default px-2 py-1 w-max rounded">
+              {game.type}
+            </p>
             <p className="text-white_primary">
               {game.sale_price > 0 ? "$" + game.sale_price : "Free"}
             </p>
@@ -135,14 +144,12 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                   {new Date(game.release_date).toLocaleDateString()}
                 </p>
               </div>
-              {/* <div className="flex justify-between items-center py-2 border-b border-white/20"> */}
-              {/*   <p className="text-white/60">Platform</p> */}
-              {/*   <p className="text-white_primary"> */}
-              {/*     {(Object.keys(game.requirements?.systems) || []).map( */}
-              {/*       (system) => system */}
-              {/*     )} */}
-              {/*   </p> */}
-              {/* </div> */}
+              <div className="flex justify-between items-center py-2 border-b border-white/20">
+                <p className="text-white/60">Platform</p>
+                <p className="text-white_primary">
+                  {game.systems.map((system) => system.os)}
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -158,7 +165,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                   .filter((tag) => tag.group_name === "genre")
                   .map(
                     (tag: any) =>
-                      tag.name[0].toUpperCase() + tag.name.substring(1)
+                      tag.name[0].toUpperCase() + tag.name.substring(1),
                   )
                   .join(", ")}
               </p>
@@ -170,28 +177,47 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                   .filter((tag) => tag.group_name === "feature")
                   .map(
                     (tag: any) =>
-                      tag.name[0].toUpperCase() + tag.name.substring(1)
+                      tag.name[0].toUpperCase() + tag.name.substring(1),
                   )
                   .join(", ")}
               </p>
             </div>
           </div>
         </section>
-        <section className="col-span-full md:[grid-column:-3/1]">
-          <ExpandableDescription>
-            <article className="text-sm text-white_primary/60 hover:text-white_primary/80 transition-colors">
-              <ReactMarkdown
-                components={{ p: "div", h1: "h2" }}
-                className="description-container"
-                remarkPlugins={[remarkBreaks]}
-                rehypePlugins={[rehypeRaw]}
-              >
-                {game.long_description}
-              </ReactMarkdown>
-            </article>
-          </ExpandableDescription>
-        </section>
-        {/*{editions.length > 0 ? (
+        {game.long_description ? (
+          <section className="col-span-full md:[grid-column:-3/1]">
+            <ExpandableDescription>
+              <article className="text-sm text-white_primary/60 hover:text-white_primary/80 transition-colors">
+                <ReactMarkdown
+                  components={{ p: "div", h1: "h2" }}
+                  className="description-container"
+                  remarkPlugins={[remarkBreaks]}
+                  rehypePlugins={[rehypeRaw]}
+                >
+                  {game.long_description}
+                </ReactMarkdown>
+                {longDescriptionImages.length > 0 ? (
+                  <div>
+                    {longDescriptionImages.map((row) => {
+                      return (
+                        <div className="flex gap-4 mb-4">
+                          {row.map((img) => {
+                            return (
+                              <div className="w-full aspect-video relative rounded overflow-hidden">
+                                <Image src={img.url} fill alt={img.alt} />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </article>
+            </ExpandableDescription>
+          </section>
+        ) : null}
+        {editions.length > 0 ? (
           <>
             <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
               <h2 className="text-xl text-white_primary pb-4">Editions</h2>
@@ -231,13 +257,13 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
             </section>
           </>
         ) : null}
-        {game.avg_rating && (
+        {game.avg_rating ? (
           <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
             <h2 className="text-xl pb-4">Player Ratings</h2>
             <div className="flex items-center justify-center gap-4">
               {[1, 2, 3, 4, 5].map((starIndex) => {
                 const remainder =
-                  game.avg_rating < starIndex ? game.avg_rating % 1 : 0;
+                  game.avg_rating! < starIndex ? game.avg_rating! % 1 : 0;
                 const starId = "star-rating-id-" + starIndex;
                 return (
                   <svg
@@ -274,9 +300,9 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
               })}
             </div>
           </section>
-        )}*/}
+        ) : null}
         {game.polls && (
-          <section className="col-start-1 col-span-full xl:[grid-column:-3/1] grid grid-cols-2 gap-8">
+          <section className="col-start-1 col-span-full xl:[grid-column:-3/1] grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
             {game.polls.slice(0, 6).map((poll: any) => {
               return (
                 <div
@@ -308,7 +334,9 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
         )}
         {game.reviews.length > 0 && (
           <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
-            <h2 className="text-xl text-white_primary pb-4">{game.name} Ratings & Reviews</h2>
+            <h2 className="text-xl text-white_primary pb-4">
+              {game.name} Ratings & Reviews
+            </h2>
             <ul className="flex gap-4 mb-4">
               {game.critic_pct && (
                 <li className=" flex flex-col items-center">
@@ -344,7 +372,9 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       {game.critic_pct + "%"}
                     </p>
                   </div>
-                  <p className="text-sm sm:text-base mt-2 text-center">Critics Recommend</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">
+                    Critics Recommend
+                  </p>
                 </li>
               )}
               {game.critic_avg && (
@@ -359,7 +389,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       fill="none"
                     >
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
@@ -368,7 +398,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         fill="none"
                       ></circle>
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
@@ -381,10 +411,12 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       {game.critic_avg}
                     </p>
                   </div>
-                  <p className="text-sm sm:text-base mt-2 text-center">Top Critic Average</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">
+                    Top Critic Average
+                  </p>
                 </li>
               )}
-              {game.critic_pct && (
+              {game.critic_rec && (
                 <li className=" flex flex-col items-center">
                   <div className="relative w-max">
                     <svg
@@ -396,7 +428,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       className="mb-1 -rotate-90"
                     >
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
@@ -407,13 +439,14 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                         fill="none"
                       ></circle>
                       <circle
-                        stroke-width="3"
+                        strokeWidth="3"
                         cx="50%"
                         cy="50%"
                         r="36"
                         strokeDasharray={
-                          criticRec[game.critic_rec.toLowerCase()] +
-                          ", 226.1946710584651"
+                          criticRec[
+                            game.critic_rec.toLowerCase() as CriticAvg
+                          ] + ", 226.1946710584651"
                         }
                         strokeDashoffset="-2.5"
                         stroke="rgb(242, 191, 86)"
@@ -423,12 +456,17 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                       {game.critic_rec}
                     </p>
                   </div>
-                  <p className="text-sm sm:text-base mt-2 text-center">OpenCritic Rating</p>
+                  <p className="text-sm sm:text-base mt-2 text-center">
+                    OpenCritic Rating
+                  </p>
                 </li>
               )}
             </ul>
             <Scroll containerSelector="#review-list-scroll">
-              <ul id="review-list-scroll" className="flex gap-8  overflow-x-scroll scrollbar-hidden snap-mandatory snap-x">
+              <ul
+                id="review-list-scroll"
+                className="flex gap-8  overflow-x-scroll scrollbar-hidden snap-mandatory snap-x"
+              >
                 {game.reviews.map((review: any) => {
                   return (
                     <Item
@@ -508,7 +546,7 @@ where base_game_id = ${game.type === "base_game" ? game.ID : game.base_game_id};
                 })}
               </ul>
               <ul className="flex gap-4 justify-center my-2">
-                {game.reviews.map((review: any, index: number) => {
+                {game.reviews.map((_, index) => {
                   return (
                     <li className={"sm:even:hidden"}>
                       <ScrollBulletIndicator index={index} />

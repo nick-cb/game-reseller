@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { Item } from "./Scroll";
 
 const PortraitGameCard = ({
   game,
@@ -12,8 +13,13 @@ const PortraitGameCard = ({
   contentContainerClassName?: string;
 }) => {
   return (
-    <Link href={`/${game.slug}`} key={game.slug} className={className + " group"}>
-      <figure
+    <Link
+      href={`/${game.slug}`}
+      key={game.slug}
+      className={className + " group"}
+    >
+      <Item
+        as="div"
         className={
           contentContainerClassName +
           " " +
@@ -29,9 +35,7 @@ const PortraitGameCard = ({
           `}
         >
           <Image
-            src={
-              game.images.portrait?.url
-            }
+            src={game.images.portrait?.url}
             alt={`portrait of ${game.name}`}
             className={
               "rounded relative hidden xs-right-pad:block group-focus:scale-110 duration-300 transition-transform"
@@ -39,9 +43,7 @@ const PortraitGameCard = ({
             fill
           />
           <Image
-            src={
-              game.images.landscape?.url
-            }
+            src={game.images.landscape?.url}
             alt={`portrait of ${game.name}`}
             className={
               "rounded relative block xs-right-pad:hidden object-cover group-focus:scale-110 transition-transform"
@@ -49,12 +51,10 @@ const PortraitGameCard = ({
             fill
           />
         </div>
-        <figcaption className="mt-4 text-sm text-white_primary">
-          {game.name}
-        </figcaption>
+        <p className="mt-4 text-sm text-white_primary">{game.name}</p>
         <p className="text-xs mt-1 text-white/60">{game.developer}</p>
-        <p className="text-sm mt-2 text-white_primary">${game.sale_price}</p>
-      </figure>
+        <p className="text-sm mt-2 text-white_primary">đ{game.sale_price}</p>
+      </Item>
     </Link>
   );
 };

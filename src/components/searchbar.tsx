@@ -4,8 +4,6 @@ import React, {
   PropsWithChildren,
   createContext,
   useContext,
-  useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -49,9 +47,9 @@ const Searchbar = ({
     ["search-by-keyword", keyword],
     () =>
       fetch(
-        `http://localhost:5001/api/products/games/search?keyword=${keyword}`
+        `http://localhost:5001/api/products/games/search?keyword=${keyword}`,
       ).then((res) => res.json()),
-    { enabled: Boolean(keyword) }
+    { enabled: Boolean(keyword) },
   );
 
   const searchResultContainerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +67,7 @@ const Searchbar = ({
         current.style.height = "36px";
       }
     },
-    [data]
+    [data],
   );
 
   const ref = useClickOutsideCallback<HTMLDivElement>(() => {
@@ -94,7 +92,7 @@ const Searchbar = ({
       router.push(`/browse?keyword=${keyword}`);
     }
   };
-  console.log({ isLoading });
+
   return (
     <SearchbarContext.Provider
       value={{ data, keyword, changeHeight, onChange, onFocus, onKeyDown }}
@@ -131,7 +129,7 @@ export const SearchInput = React.forwardRef<
       searchContext.onChange?.(e);
       onChange?.(e);
     },
-    [searchContext.onChange, onChange]
+    [searchContext.onChange, onChange],
   );
 
   const _onFocus: React.FocusEventHandler<HTMLInputElement> = useCallback(
@@ -139,7 +137,7 @@ export const SearchInput = React.forwardRef<
       searchContext.onFocus?.(e);
       onFocus?.(e);
     },
-    [searchContext.onFocus, onFocus]
+    [searchContext.onFocus, onFocus],
   );
 
   const _onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = useCallback(
@@ -147,7 +145,7 @@ export const SearchInput = React.forwardRef<
       searchContext.onKeyDown?.(e);
       onKeyDown?.(e);
     },
-    [searchContext.onKeyDown, onKeyDown]
+    [searchContext.onKeyDown, onKeyDown],
   );
 
   return (
@@ -176,7 +174,7 @@ export function SearchResult({
 
   return (
     <div
-      className={`z-20 absolute w-[250px] right-0 rounded mt-2
+      className={`z-20 absolute w-[250px] right-0 rounded 
                     bg-paper_2 shadow-white/10 shadow-md overflow-hidden 
                     h-0 transition-[height] duration-400 ease-in-out ${className}`}
       ref={changeHeight}
@@ -225,6 +223,7 @@ export function SearchbarDistributeTop() {
           " bg-transparent text-sm text-white " +
           " !w-[12ch] focus:!w-[20ch] transition-[width] ease-in-out duration-300 ${className} "
         }
+        placeholder="Search..."
       />
     </Searchbar>
   );
@@ -235,7 +234,7 @@ export function SearchbarDistributeBottom() {
     ({ className, ...props }) => (
       <SearchResult {...props} className={"bottom-14 w-full " + className} />
     ),
-    []
+    [],
   );
 
   return (
@@ -246,7 +245,7 @@ export function SearchbarDistributeBottom() {
             "!text-base h-10 " +
             " px-2 py-2 border-0 outline-offset-0 outline-0 " +
             " text-sm text-white " +
-             " w-full focus:w-full"
+            " w-full focus:w-full"
           }
         />
       </Searchbar>
