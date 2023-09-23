@@ -170,3 +170,71 @@ from games
 where base_game_id = ${id};
 `);
 }
+
+type GGameByTags = RowDataPacket &
+  Game & {
+    images: OmitGameId<GameImages>[];
+  };
+export async function groupGameByTags({
+  tags,
+  db,
+  limit = 20,
+  skip = 0,
+  keyword,
+}: {
+  tags: string[];
+  db?: Connection;
+  limit?: number;
+  skip?: number;
+  keyword?: string;
+}) {
+  const _db = db || (await connectDB());
+  let whereClause = sql`where games.type = 'base_game'`;
+  if (tags.length > 0) {
+    whereClause += sql`
+      and tags.tag_key in (${tags.map((tag) => `\'${tag}\'`).join(",")})
+    `;
+  }
+  if (keyword) {
+    whereClause += sql` 
+      and games.name like '%${keyword}%'
+    `;
+  }
+  const havingClause = sql`having count(distinct tag_id) = ${tags.length}`;
+  const countReq = _db.execute<RowDataPacket[]>(sql`
+      select count(*) as total_count
+      from (
+        select games.* 
+        from games
+                 join tag_details on games.ID = tag_details.game_id
+                 join tags on tag_details.tag_id = tags.ID
+        ${whereClause}
+        group by games.ID
+        ${tags.length > 0 ? havingClause : ""}
+      ) as grouped
+  `);
+
+  const gameReq = _db.execute<GGameByTags[]>(sql`
+      select games.*, gi.images
+      from games
+               left join (select game_id,
+                                 json_arrayagg(json_object('ID', ID, 'type', type, 'url', url, 'pos_row', pos_row, 'alt',
+                                                           alt)) as images
+                          from game_images
+                          group by game_id) gi
+                         on games.ID = gi.game_id
+               join tag_details on games.ID = tag_details.game_id
+               join tags on tag_details.tag_id = tags.ID
+      ${whereClause}
+      group by games.ID
+      ${tags.length > 0 ? havingClause : ""}
+      limit ${skip}, ${limit}
+      ;
+  `);
+  const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
+
+  return {
+    data: gameRes[0],
+    total: countRes[0][0]?.total_count || 0,
+  };
+}

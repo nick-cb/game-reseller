@@ -1,26 +1,22 @@
 "use client";
 
-import React, { useMemo, useRef } from "react";
+import React from "react";
 import Image from "next/image";
-import { useInfiniteScrollText } from "../InfiniteScrollText";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
-import { Item, useScroll } from "../Scroll";
+import Scroll, { Item, useScroll } from "../Scroll";
+import { HeroCarouselData } from "./hero_carousel/HeroCarousel";
 
 const breakpoints = [640] as const;
 export function HeroSlider({
   data,
   className = "",
 }: {
-  data: any;
+  data: HeroCarouselData[];
   className?: string;
 }) {
   const { b640: sm } = useBreakpoints(breakpoints);
   const { elements, scrollToIndex } = useScroll();
-
-  const _data = useMemo(() => {
-    return data?.list_game.slice(0, 6);
-  }, [data]);
 
   if (sm >= 0) {
     return null;
@@ -35,12 +31,12 @@ export function HeroSlider({
           className
         }
       >
-        {_data.map((item: any, index: number) => (
+        {data.map((item, index) => (
           <SliderItem key={item.ID} item={item} index={index} />
         ))}
       </ul>
       <ul className="flex w-full justify-center items-center gap-4 pt-4 md:hidden">
-        {_data.map((item: any, index: number) => {
+        {data.map((item, index) => {
           return (
             <li key={item.ID}>
               <BulletIndicator
@@ -90,13 +86,13 @@ export function ScrollBulletIndicator({ index }: { index: number }) {
   );
 }
 
-function SliderItem({ item, index }: { item: any; index: number }) {
-  const scrollNameContainerRef = useRef<HTMLDivElement>(null);
-  useInfiniteScrollText({
-    containerRef: scrollNameContainerRef,
-    scrollRef: scrollNameContainerRef,
-  });
-
+function SliderItem({
+  item,
+  index,
+}: {
+  item: HeroCarouselData;
+  index: number;
+}) {
   return (
     <Item
       as={"li"}
@@ -109,7 +105,7 @@ function SliderItem({ item, index }: { item: any; index: number }) {
         className="intersect-point absolute left-1/2 top-1/2 bg-blue-200"
       ></div>
       <Link href={"/" + item.slug} className="contents">
-        <Image className="" src={item.images.portrait.url} alt="" fill />
+        <Image className="" src={item.images.portrait?.url || ""} alt="" fill />
       </Link>
       <div
         className={
@@ -127,7 +123,7 @@ function SliderItem({ item, index }: { item: any; index: number }) {
           }
         >
           <Image
-            src={item.images.logo.url}
+            src={item.images.logo?.url || ""}
             alt=""
             width={56}
             height={56}
@@ -141,11 +137,27 @@ function SliderItem({ item, index }: { item: any; index: number }) {
             " min-w-0 w-[calc(100%+16px)] overflow-hidden "
           }
         >
-          <div className="flex gap-10" ref={scrollNameContainerRef}>
-            <p className={"text-sm text-white_primary whitespace-nowrap w-max"}>
-              {item.name}
-            </p>
-          </div>
+          <Scroll
+            containerSelector={
+              "#" + item.slug.replace("/", "-") + "-infinite-scroll-text"
+            }
+            infiniteScroll
+            observerOptions={{
+              threshold: 1,
+            }}
+          >
+            <div
+              id={item.slug.replace("/", "-") + "-infinite-scroll-text"}
+              className="flex gap-10"
+            >
+              <Item
+                as={"p"}
+                className={"text-sm text-white_primary whitespace-nowrap w-max"}
+              >
+                {item.name}
+              </Item>
+            </div>
+          </Scroll>
         </div>
         <div className="flex justify-between min-w-0">
           <div>
@@ -169,9 +181,9 @@ function SliderItem({ item, index }: { item: any; index: number }) {
                   xlinkHref="/svg/sprites/actions.svg#star"
                 />
               </svg>
-              {item.avg_rating.toString().split(".")[0] +
+              {item.avg_rating?.toString().split(".")[0] +
                 "." +
-                item.avg_rating.toString().split(".")[1].substring(0, 1)}
+                item.avg_rating?.toString().split(".")[1].substring(0, 1)}
             </p>
           </div>
           <button className="text-sm px-4 py-2 bg-white rounded text-default">

@@ -6,33 +6,7 @@ import React from "react";
 import { FeatureCard, FeatureCardItem } from "@/components/HoverPlayVideo";
 import Scroll, { Item } from "@/components/Scroll";
 import { getCollectionByKey } from "@/database/repository/collection/select";
-import { GameImages } from "@/database/models";
-
-const getImages = (images: GameImages[]) => {
-  const landscape = images.find((img) => {
-    const type = img.type.toLowerCase();
-    return (
-      type.includes("landscape") ||
-      type.includes("carousel") ||
-      type.includes("wide")
-    );
-  });
-  const portrait = images.find((img) => {
-    const type = img.type.toLowerCase();
-    return (
-      type.includes("portrait") ||
-      type.includes("thumbnail") ||
-      type.includes("tall")
-    );
-  }) as GameImages;
-  const logo = images.find((img) => img.type.toLowerCase().includes("logo"));
-
-  return {
-    landscape,
-    portrait,
-    logo,
-  };
-};
+import { groupImages } from "@/utils/data";
 
 export default async function Home() {
   const result = await getCollectionByKey([
@@ -47,7 +21,7 @@ export default async function Home() {
     list_game: collection.list_game.map((g) => {
       return {
         ...g,
-        images: getImages(g.images),
+        images: groupImages(g.images),
       };
     }),
   }));
@@ -63,7 +37,7 @@ export default async function Home() {
         className="hidden sm:block"
       />
       <Scroll containerSelector="#hero-slider">
-        <HeroSlider data={data[0]} className="sm:hidden" />
+        <HeroSlider data={data[0].list_game.slice(0, 6)} className="sm:hidden" />
       </Scroll>
       <hr className="my-4 border-default" />
       {data.slice(0, 1).map((collection, index) => (
@@ -85,7 +59,9 @@ export default async function Home() {
           <section>
             <ul
               id={"feature-mobile-scroll-list"}
-              className={"flex gap-8 overflow-scroll scrollbar-hidden"}
+              className={
+                "flex gap-8 overflow-scroll scrollbar-hidden snap-x snap-mandatory"
+              }
             >
               {feature?.list_game.slice(0, 3).map((item) => {
                 return (

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Video from "./Video";
 import { Game, GameImages } from "@/database/models";
-import { FVideoFullInfo } from "@/database/repository/game/select";
+import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
 
 export type FeatureCardItem = Pick<
   Game,
@@ -10,9 +10,9 @@ export type FeatureCardItem = Pick<
 > & {
   videos: FVideoFullInfo[];
   images: {
-    portrait: GameImages | undefined;
-    landscape: GameImages;
-    logo: GameImages | undefined;
+    portrait: OmitGameId<GameImages> | undefined;
+    landscape: OmitGameId<GameImages>;
+    logo: OmitGameId<GameImages> | undefined;
   };
 };
 type FeatureCardProps = {

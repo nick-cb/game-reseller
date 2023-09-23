@@ -3,7 +3,7 @@ import { GameImages } from "@/database/models";
 import { Game } from "@/database/models";
 import { Collections } from "@/database/models";
 import { Connection, RowDataPacket } from "mysql2/promise";
-import { FVideoFullInfo } from "../game/select";
+import { FVideoFullInfo, OmitGameId } from "../game/select";
 
 export type FCollectionByName = RowDataPacket &
   Collections & {
@@ -17,7 +17,7 @@ export type FCollectionByName = RowDataPacket &
       | "sale_price"
       | "description"
     > & {
-      images: GameImages[];
+      images: OmitGameId<GameImages>[];
       videos: FVideoFullInfo[];
     })[];
   };
@@ -111,6 +111,8 @@ from
       ) g on collection_details.game_id = g.ID 
     group by 
       collection_id
-  ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, '${key.join(",")}');
+  ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, '${key.join(
+    ",",
+  )}');
 `);
 }

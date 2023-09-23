@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Collections, Game, GameImages } from "@/database/models";
-import { FVideoFullInfo } from "@/database/repository/game/select";
+import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
 
 type PillarProps = {
   data: Collections & {
@@ -16,9 +16,9 @@ type PillarProps = {
       | "description"
     > & {
       images: {
-        portrait: GameImages;
-        landscape: GameImages | undefined;
-        logo: GameImages | undefined;
+        portrait: OmitGameId<GameImages>;
+        landscape: OmitGameId<GameImages> | undefined;
+        logo: OmitGameId<GameImages> | undefined;
       };
       videos: FVideoFullInfo[];
     })[];
@@ -69,8 +69,14 @@ export function Pillar({ data }: PillarProps) {
         absolute bottom-0 h-[calc(100%-28px)] w-80 -right-2 
         bg-gradient-to-l from-default"
       ></div>
-      <button className="absolute right-0 top-1/2 px-2 py-4 rounded focus:outline outline-white_primary/60">
-        <svg stroke="white" fill="none" width={24} height={24} className="-rotate-90">
+      <button className="absolute right-0 top-1/2 px-2 py-4 rounded focus:outline outline-white_primary/60 sm:hidden">
+        <svg
+          stroke="white"
+          fill="none"
+          width={24}
+          height={24}
+          className="-rotate-90"
+        >
           <use xlinkHref="/svg/sprites/actions.svg#chevron-down" />
         </svg>
       </button>

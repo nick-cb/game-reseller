@@ -7,15 +7,16 @@ const breakpoints = [640] as const;
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { FCollectionByName } from "@/database/repository/collection/select";
 import { GameImages } from "@/database/models";
+import { OmitGameId } from "@/database/repository/game/select";
 
-type HeroCarouselData = Omit<
+export type HeroCarouselData = Omit<
   FCollectionByName["list_game"][number],
   "images"
 > & {
   images: {
-    portrait: GameImages | undefined;
-    landscape: GameImages | undefined;
-    logo: GameImages | undefined;
+    portrait: OmitGameId<GameImages> | undefined;
+    landscape: OmitGameId<GameImages> | undefined;
+    logo: OmitGameId<GameImages> | undefined;
   };
 };
 type HeroCarouselProps = {
@@ -151,7 +152,7 @@ const ButtonGroup = ({ game }: { game: HeroCarouselData }) => {
   return (
     <div className="flex gap-4">
       <a
-        href={`${game.ID}`}
+        href={`${game.slug}`}
         className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
       >
         BUY NOW

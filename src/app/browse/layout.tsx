@@ -4,39 +4,20 @@ import { handleSubmitFilter } from "../actions";
 import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
 import "./browse.css";
-
-const categories = [
-  { name: "action" },
-  { name: "adventure" },
-  { name: "indie" },
-  { name: "rpg" },
-  { name: "strategy" },
-  { name: "open world" },
-  { name: "shooter" },
-  { name: "puzzle" },
-  { name: "first person" },
-  { name: "narration" },
-  { name: "simulator" },
-  { name: "casual" },
-  { name: "turn-based" },
-  { name: "exploration" },
-  { name: "horror" },
-  { name: "platformer" },
-  { name: "party" },
-  { name: "survival" },
-  { name: "trivia" },
-  { name: "city builder" },
-  { name: "steath" },
-  { name: "fighting" },
-  { name: "comedy" },
-  { name: "action-adventure" },
-];
+import findTagByGroupName from "@/database/repository/tags/select";
 
 const layout = async ({ children }: PropsWithChildren) => {
+  const tags = await findTagByGroupName("genre");
+
   return (
     <div className="grid grid-cols-4 gap-8">
-      <div className="col-start-1 col-end-5 md:col-end-4 text-white_primary">{children}</div>
-      <form className="col-start-4 col-end-5 hidden md:block" action={handleSubmitFilter}>
+      <div className="col-start-1 col-end-5 md:col-end-4 text-white_primary">
+        {children}
+      </div>
+      <form
+        className="col-start-4 col-end-5 hidden md:block"
+        action={handleSubmitFilter}
+      >
         <noscript>
           <button
             className="w-full py-2 rounded mb-4
@@ -49,25 +30,25 @@ const layout = async ({ children }: PropsWithChildren) => {
         <hr className="border-white/20 my-4" />
         <FilterContextProvider>
           <ul className="flex flex-col gap-1">
-            {categories.map((category) => (
+            {tags[0].map((tag) => (
               <li
-                key={category.name}
+                key={tag.ID}
                 className="rounded flex
                 text-white/60 text-sm relative"
               >
                 <div className="absolute inset-0 bg-default"></div>
                 <CategoryCheckbox
-                  categoryName={category.name}
+                  tag={tag}
+                  id={tag.tag_key.toString()}
                   className="w-full h-9"
-                  id={category.name}
                 />
                 <label
-                  htmlFor={category.name}
+                  htmlFor={tag.tag_key}
                   className="absolute inset-0 h-9 rounded px-2
                   cursor-pointer flex items-center
                   text-white/60 hover:text-white_primary bg-default transition-colors"
                 >
-                  {category.name[0].toUpperCase() + category.name.substring(1)}
+                  {tag.name[0].toUpperCase() + tag.name.substring(1)}
                 </label>
               </li>
             ))}

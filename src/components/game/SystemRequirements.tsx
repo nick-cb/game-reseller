@@ -15,7 +15,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
 
   return (
     <>
-      <ul className="mb-8 flex gap-8">
+      <ul className="mb-8 flex gap-8 overflow-scroll">
         {_systems.map((system, index) => {
           return (
             <li key={system.ID}>
@@ -58,9 +58,6 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
         }
       >
         {_systems.map((system) => {
-          const minimum = system.details.filter(
-            (detail: any) => !!detail.minimum,
-          );
           const recommended = system.details.filter(
             (detail: any) => !!detail.recommended,
           );

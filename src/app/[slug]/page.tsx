@@ -29,6 +29,16 @@ const criticRec = {
     "51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276",
 };
 
+const pascalCase = (type: string, delimiter: string) => {
+  const segments = type.split(delimiter);
+  let final = "";
+  for (const segment of segments) {
+    final += " ";
+    final += segment[0].toUpperCase() + segment.substring(1);
+  }
+  return final.trim();
+};
+
 function groupImages(images: OmitGameId<GameImages>[]) {
   const carousel: OmitGameId<GameImages>[] = [];
   const longDescription: OmitGameId<GameImages>[][] = [];
@@ -74,7 +84,6 @@ const page = async ({ params }: { params: any }) => {
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =
     groupImages(game.images);
-  console.log({ images: game.images });
 
   const buyNow = async () => {
     "use server";
@@ -111,10 +120,10 @@ const page = async ({ params }: { params: any }) => {
               </div>
             ) : null}
             <p className="text-xs bg-yellow-300 text-default px-2 py-1 w-max rounded">
-              {game.type}
+              {pascalCase(game.type, "_")}
             </p>
             <p className="text-white_primary">
-              {game.sale_price > 0 ? "$" + game.sale_price : "Free"}
+              {game.sale_price > 0 ? "đ" + game.sale_price : "Free"}
             </p>
             <div className="flex flex-col gap-2">
               <form action={buyNow}>
@@ -332,7 +341,7 @@ const page = async ({ params }: { params: any }) => {
             })}
           </section>
         )}
-        {game.reviews.length > 0 && (
+        {game.reviews?.length > 0 && (
           <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
             <h2 className="text-xl text-white_primary pb-4">
               {game.name} Ratings & Reviews

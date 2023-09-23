@@ -28,6 +28,7 @@ const BrowseSearch = ({ className = "" }: { className?: string }) => {
           }
           const params = new URLSearchParams(searchParams.toString());
           params.set("keyword", keyword);
+          params.delete('page');
           router.push(`/browse?${params.toString()}`);
         }}
       />

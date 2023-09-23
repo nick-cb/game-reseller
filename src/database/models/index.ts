@@ -84,6 +84,7 @@ export type TagDetails = {
 export type Tags = {
   ID: number;
   name: string;
+  tag_key: string;
   group_name: string | null;
 };
 

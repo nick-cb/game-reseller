@@ -16,12 +16,22 @@ import Link from "next/link";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "./Input";
+import { Game, GameImages } from "@/database/models";
+import { OmitGameId } from "@/database/repository/game/select";
+import { RowDataPacket } from "mysql2";
+import { groupImages } from "@/utils/data";
+import { useInfiniteScrollText } from "./InfiniteScrollText";
+import Scroll, { Item } from "./Scroll";
 
+type SearchbarData = (RowDataPacket &
+  Game & {
+    images: ReturnType<typeof groupImages>;
+  })[];
 const SearchbarContext = createContext<{
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
   onFocus: React.FocusEventHandler<HTMLInputElement> | undefined;
   onKeyDown: React.KeyboardEventHandler<HTMLInputElement> | undefined;
-  data: any[];
+  data: SearchbarData;
   keyword: string | null;
   changeHeight: (current: HTMLDivElement | null) => void;
 }>({
@@ -43,14 +53,24 @@ const Searchbar = ({
 }>) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState<string | null>(null);
-  const { isLoading, data } = useQuery(
+  const { isLoading, data: { data } = { data: [] } } = useQuery(
     ["search-by-keyword", keyword],
     () =>
-      fetch(
-        `http://localhost:5001/api/products/games/search?keyword=${keyword}`,
-      ).then((res) => res.json()),
+      fetch(`http://localhost:3000/api?keyword=${keyword}`).then(
+        (res) =>
+          res.json() as Promise<{
+            data: (RowDataPacket &
+              Game & {
+                images: OmitGameId<GameImages>[];
+              })[];
+          }>,
+      ),
     { enabled: Boolean(keyword) },
   );
+  const groupedImagesData = data.map((game) => ({
+    ...game,
+    images: groupImages(game.images),
+  }));
 
   const searchResultContainerRef = useRef<HTMLDivElement>(null);
   const changeHeight = useCallback(
@@ -61,7 +81,7 @@ const Searchbar = ({
         return;
       }
 
-      const height = (data || []).length * 92;
+      const height = (data.slice(0, 5) || []).length * 92;
       current.style.height = (height > 0 ? height - 8 : 0) + "px";
       if (keyword && (data || []).length === 0) {
         current.style.height = "36px";
@@ -95,7 +115,14 @@ const Searchbar = ({
 
   return (
     <SearchbarContext.Provider
-      value={{ data, keyword, changeHeight, onChange, onFocus, onKeyDown }}
+      value={{
+        data: groupedImagesData,
+        keyword,
+        changeHeight,
+        onChange,
+        onFocus,
+        onKeyDown,
+      }}
     >
       <div className={"relative " + className} ref={ref}>
         <div
@@ -109,7 +136,7 @@ const Searchbar = ({
         </div>
         <SearchResultSlot
           className={""}
-          data={data}
+          data={groupedImagesData}
           keyword={keyword}
           changeHeight={changeHeight}
         />
@@ -166,11 +193,16 @@ export function SearchResult({
   changeHeight,
 }: {
   className: string;
-  data: any[];
+  data: SearchbarData;
   keyword: string | null;
   changeHeight: (current: HTMLDivElement | null) => void;
 }) {
-  // const { data, keyword, changeHeight } = useContext(SearchbarContext);
+  const scrollNameContainerRef = useRef<HTMLDivElement>(null);
+  const scrollNameElementRef = useRef<HTMLParagraphElement>(null);
+  useInfiniteScrollText({
+    containerRef: scrollNameContainerRef,
+    scrollRef: scrollNameContainerRef,
+  });
 
   return (
     <div
@@ -179,30 +211,52 @@ export function SearchResult({
                     h-0 transition-[height] duration-400 ease-in-out ${className}`}
       ref={changeHeight}
     >
-      {(data || []).map((item: any) => (
+      {(data || []).slice(0, 5).map((item) => (
         <Link href={`/${item._id}`}>
           <div
             className="py-2 flex gap-4 hover:brightness-105 px-2 rounded transition-colors duration-75 hover:bg-paper"
             key={item._id}
           >
             <Image
-              src={
-                item.images?.find((image: any) => image.type === "portrait")
-                  .url as string
-              }
+              src={item.images.portrait.url}
               width={50}
               height={70}
               alt={`portrait image of ${item.name}`}
               className="rounded"
             />
             <div className="flex flex-col justify-between">
-              <div>
-                <p className="text-sm text-white/70">{item.name}</p>
+              <div className="overflow-hidden">
+                {/*
+                  <Scroll infiniteScroll>
+                    <Item>
+
+                    </Item>
+                  </Scroll>
+                */}
+                <Scroll
+                  containerSelector={"#" + item.slug.replace("/", "-") + "-infinite-scroll-name"}
+                  infiniteScroll
+                  observerOptions={{
+                    threshold: 1,
+                  }}
+                >
+                  <div
+                    id={item.slug.replace("/", "-") + "-infinite-scroll-name"}
+                    className="w-40 flex gap-8"
+                  >
+                    <Item
+                      as="p"
+                      className="text-sm text-white/70 whitespace-nowrap w-max"
+                    >
+                      {item.name}
+                    </Item>
+                  </div>
+                </Scroll>
                 <p className="text-xs text-white/60 px-1 bg-paper relative w-max rounded after:rounded after:bg-white/[0.15] after:absolute after:inset-0">
                   {item.type[0].toUpperCase() + item.type.substring(1)}
                 </p>
               </div>
-              <p className="text-sm text-white_primary">${item.sale_price}</p>
+              <p className="text-sm text-white_primary">đ{item.sale_price}</p>
             </div>
           </div>
         </Link>

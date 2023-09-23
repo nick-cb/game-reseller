@@ -4,7 +4,7 @@ import React, { useMemo, useRef } from "react";
 import PortraitGameCard from "../PortraitGameCard";
 import Link from "next/link";
 import { Collections, Game, GameImages } from "@/database/models";
-import { FVideoFullInfo } from "@/database/repository/game/select";
+import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
 import { useScroll } from "../Scroll";
 
 type CarouselProps = {
@@ -20,9 +20,9 @@ type CarouselProps = {
       | "description"
     > & {
       images: {
-        portrait: GameImages;
-        landscape: GameImages | undefined;
-        logo: GameImages | undefined;
+        portrait: OmitGameId<GameImages>;
+        landscape: OmitGameId<GameImages> | undefined;
+        logo: OmitGameId<GameImages> | undefined;
       };
       videos: FVideoFullInfo[];
     })[];
@@ -35,14 +35,23 @@ const Carousel = ({ collection, className }: CarouselProps) => {
   const leftButtonRef = useRef<HTMLButtonElement>(null);
   const rightButtonRef = useRef<HTMLButtonElement>(null);
   const { elements, scrollToIndex } = useScroll();
-  const active = useMemo(() => {
-    const newAtiveIndex = elements.findIndex((el) => el.isIntersecting);
+  const { firstItemInView, lastItemInView } = useMemo(() => {
+    const firstItemInViewIdx = elements.findIndex((el) => el.isIntersecting);
+    const lastItemInViewIdx =
+      elements.findIndex(
+        (el, index) => !el.isIntersecting && index > firstItemInViewIdx,
+      ) - 1;
     return {
-      index: newAtiveIndex,
-      entry: elements[newAtiveIndex],
+      firstItemInView: {
+        index: firstItemInViewIdx,
+        element: elements[firstItemInViewIdx],
+      },
+      lastItemInView: {
+        index: lastItemInViewIdx,
+        element: elements[lastItemInViewIdx],
+      },
     };
   }, [elements]);
-  console.log({ active });
 
   return (
     <section className={className}>
@@ -72,7 +81,9 @@ const Carousel = ({ collection, className }: CarouselProps) => {
           <button
             ref={leftButtonRef}
             onClick={() => {
-              scrollToIndex(active.index - 1);
+              if (firstItemInView) {
+                scrollToIndex(firstItemInView.index - 1);
+              }
             }}
             className={
               "bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color "
@@ -81,7 +92,7 @@ const Carousel = ({ collection, className }: CarouselProps) => {
             <svg
               fill={"transparent"}
               stroke={
-                active.index === 0
+                elements[0]?.isIntersecting
                   ? "rgb(255 255 255 / 0.25)"
                   : "rgb(255 255 255)"
               }
@@ -93,14 +104,16 @@ const Carousel = ({ collection, className }: CarouselProps) => {
           <button
             ref={rightButtonRef}
             onClick={() => {
-              scrollToIndex(active.index + 1);
+              if (lastItemInView) {
+                scrollToIndex(lastItemInView.index + 1);
+              }
             }}
             className="bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color"
           >
             <svg
               fill={"transparent"}
               stroke={
-                active.index === elements.length - 1
+                elements.at(-1)?.isIntersecting
                   ? "rgb(255 255 255 / 0.25)"
                   : "rgb(255 255 255)"
               }
@@ -126,7 +139,7 @@ const Carousel = ({ collection, className }: CarouselProps) => {
             <PortraitGameCard
               key={game._id}
               game={game}
-              className="snap-center first-of-type:snap-start last-of-type:snap-end flex-shrink-0
+              className="snap-start last-of-type:snap-end flex-shrink-0
               w-[calc(calc(100vw_-_72px)_-_1px)]
               xs:w-[calc(calc(100vw_-_32px)/2_-_13px)]
               3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]

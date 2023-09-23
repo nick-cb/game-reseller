@@ -1,6 +1,8 @@
 import React from "react";
 import PortraitGameCard from "@/components/PortraitGameCard";
 import Pagination from "@/components/Pagination";
+import { groupGameByTags } from "@/database/repository/game/select";
+import { groupImages } from "@/utils/data";
 
 const page = async ({
   searchParams,
@@ -8,7 +10,7 @@ const page = async ({
   searchParams: { [K in string]: string | string[] | undefined };
 }) => {
   const { keyword, filters, page } = searchParams;
-  let limit = 20;
+  let limit = 16;
   let skip = 0;
   if (page && !isNaN(parseInt(page.toString()))) {
     const _skip = parseInt(page.toString());
@@ -16,29 +18,18 @@ const page = async ({
       skip = _skip - 1;
     }
   }
-  const data = await fetch(
-    `http://localhost:5001/api/products/games/all?limit=${limit}&skip=${skip}${
-      keyword ? "&keyword=" + keyword : ""
-    }`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      ...(filters
-        ? {
-            body: JSON.stringify({
-              filters: (filters?.toString() || "")?.split(","),
-            }),
-          }
-        : {}),
-    }
-  )
-    .then((res) => res.json())
-    .catch((e: Error) => {
-      console.log(e);
-      return e.message;
-    });
+  const response = await groupGameByTags({
+    tags: typeof filters === "string" ? filters?.split(",") : [],
+    limit,
+    skip,
+    keyword: keyword as string,
+  });
+  const data = response.data.map((game) => {
+    return {
+      ...game,
+      images: groupImages(game.images),
+    };
+  });
 
   return (
     <>
@@ -48,18 +39,20 @@ const page = async ({
             className="grid grid-cols-2 3/4sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 
             "
           >
-            {data.data &&
-              Array.isArray(data?.data) &&
-              data.data?.map((game: any) => (
+            {data &&
+              Array.isArray(data) &&
+              data.map((game: any) => (
                 <PortraitGameCard
                   key={game._id}
                   game={game}
                   className="snap-start block"
                 />
               ))}
-            {data.total_pages && (
+            {response.total && (
               <Pagination
-                total={data.total_pages}
+                total={Math.ceil(response.total / 32)}
+                // @ts-ignore
+                currentPage={parseInt(page?.toString())}
                 className="col-start-1 col-end-3 3/4sm:col-end-4 lg:col-end-5"
               />
             )}

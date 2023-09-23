@@ -3,20 +3,22 @@
 import { usePathname, useRouter } from "next/navigation";
 import React, { useContext, useMemo, useState } from "react";
 import { FilterContext } from "./FilterContext";
+import { Tags } from "@/database/models";
 
 export const CategoryCheckbox = ({
-  categoryName,
+  tag,
   ...props
 }: React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
-> & { categoryName: string }) => {
+> & { tag: Tags }) => {
+  const { tag_key } = tag;
   const router = useRouter();
   const pathname = usePathname();
 
   const { filters, searchParams } = useContext(FilterContext);
   const filteredByThisCat = useMemo(() => {
-    return filters.findIndex((cat) => cat === categoryName);
+    return filters.findIndex((cat) => cat === tag_key);
   }, [filters]);
   const [_checked, setChecked] = useState(filteredByThisCat > -1);
   if (filteredByThisCat === -1 && _checked) {
@@ -31,25 +33,26 @@ export const CategoryCheckbox = ({
       {/*   <SpinnerIcon isLoading={filtering} /> */}
       {/* </div> */}
       <input
-        name={`filters:${categoryName}`}
+        name={`filters:${tag_key}`}
         type="checkbox"
         aria-checked={_checked}
         onChange={() => {
           setChecked((prev) => {
-            if (prev) {
-              const realPos = filters.findIndex((cat) => cat === categoryName);
-              filters.splice(realPos, 1);
-            } else {
-              filters.push(categoryName);
-            }
-            if (filters.length > 0) {
-              searchParams?.set("filters", filters.join(","));
-            } else {
-              searchParams?.delete("filters");
-            }
-            router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
             return !prev;
           });
+          if (_checked) {
+            const realPos = filters.findIndex((cat) => cat === tag_key);
+            filters.splice(realPos, 1);
+          } else {
+            filters.push(tag_key);
+          }
+          if (filters.length > 0) {
+            searchParams?.set("filters", filters.join(","));
+          } else {
+            searchParams?.delete("filters");
+          }
+          searchParams?.delete('page');
+          router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
         }}
         checked={_checked}
         {...props}
