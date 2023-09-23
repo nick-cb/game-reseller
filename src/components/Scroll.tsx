@@ -140,7 +140,7 @@ export function useScrollFactory({
 }: {
   containerSelector: string;
   observerOptions?: IntersectionObserverInit;
-  infiniteScroll: boolean;
+  infiniteScroll?: boolean;
 }) {
   const [elements, setElements] = useState<IntersectionObserverEntry[]>([]);
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);

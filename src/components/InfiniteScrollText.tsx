@@ -86,12 +86,13 @@ export function useInfiniteScrollText<T extends HTMLElement>({
   const [isOverflow, setIsOverflow] = useState(false);
 
   useEffect(() => {
-    const element = containerRef?.current;
+    const container = containerRef?.current;
     const scrollElement = scrollRef?.current;
-    if (!element || !scrollElement) {
+    console.log({container});
+    if (!container || !scrollElement) {
       return;
     }
-    const children = element.children;
+    const children = container.children;
     const firstEl = children.item(0);
     if (!firstEl) {
       return;
@@ -114,14 +115,13 @@ export function useInfiniteScrollText<T extends HTMLElement>({
         return;
       }
       const alreadyAppendFirst =
-        element.children.length > 1
-          ? firstEl.isEqualNode(element.children.item(1))
+        container.children.length > 1
+          ? firstEl.isEqualNode(container.children.item(1))
           : false;
       if (!alreadyAppendFirst) {
-        element.appendChild(firstEl.cloneNode(true));
+        container.appendChild(firstEl.cloneNode(true));
       }
       const animate = () => {
-        console.log('animate');
         animation = scrollElement.animate(
           [
             {
@@ -140,7 +140,7 @@ export function useInfiniteScrollText<T extends HTMLElement>({
             const { width: containerWidth } =
               entry.target.getBoundingClientRect();
             if (firstElWidth <= containerWidth) {
-              element.removeChild(element.children.item(1)!);
+              container.removeChild(container.children.item(1)!);
               return;
             }
             animate();
@@ -150,7 +150,7 @@ export function useInfiniteScrollText<T extends HTMLElement>({
       animationFrame = requestAnimationFrame(animate);
     });
 
-    observer.observe(element);
+    observer.observe(container);
     return () => {
       observer.disconnect();
       cancelAnimationFrame(animationFrame);
