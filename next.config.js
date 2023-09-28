@@ -1,3 +1,5 @@
+const { redirect } = require("next/dist/server/api-utils");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -23,7 +25,39 @@ const nextConfig = {
           // },
         ],
       },
+      {
+        source: "/login",
+        headers: [{ key: "type", value: "modal" }],
+      },
     ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/login",
+          has: [
+            {
+              type: "query",
+              key: "type",
+              value: "modal",
+            },
+          ],
+          destination: "/login-modal",
+        },
+        {
+          source: "/signup",
+          has: [
+            {
+              type: "query",
+              key: "type",
+              value: "modal",
+            },
+          ],
+          destination: "/signup-modal",
+        },
+      ],
+    };
   },
   experimental: {
     serverActions: true,

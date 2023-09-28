@@ -53,7 +53,9 @@ const PortraitGameCard = ({
         </div>
         <p className="mt-4 text-sm text-white_primary">{game.name}</p>
         <p className="text-xs mt-1 text-white/60">{game.developer}</p>
-        <p className="text-sm mt-2 text-white_primary">đ{game.sale_price}</p>
+        <p className="text-sm mt-2 text-white_primary">
+          {game.sale_price === 0 ? "Free" : "đ" + game.sale_price}
+        </p>
       </Item>
     </Link>
   );

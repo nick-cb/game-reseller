@@ -20,8 +20,8 @@ import { Game, GameImages } from "@/database/models";
 import { OmitGameId } from "@/database/repository/game/select";
 import { RowDataPacket } from "mysql2";
 import { groupImages } from "@/utils/data";
-import { useInfiniteScrollText } from "./InfiniteScrollText";
 import Scroll, { Item } from "./Scroll";
+import { pascalCase } from "@/utils";
 
 type SearchbarData = (RowDataPacket &
   Game & {
@@ -124,9 +124,9 @@ const Searchbar = ({
         onKeyDown,
       }}
     >
-      <div className={"relative " + className} ref={ref}>
+      <div className={"relative h-full " + className} ref={ref}>
         <div
-          className={`flex items-center rounded pl-4 pr-2
+          className={`flex items-center rounded pl-4 pr-2 h-full 
                     bg-white/[0.15] hover:bg-white/[0.25] 
                     transition-colors`}
         >
@@ -197,13 +197,6 @@ export function SearchResult({
   keyword: string | null;
   changeHeight: (current: HTMLDivElement | null) => void;
 }) {
-  const scrollNameContainerRef = useRef<HTMLDivElement>(null);
-  const scrollNameElementRef = useRef<HTMLParagraphElement>(null);
-  useInfiniteScrollText({
-    containerRef: scrollNameContainerRef,
-    scrollRef: scrollNameContainerRef,
-  });
-
   return (
     <div
       className={`z-20 absolute w-[250px] right-0 rounded 
@@ -212,10 +205,10 @@ export function SearchResult({
       ref={changeHeight}
     >
       {(data || []).slice(0, 5).map((item) => (
-        <Link href={`/${item._id}`}>
+        <Link href={`/${item.slug}`} title={item.name}>
           <div
             className="py-2 flex gap-4 hover:brightness-105 px-2 rounded transition-colors duration-75 hover:bg-paper"
-            key={item._id}
+            key={item.ID}
           >
             <Image
               src={item.images.portrait.url}
@@ -226,15 +219,10 @@ export function SearchResult({
             />
             <div className="flex flex-col justify-between">
               <div className="overflow-hidden">
-                {/*
-                  <Scroll infiniteScroll>
-                    <Item>
-
-                    </Item>
-                  </Scroll>
-                */}
                 <Scroll
-                  containerSelector={"#" + item.slug.replace("/", "-") + "-infinite-scroll-name"}
+                  containerSelector={
+                    "#" + item.slug.replace("/", "-") + "-infinite-scroll-name"
+                  }
                   infiniteScroll
                   observerOptions={{
                     threshold: 1,
@@ -253,7 +241,7 @@ export function SearchResult({
                   </div>
                 </Scroll>
                 <p className="text-xs text-white/60 px-1 bg-paper relative w-max rounded after:rounded after:bg-white/[0.15] after:absolute after:inset-0">
-                  {item.type[0].toUpperCase() + item.type.substring(1)}
+                  {pascalCase(item.type, "_")}
                 </p>
               </div>
               <p className="text-sm text-white_primary">đ{item.sale_price}</p>

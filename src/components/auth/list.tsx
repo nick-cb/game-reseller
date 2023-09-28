@@ -36,7 +36,8 @@ export const StrategyList = React.forwardRef<
         onClick={(event) => {
           onClickStrategy(event, "facebook");
         }}
-        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 hover:brightness-125 transition-[filter]"
+        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 transition-[filter] opacity-50"
+        title="Not available"
       >
         <div className="w-20 py-4 bg-[#135FC2] flex justify-center items-center">
           <Image
@@ -53,7 +54,8 @@ export const StrategyList = React.forwardRef<
         onClick={(event) => {
           onClickStrategy(event, "facebook");
         }}
-        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 hover:brightness-125 transition-[filter]"
+        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 transition-[filter] opacity-50"
+        title="Not available"
       >
         <div className="w-20 py-4 bg-white_primary flex justify-center items-center">
           <Image
@@ -70,7 +72,8 @@ export const StrategyList = React.forwardRef<
         onClick={(event) => {
           onClickStrategy(event, "facebook");
         }}
-        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 hover:brightness-125 transition-[filter]"
+        className="rounded overflow-hidden flex items-center bg-paper w-72 3/4sm:w-96 transition-[filter] opacity-50"
+        title="Not available"
       >
         <div className="w-20 py-4 bg-white flex justify-center items-center">
           <Image src="/images/apple-black.png" width={24} height={24} alt="" />

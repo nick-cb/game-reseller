@@ -20,6 +20,7 @@ import {
 import { CriticAvg, GameImages } from "@/database/models";
 import GameCard from "@/components/game/GameCard";
 import Link from "next/link";
+import { pascalCase } from "@/utils";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -27,16 +28,6 @@ const criticRec = {
   strong: "51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276",
   mighty:
     "51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276",
-};
-
-const pascalCase = (type: string, delimiter: string) => {
-  const segments = type.split(delimiter);
-  let final = "";
-  for (const segment of segments) {
-    final += " ";
-    final += segment[0].toUpperCase() + segment.substring(1);
-  }
-  return final.trim();
 };
 
 function groupImages(images: OmitGameId<GameImages>[]) {

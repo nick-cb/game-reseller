@@ -24,6 +24,7 @@ type PillarProps = {
     })[];
   };
 };
+
 export function Pillar({ data }: PillarProps) {
   return (
     <div className="w-full relative">
@@ -39,15 +40,23 @@ export function Pillar({ data }: PillarProps) {
         </Link>
       </div>
       <div
+        id={"pillar-" + data.collection_key}
         className="overflow-scroll grid grid-cols-2 cols-min-80
         md:flex flex-col gap-2 scrollbar-hidden
         snap-x snap-mandatory"
       >
-        {data.list_game.slice(0, 6).map((game) => (
-          <Link href={`/${game.slug}`}>
+        {data.list_game.slice(0, 6).map((game, index) => (
+          <Link
+            key={game.ID}
+            href={`/${game.slug}`}
+            style={{
+              gridColumnStart: Math.ceil((index + 1) / 3),
+              gridRowStart: (index + 1) % 3 === 0 ? 3 : (index + 1) % 3,
+            }}
+          >
             <div
               className="py-2 px-2 rounded hover:bg-paper_2 transition-colors
-                  flex items-center gap-4 snap-start"
+              flex items-center gap-4 snap-start"
             >
               <div className="relative h-28 md:h-18 aspect-[3/4] rounded overflow-hidden">
                 <Image src={game.images.portrait?.url} alt="" fill />
@@ -69,17 +78,6 @@ export function Pillar({ data }: PillarProps) {
         absolute bottom-0 h-[calc(100%-28px)] w-80 -right-2 
         bg-gradient-to-l from-default"
       ></div>
-      <button className="absolute right-0 top-1/2 px-2 py-4 rounded focus:outline outline-white_primary/60 sm:hidden">
-        <svg
-          stroke="white"
-          fill="none"
-          width={24}
-          height={24}
-          className="-rotate-90"
-        >
-          <use xlinkHref="/svg/sprites/actions.svg#chevron-down" />
-        </svg>
-      </button>
     </div>
   );
 }

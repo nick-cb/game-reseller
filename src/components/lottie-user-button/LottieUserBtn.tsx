@@ -5,8 +5,10 @@ import React, { useCallback } from "react";
 import lottieuser from "../../../public/user-lottie.json";
 import "./dialog.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function LottieUserButton() {
+  const router = useRouter();
   const { View, goToAndPlay } = useLottie({
     animationData: lottieuser,
     autoplay: false,
@@ -21,7 +23,12 @@ export function LottieUserButton() {
   return (
     <>
       <Link
-        href={"/login"}
+        href={{
+          pathname: "/login",
+          query: {
+            type: "modal",
+          }
+        }}
         onMouseEnter={handler}
         className="relative flex items-center gap-2 px-4 rounded overflow-hidden 
         after:absolute after:inset-0 after:bg-white/[.15] after:opacity-0

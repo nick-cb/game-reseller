@@ -46,3 +46,14 @@ export async function onLinkNavigate(callback: Function) {
     });
   });
 }
+
+export const pascalCase = (type: string, delimiter: string) => {
+  const segments = type.split(delimiter);
+  let final = "";
+  for (const segment of segments) {
+    final += " ";
+    final += segment[0].toUpperCase() + segment.substring(1);
+  }
+  return final.trim();
+};
+

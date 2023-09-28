@@ -37,7 +37,10 @@ export default async function Home() {
         className="hidden sm:block"
       />
       <Scroll containerSelector="#hero-slider">
-        <HeroSlider data={data[0].list_game.slice(0, 6)} className="sm:hidden" />
+        <HeroSlider
+          data={data[0].list_game.slice(0, 6)}
+          className="sm:hidden"
+        />
       </Scroll>
       <hr className="my-4 border-default" />
       {data.slice(0, 1).map((collection, index) => (

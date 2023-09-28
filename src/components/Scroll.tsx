@@ -19,17 +19,22 @@ const scrollContext = createContext<{
 export default function Scroll({
   children,
   containerSelector,
-  infiniteScroll = false,
   observerOptions,
+  infiniteScroll = false,
+  infiniteScrollOptions,
 }: PropsWithChildren<{
   containerSelector: string;
   infiniteScroll?: boolean;
   observerOptions?: IntersectionObserverInit | undefined;
+  infiniteScrollOptions?: {
+    animate: number | KeyframeAnimationOptions | undefined;
+  };
 }>) {
   const { elements, observer } = useScrollFactory({
     containerSelector,
     infiniteScroll,
     observerOptions,
+    infiniteScrollOptions,
   });
 
   return (
@@ -91,6 +96,11 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     if (!entry) {
       return;
     }
+    // console.log(entry.target.offsetLeft)
+    // entry.target.scroll({
+    //   left: entry.target.offsetLeft,
+    //   behavior: 'smooth',
+    // })
     entry.target.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
@@ -137,10 +147,14 @@ export function useScrollFactory({
   containerSelector,
   observerOptions,
   infiniteScroll,
+  infiniteScrollOptions,
 }: {
   containerSelector: string;
   observerOptions?: IntersectionObserverInit;
   infiniteScroll?: boolean;
+  infiniteScrollOptions?: {
+    animate: number | KeyframeAnimationOptions | undefined;
+  };
 }) {
   const [elements, setElements] = useState<IntersectionObserverEntry[]>([]);
   const [observer, setObserver] = useState<IntersectionObserver | null>(null);
@@ -210,7 +224,7 @@ export function useScrollFactory({
             transform: `translateX(-${distance}px)`,
           },
         ],
-        {
+        infiniteScrollOptions?.animate ?? {
           duration: 10000,
           easing: "linear",
           fill: "forwards",
@@ -236,4 +250,35 @@ export function useScrollFactory({
   }, [elements, observer, infiniteScroll]);
 
   return { elements, observer, observerOptions };
+}
+
+export function ScrollButton({
+  children,
+  method,
+  pageStep,
+  ...props
+}: {
+  method: "pageScroll";
+  pageStep?: number;
+} & React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>) {
+  const [page, setPage] = useState(1);
+  const { scrollToIndex } = useScroll();
+
+  return (
+    <button
+      onClick={() => {
+        if (method === "pageScroll" && pageStep) {
+          console.log(page * pageStep);
+          scrollToIndex(page * pageStep);
+          setPage(prev => prev + 1);
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
 }

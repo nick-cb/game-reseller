@@ -63,7 +63,7 @@ export default function RootLayout({
                 <AuthControls />
               </div>
             </header>
-            <HideOnRoute matches={[{ name: "/order" }]}>
+            <HideOnRoute matches={[{ name: "/order" }, {name: 'login'}]}>
               <nav
                 className="px-4 lg:px-24 xl:px-44 
               flex gap-4 

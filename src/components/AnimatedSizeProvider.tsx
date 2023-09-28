@@ -124,18 +124,6 @@ export const AnimatedSizeItem = React.memo(function ({
     };
   }, [active, updateOnInactive, delay]);
 
-  useEffect(() => {
-    console.log({ ref, active });
-  }, [active]);
-
-  useEffect(() => {
-    console.log({ ref, updateOnInactive });
-  }, [updateOnInactive]);
-
-  useEffect(() => {
-    console.log({ ref, delay });
-  }, [delay]);
-
   return (
     <div ref={ref} className={" " + className} {...props}>
       {children}

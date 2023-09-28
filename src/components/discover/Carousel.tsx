@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Collections, Game, GameImages } from "@/database/models";
 import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
 import { useScroll } from "../Scroll";
+import { useRouter } from "next/navigation";
 
 type CarouselProps = {
   collection: Collections & {
@@ -52,9 +53,15 @@ const Carousel = ({ collection, className }: CarouselProps) => {
       },
     };
   }, [elements]);
+  const router = useRouter();
 
   return (
     <section className={className}>
+      <Link
+        href={"/signup-modal?type=modal"}
+      >
+        Signup
+      </Link>
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
