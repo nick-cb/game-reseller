@@ -3,6 +3,7 @@ import PortraitGameCard from "@/components/PortraitGameCard";
 import Pagination from "@/components/Pagination";
 import { groupGameByTags } from "@/database/repository/game/select";
 import { groupImages } from "@/utils/data";
+import Filter from "@/components/browse/Filter";
 
 const page = async ({
   searchParams,
@@ -35,6 +36,9 @@ const page = async ({
     <>
       {data ? (
         <>
+          <div className="flex justify-end pb-4">
+            <Filter />
+          </div>
           <div
             className="grid grid-cols-2 3/4sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 
             "

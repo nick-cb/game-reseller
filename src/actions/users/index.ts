@@ -9,9 +9,7 @@ import {
   EmailSignupFormPayload,
 } from "@/components/auth/email";
 import { connectDB } from "@/database";
-import {
-  findUserByEmail,
-} from "@/database/repository/user/select";
+import { findUserByEmail } from "@/database/repository/user/select";
 import { insertUser } from "@/database/repository/user/insert";
 import { updateUserById } from "@/database/repository/user/update";
 import { bucket } from "@/firebase";
@@ -117,9 +115,8 @@ export const login = async (values: EmailLoginFormPayload) => {
     };
   }
 
-  const salt = await bcrypt.genSalt(10);
-  const encryptedPassword = await bcrypt.hash(values.password, salt);
-  if (encryptedPassword !== user.password) {
+  const matchPass = await bcrypt.compare(values.password, user.password);
+  if (!matchPass) {
     return {
       error: "Wrong password",
     };

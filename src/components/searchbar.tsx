@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   createContext,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -14,14 +15,22 @@ import SearchIcon from "./SearchIcon";
 import SpinnerIcon from "./SpinnerIcon";
 import Link from "next/link";
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { Input } from "./Input";
-import { Game, GameImages } from "@/database/models";
+import { Game, GameImageGroup, GameImages } from "@/database/models";
 import { OmitGameId } from "@/database/repository/game/select";
 import { RowDataPacket } from "mysql2";
 import { groupImages } from "@/utils/data";
 import Scroll, { Item } from "./Scroll";
 import { pascalCase } from "@/utils";
+import PortraitGameCard from "./PortraitGameCard";
+import { headers } from "next/headers";
+import { BASE_URL } from "@/utils/config";
 
 type SearchbarData = (RowDataPacket &
   Game & {
@@ -29,11 +38,11 @@ type SearchbarData = (RowDataPacket &
   })[];
 const SearchbarContext = createContext<{
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
-  onFocus: React.FocusEventHandler<HTMLInputElement> | undefined;
-  onKeyDown: React.KeyboardEventHandler<HTMLInputElement> | undefined;
+  onFocus?: React.FocusEventHandler<HTMLInputElement> | undefined;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
   data: SearchbarData;
   keyword: string | null;
-  changeHeight: (current: HTMLDivElement | null) => void;
+  changeHeight?: (current: HTMLDivElement | null) => void;
 }>({
   data: [],
   keyword: "",
@@ -56,21 +65,15 @@ const Searchbar = ({
   const { isLoading, data: { data } = { data: [] } } = useQuery(
     ["search-by-keyword", keyword],
     () =>
-      fetch(`http://localhost:3000/api?keyword=${keyword}`).then(
+      fetch(`${BASE_URL}/api/search?keyword=${keyword}`).then(
         (res) =>
           res.json() as Promise<{
             data: (RowDataPacket &
-              Game & {
-                images: OmitGameId<GameImages>[];
-              })[];
+              Game & {images: GameImageGroup })[];
           }>,
       ),
     { enabled: Boolean(keyword) },
   );
-  const groupedImagesData = data.map((game) => ({
-    ...game,
-    images: groupImages(game.images),
-  }));
 
   const searchResultContainerRef = useRef<HTMLDivElement>(null);
   const changeHeight = useCallback(
@@ -116,7 +119,7 @@ const Searchbar = ({
   return (
     <SearchbarContext.Provider
       value={{
-        data: groupedImagesData,
+        data,
         keyword,
         changeHeight,
         onChange,
@@ -136,7 +139,7 @@ const Searchbar = ({
         </div>
         <SearchResultSlot
           className={""}
-          data={groupedImagesData}
+          data={data}
           keyword={keyword}
           changeHeight={changeHeight}
         />
@@ -291,6 +294,149 @@ export function SearchbarDistributeBottom() {
           }
         />
       </Searchbar>
+    </>
+  );
+}
+
+export function MobileSearch() {
+  useParams();
+
+  const [keyword, setKeyword] = useState<string | null>(null);
+  const ref = useRef<HTMLDialogElement>(null);
+  const { data: { data: placeholderData } = { data: [] } } = useQuery(
+    ["search-placeholder-data"],
+    async () => {
+      return await fetch(
+        `${BASE_URL}/api/placeholder`,
+      ).then(
+        (res) =>
+          res.json() as Promise<{
+            data: (Game & GameImageGroup)[];
+          }>,
+      );
+    },
+  );
+  const { isLoading, data: { data } = { data: [] } } = useQuery(
+    ["search-by-keyword", keyword],
+    () =>
+      fetch(`${BASE_URL}/api/search?keyword=${keyword}`).then(
+        (res) =>
+          res.json() as Promise<{
+            data: (RowDataPacket &
+              Game & {
+                images: OmitGameId<GameImages>[];
+              })[];
+          }>,
+      ),
+    { enabled: Boolean(keyword) },
+  );
+
+  useEffect(() => {
+    console.log(window.location.hash !== "#search", ref.current?.open);
+    if (window.location.hash !== "#search" && ref.current?.open) {
+      const header = document.querySelector("header");
+      const nav = document.querySelector("nav");
+      if (!header || !nav) {
+        return;
+      }
+      header.animate(
+        [{ transform: "translateY(-100%)" }, { transform: "translateY(0)" }],
+        {
+          duration: 200,
+          easing: "ease-in-out",
+        },
+      );
+      nav.animate(
+        [{ transform: "translateY(-100%)" }, { transform: "translateY(0)" }],
+        {
+          duration: 200,
+          easing: "ease-in-out",
+        },
+      );
+      const animation = ref.current?.animate(
+        [{ transform: "translateY(100%)" }],
+        {
+          duration: 400,
+          easing: "ease-out",
+          fill: "forwards",
+        },
+      );
+      const animation2 = ref.current?.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        {
+          duration: 300,
+          easing: "ease-out",
+          fill: "forwards",
+        },
+      );
+      animation.finished.then(() => {
+        ref.current?.close();
+        animation.cancel();
+        animation2.cancel();
+      });
+    }
+  });
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          window.location.hash = "#search";
+          const header = document.querySelector("header");
+          const nav = document.querySelector("nav");
+          if (!header || !nav) {
+            return;
+          }
+          ref.current?.showModal();
+          header.animate([{ transform: "translateY(-100%)" }], {
+            duration: 400,
+            easing: "ease-in-out",
+          });
+          nav.animate([{ transform: "translateY(-100%)" }], {
+            duration: 400,
+            easing: "ease-in-out",
+          });
+        }}
+        className="rounded h-10 w-full bg-paper_2 flex items-center px-2"
+      >
+        <SearchIcon />
+      </button>
+      <dialog
+        ref={ref}
+        className={
+          "bg-default shadow-lg shadow-black text-white_primary p-0 overflow-hidden " +
+          " m-0 inset-0 max-h-[unset] max-w-[unset] w-full h-full  " +
+          "animate-[300ms_scale-in-up,_200ms_fade-in] [animation-fill-mode:_forwards] " +
+          "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] p-2 "
+        }
+      >
+        <div className="bg-paper px-2 py-1 rounded flex gap-2 items-center">
+          <SearchIcon />
+          <SearchbarContext.Provider value={{
+            data: [],
+            keyword,
+            onChange,
+          }}>
+            <SearchInput className="w-full "  />
+          </SearchbarContext.Provider>
+
+        </div>
+        <div className="my-4"></div>
+        <div className="grid grid-cols-2 gap-4 overflow-scroll h-screen pb-32">
+          {data.map((game) => {
+            return <PortraitGameCard key={game.ID} game={game} />;
+          })}
+          {!data.length ? placeholderData.map((game) => {
+            return <PortraitGameCard key={game.ID} game={game} />;
+          }) : null}
+        </div>
+        {placeholderData.length}
+      </dialog>
     </>
   );
 }

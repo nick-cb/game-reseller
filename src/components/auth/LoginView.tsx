@@ -3,7 +3,7 @@
 import { startTransition, useContext, useState } from "react";
 import { redirect, useSearchParams } from "next/navigation";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
-import { SnackContext, SnackContextProvider } from "@/components/SnackContext";
+import { SnackContext } from "@/components/SnackContext";
 import { useForm } from "react-hook-form";
 import { EmailLoginForm, EmailLoginFormPayload } from "@/components/auth/email";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import {
 import { StrategyList } from "@/components/auth/list";
 import Link from "next/link";
 import { login } from "@/actions/users";
+import { useRouter } from "next/navigation";
 
 const currentConfig = {
   0: [
@@ -47,6 +48,7 @@ export function LoginView({
   modal: boolean;
   closeDialog?: () => void;
 }) {
+  const router = useRouter();
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
   >();
@@ -84,7 +86,7 @@ export function LoginView({
     showMessage({ message: "Login successfully", type: "success" });
     localStorage.setItem("user", JSON.stringify(user));
     closeDialog?.();
-    redirect("/");
+    router.push("/");
   };
 
   return (
@@ -196,12 +198,6 @@ export function LoginView({
               : {}),
           }}
           className="text-white_primary cursor-pointer"
-          // onClick={(event) => {
-          //   if (modal !== true) {
-          //     event.preventDefault();
-          //     router.push("/signup");
-          //   }
-          // }}
         >
           Signup now!
         </Link>

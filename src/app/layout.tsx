@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import {
+  MobileSearch,
   SearchbarDistributeBottom,
   SearchbarDistributeTop,
 } from "../components/searchbar";
@@ -112,12 +113,20 @@ export default function RootLayout({
               {modal}
             </main>
           </SnackContextProvider>
-          <form
-            className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50"
-            action={handleSubmitSearch}
+          <HideOnRoute
+            matches={[
+              { pathname: "/login" },
+              { pathname: "/signup" },
+              { pathname: "/browse" },
+            ]}
           >
-            <SearchbarDistributeBottom />
-          </form>
+            <form
+              className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50"
+              action={handleSubmitSearch}
+            >
+              <MobileSearch />
+            </form>
+          </HideOnRoute>
         </body>
       </QueryContext>
     </html>

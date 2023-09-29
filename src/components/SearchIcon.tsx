@@ -1,12 +1,10 @@
-import React from "react";
+import React, { SVGProps } from "react";
 
 const SearchIcon = ({
   width = 20,
   height = 20,
-}: {
-  width?: number;
-  height?: number;
-}) => {
+  ...props
+}: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width={width}
@@ -18,6 +16,7 @@ const SearchIcon = ({
       x="0px"
       y="0px"
       viewBox="0 0 64 64"
+      {...props}
     >
       <path
         d="M27,9c9.925,0,18,8.075,18,18s-8.075,18-18,18S9,36.925,9,27S17.075,9,27,9z M27,41c7.719,0,14-6.281,14-14s-6.281-14-14-14
