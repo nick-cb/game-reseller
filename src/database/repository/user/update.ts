@@ -13,7 +13,7 @@ export async function updateUserById(
     set ${Object.entries(user)
       .map(([key, value]) => {
         return (
-          key + "=" + (typeof value === "string" ? +"'" + value + "'" : value)
+          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
         );
       })
       .join(", ")}

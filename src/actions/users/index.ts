@@ -68,19 +68,24 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
     ).then((res) => res.arrayBuffer());
     const fileName = inserteduser.ID + uuidv4() + "avatar.svg";
     const file = bucket.file(fileName);
-    // @ts-ignore
-    file.save(new Uint8Array(avatar), async () => {
-      await file.makePublic();
-    });
-    const token = await generateToken({ userId: inserteduser.ID });
-    await updateUserById(inserteduser.ID, {
-      user: {
-        refresh_token: token,
-        avatar: file.publicUrl(),
-      },
-    });
-    connection.destroy();
-    cookies().set("refresh_token", token || "", COOKIES_OPTIONS);
+    await file
+      // @ts-ignore
+      .save(new Uint8Array(avatar), async () => {
+        await file.makePublic();
+      })
+      .then(async () => {
+        const token = await generateToken({ userId: inserteduser.ID });
+        const url = file.publicUrl();
+        console.log({ url });
+        await updateUserById(inserteduser.ID, {
+          user: {
+            refresh_token: token,
+            avatar: url,
+          },
+        });
+        connection.destroy();
+        cookies().set("refresh_token", token || "", COOKIES_OPTIONS);
+      });
 
     return { ok: true, data: null };
   } catch (error) {

@@ -46,7 +46,10 @@ export function LoginView({
 }: {
   visible?: boolean;
   modal: boolean;
-  closeDialog?: () => void;
+  closeDialog?: (
+    ref: React.RefObject<HTMLDivElement>,
+    options?: { goback?: number },
+  ) => void;
 }) {
   const router = useRouter();
   const [strategy, setStrategy] = useState<
@@ -85,7 +88,9 @@ export function LoginView({
     }
     showMessage({ message: "Login successfully", type: "success" });
     localStorage.setItem("user", JSON.stringify(user));
-    closeDialog?.();
+    closeDialog?.(contentContainerRef, {
+      goback: -1,
+    });
     router.push("/");
   };
 

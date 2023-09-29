@@ -11,7 +11,10 @@ export default function LoginModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
-  const closeDialog = async () => {
+  const closeDialog = async (
+    _: React.RefObject<HTMLElement>,
+    options?: { goback?: number },
+  ) => {
     const dialog = dialogRef.current;
     if (!dialog) {
       return;
@@ -32,6 +35,7 @@ export default function LoginModal() {
       fadeOutAnimation.finished,
     ]);
     dialogRef.current?.close();
+    dialog.dataset["goback"] = options?.goback?.toString();
     setVisible(false);
     // setStrategy(undefined);
   };
@@ -44,12 +48,17 @@ export default function LoginModal() {
   return (
     <Dialog
       ref={dialogRef}
-      onClose={() => {
-        startTransition(() => {
-          router.back();
-        });
+      onClose={(event) => {
+        const goback = parseInt(event.currentTarget.dataset["goback"] || "0");
+        if (!isNaN(goback) && goback === -1) {
+          return;
+        }
+        for (let i = 0; i < (isNaN(goback) ? 1 : goback); i++) {
+          startTransition(() => {
+            router.back();
+          });
+        }
       }}
-      // className={!visible ? "pointer-events-none opacity-0 px-0" : ""}
     >
       <SnackContextProvider>
         <LoginView modal visible={visible} closeDialog={closeDialog} />

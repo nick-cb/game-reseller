@@ -48,7 +48,10 @@ export function SignupView({
 }: {
   visible?: boolean;
   modal?: boolean;
-  closeDialog?: () => void;
+  closeDialog?: (
+    ref: React.RefObject<HTMLDivElement>,
+    options?: { goback?: number },
+  ) => void;
 }) {
   const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
     closeDialog ? closeDialog : () => {},
@@ -82,7 +85,6 @@ export function SignupView({
   const { handleSubmit } = form;
 
   const submitHandler = async (values: EmailSignupFormPayload) => {
-    console.log("submit handler", { values });
     const { error, data } = await createNewUser(values);
     if (error) {
       showMessage({ message: error, type: "error" });
@@ -90,7 +92,9 @@ export function SignupView({
     }
     showMessage({ message: "Signup successfully", type: "success" });
     localStorage.setItem("user", JSON.stringify(data));
-    closeDialog?.();
+    closeDialog?.(contentContainerRef, {
+      goback: -1,
+    });
     router.push("/");
   };
 

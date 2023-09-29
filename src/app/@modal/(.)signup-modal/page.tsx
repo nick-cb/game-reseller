@@ -2,7 +2,7 @@
 
 import { Dialog } from "@/components/Dialog";
 import { useRouter } from "next/navigation";
-import { useRef, startTransition, useEffect, useState } from "react";
+import React, { useRef, startTransition, useEffect, useState } from "react";
 import { SignupView } from "@/components/auth/SignupView";
 import { SnackContextProvider } from "@/components/SnackContext";
 
@@ -11,7 +11,10 @@ export default function SignupModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
-  const closeDialog = async () => {
+  const closeDialog = async (
+    _: React.RefObject<HTMLElement>,
+    options?: { goback?: number },
+  ) => {
     const dialog = dialogRef.current;
     if (!dialog) {
       return;
@@ -31,9 +34,9 @@ export default function SignupModal() {
       slideOutAnimation.finished,
       fadeOutAnimation.finished,
     ]);
-    dialogRef.current?.close();
+    dialog.close();
+    dialog.dataset["goback"] = options?.goback?.toString();
     setVisible(false);
-    // setStrategy(undefined);
   };
 
   useEffect(() => {
@@ -44,9 +47,15 @@ export default function SignupModal() {
   return (
     <Dialog
       ref={dialogRef}
-      onClose={() => {
+      onClose={(event) => {
+        const goback = parseInt(event.currentTarget.dataset["goback"] || "0");
+        if (!isNaN(goback) && goback === -1) {
+          return;
+        }
         startTransition(() => {
-          router.back();
+          for (let i = 0; i < (isNaN(goback) ? 1 : goback); i++) {
+            router.back();
+          }
         });
       }}
     >
