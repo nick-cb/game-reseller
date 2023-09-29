@@ -63,9 +63,13 @@ export default function RootLayout({
                 matches={[{ pathname: "/login" }, { pathname: "/signup" }]}
               >
                 <div className="flex gap-2 text-sm pl-4 text-white_primary items-center">
-                  <form className="hidden h-full sm:block" action={handleSubmitSearch}>
+                  <form
+                    className="hidden h-full sm:block"
+                    action={handleSubmitSearch}
+                  >
                     <SearchbarDistributeTop />
                   </form>
+                  {/* @ts-expect-error Server Component */}
                   <AuthControls />
                 </div>
               </HideOnRoute>
