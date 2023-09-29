@@ -23,7 +23,7 @@ export const EmailSignupForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " + className
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 3/4sm:gap-y-4 " + className
       }
       {...props}
     >
@@ -82,26 +82,26 @@ export const EmailSignupForm = React.forwardRef<
         className="p-3 !w-[26ch]"
         {...register("password")}
       />
-      {/* <label htmlFor="confirm-password" className="w-max my-auto block"> */}
-      {/*   Confirm password */}
-      {/* </label> */}
-      {/* <PasswordInput */}
-      {/*   id={"confirm-password"} */}
-      {/*   leftIconProps={{ */}
-      {/*     className: "fill-white !stroke-white ml-3", */}
-      {/*   }} */}
-      {/*   leftIcon={"/svg/sprites/actions.svg#password-retry"} */}
-      {/*   placeholder="Re-Enter your password" */}
-      {/*   className="p-3" */}
-      {/*   {...register("confirm_password")} */}
-      {/* /> */}
-      {/* <StandardButton */}
-      {/*   type="submit" */}
-      {/*   className="3/4sm:col-span-2 shadow shadow-default mt-2" */}
-      {/*   loading={form.formState.isSubmitting} */}
-      {/* > */}
-      {/*   Signup */}
-      {/* </StandardButton> */}
+      <label htmlFor="confirm-password" className="w-max my-auto block">
+        Confirm password
+      </label>
+      <PasswordInput
+        id={"confirm-password"}
+        leftIconProps={{
+          className: "fill-white !stroke-white ml-3",
+        }}
+        leftIcon={"/svg/sprites/actions.svg#password-retry"}
+        className="p-3 !w-[26ch]"
+        placeholder="Re-Enter your password"
+        {...register("confirm_password")}
+      />
+      <StandardButton
+        type="submit"
+        className="3/4sm:col-span-2 shadow shadow-default mt-2"
+        loading={form.formState.isSubmitting}
+      >
+        Signup
+      </StandardButton>
     </form>
   );
 });
@@ -123,7 +123,7 @@ export const EmailLoginForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " +
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 3/4sm:gap-y-4 " +
         className
       }
       {...props}

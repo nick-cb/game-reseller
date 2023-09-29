@@ -10,7 +10,7 @@ export const Dialog = React.forwardRef<
     <dialog
       ref={ref}
       className={
-        "bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary p-0 overflow-hidden " +
+        "bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary p-0 overflow-x-hidden overflow-y-scroll scrollbar-hidden " +
         "opacity-0 inset-0 m-auto fixed " +
         "backdrop:backdrop-blur-xl backdrop-brightness-50 " +
         "animate-[300ms_slide-in-down,_400ms_fade-in] [animation-fill-mode:_forwards] " +

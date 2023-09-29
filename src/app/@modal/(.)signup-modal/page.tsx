@@ -49,7 +49,6 @@ export default function SignupModal() {
           router.back();
         });
       }}
-      // className={!visible ? "pointer-events-none opacity-0 px-0" : ""}
     >
       <SnackContextProvider>
         <SignupView modal visible={visible} closeDialog={closeDialog} />

@@ -19,7 +19,7 @@ export default function Filter({ tags }: { tags: Tags[] }) {
   return (
     <>
       <div className="w-full flex justify-between items-center gap-4">
-        <div className="bg-white/[0.15] hover:bg-white/25 transition-colors rounded flex items-center px-4 flex-grow h-9">
+        <div className="bg-white/[0.15] hover:bg-white/25 transition-colors rounded flex items-center pl-4 flex-grow h-9">
           <SearchIcon />
           <input
             onTouchStart={(event) => {
@@ -29,7 +29,7 @@ export default function Filter({ tags }: { tags: Tags[] }) {
                 inputRef.current?.focus();
               }, 500);
             }}
-            className="bg-transparent"
+            className="bg-transparent w-full h-full"
           />
         </div>
         <button
