@@ -5,6 +5,7 @@ import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
 import "./browse.css";
 import findTagByGroupName from "@/database/repository/tags/select";
+import Filter from "@/components/browse/Filter";
 
 const layout = async ({ children }: PropsWithChildren) => {
   const tags = await findTagByGroupName("genre");
@@ -12,6 +13,9 @@ const layout = async ({ children }: PropsWithChildren) => {
   return (
     <div className="grid grid-cols-4 gap-8">
       <div className="col-start-1 col-end-5 md:col-end-4 text-white_primary">
+        <div className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50">
+          <Filter tags={tags[0]} />
+        </div>
         {children}
       </div>
       <form

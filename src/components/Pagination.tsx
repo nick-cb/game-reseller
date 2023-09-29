@@ -28,6 +28,7 @@ const Pagination: React.FC<{
                 className={
                   "text-white_primary py-2 px-4 bg-paper rounded block relative overflow-hidden " +
                   " after:hover:bg-white_primary/25 after:absolute after:inset-0 after:transition-colors " +
+                  (!currentPage && index === 0 ? " bg-white_primary/25" : "") +
                   (currentPage === index + 1 ? " bg-white_primary/25" : "")
                 }
               >

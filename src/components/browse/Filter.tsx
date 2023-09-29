@@ -1,65 +1,120 @@
 "use client";
 
-import {
-  useClickOutside,
-  useClickOutsideCallback,
-} from "@/hooks/useClickOutside";
-import { useRef } from "react";
+import { Tags } from "@/database/models";
+import { useRef, useState } from "react";
+import Sheet from "react-modal-sheet";
+import { CategoryCheckbox } from "../CategoryCheckbox";
+import FilterContextProvider from "../FilterContext";
+import BrowseSearch from "../BrowseSearch";
+import SearchIcon from "../SearchIcon";
+import { useSearchParams } from "next/navigation";
 
-export default function Filter() {
-  const ref = useRef<HTMLDialogElement>(null);
-
-  const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(() => {
-    ref.current?.close();
-  });
+export default function Filter({ tags }: { tags: Tags[] }) {
+  const searchParams = useSearchParams();
+  const filters = searchParams.get("filters");
+  const filterLength = filters?.split(",").length || 0;
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => {
-          ref.current?.showModal();
-        }}
-        className="h-8 w-8 rounded focus:outline"
-            draggable
-            onDrag={(event) => {
-              console.log(event);
+      <div className="w-full flex justify-between items-center gap-4">
+        <div className="bg-white/[0.15] hover:bg-white/25 transition-colors rounded flex items-center px-4 flex-grow h-9">
+          <SearchIcon />
+          <input
+            onTouchStart={(event) => {
+              event.preventDefault();
+              setOpen(true);
+              setTimeout(() => {
+                inputRef.current?.focus();
+              }, 500);
             }}
-            onDragStart={() => {
-              console.log("drag start");
-            }}
-      >
-        <svg width={24} height={24} stroke="white" className="m-auto">
-          <use
-            width={24}
-            height={24}
-            xlinkHref="/svg/sprites/actions.svg#filter"
+            className="bg-transparent"
           />
-        </svg>
-      </button>
-      <dialog
-        ref={ref}
+        </div>
+        <button
+          onClick={() => {
+            setOpen(true);
+          }}
+          className="relative"
+        >
+          <svg width={24} height={24} stroke="white" className="m-auto">
+            <use
+              width={24}
+              height={24}
+              xlinkHref="/svg/sprites/actions.svg#filter"
+            />
+          </svg>
+          {filterLength ? (
+            <div className="rounded-full px-1 text-xs bg-red-500 absolute -bottom-0 right-0">
+              {filterLength}
+            </div>
+          ) : null}
+        </button>
+      </div>
+      <Sheet
+        isOpen={open}
+        snapPoints={[-50, 500, 900, 0]}
+        dragVelocityThreshold={500}
+        dragCloseThreshold={0.6}
+        initialSnap={1}
+        onClose={() => {
+          setOpen(false);
+        }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) {
+            return;
+          }
+          setOpen(false);
+        }}
         className={
-          "bg-paper_2 rounded-t-3xl shadow-lg shadow-black text-white_primary p-0 overflow-hidden " +
-          "opacity-0 fixed w-full mx-0 max-w-full bottom-0 top-[unset] h-96 " +
-          // "backdrop:backdrop-blur-xl backdrop-brightness-50 " +
-          "animate-[300ms_slide-in-up,_400ms_fade-in] [animation-fill-mode:_forwards] " +
-          "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] "
+          "transition-colors " +
+          (open ? "bg-default/40 !pointer-events-auto" : "")
         }
       >
-        <div ref={contentContainerRef} className="mt-auto w-full h-full">
-          <p
-            draggable
-            onDrag={(event) => {
-              console.log(event);
-            }}
-            onDragStart={() => {
-              console.log("drag start");
-            }}
-          >
-            Hello
-          </p>
-        </div>
-      </dialog>
+        <Sheet.Container className="!bg-paper_2">
+          <Sheet.Header className="bg-paper_2 rounded-t-lg" />
+          <Sheet.Content className="bg-paper_2 text-white_primary px-2">
+            <Sheet.Scroller draggableAt="both">
+              <BrowseSearch className="mb-4" ref={inputRef} />
+              <ul>
+                <li>
+                  <div className="mb-2">Category</div>
+                  <FilterContextProvider>
+                    <ul className="flex flex-col gap-1">
+                      {tags.map((tag) => {
+                        return (
+                          <li
+                            key={tag.ID}
+                            className="rounded flex
+                text-white/60 text-sm relative"
+                          >
+                            <div className="absolute inset-0 bg-paper_2"></div>
+                            <CategoryCheckbox
+                              tag={tag}
+                              id={tag.tag_key.toString()}
+                              className="w-full h-9"
+                            />
+                            <label
+                              htmlFor={tag.tag_key}
+                              className="absolute inset-0 h-9 rounded px-2
+                  cursor-pointer flex items-center
+                  text-white/60 hover:text-white_primary bg-paper_2 transition-colors"
+                            >
+                              {tag.name[0].toUpperCase() +
+                                tag.name.substring(1)}
+                            </label>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </FilterContextProvider>
+                </li>
+              </ul>
+            </Sheet.Scroller>
+          </Sheet.Content>
+        </Sheet.Container>
+      </Sheet>
     </>
   );
 }

@@ -23,12 +23,12 @@ export const EmailSignupForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid grid-cols-[max-content_min-content] gap-x-4 gap-y-5 " + className
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " + className
       }
       {...props}
     >
       <label htmlFor="first-name" className="w-max my-auto block">
-        Fist name
+        Full name
       </label>
       <InterposedInput
         id="first-name"
@@ -40,6 +40,7 @@ export const EmailSignupForm = React.forwardRef<
         placeholder="Full name"
         {...register("full_name")}
       />
+      <hr className="3/4sm:hidden my-1 border-paper_2" />
       <label htmlFor="display-name" className="w-max my-auto block">
         Display name
       </label>
@@ -53,6 +54,7 @@ export const EmailSignupForm = React.forwardRef<
         placeholder="Darth vader"
         {...register("display_name")}
       />
+      <hr className="3/4sm:hidden my-1 border-paper_2" />
       <label htmlFor="email" className="w-max my-auto block">
         Email
       </label>
@@ -67,6 +69,7 @@ export const EmailSignupForm = React.forwardRef<
         className="p-3"
         {...register("email")}
       />
+      <hr className="3/4sm:hidden my-1 border-paper_2" />
       <label htmlFor="password" className="w-max my-auto block">
         Password
       </label>
@@ -76,29 +79,29 @@ export const EmailSignupForm = React.forwardRef<
           className: "fill-white !stroke-white ml-3",
         }}
         placeholder="Enter your password"
-        className="p-3"
+        className="p-3 !w-[26ch]"
         {...register("password")}
       />
-      <label htmlFor="confirm-password" className="w-max my-auto block">
-        Confirm password
-      </label>
-      <PasswordInput
-        id={"confirm-password"}
-        leftIconProps={{
-          className: "fill-white !stroke-white ml-3",
-        }}
-        leftIcon={"/svg/sprites/actions.svg#password-retry"}
-        placeholder="Re-Enter your password"
-        className="p-3"
-        {...register("confirm_password")}
-      />
-      <StandardButton
-        type="submit"
-        className="col-span-2 shadow shadow-default mt-2"
-        loading={form.formState.isSubmitting}
-      >
-        Signup
-      </StandardButton>
+      {/* <label htmlFor="confirm-password" className="w-max my-auto block"> */}
+      {/*   Confirm password */}
+      {/* </label> */}
+      {/* <PasswordInput */}
+      {/*   id={"confirm-password"} */}
+      {/*   leftIconProps={{ */}
+      {/*     className: "fill-white !stroke-white ml-3", */}
+      {/*   }} */}
+      {/*   leftIcon={"/svg/sprites/actions.svg#password-retry"} */}
+      {/*   placeholder="Re-Enter your password" */}
+      {/*   className="p-3" */}
+      {/*   {...register("confirm_password")} */}
+      {/* /> */}
+      {/* <StandardButton */}
+      {/*   type="submit" */}
+      {/*   className="3/4sm:col-span-2 shadow shadow-default mt-2" */}
+      {/*   loading={form.formState.isSubmitting} */}
+      {/* > */}
+      {/*   Signup */}
+      {/* </StandardButton> */}
     </form>
   );
 });

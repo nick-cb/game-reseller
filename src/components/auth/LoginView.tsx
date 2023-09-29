@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useContext, useState } from "react";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { SnackContext } from "@/components/SnackContext";
 import { useForm } from "react-hook-form";
@@ -93,7 +93,7 @@ export function LoginView({
     <div
       className={
         "h-max " +
-          (!visible ?? (!visible ? "pointer-events-none opacity-0 px-0" : ""))
+        (!visible ?? (!visible ? "pointer-events-none opacity-0 px-0" : ""))
       }
       ref={contentContainerRef}
     >
@@ -151,7 +151,7 @@ export function LoginView({
           active={visible && strategy === "email"}
           className={
             "absolute px-5 py-8 top-0 opacity-0 " +
-              (strategy === "email" ? "" : "pointer-events-none")
+            (strategy === "email" ? "" : "pointer-events-none")
           }
         >
           <EmailLoginForm
@@ -170,8 +170,8 @@ export function LoginView({
               <button
                 className={
                   "hover:bg-white/25 transition-colors text-sm " +
-                    "rounded w-full py-2 " +
-                    "border border-white/60"
+                  "rounded w-full py-2 " +
+                  "border border-white/60"
                 }
                 onClick={() => {
                   setStrategy(undefined);
@@ -187,14 +187,15 @@ export function LoginView({
       <p className="text-white_primary/60 text-center pb-8 text-sm">
         Don't have an account?{" "}
         <Link
+          prefetch
           href={{
             pathname: "/signup",
             ...(modal
               ? {
-                query: {
-                  type: "modal",
-                },
-              }
+                  query: {
+                    type: "modal",
+                  },
+                }
               : {}),
           }}
           className="text-white_primary cursor-pointer"

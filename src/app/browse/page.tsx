@@ -36,30 +36,29 @@ const page = async ({
     <>
       {data ? (
         <>
-          <div className="flex justify-end pb-4">
-            <Filter />
-          </div>
           <div
             className="grid grid-cols-2 3/4sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 
             "
           >
-            {data &&
-              Array.isArray(data) &&
+            {data && Array.isArray(data) && data.length ? (
               data.map((game: any) => (
                 <PortraitGameCard
                   key={game._id}
                   game={game}
                   className="snap-start block"
                 />
-              ))}
-            {response.total && (
+              ))
+            ) : (
+              <div>No game found</div>
+            )}
+            {response.total ? (
               <Pagination
                 total={Math.ceil(response.total / 32)}
                 // @ts-ignore
                 currentPage={parseInt(page?.toString())}
                 className="col-start-1 col-end-3 3/4sm:col-end-4 lg:col-end-5"
               />
-            )}
+            ) : null}
           </div>
         </>
       ) : (
