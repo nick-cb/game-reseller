@@ -534,7 +534,7 @@ const page = async ({ params }: { params: any }) => {
                         </ul>
                       ) : (
                         <p>
-                          {review.earned_score}/{review.total_score}
+                          {Math.round(review.earned_score * 100) /100}/{review.total_score}
                         </p>
                       )}
                       <br />

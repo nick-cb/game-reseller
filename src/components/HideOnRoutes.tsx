@@ -1,38 +1,48 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { PropsWithChildren, useMemo } from "react";
 
 export function HideOnRoute({
   children,
-  match,
   matches,
   exact,
 }: PropsWithChildren<{
-  match?: string;
   exact?: boolean;
-  matches?: { name: string; exact?: boolean }[];
+  matches: {
+    pathname: string;
+    has?: [
+      {
+        type: "query";
+        key: string;
+        value: string;
+      },
+    ];
+  }[];
 }>) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isMatch = useMemo(() => {
-    if (!matches && !match) {
+    if (!matches) {
       return false;
     }
-    if (matches) {
-      if (exact) {
-        return matches?.every((match) =>
-          match.exact ? match.name === pathname : pathname.includes(match.name)
-        );
-      }
-      return matches?.some((match) =>
-        match.exact ? match.name === pathname : pathname.includes(match.name)
-      );
-    }
     if (exact) {
-      return pathname === match;
+      return matches?.every((match) => {
+        const hasQuery = match.has
+          ? match.has.map(
+              (query) => searchParams.get(query.key) === query.value,
+            )
+          : true;
+        return match.pathname === pathname && hasQuery;
+      });
     }
-    return pathname.includes(match || "");
-  }, [pathname, match, exact, matches]);
+    return matches?.some((match) => {
+      const hasQuery = match.has
+        ? match.has.map((query) => searchParams.get(query.key) === query.value)
+        : true;
+      return match.pathname === pathname && hasQuery;
+    });
+  }, [pathname, exact, matches]);
 
   if (isMatch) {
     return null;

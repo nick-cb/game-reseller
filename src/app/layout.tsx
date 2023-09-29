@@ -1,16 +1,19 @@
 import "./globals.css";
-import {Inter} from "next/font/google";
+import { Inter } from "next/font/google";
 import Image from "next/image";
-import {SearchbarDistributeBottom, SearchbarDistributeTop,} from "../components/searchbar";
+import {
+  SearchbarDistributeBottom,
+  SearchbarDistributeTop,
+} from "../components/searchbar";
 import QueryContext from "../components/QueryContext";
 import Link from "next/link";
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 import ActiveLink from "../components/ActiveLink";
 // import OfflineBanner from "@/components/OfflineBanner";
 // import "@/worker/offline_worker";
-import {SnackContextProvider} from "@/components/SnackContext";
-import {AuthControls} from "@/components/AuthControls";
-import {HideOnRoute} from "@/components/HideOnRoutes";
+import { SnackContextProvider } from "@/components/SnackContext";
+import { AuthControls } from "@/components/AuthControls";
+import { HideOnRoute } from "@/components/HideOnRoutes";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -56,14 +59,24 @@ export default function RootLayout({
                   height={40}
                 />
               </Link>
-              <div className="flex gap-2 text-sm pl-4 text-white_primary">
-                <form className="hidden sm:block" action={handleSubmitSearch}>
-                  <SearchbarDistributeTop />
-                </form>
-                <AuthControls />
-              </div>
+              <HideOnRoute
+                matches={[{ pathname: "/login" }, { pathname: "/signup" }]}
+              >
+                <div className="flex gap-2 text-sm pl-4 text-white_primary items-center">
+                  <form className="hidden h-full sm:block" action={handleSubmitSearch}>
+                    <SearchbarDistributeTop />
+                  </form>
+                  <AuthControls />
+                </div>
+              </HideOnRoute>
             </header>
-            <HideOnRoute matches={[{ name: "/order" }, {name: 'login'}]}>
+            <HideOnRoute
+              matches={[
+                { pathname: "/order" },
+                { pathname: "/login" },
+                { pathname: "/signup" },
+              ]}
+            >
               <nav
                 className="px-4 lg:px-24 xl:px-44 
               flex gap-4 

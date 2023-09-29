@@ -107,7 +107,11 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     });
   };
 
-  return { elements, scrollToNextOffView, scrollToIndex };
+  const scrollToPage = (page: number, pageStep: number) => {
+    scrollToIndex(page * pageStep);
+  };
+
+  return { elements, scrollToNextOffView, scrollToIndex, scrollToPage };
 }
 
 export function Item<C extends keyof JSX.IntrinsicElements>({
@@ -255,25 +259,22 @@ export function useScrollFactory({
 export function ScrollButton({
   children,
   method,
-  pageStep,
+  index,
   ...props
 }: {
-  method: "pageScroll";
-  pageStep?: number;
+  method: "scrollToIndex";
+  index?: number;
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >) {
-  const [page, setPage] = useState(1);
   const { scrollToIndex } = useScroll();
 
   return (
     <button
       onClick={() => {
-        if (method === "pageScroll" && pageStep) {
-          console.log(page * pageStep);
-          scrollToIndex(page * pageStep);
-          setPage(prev => prev + 1);
+        if (method === "scrollToIndex" && index !== undefined) {
+          scrollToIndex(index);
         }
       }}
       {...props}

@@ -1,5 +1,6 @@
 import Image from "next/image";
-import {SignupView} from "@/components/auth/SignupView";
+import { SignupView } from "@/components/auth/SignupView";
+import { SnackContextProvider } from "@/components/SnackContext";
 
 export default function SignupPage() {
   const random = Math.floor(Math.random() * 10 + 1);
@@ -17,10 +18,11 @@ export default function SignupPage() {
           className="object-cover"
         />
         <div className="px-4 overflow-hidden ">
-          <SignupView />
+          <SnackContextProvider>
+            <SignupView />
+          </SnackContextProvider>
         </div>
       </div>
     </div>
   );
 }
-

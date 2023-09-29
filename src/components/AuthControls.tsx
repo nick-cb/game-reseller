@@ -1,40 +1,21 @@
-"use client";
+import { cookies } from "next/headers";
+import {
+  AuthUserButton,
+  LottieUserButton,
+} from "./lottie-user-button/LottieUserBtn";
+import { decodeToken } from "@/actions/users";
+import { findUserById } from "@/database/repository/user/select";
 
-import { LottieUserButton } from "./lottie-user-button/LottieUserBtn";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-
-export function AuthControls() {
-  let storedUser = null;
-  try {
-    storedUser =
-      typeof window !== "undefined"
-        ? // @ts-ignore
-          JSON.parse(localStorage.getItem("user"))
-        : null;
-  } catch (error) {}
-
-  const [user, setUser] = useState(storedUser);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
+export async function AuthControls() {
+  const refreshToken = cookies().get("refresh_token");
+  console.log({ refreshToken });
+  if (refreshToken) {
+    const payload = decodeToken(refreshToken?.value);
+    if (typeof payload !== "string") {
+      const { data: user } = await findUserById({ id: payload.userId });
+      return <AuthUserButton user={user} />;
     }
-    window.addEventListener("storage", () => {
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      setUser(user);
-    });
-  }, []);
+  }
 
-  return (
-    <>
-      {user ? (
-        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-paper">
-          <Image src={user.avatar} alt="" fill />
-        </div>
-      ) : (
-        <LottieUserButton />
-      )}
-    </>
-  );
+  return <LottieUserButton />;
 }

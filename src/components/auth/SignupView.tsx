@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useState } from "react";
+import { startTransition, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   EmailSignupForm,
@@ -8,7 +8,6 @@ import {
 } from "@/components/auth/email";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { SnackContextProvider } from "@/components/SnackContext";
 import Image from "next/image";
 import {
   AnimatedSizeItem,
@@ -17,6 +16,8 @@ import {
 import { StrategyList } from "@/components/auth/list";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createNewUser } from "@/actions/users";
+import { SnackContext } from "@/components/SnackContext";
 
 const currentConfig = {
   0: [
@@ -40,7 +41,7 @@ const nextConfig = {
 };
 
 export function SignupView({
-  visible,
+  visible = true,
   closeDiaglog,
   modal,
 }: {
@@ -48,6 +49,7 @@ export function SignupView({
   modal?: boolean;
   closeDiaglog?: () => void;
 }) {
+  const { showMessage } = useContext(SnackContext);
   const router = useRouter();
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
@@ -58,21 +60,38 @@ export function SignupView({
     reValidateMode: "onChange",
     resolver: zodResolver(
       z.object({
+        full_name: z.string().nullable(),
+        display_name: z.string().nullable(),
         email: z.string().nonempty(),
+        password: z.string().nonempty(),
+        confirm_password: z.string().nonempty(),
       }),
     ),
+    defaultValues: {
+      full_name: null,
+      display_name: null,
+      email: "",
+      password: "",
+      confirm_password: "",
+    },
   });
   const { handleSubmit } = form;
 
   const submitHandler = async (values: EmailSignupFormPayload) => {
-    // const user = await createNewUser(values);
-    // showMessage({ message: "Login successful", type: "success" });
-    // localStorage.setItem("user", JSON.stringify(user));
-    // closeDialog();
+    console.log("submit handler", { values });
+    const { error, data } = await createNewUser(values);
+    if (error) {
+      showMessage({ message: error, type: "error" });
+      return;
+    }
+    showMessage({ message: "Signup successfully", type: "success" });
+    localStorage.setItem("user", JSON.stringify(data));
+    closeDiaglog?.();
+    router.push("/");
   };
 
   return (
-    <SnackContextProvider>
+    <>
       <div
         className={
           "h-max " +
@@ -194,6 +213,6 @@ export function SignupView({
           Login now!
         </Link>
       </p>
-    </SnackContextProvider>
+    </>
   );
 }

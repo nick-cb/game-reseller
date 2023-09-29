@@ -1,4 +1,4 @@
-const { redirect } = require("next/dist/server/api-utils");
+const path = require("path");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -14,6 +14,14 @@ const nextConfig = {
       },
     ],
   },
+  // webpack: (config, { isServer }) => {
+  //   config.resolve.alias["@dicebear/converter"] = path.resolve(
+  //     __dirname,
+  //     "node_modules/@dicebear/converter/lib/index.js",
+  //   );
+
+  //   return config;
+  // },
   headers: async () => {
     return [
       {
@@ -58,6 +66,32 @@ const nextConfig = {
         },
       ],
     };
+  },
+  async redirects() {
+    return [
+      {
+        source: "/signup",
+        has: [
+          {
+            type: "cookie",
+            key: "refresh_token",
+          },
+        ],
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/login",
+        has: [
+          {
+            type: "cookie",
+            key: "refresh_token",
+          },
+        ],
+        destination: "/",
+        permanent: true,
+      },
+    ];
   },
   experimental: {
     serverActions: true,

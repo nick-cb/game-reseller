@@ -4,6 +4,7 @@ import { Dialog } from "@/components/Dialog";
 import { startTransition, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoginView } from "@/components/auth/LoginView";
+import { SnackContextProvider } from "@/components/SnackContext";
 
 export default function LoginModal() {
   const [visible, setVisible] = useState(false);
@@ -33,9 +34,6 @@ export default function LoginModal() {
     dialogRef.current?.close();
     setVisible(false);
     // setStrategy(undefined);
-    startTransition(() => {
-      router.back();
-    });
   };
 
   useEffect(() => {
@@ -46,10 +44,16 @@ export default function LoginModal() {
   return (
     <Dialog
       ref={dialogRef}
-      onClose={closeDialog}
+      onClose={() => {
+        startTransition(() => {
+          router.back();
+        });
+      }}
       // className={!visible ? "pointer-events-none opacity-0 px-0" : ""}
     >
-      <LoginView visible={visible} closeDialog={closeDialog} modal />
+      <SnackContextProvider>
+        <LoginView modal visible={visible} closeDialog={closeDialog} />
+      </SnackContextProvider>
     </Dialog>
   );
 }

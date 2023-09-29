@@ -9,7 +9,7 @@ export function groupImages(images: OmitGameId<GameImages>[]) {
       type.includes("carousel") ||
       type.includes("wide")
     );
-  });
+  }) as GameImages;
   const portrait = images.find((img) => {
     const type = img.type.toLowerCase();
     return (
@@ -18,7 +18,9 @@ export function groupImages(images: OmitGameId<GameImages>[]) {
       type.includes("tall")
     );
   }) as GameImages;
-  const logo = images.find((img) => img.type.toLowerCase().includes("logo"));
+  const logo = images.find((img) =>
+    img.type.toLowerCase().includes("logo"),
+  ) as GameImages;
 
   return {
     landscape,

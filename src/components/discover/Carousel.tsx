@@ -3,30 +3,30 @@
 import React, { useMemo, useRef } from "react";
 import PortraitGameCard from "../PortraitGameCard";
 import Link from "next/link";
-import { Collections, Game, GameImages } from "@/database/models";
-import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
+import {
+  Collections,
+  Game,
+  GameImageGroup,
+} from "@/database/models";
+import { FVideoFullInfo } from "@/database/repository/game/select";
 import { useScroll } from "../Scroll";
-import { useRouter } from "next/navigation";
 
+type CarouselGame = Pick<
+  Game,
+  | "ID"
+  | "name"
+  | "slug"
+  | "developer"
+  | "avg_rating"
+  | "sale_price"
+  | "description"
+> & {
+  images: GameImageGroup;
+  videos: FVideoFullInfo[];
+};
 type CarouselProps = {
   collection: Collections & {
-    list_game: (Pick<
-      Game,
-      | "ID"
-      | "name"
-      | "slug"
-      | "developer"
-      | "avg_rating"
-      | "sale_price"
-      | "description"
-    > & {
-      images: {
-        portrait: OmitGameId<GameImages>;
-        landscape: OmitGameId<GameImages> | undefined;
-        logo: OmitGameId<GameImages> | undefined;
-      };
-      videos: FVideoFullInfo[];
-    })[];
+    list_game: CarouselGame[];
   };
   className: string;
 };
@@ -53,15 +53,9 @@ const Carousel = ({ collection, className }: CarouselProps) => {
       },
     };
   }, [elements]);
-  const router = useRouter();
 
   return (
     <section className={className}>
-      <Link
-        href={"/signup-modal?type=modal"}
-      >
-        Signup
-      </Link>
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
@@ -142,9 +136,9 @@ const Carousel = ({ collection, className }: CarouselProps) => {
             style={{ inlineSize: "208px" }}
             className="shrink-0 xs-right-pad:hidden"
           />
-          {collection.list_game.map((game: any) => (
+          {collection.list_game.map((game) => (
             <PortraitGameCard
-              key={game._id}
+              key={game.ID}
               game={game}
               className="snap-start last-of-type:snap-end flex-shrink-0
               w-[calc(calc(100vw_-_72px)_-_1px)]

@@ -22,6 +22,12 @@ export type Game = {
 );
 export type CriticAvg = "weak" | "fair" | "strong" | "mighty";
 
+export type GameImageGroup = {
+  portrait: GameImages;
+  landscape: GameImages;
+  logo: GameImages;
+};
+
 export type GameImages = {
   ID: number;
   url: string;
@@ -123,4 +129,14 @@ export type CollectionDetail = {
   ID: number;
   game_id: number;
   collection_id: number;
+};
+
+export type Users = {
+  ID: number;
+  full_name: string | null;
+  display_name: string | null;
+  email: string;
+  password: string;
+  refresh_token: string | null;
+  avatar: string;
 };

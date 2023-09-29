@@ -4,9 +4,8 @@ import { InterposedInput, PasswordInput } from "../Input";
 import StandardButton from "../StandardButton";
 
 export type EmailSignupFormPayload = {
-  firstname: string;
-  lastname: string;
-  displayname: string;
+  full_name: string | null;
+  display_name: string | null;
   email: string;
   password: string;
   confirm_password: string;
@@ -38,21 +37,8 @@ export const EmailSignupForm = React.forwardRef<
         }}
         leftIcon="/svg/sprites/actions.svg#user-generic-1"
         className="p-3"
-        placeholder="First name"
-        {...register("firstname")}
-      />
-      <label htmlFor="last-name" className="w-max my-auto block">
-        Last name
-      </label>
-      <InterposedInput
-        id="last-name"
-        leftIconProps={{
-          className: "fill-transparent stroke-white ml-3",
-        }}
-        leftIcon="/svg/sprites/actions.svg#user-generic-1"
-        className="p-3"
-        placeholder="Last name"
-        {...register("lastname")}
+        placeholder="Full name"
+        {...register("full_name")}
       />
       <label htmlFor="display-name" className="w-max my-auto block">
         Display name
@@ -65,7 +51,7 @@ export const EmailSignupForm = React.forwardRef<
         leftIcon="/svg/sprites/actions.svg#spartan-helmet"
         className="p-3"
         placeholder="Darth vader"
-        {...register("displayname")}
+        {...register("display_name")}
       />
       <label htmlFor="email" className="w-max my-auto block">
         Email
@@ -134,7 +120,8 @@ export const EmailLoginForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " + className
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 " +
+        className
       }
       {...props}
     >

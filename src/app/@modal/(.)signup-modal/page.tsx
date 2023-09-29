@@ -2,10 +2,12 @@
 
 import { Dialog } from "@/components/Dialog";
 import { useRouter } from "next/navigation";
-import { useRef, startTransition, useEffect } from "react";
+import { useRef, startTransition, useEffect, useState } from "react";
 import { SignupView } from "@/components/auth/SignupView";
+import { SnackContextProvider } from "@/components/SnackContext";
 
 export default function SignupModal() {
+  const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
@@ -30,23 +32,28 @@ export default function SignupModal() {
       fadeOutAnimation.finished,
     ]);
     dialogRef.current?.close();
+    setVisible(false);
     // setStrategy(undefined);
-    startTransition(() => {
-      router.back();
-    });
   };
 
   useEffect(() => {
     dialogRef.current?.showModal();
+    setVisible(true);
   }, []);
 
   return (
     <Dialog
       ref={dialogRef}
-      onClose={closeDialog}
+      onClose={() => {
+        startTransition(() => {
+          router.back();
+        });
+      }}
       // className={!visible ? "pointer-events-none opacity-0 px-0" : ""}
     >
-      <SignupView modal closeDiaglog={closeDialog} />
+      <SnackContextProvider>
+        <SignupView modal visible={visible} closeDiaglog={closeDialog} />
+      </SnackContextProvider>
     </Dialog>
   );
 }

@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import "./snack.css";
+import { uuidv4 } from "@/utils";
 
 export const SnackContext = createContext<{
   showMessage: (snack: Snack) => void;
@@ -18,25 +19,28 @@ export const SnackContext = createContext<{
 });
 export type Snack = {
   message: string;
-  type: "success" | "error" | "warning";
+  type: "success" | "error" | "warning" | "info";
   timeout?: number;
 };
 export function SnackContextProvider({ children }: PropsWithChildren) {
-  const [snackQueue, setSnackQueue] = useState<(Snack & { id: number })[]>([]);
+  const [snackQueue, setSnackQueue] = useState<(Snack & { id: string })[]>([]);
   const showMessage = useCallback((snack: Snack) => {
     setSnackQueue((prev) => [
       ...prev,
       {
         ...snack,
-        timeout: snack.timeout || 3000,
-        id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 0,
+        timeout: snack.timeout || 5000,
+        id: uuidv4(),
       },
     ]);
   }, []);
 
-  const shift = useCallback(() => {
+  const shift = useCallback((id: string) => {
     setSnackQueue((prev) => {
-      prev.shift();
+      const index = prev.findIndex((snack) => snack.id === id);
+      if (index > -1) {
+        prev.splice(index, 1);
+      }
       return [...prev];
     });
   }, []);
@@ -63,8 +67,8 @@ const Snack = React.memo(function ({
   snack,
   onHide,
 }: {
-  snack: Snack;
-  onHide: () => void;
+  snack: Snack & { id: string };
+  onHide: (id: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,24 +82,38 @@ const Snack = React.memo(function ({
         duration: 300,
         easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
         fill: "forwards",
-      }
+      },
     );
     animation?.finished.then(() => {
       setTimeout(() => {
         animation.reverse();
         animation.finished.then(() => {
-          onHide();
+          onHide(snack.id);
         });
       }, snack.timeout!);
     });
-  }, []);
+
+    return () => {
+      animation?.cancel();
+    };
+  }, [snack]);
 
   return (
     <div
       ref={ref}
       className="bg-primary rounded text-white text-center py-2 shadow-md w-0 opacity-0"
+      style={{
+        background: colors[snack.type].bg,
+      }}
     >
       {snack.message}
     </div>
   );
 });
+
+const colors = {
+  warning: { bg: "#d97706" },
+  info: { bg: "hsl(209, 100%, 45%)" },
+  error: { bg: "#dc2626" },
+  success: { bg: "#059669" },
+};

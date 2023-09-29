@@ -5,14 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import Scroll, { Item, useScroll } from "../Scroll";
-import { HeroCarouselData } from "./hero_carousel/HeroCarousel";
+import { Game, GameImageGroup } from "@/database/models";
 
+type SliderGame = Pick<
+  Game,
+  "ID" | "slug" | "name" | "developer" | "avg_rating"
+> & {
+  images: GameImageGroup;
+};
 const breakpoints = [640] as const;
 export function HeroSlider({
   data,
   className = "",
 }: {
-  data: HeroCarouselData[];
+  data: SliderGame[];
   className?: string;
 }) {
   const { b640: sm } = useBreakpoints(breakpoints);
@@ -86,13 +92,7 @@ export function ScrollBulletIndicator({ index }: { index: number }) {
   );
 }
 
-function SliderItem({
-  item,
-  index,
-}: {
-  item: HeroCarouselData;
-  index: number;
-}) {
+function SliderItem({ item, index }: { item: SliderGame; index: number }) {
   return (
     <Item
       as={"li"}

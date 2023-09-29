@@ -1,27 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Collections, Game, GameImages } from "@/database/models";
-import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
+import { Collections, Game, GameImageGroup } from "@/database/models";
+import { FVideoFullInfo } from "@/database/repository/game/select";
 
+type PillarGame = Pick<
+  Game,
+  | "ID"
+  | "name"
+  | "slug"
+  | "developer"
+  | "avg_rating"
+  | "sale_price"
+  | "description"
+> & {
+  images: GameImageGroup;
+  videos: FVideoFullInfo[];
+};
 type PillarProps = {
   data: Collections & {
-    list_game: (Pick<
-      Game,
-      | "ID"
-      | "name"
-      | "slug"
-      | "developer"
-      | "avg_rating"
-      | "sale_price"
-      | "description"
-    > & {
-      images: {
-        portrait: OmitGameId<GameImages>;
-        landscape: OmitGameId<GameImages> | undefined;
-        logo: OmitGameId<GameImages> | undefined;
-      };
-      videos: FVideoFullInfo[];
-    })[];
+    list_game: PillarGame[];
   };
 };
 

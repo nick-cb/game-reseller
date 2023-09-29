@@ -26,7 +26,7 @@ function isBackNavigation(navigateEvent: any) {
 }
 
 export async function onLinkNavigate(callback: Function) {
-    //@ts-ignore
+  //@ts-ignore
   window.navigation.addEventListener("navigate", (event: any) => {
     const toUrl = new URL(event.destination.url);
     if (location.origin !== toUrl.origin) return;
@@ -57,3 +57,10 @@ export const pascalCase = (type: string, delimiter: string) => {
   return final.trim();
 };
 
+export function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}

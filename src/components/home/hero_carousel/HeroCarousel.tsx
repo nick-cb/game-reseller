@@ -5,23 +5,14 @@ import Image from "next/image";
 
 const breakpoints = [640] as const;
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { FCollectionByName } from "@/database/repository/collection/select";
-import { GameImages } from "@/database/models";
-import { OmitGameId } from "@/database/repository/game/select";
+import { Game, GameImageGroup } from "@/database/models";
 
-export type HeroCarouselData = Omit<
-  FCollectionByName["list_game"][number],
-  "images"
-> & {
-  images: {
-    portrait: OmitGameId<GameImages> | undefined;
-    landscape: OmitGameId<GameImages> | undefined;
-    logo: OmitGameId<GameImages> | undefined;
-  };
-};
 type HeroCarouselProps = {
-  data: HeroCarouselData[];
+  data: HeroCarouselGame[];
   className?: string;
+};
+type HeroCarouselGame = Pick<Game, "ID" | "name" | "slug" | "description"> & {
+  images: GameImageGroup;
 };
 const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   const { b640: sm } = useBreakpoints(breakpoints);
@@ -148,7 +139,7 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   );
 };
 
-const ButtonGroup = ({ game }: { game: HeroCarouselData }) => {
+const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
   return (
     <div className="flex gap-4">
       <a
@@ -169,7 +160,7 @@ const ButtonGroup = ({ game }: { game: HeroCarouselData }) => {
   );
 };
 
-const Description = ({ game }: { game: HeroCarouselData }) => {
+const Description = ({ game }: { game: HeroCarouselGame }) => {
   return (
     <div className="max-w-sm flex flex-col justify-evenly flex-grow">
       <div

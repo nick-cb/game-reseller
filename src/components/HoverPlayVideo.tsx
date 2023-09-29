@@ -1,19 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import Video from "./Video";
-import { Game, GameImages } from "@/database/models";
-import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
+import { Game, GameImageGroup } from "@/database/models";
+import { FVideoFullInfo } from "@/database/repository/game/select";
 
 export type FeatureCardItem = Pick<
   Game,
   "ID" | "name" | "slug" | "description" | "sale_price"
 > & {
   videos: FVideoFullInfo[];
-  images: {
-    portrait: OmitGameId<GameImages> | undefined;
-    landscape: OmitGameId<GameImages>;
-    logo: OmitGameId<GameImages> | undefined;
-  };
+  images: GameImageGroup;
 };
 type FeatureCardProps = {
   item: FeatureCardItem;
