@@ -8,8 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Users } from "@/database/models";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
-import { logout } from "@/actions/users";
 import { useRouter } from "next/navigation";
+import { logout } from "@/actions/users";
 
 export function LottieUserButton() {
   const { View, goToAndPlay } = useLottie({
@@ -47,21 +47,24 @@ export function LottieUserButton() {
 export function AuthUserButton({ user }: { user: Users }) {
   const router = useRouter();
   const [focus, setFocus] = useState(false);
-  const ref = useClickOutsideCallback<HTMLButtonElement>(() => {
+  const ref = useClickOutsideCallback<HTMLDivElement>(() => {
     setFocus(false);
   });
 
   return (
-    <button
+    <div
       ref={ref}
       onClick={() => {
         setFocus(true);
       }}
       className="relative"
     >
-      <div className="relative w-8 h-8 rounded-full bg-white/25 transition-all hover:scale-110 group">
+      <button
+        type="button"
+        className="relative w-8 h-8 rounded-full bg-white/25 transition-all hover:scale-110 group"
+      >
         <Image src={user.avatar} alt="" fill className="rounded-full" />
-      </div>
+      </button>
       <div
         className={
           "absolute right-0 rounded shadow-white/10 shadow-md transition-[height] duration-400 overflow-hidden " +
@@ -72,15 +75,17 @@ export function AuthUserButton({ user }: { user: Users }) {
           onClick={async () => {
             try {
               await logout();
-              localStorage.removeItem("user");
-              router.refresh();
-            } catch (error) {}
+              location.reload();
+            } catch (error) {
+              console.log(error);
+            }
           }}
           className="hover:brightness-105 h-10 w-28 rounded transition-colors duration-75 hover:bg-paper"
+          type="button"
         >
           Logout
         </button>
       </div>
-    </button>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { SnackContext } from "@/components/SnackContext";
@@ -16,7 +16,7 @@ import {
 import { StrategyList } from "@/components/auth/list";
 import Link from "next/link";
 import { login } from "@/actions/users";
-import { useRouter } from "next/navigation";
+import { BASE_URL } from "@/utils/config";
 
 const currentConfig = {
   0: [
@@ -51,7 +51,6 @@ export function LoginView({
     options?: { goback?: number },
   ) => void;
 }) {
-  const router = useRouter();
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
   >();
@@ -78,20 +77,19 @@ export function LoginView({
       password: "",
     },
   });
+
   const { handleSubmit } = form;
 
   const submitHandler = async (values: EmailLoginFormPayload) => {
-    const { error, data: user } = await login(values);
+    const { error } = await login(values);
     if (error) {
       showMessage({ message: error, type: "error" });
       return;
     }
     showMessage({ message: "Login successfully", type: "success" });
-    localStorage.setItem("user", JSON.stringify(user));
-    closeDialog?.(contentContainerRef, {
-      goback: -1,
-    });
-    router.push("/");
+    setTimeout(() => {
+      window.location.href = BASE_URL;
+    }, 1000);
   };
 
   return (
@@ -163,9 +161,7 @@ export function LoginView({
             form={form}
             onSubmit={(e) => {
               e.preventDefault();
-              startTransition(() => {
-                handleSubmit(submitHandler)(e);
-              });
+              handleSubmit(submitHandler)(e);
             }}
             className={"h-max "}
           />

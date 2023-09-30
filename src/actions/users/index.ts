@@ -139,20 +139,22 @@ export const login = async (values: EmailLoginFormPayload) => {
 };
 
 export const logout = async () => {
-  const cookie = cookies().get("refresh_token");
-  if (!cookie) {
-    return;
-  }
-  const payload = jwt.verify(
-    cookie.value,
-    process.env.JWT_SECRET!,
-  ) as jwt.JwtPayload & { userId: number };
-  if (typeof payload === "string") {
-    return;
-  }
+  try {
+    const cookie = cookies().get("refresh_token");
+    if (!cookie) {
+      return;
+    }
+    const payload = jwt.verify(
+      cookie.value,
+      process.env.JWT_SECRET!,
+    ) as jwt.JwtPayload & { userId: number };
+    if (typeof payload === "string") {
+      return;
+    }
 
-  await updateUserById(payload.userId, {
-    user: { refresh_token: null },
-  });
-  cookies().delete("refresh_token");
+    await updateUserById(payload.userId, {
+      user: { refresh_token: null },
+    });
+    cookies().delete("refresh_token");
+  } catch (error) {}
 };

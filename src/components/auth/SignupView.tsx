@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   EmailSignupForm,
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { createNewUser } from "@/actions/users";
 import { SnackContext } from "@/components/SnackContext";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
+import { BASE_URL } from "@/utils/config";
 
 const currentConfig = {
   0: [
@@ -50,7 +51,12 @@ export function SignupView({
   modal?: boolean;
   closeDialog?: (
     ref: React.RefObject<HTMLDivElement>,
-    options?: { goback?: number },
+    options?: {
+      goback?: number;
+      replace?: {
+        href: string;
+      };
+    },
   ) => void;
 }) {
   const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
@@ -85,17 +91,15 @@ export function SignupView({
   const { handleSubmit } = form;
 
   const submitHandler = async (values: EmailSignupFormPayload) => {
-    const { error, data } = await createNewUser(values);
+    const { error } = await createNewUser(values);
     if (error) {
       showMessage({ message: error, type: "error" });
       return;
     }
     showMessage({ message: "Signup successfully", type: "success" });
-    localStorage.setItem("user", JSON.stringify(data));
-    closeDialog?.(contentContainerRef, {
-      goback: -1,
-    });
-    router.push("/");
+    setTimeout(() => {
+      window.location.href = BASE_URL;
+    }, 1000);
   };
 
   return (
@@ -169,9 +173,7 @@ export function SignupView({
             form={form}
             onSubmit={(e) => {
               e.preventDefault();
-              startTransition(() => {
-                handleSubmit(submitHandler)(e);
-              });
+              handleSubmit(submitHandler)(e);
             }}
             className={"h-max "}
           />

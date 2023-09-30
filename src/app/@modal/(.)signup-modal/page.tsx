@@ -13,7 +13,12 @@ export default function SignupModal() {
 
   const closeDialog = async (
     _: React.RefObject<HTMLElement>,
-    options?: { goback?: number },
+    options?: {
+      goback?: number;
+      replace?: {
+        href: string;
+      };
+    },
   ) => {
     const dialog = dialogRef.current;
     if (!dialog) {
@@ -36,6 +41,7 @@ export default function SignupModal() {
     ]);
     dialog.close();
     dialog.dataset["goback"] = options?.goback?.toString();
+    dialog.dataset["replace_href"] = options?.replace?.href;
     setVisible(false);
   };
 
@@ -48,15 +54,18 @@ export default function SignupModal() {
     <Dialog
       ref={dialogRef}
       onClose={(event) => {
-        const goback = parseInt(event.currentTarget.dataset["goback"] || "0");
+        const replaceHref = event.currentTarget.dataset["replace_href"];
+        if (replaceHref && replaceHref !== "undefined") {
+          router.replace(replaceHref);
+          return;
+        }
+        const goback = parseInt(event.currentTarget.dataset["goback"] || "1");
         if (!isNaN(goback) && goback === -1) {
           return;
         }
-        startTransition(() => {
-          for (let i = 0; i < (isNaN(goback) ? 1 : goback); i++) {
-            router.back();
-          }
-        });
+        for (let i = 0; i < (isNaN(goback) ? 1 : goback); i++) {
+          router.back();
+        }
       }}
     >
       <SnackContextProvider>
