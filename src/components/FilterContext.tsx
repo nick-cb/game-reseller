@@ -4,25 +4,29 @@ import { useSearchParams } from "next/navigation";
 import React, { PropsWithChildren, createContext, useMemo } from "react";
 
 export const FilterContext = createContext<{
-  filters: string[];
+  categories: string[];
   page: number;
   searchParams: URLSearchParams | undefined;
+  collection: string | null;
 }>({
-  filters: [],
+  categories: [],
   page: 1,
   searchParams: undefined,
+  collection: null,
 });
 const FilterContextProvider = ({ children }: PropsWithChildren) => {
   const searchParams = useSearchParams();
   const page = searchParams.get("page");
-  const filters = searchParams.get("filters")?.split(",") || [];
+  const categories = searchParams.get("categories")?.split(",") || [];
+  const collection = searchParams.get("collection");
   const value = useMemo(
     () => ({
-      filters,
+      categories,
+      collection,
       page: page && typeof page === "string" ? parseInt(page.toString()) : 0,
       searchParams: new URLSearchParams(searchParams.toString()),
     }),
-    [filters, searchParams],
+    [categories, searchParams, collection],
   );
 
   return (

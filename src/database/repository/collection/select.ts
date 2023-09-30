@@ -116,3 +116,12 @@ from
   )}');
 `);
 }
+
+export async function getAllCollections({ db }: { db?: Connection }) {
+  const _db = db || (await connectDB());
+  const response = await _db.execute<(RowDataPacket & Collections)[]>(sql`
+    select * from collections;
+  `);
+
+  return { data: response[0] };
+}

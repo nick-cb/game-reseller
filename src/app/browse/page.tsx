@@ -3,14 +3,13 @@ import PortraitGameCard from "@/components/PortraitGameCard";
 import Pagination from "@/components/Pagination";
 import { groupGameByTags } from "@/database/repository/game/select";
 import { groupImages } from "@/utils/data";
-import Filter from "@/components/browse/Filter";
 
 const page = async ({
   searchParams,
 }: {
   searchParams: { [K in string]: string | string[] | undefined };
 }) => {
-  const { keyword, filters, page } = searchParams;
+  const { keyword, categories, page, collection } = searchParams;
   let limit = 16;
   let skip = 0;
   if (page && !isNaN(parseInt(page.toString()))) {
@@ -20,11 +19,13 @@ const page = async ({
     }
   }
   const response = await groupGameByTags({
-    tags: typeof filters === "string" ? filters?.split(",") : [],
+    tags: typeof categories === "string" ? categories?.split(",") : [],
     limit,
     skip,
     keyword: keyword as string,
+    collection: collection as string,
   });
+
   const data = response.data.map((game) => {
     return {
       ...game,

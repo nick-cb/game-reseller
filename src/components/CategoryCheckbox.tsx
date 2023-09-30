@@ -16,10 +16,10 @@ export const CategoryCheckbox = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  const { filters, searchParams } = useContext(FilterContext);
+  const { categories, searchParams } = useContext(FilterContext);
   const filteredByThisCat = useMemo(() => {
-    return filters.findIndex((cat) => cat === tag_key);
-  }, [filters]);
+    return categories.findIndex((cat) => cat === tag_key);
+  }, [categories]);
   const [_checked, setChecked] = useState(filteredByThisCat > -1);
   if (filteredByThisCat === -1 && _checked) {
     setChecked(false);
@@ -41,20 +41,20 @@ export const CategoryCheckbox = ({
             return !prev;
           });
           if (_checked) {
-            const realPos = filters.findIndex((cat) => cat === tag_key);
-            filters.splice(realPos, 1);
+            const realPos = categories.findIndex((cat) => cat === tag_key);
+            categories.splice(realPos, 1);
           } else {
-            filters.push(tag_key);
+            categories.push(tag_key);
           }
-          if (filters.length > 0) {
-            searchParams?.set("filters", filters.join(","));
+          if (categories.length > 0) {
+            searchParams?.set("categories", categories.join(","));
           } else {
-            searchParams?.delete("filters");
+            searchParams?.delete("categories");
           }
           searchParams?.delete('page');
+          console.log(`${pathname}${searchParams ? "?" + searchParams : ""}`);
           router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
         }}
-        checked={_checked}
         {...props}
       />
     </>

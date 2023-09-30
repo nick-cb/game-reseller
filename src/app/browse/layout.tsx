@@ -6,9 +6,23 @@ import BrowseSearch from "@/components/BrowseSearch";
 import "./browse.css";
 import findTagByGroupName from "@/database/repository/tags/select";
 import Filter from "@/components/browse/Filter";
+import { getAllCollections } from "@/database/repository/collection/select";
+import { connectDB } from "@/database";
+import {
+  Accordion,
+  AccordionBody,
+  AccordionGroup,
+  AccordionHeader,
+} from "@/components/Accordion";
+import { CollectionRadio, RadioGroup } from "@/components/CollectionRadio";
 
 const layout = async ({ children }: PropsWithChildren) => {
-  const tags = await findTagByGroupName("genre");
+  const db = await connectDB();
+  const [tags, { data: collections = [] }] = await Promise.all([
+    findTagByGroupName("genre", db),
+    getAllCollections({ db }),
+  ]);
+  db.destroy();
 
   return (
     <div className="grid grid-cols-4 gap-8">
@@ -32,32 +46,96 @@ const layout = async ({ children }: PropsWithChildren) => {
         </noscript>
         <BrowseSearch />
         <hr className="border-white/20 my-4" />
-        <FilterContextProvider>
-          <ul className="flex flex-col gap-1">
-            {tags[0].map((tag) => (
-              <li
-                key={tag.ID}
-                className="rounded flex
+        <AccordionGroup>
+          <FilterContextProvider>
+            <Accordion index={0}>
+              <AccordionHeader className="flex items-center justify-between w-[calc(100%+16px)] -translate-x-2 px-2 py-4 rounded outline-white outline outline-0 focus:outline-1">
+                <div>Collections</div>
+                <div>
+                  <svg width={24} height={24} fill="white">
+                    <use
+                      width={24}
+                      height={24}
+                      xlinkHref="/svg/sprites/actions.svg#chevron-thin-down"
+                    />
+                  </svg>
+                </div>
+              </AccordionHeader>
+              <AccordionBody className="mt-1">
+                <RadioGroup toggleAble>
+                  <ul className="flex flex-col gap-1">
+                    {collections.map((collection) => {
+                      return (
+                        <li
+                          key={collection.ID}
+                          className="rounded flex
                 text-white/60 text-sm relative"
-              >
-                <div className="absolute inset-0 bg-default"></div>
-                <CategoryCheckbox
-                  tag={tag}
-                  id={tag.tag_key.toString()}
-                  className="w-full h-9"
-                />
-                <label
-                  htmlFor={tag.tag_key}
-                  className="absolute inset-0 h-9 rounded px-2
+                        >
+                          <div className="absolute inset-0 bg-default"></div>
+                          <CollectionRadio
+                            tabIndex={0}
+                            collection={collection}
+                            className="h-9 w-full peer"
+                          />
+                          <label
+                            htmlFor={collection.collection_key}
+                            className="absolute inset-0 h-9 rounded px-2
+                  cursor-pointer flex items-center
+                  text-white/60 hover:text-white_primary bg-default transition-colors peer-checked:bg-white/[.15]"
+                          >
+                            {collection.name[0].toUpperCase() +
+                              collection.name.substring(1)}
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </RadioGroup>
+              </AccordionBody>
+            </Accordion>
+            <hr className="border-white_primary/20 my-4" />
+            <Accordion index={1}>
+              <AccordionHeader className="flex items-center justify-between w-[calc(100%+16px)] -translate-x-2 px-2 py-4 rounded outline-white outline outline-0 focus:outline-1">
+                <span>Categories</span>
+                <div>
+                  <svg width={24} height={24} fill="white">
+                    <use
+                      width={24}
+                      height={24}
+                      xlinkHref="/svg/sprites/actions.svg#chevron-thin-down"
+                    />
+                  </svg>
+                </div>
+              </AccordionHeader>
+              <AccordionBody className="mt-1">
+                <ul className="flex flex-col gap-1">
+                  {tags[0].map((tag) => (
+                    <li
+                      key={tag.ID}
+                      className="rounded flex
+                text-white/60 text-sm relative"
+                    >
+                      <div className="absolute inset-0 bg-default"></div>
+                      <CategoryCheckbox
+                        tag={tag}
+                        id={tag.tag_key.toString()}
+                        className="w-full h-9"
+                      />
+                      <label
+                        htmlFor={tag.tag_key}
+                        className="absolute inset-0 h-9 rounded px-2
                   cursor-pointer flex items-center
                   text-white/60 hover:text-white_primary bg-default transition-colors"
-                >
-                  {tag.name[0].toUpperCase() + tag.name.substring(1)}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </FilterContextProvider>
+                      >
+                        {tag.name[0].toUpperCase() + tag.name.substring(1)}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </AccordionBody>
+            </Accordion>
+          </FilterContextProvider>
+        </AccordionGroup>
       </form>
     </div>
   );

@@ -1,107 +1,98 @@
 "use client";
 
 import {
-  DetailedHTMLProps,
-  PropsWithChildren,
   ButtonHTMLAttributes,
-  useState,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  PropsWithChildren,
   createContext,
   useContext,
-  useRef,
-  useCallback,
+  useState,
 } from "react";
-import { AnimatedSizeItem, AnimatedSizeProvider } from "./AnimatedSizeProvider";
 
-const AccordionContext2 = createContext<{
-  active: HTMLElement | null;
-  subsribe: (element: HTMLElement) => void;
-  open: (element: HTMLElement) => void;
-}>({
-  active: null,
-  subsribe: () => {},
-  open: () => {},
+type AccordionGroupContextProps = {
+  activeIndex: number[];
+  toggle: ({ index }: { index: number }) => void;
+};
+const AccordionGroupContext = createContext<AccordionGroupContextProps>({
+  activeIndex: [],
+  toggle: () => {},
 });
+export function AccordionGroup({
+  children,
+  exclusive = false,
+}: PropsWithChildren<{
+  exclusive?: boolean;
+}>) {
+  const [activeIndex, setActiveIndex] = useState<number[]>([]);
 
-export default function Accordion({ children }: PropsWithChildren) {
-  const accordionList = useRef<HTMLElement[]>([]);
-  const [active, setActive] = useState<HTMLElement | null>(null);
-
-  const subsribe = useCallback((element: HTMLElement) => {
-    accordionList.current.push(element);
-  }, []);
-
-  const open = useCallback(
-    (element: HTMLElement) => {
-      if (active?.isSameNode(element)) {
-        setActive(element);
+  const toggleActive: AccordionGroupContextProps["toggle"] = ({ index }) => {
+    setActiveIndex(() => {
+      if (exclusive) {
+        if (activeIndex[0] === index) {
+          return [];
+        } else {
+          return [index];
+        }
       }
-    },
-    [active]
-  );
+      if (activeIndex.includes(index)) {
+        const newIndexes = activeIndex.filter((item) => item !== index);
+        return [...newIndexes];
+      }
+      return [...activeIndex, index];
+    });
+  };
 
   return (
-    <AccordionContext2.Provider value={{ active, subsribe, open }}>
+    <AccordionGroupContext.Provider
+      value={{
+        activeIndex,
+        toggle: toggleActive,
+      }}
+    >
       {children}
-    </AccordionContext2.Provider>
+    </AccordionGroupContext.Provider>
   );
 }
 
-const AccordionContext = createContext<{
-  expanded: boolean;
-}>({
-  expanded: false,
+type AccordionContextProps = {
+  index: number;
+};
+const AccordionContext = createContext<AccordionContextProps>({
+  index: -1,
 });
-export function AccordionItem({
+export function Accordion({
   children,
-  expanded,
-}: PropsWithChildren<{ expanded: boolean }>) {
+  index,
+}: PropsWithChildren<{ index: number }>) {
   return (
-    <AccordionContext.Provider value={{ expanded }}>
-      <div className={"bg-paper_2 " + (expanded ? " shadow-md shadow-black" : "")}>
-        {children}
-      </div>
+    <AccordionContext.Provider value={{ index }}>
+      {children}
     </AccordionContext.Provider>
   );
 }
 
 export function AccordionHeader({
   children,
-  ...props
+  onClick,
+  ...rest
 }: DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >) {
-  const { expanded } = useContext(AccordionContext);
-
+  const { index } = useContext(AccordionContext);
+  const { toggle } = useContext(AccordionGroupContext);
   return (
-    <h3
-      className="text-lg relative
-      after:bg-white/[0.10] after:absolute after:inset-0 
-      after:opacity-0 hover:after:opacity-100 after:transition-opacity
-      after:pointer-events-none"
-      data-component={"collapsibles"}
-      aria-expanded={expanded}
-    >
+    <h3>
       <button
-        className={
-          "flex justify-between items-center w-full py-4 px-6 " +
-          (expanded ? "border-b border-white/25" : "")
-        }
-        {...props}
+        type="button"
+        onClick={(event) => {
+          toggle({ index });
+          onClick?.(event);
+        }}
+        {...rest}
       >
-        <div className="flex gap-4 items-center">{children}</div>
-        <svg
-          className="transition-transform"
-          fill="transparent"
-          stroke="white"
-          width={24}
-          height={24}
-          style={{
-            transform: expanded ? "rotateZ(180deg)" : "rotateZ(0deg)",
-          }}
-        >
-          <use xlinkHref="/svg/sprites/actions.svg#chevron-down" />
-        </svg>
+        {children}
       </button>
     </h3>
   );
@@ -109,39 +100,14 @@ export function AccordionHeader({
 
 export function AccordionBody({
   children,
-  className = "",
   ...props
-}: Omit<React.ComponentProps<typeof AnimatedSizeItem>, "active">) {
-  const { expanded } = useContext(AccordionContext);
+}: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
+  const { index } = useContext(AccordionContext);
+  const { activeIndex } = useContext(AccordionGroupContext);
 
-  return expanded ? (
-    <AnimatedSizeProvider className={className} as={"div"}>
-      {children}
-    </AnimatedSizeProvider>
-  ) : null;
-}
-
-export function AccordionSeparator({ expanded }: { expanded: boolean }) {
   return (
-    <div
-      className={"bg-default px-2"}
-      style={{
-        height: !expanded ? 0 : 4,
-      }}
-    ></div>
+    <div hidden={!activeIndex.includes(index)} {...props}>
+      {children}
+    </div>
   );
 }
-
-// {
-//   expanded ? (
-//     <AnimatedSizeItem
-//       active={expanded}
-//       aria-hidden={!expanded}
-//       hidden={!expanded}
-//       className={className}
-//       {...props}
-//     >
-//       {children}
-//     </AnimatedSizeItem>
-//   ) : null;
-// }

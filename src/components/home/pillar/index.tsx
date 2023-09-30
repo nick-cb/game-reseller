@@ -30,7 +30,7 @@ export function Pillar({ data }: PillarProps) {
           {data.name[0].toUpperCase() + data.name.slice(1)}
         </h2>
         <Link
-          href={"/browse"}
+          href={"/browse?collection=" + data.collection_key}
           className="text-[10px] lg:text-xs text-white_primary/60 hover:text-white_primary border border-white/60 px-2 py-1 lg:px-4 lg:py-2 rounded transition-colors"
         >
           VIEW MORE

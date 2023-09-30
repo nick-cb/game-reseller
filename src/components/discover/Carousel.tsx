@@ -59,7 +59,7 @@ const Carousel = ({ collection, className }: CarouselProps) => {
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
-          href={`/browse?category=${collection.ID}`}
+          href={`/browse?collection=${collection.collection_key}`}
         >
           {collection.name[0].toUpperCase() + collection.name.substring(1)}
           <svg

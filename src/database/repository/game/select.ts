@@ -181,15 +181,22 @@ export async function groupGameByTags({
   limit = 20,
   skip = 0,
   keyword,
+  collection,
 }: {
   tags: string[];
   db?: Connection;
   limit?: number;
   skip?: number;
   keyword?: string;
+  collection?: string;
 }) {
   const _db = db || (await connectDB());
   let whereClause = sql`where games.type = 'base_game'`;
+  if (collection) {
+    whereClause += sql`
+      and cd.collection_key = '${collection}'
+    `;
+  }
   if (tags.length > 0) {
     whereClause += sql`
       and tags.tag_key in (${tags.map((tag) => `\'${tag}\'`).join(",")})
@@ -206,6 +213,9 @@ export async function groupGameByTags({
       from (
         select games.* 
         from games
+                 join (select c.ID, c.collection_key, cd.game_id
+                    from collections c
+                        join collection_details cd on c.ID = cd.collection_id) cd on games.ID = cd.game_id
                  join tag_details on games.ID = tag_details.game_id
                  join tags on tag_details.tag_id = tags.ID
         ${whereClause}
@@ -213,10 +223,12 @@ export async function groupGameByTags({
         ${tags.length > 0 ? havingClause : ""}
       ) as grouped
   `);
-
   const gameReq = _db.execute<GGameByTags[]>(sql`
       select games.*, gi.images
       from games
+               join (select c.ID, c.collection_key, cd.game_id
+                    from collections c
+                        join collection_details cd on c.ID = cd.collection_id) cd on games.ID = cd.game_id
                left join (select game_id,
                                  json_arrayagg(json_object('ID', ID, 'type', type, 'url', url, 'pos_row', pos_row, 'alt',
                                                            alt)) as images
