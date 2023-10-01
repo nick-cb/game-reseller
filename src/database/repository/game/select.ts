@@ -43,7 +43,7 @@ export type FVideoFullInfo = Videos & {
 
 export async function findGameBySlug(slug: string, db?: Connection) {
   const _db = db || (await connectDB());
-  return await _db.execute<FBySlug[]>(sql`
+  const response = await _db.execute<FBySlug[]>(sql`
   select *,
        gi.images,
        if(
@@ -150,6 +150,10 @@ from games
                     group by game_id) p on if(games.base_game_id is null, games.ID, games.base_game_id) = p.game_id
 where slug = '${slug}';
   `);
+
+  return {
+    data: response[0][0]
+  }
 }
 
 type FMappingById = RowDataPacket &

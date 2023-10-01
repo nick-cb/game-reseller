@@ -1,16 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import StandardButton from "@/components/StandardButton";
 import ReactMarkdown from "react-markdown";
-import { getLoggedInStatus } from "@/actions/users";
-import { redirect } from "next/navigation";
 import remarkBreaks from "remark-breaks";
 import ExpandableDescription from "@/components/ExpandableDescription";
 import LinearCarousel from "@/components/game/LinearCarousel";
 import rehypeRaw from "rehype-raw";
-import SystemRequirements from "@/components/game/SystemRequirements";
-import Scroll, { Item } from "@/components/Scroll";
-import { ScrollBulletIndicator } from "@/components/home/hero-slider";
 import { connectDB } from "@/database";
 import {
   OmitGameId,
@@ -21,6 +15,10 @@ import { CriticAvg, GameImages } from "@/database/models";
 import GameCard from "@/components/game/GameCard";
 import Link from "next/link";
 import { pascalCase } from "@/utils";
+import { BuyNowButton } from "@/components/game/BuyNowButton";
+import SystemRequirements from "@/components/game/SystemRequirements";
+import Scroll, { Item } from "@/components/Scroll";
+import { ScrollBulletIndicator } from "@/components/home/hero-slider";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -60,8 +58,7 @@ function groupImages(images: OmitGameId<GameImages>[]) {
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const db = await connectDB();
-  const response = await findGameBySlug(slug, db);
-  const game = response[0][0];
+  const {data: game} = await findGameBySlug(slug, db);
   const logo = game.images.find((img: any) => {
     return img.type.toLowerCase().includes("logo");
   });
@@ -75,15 +72,6 @@ const page = async ({ params }: { params: any }) => {
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =
     groupImages(game.images);
-
-  const buyNow = async () => {
-    "use server";
-    const status = await getLoggedInStatus();
-    if (!status) {
-      redirect(`/login?gameId=${game.ID}`);
-    }
-    redirect(`/${game.ID}/order`);
-  };
 
   return (
     <div className="pt-6">
@@ -117,11 +105,7 @@ const page = async ({ params }: { params: any }) => {
               {game.sale_price > 0 ? "đ" + game.sale_price : "Free"}
             </p>
             <div className="flex flex-col gap-2">
-              <form action={buyNow}>
-                <StandardButton type="submit" className="text-sm">
-                  BUY NOW
-                </StandardButton>
-              </form>
+              <BuyNowButton game={game} />
               <button
                 className="text-sm py-2 w-full rounded border
                 border-white/60 text-white hover:bg-paper transition-colors"

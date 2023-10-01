@@ -1,20 +1,16 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Image from "next/image";
-import {
-  MobileSearch,
-  SearchbarDistributeBottom,
-  SearchbarDistributeTop,
-} from "../components/searchbar";
+import { MobileSearch, SearchbarDistributeTop } from "../components/searchbar";
 import QueryContext from "../components/QueryContext";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ActiveLink from "../components/ActiveLink";
 // import OfflineBanner from "@/components/OfflineBanner";
 // import "@/worker/offline_worker";
-import { SnackContextProvider } from "@/components/SnackContext";
 import { AuthControls } from "@/components/AuthControls";
 import { HideOnRoute } from "@/components/HideOnRoutes";
+import { Suspense } from "react";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -43,23 +39,23 @@ export default function RootLayout({
     <html lang="en" className="scroll-pt-[116px]">
       <QueryContext>
         <body className={atkinsonHyper.className + " bg-default"}>
-          <SnackContextProvider>
-            <header
-              className="px-4 lg:px-24 xl:px-44 py-2 min-h-[56px]
-              flex justify-between 
-              bg-paper 
-              fixed top-0 w-full z-20"
-            >
-              <Link href={`/`}>
-                <Image
-                  src={
-                    "https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
-                  }
-                  alt={"logo-of-a-penguine"}
-                  width={40}
-                  height={40}
-                />
-              </Link>
+          <header
+            className="px-4 lg:px-24 xl:px-44 py-2 min-h-[56px]
+            flex justify-between 
+            bg-paper 
+            fixed top-0 w-full z-20"
+          >
+            <Link href={`/`}>
+              <Image
+                src={
+                  "https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
+                }
+                alt={"logo-of-a-penguine"}
+                width={40}
+                height={40}
+              />
+            </Link>
+            <Suspense>
               <HideOnRoute
                 matches={[{ pathname: "/login" }, { pathname: "/signup" }]}
               >
@@ -74,7 +70,9 @@ export default function RootLayout({
                   <AuthControls />
                 </div>
               </HideOnRoute>
-            </header>
+            </Suspense>
+          </header>
+          <Suspense>
             <HideOnRoute
               matches={[
                 { pathname: "/order" },
@@ -108,25 +106,28 @@ export default function RootLayout({
                 </ActiveLink>
               </nav>
             </HideOnRoute>
-            <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary max-w-[1952px] mx-auto">
-              {children}
-              {modal}
-            </main>
-          </SnackContextProvider>
-          <HideOnRoute
-            matches={[
-              { pathname: "/login" },
-              { pathname: "/signup" },
-              { pathname: "/browse" },
-            ]}
-          >
-            <form
-              className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50"
-              action={handleSubmitSearch}
+          </Suspense>
+          <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary max-w-[1952px] mx-auto">
+            {children}
+            {modal}
+          </main>
+          <Suspense>
+            <HideOnRoute
+              matches={[
+                { pathname: "/login" },
+                { pathname: "/signup" },
+                { pathname: "/browse" },
+                { pathname: /^.*\/order/ },
+              ]}
             >
-              <MobileSearch />
-            </form>
-          </HideOnRoute>
+              <form
+                className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50"
+                action={handleSubmitSearch}
+              >
+                <MobileSearch />
+              </form>
+            </HideOnRoute>
+          </Suspense>
         </body>
       </QueryContext>
     </html>

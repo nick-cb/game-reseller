@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import {
   AuthUserButton,
-  LottieUserButton,
+  LoginUserButton,
 } from "./lottie-user-button/LottieUserBtn";
 import { decodeToken } from "@/actions/users";
 import { findUserById } from "@/database/repository/user/select";
@@ -17,5 +17,5 @@ export async function AuthControls() {
     }
   }
 
-  return <LottieUserButton />;
+  return <LoginUserButton />;
 }

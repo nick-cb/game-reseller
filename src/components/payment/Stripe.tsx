@@ -2,10 +2,9 @@
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { PropsWithChildren } from "react";
-import { UseFormReturn } from "react-hook-form";
 
 const stripePromise = loadStripe(
-  "pk_test_51Iwqe0KvZqrt4tRI0ZewUir13YIgFCeoaO9AQQb2w6a1Lu8AnWN2TypvEg4Q24xXXM8rL0BChZEjaIdx5FOYgVqQ0081tq7z3V"
+  "pk_test_51Iwqe0KvZqrt4tRI0ZewUir13YIgFCeoaO9AQQb2w6a1Lu8AnWN2TypvEg4Q24xXXM8rL0BChZEjaIdx5FOYgVqQ0081tq7z3V",
 );
 export default function StripeElements({
   children,
@@ -30,21 +29,21 @@ export default function StripeElements({
           rules: {
             ".Label": {
               color: "rgb(245, 245, 245)",
-              fontWeight: '500',
-              marginBottom: '8px',
+              fontWeight: "500",
+              marginBottom: "8px",
             },
             ".Input": {
               backgroundColor: "rgba(245, 245, 245, 0.15)",
               border: "none",
               color: "rgb(245, 245, 245)",
-              marginBottom: '8px',
+              marginBottom: "8px",
             },
             ".Input:hover": {
               backgroundColor: "rgba(245, 245, 245, 0.25)",
             },
             ".Error": {
               fontSize: "0.875rem",
-            }
+            },
           },
         },
       }}
@@ -54,11 +53,7 @@ export default function StripeElements({
   );
 }
 
-export function StripeCheckoutForm({
-  form,
-}: {
-  form: UseFormReturn<any, any>;
-}) {
+export function StripeCheckoutForm() {
   return (
     <PaymentElement
       options={{

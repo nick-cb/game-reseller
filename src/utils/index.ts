@@ -1,3 +1,5 @@
+import { ReactElement, JSXElementConstructor } from "react";
+
 export async function getPageContent(url: any) {
   // This is a really scrappy way to do this.
   // Don't do this in production!
@@ -63,4 +65,11 @@ export function uuidv4() {
       v = c == "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
+}
+
+export async function renderComponentToString(
+  component: ReactElement<any, string | JSXElementConstructor<any>>,
+) {
+  const ReactDOMServer = (await import("react-dom/server")).default;
+  return ReactDOMServer.renderToString(component);
 }

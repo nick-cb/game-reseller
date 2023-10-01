@@ -96,7 +96,6 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     if (!entry) {
       return;
     }
-    // console.log(entry.target.offsetLeft)
     // entry.target.scroll({
     //   left: entry.target.offsetLeft,
     //   behavior: 'smooth',

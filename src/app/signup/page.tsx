@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { SignupView } from "@/components/auth/SignupView";
-import { SnackContextProvider } from "@/components/SnackContext";
 
-export default function SignupPage() {
+export default function SignupPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) {
   const random = Math.floor(Math.random() * 10 + 1);
 
   return (
@@ -25,9 +28,7 @@ export default function SignupPage() {
           className="object-cover hidden lg:block w-[300px] xl:w-[400px] 2xl:w-auto"
         />
         <div className="px-4 overflow-hidden flex-grow">
-          <SnackContextProvider>
-            <SignupView />
-          </SnackContextProvider>
+          <SignupView order={searchParams["order"]} />
         </div>
       </div>
     </div>

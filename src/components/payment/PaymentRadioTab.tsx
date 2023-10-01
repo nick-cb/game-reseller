@@ -1,22 +1,22 @@
-import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  MouseEventHandler,
-  PropsWithChildren,
-  SVGProps,
-} from "react";
+"use client";
+
+import { ButtonHTMLAttributes, DetailedHTMLProps, SVGProps } from "react";
+import { useScroll } from "../Scroll";
 
 export function PaymentTabButton({
   // icon,
   children,
   className,
   type,
-  active,
+  index,
   ...props
 }: DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
-> & { active: boolean }) {
+> & { index: number }) {
+  const { elements, scrollToIndex } = useScroll();
+  const active = elements.findIndex((el) => el.isIntersecting) === index;
+
   return (
     <li
       className={
@@ -35,13 +35,12 @@ export function PaymentTabButton({
             " flex flex-col justify-center items-center " +
             className
           }
+          onClick={() => {
+            scrollToIndex(index);
+          }}
           {...props}
         >
           {children}
-          {/* <svg width={32} height={32} className="mb-2 mx-auto"> */}
-          {/*   <use stroke="white" fill="white" xlinkHref={icon} /> */}
-          {/* </svg> */}
-          {/* {name} */}
         </button>
       </label>
     </li>

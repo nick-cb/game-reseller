@@ -15,7 +15,7 @@ import {
 } from "@/components/AnimatedSizeProvider";
 import { StrategyList } from "@/components/auth/list";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createNewUser } from "@/actions/users";
 import { SnackContext } from "@/components/SnackContext";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
@@ -44,11 +44,13 @@ const nextConfig = {
 
 export function SignupView({
   visible = true,
-  closeDialog,
   modal,
+  order,
+  closeDialog,
 }: {
   visible?: boolean;
   modal?: boolean;
+  order?: string;
   closeDialog?: (
     ref: React.RefObject<HTMLDivElement>,
     options?: {
@@ -63,6 +65,7 @@ export function SignupView({
     closeDialog ? closeDialog : () => {},
   );
   const { showMessage } = useContext(SnackContext);
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
@@ -98,7 +101,11 @@ export function SignupView({
     }
     showMessage({ message: "Signup successfully", type: "success" });
     setTimeout(() => {
-      window.location.href = BASE_URL;
+      if (order) {
+        location.reload();
+      } else {
+        window.location.href = BASE_URL;
+      }
     }, 1000);
   };
 

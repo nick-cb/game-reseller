@@ -1,7 +1,11 @@
-import Image from "next/image";
 import { LoginView } from "@/components/auth/LoginView";
+import Image from "next/image";
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) {
   const random = Math.floor(Math.random() * 10 + 1);
 
   return (
@@ -24,7 +28,7 @@ export default function LoginPage() {
           className="object-cover hidden lg:block"
         />
         <div className="px-4 overflow-hidden flex-grow">
-          <LoginView modal={false} />
+          <LoginView modal={false} order={searchParams["order"]} />
         </div>
       </div>
     </div>

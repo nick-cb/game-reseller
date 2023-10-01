@@ -1,27 +1,36 @@
-import StripeElements from "@/components/payment/Stripe";
 import { ItemOrder } from ".";
 import Stripe from "stripe";
-import data from "@/data/collections.json";
+import { findGameBySlug } from "@/database/repository/game/select";
+import { groupImages } from "@/utils/data";
+import { redirect } from "next/navigation";
 
+type ExchangeRate = {
+  date: string;
+  usd: string;
+};
 export default async function ItemOrderPage({ params }: { params: any }) {
   const { slug } = params;
-  const game = data[0].list_game.find((g) => g.slug === slug);
-  // const data = await fetch(
-  //   `http://localhost:5001/api/products/games/${gameId.replace("(.)", "")}`
-  // ).then((res) => res.json());
+  const { data } = await findGameBySlug(slug.replace("(.)", ""));
+
+  if (!data) {
+    redirect("/");
+  }
+
+  const game = { ...data, images: groupImages(data.images) };
   const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET || "", {
     apiVersion: "2022-11-15",
   });
+  const rate: ExchangeRate = await fetch(
+    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/vnd/usd.json",
+  ).then((res) => res.json());
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: (game?.sale_price || 1) * 100,
+    amount:
+      (Math.round((game?.sale_price || 1) * parseFloat(rate.usd) * 100) / 100) *
+      100,
     currency: "USD",
     payment_method_types: ["card"],
   });
+
   return <ItemOrder game={game} clientSecret={paymentIntent.client_secret!} />;
-  // return (
-  //   <StripeElements clientSecret={paymentIntent.client_secret!}>
-  //     <ItemOrder game={data} />
-  //   </StripeElements>
-  // );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog } from "@/components/Dialog";
-import { startTransition, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoginView } from "@/components/auth/LoginView";
 import { SnackContextProvider } from "@/components/SnackContext";

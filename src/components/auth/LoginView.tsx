@@ -1,7 +1,6 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { SnackContext } from "@/components/SnackContext";
 import { useForm } from "react-hook-form";
@@ -42,10 +41,12 @@ const nextConfig = {
 export function LoginView({
   visible = true,
   modal,
+  order,
   closeDialog,
 }: {
   visible?: boolean;
   modal: boolean;
+  order?: string;
   closeDialog?: (
     ref: React.RefObject<HTMLDivElement>,
     options?: { goback?: number },
@@ -55,8 +56,6 @@ export function LoginView({
     "email" | "facebook" | "google" | "apple"
   >();
   const [direction, setDirection] = useState<1 | 0>(1);
-  const searchParams = useSearchParams();
-  const gameId = searchParams.get("gameId");
 
   const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
     closeDialog ? closeDialog : () => {},
@@ -88,7 +87,11 @@ export function LoginView({
     }
     showMessage({ message: "Login successfully", type: "success" });
     setTimeout(() => {
-      window.location.href = BASE_URL;
+      if (order) {
+        window.location.href = BASE_URL + "/" + order + "/order";
+      } else {
+        window.location.href = BASE_URL;
+      }
     }, 1000);
   };
 
