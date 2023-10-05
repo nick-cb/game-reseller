@@ -88,6 +88,7 @@ export function LoginView({
     showMessage({ message: "Login successfully", type: "success" });
     setTimeout(() => {
       if (order) {
+        console.log({order, href: BASE_URL + "/" + order + "/order"});
         window.location.href = BASE_URL + "/" + order + "/order";
       } else {
         window.location.href = BASE_URL;

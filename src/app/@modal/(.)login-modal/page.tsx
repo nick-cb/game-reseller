@@ -6,7 +6,11 @@ import { useRouter } from "next/navigation";
 import { LoginView } from "@/components/auth/LoginView";
 import { SnackContextProvider } from "@/components/SnackContext";
 
-export default function LoginModal() {
+export default function LoginModal({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) {
   const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
@@ -43,7 +47,6 @@ export default function LoginModal() {
     dialog.dataset["goback"] = options?.goback?.toString();
     dialog.dataset["replace_href"] = options?.replace?.href;
     setVisible(false);
-    // setStrategy(undefined);
   };
 
   useEffect(() => {
@@ -70,7 +73,12 @@ export default function LoginModal() {
       }}
     >
       <SnackContextProvider>
-        <LoginView modal visible={visible} closeDialog={closeDialog} />
+        <LoginView
+          order={searchParams["order"]}
+          modal
+          visible={visible}
+          closeDialog={closeDialog}
+        />
       </SnackContextProvider>
     </Dialog>
   );

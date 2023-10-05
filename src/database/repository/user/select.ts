@@ -32,3 +32,15 @@ export async function findUserById({ id, db }: { id: number; db?: Connection }) 
     data: result[0][0],
   };
 }
+
+export async function findUserByStripeId({ id, db }: { id: string; db?: Connection }) {
+  const _db = db || (await connectDB());
+
+  const result = await _db.execute<(RowDataPacket & Users)[]>(sql`
+      select * from users where stripe_id = '${id}'
+  `);
+
+  return {
+    data: result[0][0],
+  };
+}

@@ -139,4 +139,21 @@ export type Users = {
   password: string;
   refresh_token: string | null;
   avatar: string;
+  stripe_id: string | null;
+};
+
+export type Orders = {
+  ID: number;
+  payment_intent: string | null;
+  amount: number;
+  payment_method: string;
+  payment_service: "stripe" | "paypal";
+  created_at: number;
+  items: string;
+  card_number: string | null;
+  card_type: string | null;
+  user_id: number;
+  succeeded_at: number | null;
+  canceled_at: number | null;
+  status: "pending" | "succeeded" | "canceled_at";
 };

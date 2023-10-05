@@ -1,4 +1,5 @@
 import { ReactElement, JSXElementConstructor } from "react";
+import Stripe from "stripe";
 
 export async function getPageContent(url: any) {
   // This is a really scrappy way to do this.
@@ -73,3 +74,7 @@ export async function renderComponentToString(
   const ReactDOMServer = (await import("react-dom/server")).default;
   return ReactDOMServer.renderToString(component);
 }
+
+export const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET || "", {
+  apiVersion: "2022-11-15",
+});

@@ -1,20 +1,22 @@
 "use client";
 
-import { Dialog } from "@/components/Dialog";
+import { Dialog } from "../Dialog";
+import { Game } from "@/database/models";
+import Stripe from "stripe";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import React, { useRef, useEffect, useState } from "react";
-import { SignupView } from "@/components/auth/SignupView";
-import { SnackContextProvider } from "@/components/SnackContext";
+import { useClickOutsideCallback } from "@/hooks/useClickOutside";
+import { ItemOrder } from "./order/ItemOrder";
 
-export default function SignupModal({
-  searchParams,
-}: {
-  searchParams: Record<string, string>;
-}) {
+export default function ItemOrderModal({
+  game,
+  children,
+}: PropsWithChildren<{
+  game: Game;
+}>) {
   const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
-
   const closeDialog = async (
     _: React.RefObject<HTMLElement>,
     options?: {
@@ -43,11 +45,13 @@ export default function SignupModal({
       slideOutAnimation.finished,
       fadeOutAnimation.finished,
     ]);
-    dialog.close();
+    dialogRef.current?.close();
     dialog.dataset["goback"] = options?.goback?.toString();
     dialog.dataset["replace_href"] = options?.replace?.href;
-    setVisible(false);
   };
+
+  const contentContainerRef =
+    useClickOutsideCallback<HTMLDivElement>(closeDialog);
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -71,15 +75,19 @@ export default function SignupModal({
           router.back();
         }
       }}
+      className="lg:w-3/4 2xl:w-1/2 p-4 !overflow-y-hidden"
     >
-      <SnackContextProvider>
-        <SignupView
-          order={searchParams["order"]}
-          modal
-          visible={visible}
-          closeDialog={closeDialog}
-        />
-      </SnackContextProvider>
+      <div
+        ref={contentContainerRef}
+        className="flex flex-col-reverse md:grid md:grid-rows-[minmax(0px,auto)_min-content] gap-8"
+      >
+        {visible ? children : null}
+        {/* <ItemOrder */}
+        {/*   game={game} */}
+        {/*   clientSecret={paymentIntent.client_secret!} */}
+        {/*   rememberPayment={rememberPayment} */}
+        {/* /> */}
+      </div>
     </Dialog>
   );
 }

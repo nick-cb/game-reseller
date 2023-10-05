@@ -24,7 +24,6 @@ export function HideOnRoute({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isMatch = useMemo(() => {
-    console.log({ pathname, exact });
     if (!matches) {
       return false;
     }
@@ -42,16 +41,10 @@ export function HideOnRoute({
         );
       });
     }
-    console.log(matches);
     return matches?.some((match) => {
       const hasQuery = match.has
         ? match.has.map((query) => searchParams.get(query.key) === query.value)
         : true;
-      console.log(
-        (match.exact
-          ? match.pathname === pathname
-          : pathname.match(match.pathname)) && hasQuery,
-      );
       return (
         (match.exact
           ? match.pathname === pathname

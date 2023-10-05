@@ -2,6 +2,7 @@
 
 import { ButtonHTMLAttributes, DetailedHTMLProps, SVGProps } from "react";
 import { useScroll } from "../Scroll";
+import { useRadio } from "../Radio";
 
 export function PaymentTabButton({
   // icon,
@@ -73,26 +74,26 @@ export function CheckMarkSvg() {
       }
     >
       <path
-        stroke-linejoin="round"
-        stroke-linecap="round"
-        stroke-miterlimit="4"
-        stroke-width="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        strokeMiterlimit="4"
+        strokeWidth="2"
         d="M22.867 26.267c-1.933 1.333-4.333 2.067-6.867 2.067-6.8 0-12.333-5.533-12.333-12.333 0-2.933 1.067-5.667 2.733-7.8"
         className="svg-elem-1"
       ></path>
       <path
-        stroke-linejoin="round"
-        stroke-linecap="round"
-        stroke-miterlimit="4"
-        stroke-width="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        strokeMiterlimit="4"
+        strokeWidth="2"
         d="M13.4 3.933c0.867-0.2 1.733-0.267 2.6-0.267 6.8 0 12.333 5.533 12.333 12.333 0 1.933-0.467 3.733-1.2 5.333"
         className="svg-elem-2"
       ></path>
       <path
-        stroke-linejoin="round"
-        stroke-linecap="round"
-        stroke-miterlimit="4"
-        stroke-width="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        strokeMiterlimit="4"
+        strokeWidth="2"
         d="M11 16.333l3.333 3.333 6.667-6.667"
         className="svg-elem-3"
       ></path>
@@ -101,6 +102,8 @@ export function CheckMarkSvg() {
 }
 
 export function SavePayment({ id }: { id: string }) {
+  const { selected, changeSelected } = useRadio();
+
   return (
     <>
       <p className="text-[14.88px] mb-2 ">
@@ -111,8 +114,16 @@ export function SavePayment({ id }: { id: string }) {
           <div className="relative after:absolute after:inset-0 after:bg-default">
             <input
               id={id + "-remember-yes"}
-              name={id + "-remember-payment"}
+              // name={id + "-remember-payment"}
               type="radio"
+              checked={selected === id + "-remember-yes"}
+              aria-checked={selected === id + "-remember-yes"}
+              onClick={(event) => {
+                changeSelected(event.currentTarget.id);
+              }}
+              onChange={() => {
+
+              }}
               className={
                 "h-5 w-5 block relative peer " +
                 " after:absolute after:rounded-full after:inset-0 " +
@@ -132,8 +143,17 @@ export function SavePayment({ id }: { id: string }) {
           <div className="relative after:absolute after:inset-0 after:bg-default">
             <input
               id={id + "-remember-no"}
-              name={id + "-remember-payment"}
+              // name={id + "-remember-payment"}
               type="radio"
+              checked={selected === id + "-remember-no"}
+              aria-checked={selected === id + "-remember-no"}
+              onClick={(event) => {
+                console.log(event.currentTarget.id);
+                changeSelected(event.currentTarget.id);
+              }}
+              onChange={() => {
+
+              }}
               className={
                 "h-5 w-5 block relative group " +
                 " after:absolute after:rounded-full after:inset-0 " +

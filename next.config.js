@@ -64,6 +64,17 @@ const nextConfig = {
           ],
           destination: "/signup-modal",
         },
+        {
+          source: "/:slug/order",
+          has: [
+            {
+              type: "query",
+              key: "type",
+              value: "modal",
+            },
+          ],
+          destination: "/:slug/order-modal",
+        },
       ],
     };
   },

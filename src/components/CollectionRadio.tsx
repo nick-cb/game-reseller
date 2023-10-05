@@ -24,10 +24,9 @@ export function RadioGroup({
   toggleAble = false,
   children,
 }: PropsWithChildren<{ toggleAble?: boolean }>) {
-  const { collection: collectionKey, searchParams } = useContext(FilterContext);
+  const { collection: collectionKey } = useContext(FilterContext);
   const [selected, setSelected] = useState<string | null>(collectionKey);
   const changeSelected = (newSelected: string) => {
-    console.log({ newSelected });
     if (toggleAble) {
       if (newSelected === selected) {
         setSelected(null);
@@ -36,6 +35,7 @@ export function RadioGroup({
     }
     setSelected(newSelected);
   };
+
   return (
     <RadioContext.Provider
       value={{

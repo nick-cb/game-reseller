@@ -36,6 +36,7 @@ export const CategoryCheckbox = ({
         name={`filters:${tag_key}`}
         type="checkbox"
         aria-checked={_checked}
+        checked={_checked}
         onChange={() => {
           setChecked((prev) => {
             return !prev;
@@ -51,8 +52,7 @@ export const CategoryCheckbox = ({
           } else {
             searchParams?.delete("categories");
           }
-          searchParams?.delete('page');
-          console.log(`${pathname}${searchParams ? "?" + searchParams : ""}`);
+          searchParams?.delete("page");
           router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
         }}
         {...props}

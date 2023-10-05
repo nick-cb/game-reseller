@@ -64,7 +64,7 @@ export function LoginUserButton() {
           width="24"
           height="24"
           preserveAspectRatio="xMidYMid meet"
-          style={{ transform: "translate3d(0px, 0px, 0px);" }}
+          style={{ transform: "translate3d(0px, 0px, 0px)" }}
           stroke="white"
         >
           <defs>
@@ -72,7 +72,7 @@ export function LoginUserButton() {
               <rect width="50" height="50" x="0" y="0"></rect>
             </clipPath>
           </defs>
-          <g clip-path="url(#__lottie_element_8)">
+          <g clipPath="url(#__lottie_element_8)">
             <g
               ref={gRef}
               transform="matrix(1,0,0,1,0,0)"
@@ -82,12 +82,12 @@ export function LoginUserButton() {
               <g opacity="1" transform="matrix(1,0,0,1,25,24.5)">
                 <path
                   ref={pathRef}
-                  stroke-linecap="round"
-                  stroke-linejoin="miter"
-                  fill-opacity="0"
-                  stroke-miterlimit="10"
-                  stroke-opacity="1"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                  fillOpacity="0"
+                  strokeMiterlimit="10"
+                  strokeOpacity="1"
+                  strokeWidth="2"
                   d=" M5,7 C5,7 5,2 5,2 C7.400000095367432,0.4000000059604645 9,-2.4000000953674316 9,-5.5 C9,-5.5 9,-11.5 9,-11.5 C9,-16.5 5,-20.5 0,-20.5 C-5,-20.5 -9,-16.5 -9,-11.5 C-9,-11.5 -9,-5.5 -9,-5.5 C-9,-2.4000000953674316 -7.400000095367432,0.4000000059604645 -5,2 C-5,2 -5,7 -5,7 C-5,10.5 -19,10.600000381469727 -19,20.5 C-19,20.5 19,20.5 19,20.5 C19,10.5 5,10.600000381469727 5,7z"
                 ></path>
               </g>

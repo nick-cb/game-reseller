@@ -6,6 +6,7 @@ import Image from "next/image";
 const breakpoints = [640] as const;
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { Game, GameImageGroup } from "@/database/models";
+import Link from "next/link";
 
 type HeroCarouselProps = {
   data: HeroCarouselGame[];
@@ -20,7 +21,7 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
-
+  console.log({ index });
   useEffect(() => {
     if (sm < 0) {
       return;
@@ -60,14 +61,14 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
       ?.classList.add("active");
     prev.current = index === -1 ? 0 : index;
 
-    const id = setTimeout(() => {
-      requestAnimationFrame(() => {
-        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % data.length));
-      });
-    }, 10000);
-    return () => {
-      clearTimeout(id);
-    };
+    // const id = setTimeout(() => {
+    //   requestAnimationFrame(() => {
+    //     setIndex((prev) => (index === -1 ? 1 : (prev + 1) % data.length));
+    //   });
+    // }, 10000);
+    // return () => {
+    //   clearTimeout(id);
+    // };
   }, [index]);
 
   const onClick = (index: number) => {
@@ -82,8 +83,20 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
     >
       <div className="w-full sm:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
-          {data.map((item) => (
-            <li key={item.ID} className={"main-item snap-start"}>
+          {data.map((item, idx) => (
+            <li
+              key={item.ID}
+              className={
+                "main-item snap-start " +
+                (idx === 0
+                  ? index === -1 || index === 0
+                    ? "z-[1]"
+                    : ""
+                  : index === idx
+                  ? "z-[1]"
+                  : "")
+              }
+            >
               {item.images.landscape?.url && (
                 <Image
                   className="rounded-lg"
@@ -142,12 +155,12 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
 const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
   return (
     <div className="flex gap-4">
-      <a
-        href={`${game.slug}`}
+      <Link
+        href={`${game.slug}/order`}
         className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
       >
         BUY NOW
-      </a>
+      </Link>
       <a
         href="#"
         className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
@@ -183,9 +196,17 @@ const Description = ({ game }: { game: HeroCarouselGame }) => {
   );
 };
 
-export const Cover = ({ children }: PropsWithChildren) => {
+export const Cover = ({
+  children,
+  className = "",
+}: PropsWithChildren<{ className?: string }>) => {
   return (
-    <div className="main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8">
+    <div
+      className={
+        "main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8 " +
+        className
+      }
+    >
       {children}
     </div>
   );

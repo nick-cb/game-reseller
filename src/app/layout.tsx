@@ -34,6 +34,10 @@ export default function RootLayout({
     "use server";
     redirect(`/browse?keyword=${data.get("keyword")}`);
   };
+  const testServerAction = async () => {
+    "use server";
+    return "Hello from server"
+  }
 
   return (
     <html lang="en" className="scroll-pt-[116px]">
@@ -72,6 +76,7 @@ export default function RootLayout({
               </HideOnRoute>
             </Suspense>
           </header>
+
           <Suspense>
             <HideOnRoute
               matches={[

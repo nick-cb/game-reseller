@@ -27,27 +27,27 @@ const layout = async ({ children }: PropsWithChildren) => {
   return (
     <div className="grid grid-cols-4 gap-8">
       <div className="col-start-1 col-end-5 md:col-end-4 text-white_primary">
-        <div className="fixed bottom-0 left-0 right-0 p-2 bg-default block sm:hidden z-50">
-          <Filter tags={tags[0]} />
-        </div>
         {children}
       </div>
-      <form
-        className="col-start-4 col-end-5 hidden md:block"
-        action={handleSubmitFilter}
-      >
-        <noscript>
-          <button
-            className="w-full py-2 rounded mb-4
+      <FilterContextProvider>
+        <div className="fixed bottom-0 left-0 right-0 p-2 bg-default block md:hidden z-50">
+          <Filter tags={tags[0]} />
+        </div>
+        <form
+          className="col-start-4 col-end-5 hidden md:block"
+          action={handleSubmitFilter}
+        >
+          <noscript>
+            <button
+              className="w-full py-2 rounded mb-4
             bg-primary text-white shadow-white/10 shadow-md hover:brightness-105 transition-[filter]"
-          >
-            Submit filter
-          </button>
-        </noscript>
-        <BrowseSearch />
-        <hr className="border-white/20 my-4" />
-        <AccordionGroup>
-          <FilterContextProvider>
+            >
+              Submit filter
+            </button>
+          </noscript>
+          <BrowseSearch />
+          <hr className="border-white/20 my-4" />
+          <AccordionGroup>
             <Accordion index={0}>
               <AccordionHeader className="flex items-center justify-between w-[calc(100%+16px)] -translate-x-2 px-2 py-4 rounded outline-white outline outline-0 focus:outline-1">
                 <div>Collections</div>
@@ -134,9 +134,9 @@ const layout = async ({ children }: PropsWithChildren) => {
                 </ul>
               </AccordionBody>
             </Accordion>
-          </FilterContextProvider>
-        </AccordionGroup>
-      </form>
+          </AccordionGroup>
+        </form>
+      </FilterContextProvider>
     </div>
   );
 };

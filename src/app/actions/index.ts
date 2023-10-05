@@ -17,3 +17,7 @@ export const handleSubmitFilter = async (data: FormData) => {
   }
   redirect(`/browse`);
 };
+
+export async function testServerAction() {
+  return 'hello';
+}

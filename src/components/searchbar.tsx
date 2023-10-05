@@ -332,7 +332,6 @@ export function MobileSearch() {
   );
 
   useEffect(() => {
-    console.log(window.location.hash !== "#search", ref.current?.open);
     if (window.location.hash !== "#search" && ref.current?.open) {
       const header = document.querySelector("header");
       const nav = document.querySelector("nav");

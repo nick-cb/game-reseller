@@ -19,6 +19,7 @@ import { BuyNowButton } from "@/components/game/BuyNowButton";
 import SystemRequirements from "@/components/game/SystemRequirements";
 import Scroll, { Item } from "@/components/Scroll";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
+import { TestClientButton } from "@/components/Test";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -72,6 +73,12 @@ const page = async ({ params }: { params: any }) => {
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =
     groupImages(game.images);
+
+  const testServerAction = async () => {
+    "use server";
+
+    return "hello from server";
+  };
 
   return (
     <div className="pt-6">
@@ -188,7 +195,7 @@ const page = async ({ params }: { params: any }) => {
                           {row.map((img) => {
                             return (
                               <div className="w-full aspect-video relative rounded overflow-hidden">
-                                <Image src={img.url} fill alt={img.alt} />
+                                <Image src={img.url} fill alt={img.alt || ''} />
                               </div>
                             );
                           })}

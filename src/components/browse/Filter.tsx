@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function Filter({ tags }: { tags: Tags[] }) {
   const searchParams = useSearchParams();
-  const filters = searchParams.get("filters");
+  const filters = searchParams.get("categories");
   const filterLength = filters?.split(",").length || 0;
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -23,6 +23,13 @@ export default function Filter({ tags }: { tags: Tags[] }) {
           <SearchIcon />
           <input
             onTouchStart={(event) => {
+              event.preventDefault();
+              setOpen(true);
+              setTimeout(() => {
+                inputRef.current?.focus();
+              }, 500);
+            }}
+            onClick={(event) => {
               event.preventDefault();
               setOpen(true);
               setTimeout(() => {
@@ -68,7 +75,7 @@ export default function Filter({ tags }: { tags: Tags[] }) {
           setOpen(false);
         }}
         className={
-          "transition-colors " +
+          "transition-colors md:hidden " +
           (open ? "bg-default/40 !pointer-events-auto" : "")
         }
       >
@@ -77,39 +84,32 @@ export default function Filter({ tags }: { tags: Tags[] }) {
           <Sheet.Content className="bg-paper_2 text-white_primary px-2">
             <Sheet.Scroller draggableAt="both">
               <BrowseSearch className="mb-4" ref={inputRef} />
-              <ul>
-                <li>
-                  <div className="mb-2">Category</div>
-                  <FilterContextProvider>
-                    <ul className="flex flex-col gap-1">
-                      {tags.map((tag) => {
-                        return (
-                          <li
-                            key={tag.ID}
-                            className="rounded flex
-                text-white/60 text-sm relative"
-                          >
-                            <div className="absolute inset-0 bg-paper_2"></div>
-                            <CategoryCheckbox
-                              tag={tag}
-                              id={tag.tag_key.toString()}
-                              className="w-full h-9"
-                            />
-                            <label
-                              htmlFor={tag.tag_key}
-                              className="absolute inset-0 h-9 rounded px-2
-                  cursor-pointer flex items-center
-                  text-white/60 hover:text-white_primary bg-paper_2 transition-colors"
-                            >
-                              {tag.name[0].toUpperCase() +
-                                tag.name.substring(1)}
-                            </label>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </FilterContextProvider>
-                </li>
+              <div className="mb-2">Category</div>
+              <ul className="flex flex-col gap-1">
+                {tags.map((tag) => {
+                  return (
+                    <li
+                      key={tag.ID}
+                      className="rounded flex
+                      text-white/60 text-sm relative"
+                    >
+                      <div className="absolute inset-0 bg-paper_2"></div>
+                      <CategoryCheckbox
+                        tag={tag}
+                        id={tag.tag_key.toString()}
+                        className="w-full h-9"
+                      />
+                      <label
+                        htmlFor={tag.tag_key}
+                        className="absolute inset-0 h-9 rounded px-2
+                        cursor-pointer flex items-center
+                        text-white/60 hover:text-white_primary bg-paper_2 transition-colors"
+                      >
+                        {tag.name[0].toUpperCase() + tag.name.substring(1)}
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             </Sheet.Scroller>
           </Sheet.Content>
