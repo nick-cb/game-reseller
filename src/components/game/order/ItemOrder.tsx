@@ -10,6 +10,7 @@ import {
 import StripeElements, {
   StripeCheckoutForm,
 } from "@/components/payment/Stripe";
+import { Game, GameImageGroup } from "@/database/models";
 import Image from "next/image";
 
 export function ItemOrder({
@@ -17,7 +18,9 @@ export function ItemOrder({
   clientSecret,
   rememberPayment,
 }: {
-  game: any;
+  game: Pick<Game, "ID" | "name" | "developer" | "sale_price"> & {
+    images: GameImageGroup;
+  };
   clientSecret: string;
   rememberPayment: (
     payment: { type: "stripe" } | { type: "paypal" },
@@ -83,7 +86,7 @@ export function ItemOrder({
                     complete this purchase.
                   </p>
                   <hr className="my-4 border-default" />
-                  {/* <SavePayment id="paypal" /> */}
+                  <SavePayment id="paypal" />
                 </Item>
               </ul>
             </div>
@@ -111,17 +114,32 @@ export function ItemOrder({
             <div className={"text-sm"}>
               <div className="flex justify-between">
                 <p>Price</p>
-                <p>${game?.sale_price}</p>
+                <p>
+                  {Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(game.sale_price)}
+                </p>
               </div>
               <div hidden className="flex justify-between">
                 <p>Sale Discount</p>
-                <p>${game?.sale_price}</p>
+                <p>
+                  {Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(game.sale_price)}
+                </p>
               </div>
             </div>
             <hr className="border-white/60 my-4" />
             <div className="flex justify-between">
               <p className="font-bold">Total</p>
-              <p className="font-bold">{game?.sale_price}</p>
+              <p className="font-bold">
+                {Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(game.sale_price)}
+              </p>
             </div>
           </div>
         </div>

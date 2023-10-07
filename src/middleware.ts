@@ -8,7 +8,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     !request.headers.get("next-url") &&
     request.nextUrl.searchParams.get("type")
   ) {
-    console.log("RUN");
     return NextResponse.redirect(
       new URL(request.nextUrl.pathname, request.url),
     );

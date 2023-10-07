@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Collections, Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/database/repository/game/select";
+import { currencyFormatter } from "@/utils";
 
 type PillarGame = Pick<
   Game,
@@ -61,7 +62,9 @@ export function Pillar({ data }: PillarProps) {
               <div>
                 <p className="mb-2 text-sm">{game.name}</p>
                 <p className="text-sm text-white/60">
-                  {game.sale_price === 0 ? "Free" : "đ" + game.sale_price}
+                  {game.sale_price === 0
+                    ? "Free"
+                    : currencyFormatter(game.sale_price)}
                 </p>
               </div>
             </div>

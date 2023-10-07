@@ -8,7 +8,6 @@ import { findUserById } from "@/database/repository/user/select";
 
 export async function AuthControls() {
   const refreshToken = cookies().get("refresh_token");
-  console.log({ refreshToken });
   if (refreshToken?.value) {
     const payload = decodeToken(refreshToken?.value);
     if (typeof payload !== "string") {

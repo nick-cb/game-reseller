@@ -46,7 +46,7 @@ export function PlaceOrderButton({
             });
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         } finally {
           const { error } = await stripe.confirmPayment({
             elements: element,

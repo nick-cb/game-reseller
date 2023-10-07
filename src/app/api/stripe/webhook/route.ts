@@ -1,8 +1,8 @@
-import { Stripe } from "stripe";
 import { NextResponse } from "next/server";
 import { stripe } from "@/utils";
-import { findUserByStripeId } from "@/database/repository/user/select";
-import { updateOrder } from "@/database/repository/order/update";
+import {
+  updateOrderByPaymentIntent,
+} from "@/database/repository/order/update";
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -30,18 +30,19 @@ export async function POST(request: Request) {
     });
   }
   switch (event.type) {
-    case "payment_intent.succeeded":
+    case "payment_intent.succeeded": {
       const paymentIntentSucceeded = event.data.object as any;
       const customer = paymentIntentSucceeded.customer;
       const customerId = typeof customer === "string" ? customer : customer?.id;
       if (customerId) {
-        const user = await findUserByStripeId({ id: customerId });
-        await updateOrder({
+        const card =
+          paymentIntentSucceeded.charges.data[0].payment_method_details.card;
+        await updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
           order: {
-            status: "succeeded",
-            card_type:
-              paymentIntentSucceeded.charges.data[0].payment_method_details.card
-                .last4,
+            status: paymentIntentSucceeded.status,
+            card_type: card.brand,
+            card_number: card.las4,
+            canceled_at: paymentIntentSucceeded.canceled_at,
           },
         });
       }
@@ -49,6 +50,50 @@ export async function POST(request: Request) {
         status: 200,
         message: "Payment succeeded",
       });
+    }
+    case "payment_intent.canceled": {
+      const paymentIntentCanceled = event.data.object as any;
+      const customer = paymentIntentCanceled.customer;
+      const customerId = typeof customer === "string" ? customer : customer?.id;
+      if (customerId) {
+        const card =
+          paymentIntentCanceled.charges.data[0]?.payment_method_details?.card;
+        await updateOrderByPaymentIntent(paymentIntentCanceled.id, {
+          order: {
+            status: paymentIntentCanceled.status,
+            card_type: card?.brand || null,
+            card_number: card?.last4 || null,
+            canceled_at: paymentIntentCanceled.canceled_at,
+          },
+        });
+      }
+      return NextResponse.json({
+        status: 200,
+        message: "Payment succeeded",
+      });
+    }
+    case "payment_intent.payment_failed": {
+      const paymentIntentPaymentFailed = event.data.object as any;
+      const customer = paymentIntentPaymentFailed.customer;
+      const customerId = typeof customer === "string" ? customer : customer?.id;
+      if (customerId) {
+        const card =
+          paymentIntentPaymentFailed.charges.data[0]?.payment_method_details
+            ?.card;
+        await updateOrderByPaymentIntent(paymentIntentPaymentFailed.id, {
+          order: {
+            status: paymentIntentPaymentFailed.status,
+            card_type: card?.brand || null,
+            card_number: card?.last4 || null,
+            canceled_at: paymentIntentPaymentFailed.canceled_at,
+          },
+        });
+      }
+      return NextResponse.json({
+        status: 200,
+        message: "Payment succeeded",
+      });
+    }
     default:
       return NextResponse.json({
         status: 200,

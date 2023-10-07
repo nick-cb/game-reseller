@@ -3,10 +3,12 @@ import { ExchangeRate } from "@/app/[slug]/order/page";
 import ItemOrderModal from "@/components/game/OrderModal";
 import { ItemOrder } from "@/components/game/order/ItemOrder";
 import { findGameBySlug } from "@/database/repository/game/select";
+import { createOrder } from "@/database/repository/order/insert";
 import { findUserById } from "@/database/repository/user/select";
 import { updateUserById } from "@/database/repository/user/update";
 import { stripe } from "@/utils";
 import { groupImages } from "@/utils/data";
+import dayjs from "dayjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -31,10 +33,10 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
     "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/vnd/usd.json",
   ).then((res) => res.json());
 
+  const amount =
+    Math.round((game?.sale_price || 1) * parseFloat(rate.usd) * 100) / 100;
   const paymentIntent = await stripe.paymentIntents.create({
-    amount:
-      (Math.round((game?.sale_price || 1) * parseFloat(rate.usd) * 100) / 100) *
-      100,
+    amount: Math.round(amount * 100),
     currency: "USD",
     payment_method_types: ["card"],
     description: data.name,
@@ -60,14 +62,43 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
     }
 
     if (payment.type === "stripe") {
-      const updatedPaymentIntent = await stripe.paymentIntents.update(
-        paymentIntent.id,
-        {
-          customer: stripeId!,
-          receipt_email: user.email,
+      await stripe.paymentIntents.update(paymentIntent.id, {
+        customer: stripeId!,
+        setup_future_usage: "off_session",
+      });
+      await createOrder({
+        order: {
+          payment_intent: paymentIntent.id,
+          amount,
+          payment_method: "card",
+          payment_service: "stripe",
+          created_at: dayjs(paymentIntent.created).format(
+            "YYYY-MM-DD HH:mm:ss",
+          ),
+          items: JSON.stringify([
+            {
+              ID: game.ID,
+              type: game.type,
+              developer: game.developer,
+              publisher: game.publisher,
+              sale_price: game.sale_price,
+              discounts: [],
+              discount_price: game.sale_price,
+              slug: game.slug,
+              base_game_id: null,
+              image: {
+                portrait: game.images.portrait,
+              },
+            },
+          ]),
+          status: "pending",
+          user_id: user.ID,
+          card_number: null,
+          card_type: null,
+          canceled_at: null,
+          succeeded_at: null,
         },
-      );
-      return updatedPaymentIntent.id;
+      });
     }
   };
 

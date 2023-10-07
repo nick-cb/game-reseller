@@ -111,7 +111,7 @@ export function SavePayment({ id }: { id: string }) {
       </p>
       <div className="flex gap-8">
         <div className="flex items-center">
-          <div className="relative after:absolute after:inset-0 after:bg-default">
+          <div className="relative after:absolute after:inset-0 after:bg-default after:rounded-full">
             <input
               id={id + "-remember-yes"}
               // name={id + "-remember-payment"}
@@ -140,7 +140,7 @@ export function SavePayment({ id }: { id: string }) {
           </label>
         </div>
         <div className="flex items-center">
-          <div className="relative after:absolute after:inset-0 after:bg-default">
+          <div className="relative after:absolute after:inset-0 after:bg-default after:rounded-full">
             <input
               id={id + "-remember-no"}
               // name={id + "-remember-payment"}
@@ -148,7 +148,6 @@ export function SavePayment({ id }: { id: string }) {
               checked={selected === id + "-remember-no"}
               aria-checked={selected === id + "-remember-no"}
               onClick={(event) => {
-                console.log(event.currentTarget.id);
                 changeSelected(event.currentTarget.id);
               }}
               onChange={() => {
@@ -172,11 +171,9 @@ export function SavePayment({ id }: { id: string }) {
       </div>
       <p className="text-xs text-white_primary/60 mt-2">
         By choosing to save your payment information, this payment method will
-        be selected as the default for all purchases made using Epic Games
-        payment, including purchases in Fortnite, Rocket League, Fall Guys and
-        the Epic Games Store. You can delete your saved payment information
-        anytime on this payment screen or by logging in to your Epic Games
-        account, and selecting payment management in your account settings.
+        be selected as the default for all purchases made using our payment. 
+        You can delete your saved payment information
+        anytime on this payment screen or by logging in to your account, and selecting payment management in your account settings.
       </p>
     </>
   );

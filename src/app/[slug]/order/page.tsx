@@ -8,6 +8,7 @@ import { ItemOrder } from "@/components/game/order/ItemOrder";
 import { updateUserById } from "@/database/repository/user/update";
 import { stripe } from "@/utils";
 import { createOrder } from "@/database/repository/order/insert";
+import dayjs from "dayjs";
 
 export type ExchangeRate = {
   date: string;
@@ -36,7 +37,7 @@ export default async function ItemOrderPage({ params }: { params: any }) {
   const amount =
     Math.round((game?.sale_price || 1) * parseFloat(rate.usd) * 100) / 100;
   const paymentIntent = await stripe.paymentIntents.create({
-    amount,
+    amount: Math.round(amount * 100),
     currency: "USD",
     payment_method_types: ["card"],
     description: data.name,
@@ -64,6 +65,7 @@ export default async function ItemOrderPage({ params }: { params: any }) {
     if (payment.type === "stripe") {
       await stripe.paymentIntents.update(paymentIntent.id, {
         customer: stripeId!,
+        setup_future_usage: "off_session",
       });
       await createOrder({
         order: {
@@ -71,7 +73,9 @@ export default async function ItemOrderPage({ params }: { params: any }) {
           amount,
           payment_method: "card",
           payment_service: "stripe",
-          created_at: paymentIntent.created,
+          created_at: dayjs(paymentIntent.created).format(
+            "YYYY-MM-DD HH:mm:ss",
+          ),
           items: JSON.stringify([
             {
               ID: game.ID,

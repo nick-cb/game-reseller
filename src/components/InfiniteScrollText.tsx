@@ -88,7 +88,6 @@ export function useInfiniteScrollText<T extends HTMLElement>({
   useEffect(() => {
     const container = containerRef?.current;
     const scrollElement = scrollRef?.current;
-    console.log({container});
     if (!container || !scrollElement) {
       return;
     }

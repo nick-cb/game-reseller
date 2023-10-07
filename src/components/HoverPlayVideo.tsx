@@ -3,6 +3,7 @@ import Image from "next/image";
 import Video from "./Video";
 import { Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/database/repository/game/select";
+import { currencyFormatter } from "@/utils";
 
 export type FeatureCardItem = Pick<
   Game,
@@ -49,7 +50,9 @@ export function FeatureCard({ item }: FeatureCardProps) {
       </div>
       <h2 className="text-white_primary py-4">{item.name}</h2>
       <p className="text-white/60 text-sm mb-2">{item.description}</p>
-      <p>{item.sale_price === 0 ? "Free" : "đ" + item.sale_price}</p>
+      <p>
+        {item.sale_price === 0 ? "Free" : currencyFormatter(item.sale_price)}
+      </p>
     </Link>
   );
 }

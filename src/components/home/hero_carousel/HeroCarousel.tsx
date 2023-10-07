@@ -21,7 +21,6 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
-  console.log({ index });
   useEffect(() => {
     if (sm < 0) {
       return;

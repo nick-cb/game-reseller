@@ -76,7 +76,6 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
       .then(async () => {
         const token = await generateToken({ userId: inserteduser.ID });
         const url = file.publicUrl();
-        console.log({ url });
         await updateUserById(inserteduser.ID, {
           user: {
             refresh_token: token,
@@ -113,7 +112,6 @@ export const getLoggedInStatus = async () => {
 
 export const login = async (values: EmailLoginFormPayload) => {
   const { data: user } = await findUserByEmail({ email: values.email });
-  console.log({ user });
   if (!user) {
     return {
       error: "User not found",

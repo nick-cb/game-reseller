@@ -78,3 +78,37 @@ export async function renderComponentToString(
 export const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET || "", {
   apiVersion: "2022-11-15",
 });
+
+const CURRENCY = {
+  VND: {
+    locale: "vi-VN",
+    options: {
+      style: "currency",
+      currency: "VND",
+    },
+  },
+  USD: {
+    locale: "en-US",
+    options: {
+      style: "currency",
+      currency: "USD",
+    },
+  },
+};
+
+export function currencyFormatter(
+  num: number,
+  { currency }: { currency: "VND" | "USD" } = {
+    currency: "VND",
+  },
+) {
+  return Intl.NumberFormat(
+    CURRENCY[currency].locale,
+    CURRENCY[currency].options,
+  ).format(num);
+}
+
+export function fromUnixTime(unixTime: number) {
+  const date = new Date(unixTime * 1000);
+  return date;
+}

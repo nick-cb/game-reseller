@@ -148,12 +148,12 @@ export type Orders = {
   amount: number;
   payment_method: string;
   payment_service: "stripe" | "paypal";
-  created_at: number;
+  created_at: string;
   items: string;
   card_number: string | null;
   card_type: string | null;
   user_id: number;
-  succeeded_at: number | null;
-  canceled_at: number | null;
+  succeeded_at: string | null;
+  canceled_at: string | null;
   status: "pending" | "succeeded" | "canceled_at";
 };

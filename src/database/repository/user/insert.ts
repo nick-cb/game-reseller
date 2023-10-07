@@ -24,7 +24,6 @@ export async function insertUser({
       insert into users (full_name, display_name, email, password, avatar)
       values ('${user.full_name}', '${user.display_name}', '${user.email}', '${user.password}', '${user.avatar}');
   `);
-  console.log(result);
   if ("insertId" in result[0]) {
     const insertedUser = await _db.execute<IUserResult[]>(sql`
       select * from users where ID = ${parseInt(
