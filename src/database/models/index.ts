@@ -142,8 +142,28 @@ export type Users = {
   stripe_id: string | null;
 };
 
-export type Orders = {
-  ID: number;
+type OrderItem = Pick<
+  Game,
+  | "ID"
+  | "name"
+  | "type"
+  | "developer"
+  | "publisher"
+  | "sale_price"
+  | "slug"
+  | "base_game_id"
+> & {
+  images: Pick<GameImageGroup, "portrait">;
+} & {
+  discounts: any[];
+  discount_price: number;
+};
+
+export type Orders = Omit<CreateOrderPayload, "ID" | "items"> & {
+  items: OrderItem[];
+};
+
+export type CreateOrderPayload = {
   payment_intent: string | null;
   amount: number;
   payment_method: string;

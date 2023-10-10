@@ -15,7 +15,7 @@ import {
 } from "@/components/AnimatedSizeProvider";
 import { StrategyList } from "@/components/auth/list";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createNewUser } from "@/actions/users";
 import { SnackContext } from "@/components/SnackContext";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
@@ -65,7 +65,6 @@ export function SignupView({
     closeDialog ? closeDialog : () => {},
   );
   const { showMessage } = useContext(SnackContext);
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"

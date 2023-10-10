@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/utils";
-import {
-  updateOrderByPaymentIntent,
-} from "@/database/repository/order/update";
+import { updateOrderByPaymentIntent } from "@/database/repository/order/update";
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -41,7 +39,7 @@ export async function POST(request: Request) {
           order: {
             status: paymentIntentSucceeded.status,
             card_type: card.brand,
-            card_number: card.las4,
+            card_number: card.last4,
             canceled_at: paymentIntentSucceeded.canceled_at,
           },
         });

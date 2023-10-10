@@ -11,6 +11,7 @@ import StripeElements, {
   StripeCheckoutForm,
 } from "@/components/payment/Stripe";
 import { Game, GameImageGroup } from "@/database/models";
+import { currencyFormatter } from "@/utils";
 import Image from "next/image";
 
 export function ItemOrder({
@@ -22,9 +23,7 @@ export function ItemOrder({
     images: GameImageGroup;
   };
   clientSecret: string;
-  rememberPayment: (
-    payment: { type: "stripe" } | { type: "paypal" },
-  ) => Promise<any>;
+  rememberPayment: (payment: { type: "stripe" | "paypal" }) => Promise<any>;
 }) {
   return (
     <>
@@ -106,40 +105,25 @@ export function ItemOrder({
               <Image src={game?.images.portrait?.url} alt={""} fill />
             </div>
             <div>
-              <p className="font-bold text-white_primary">{game?.name}</p>
-              <p className="text-white_primary/60 text-sm">{game?.developer}</p>
+              <p className="font-bold text-white_primary">{game.name}</p>
+              <p className="text-white_primary/60 text-sm">{game.developer}</p>
             </div>
           </div>
           <div>
-            <div className={"text-sm"}>
+            <div className={"text-sm flex flex-col gap-2"}>
               <div className="flex justify-between">
                 <p>Price</p>
-                <p>
-                  {Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(game.sale_price)}
-                </p>
+                <p>{currencyFormatter(game.sale_price)}</p>
               </div>
               <div hidden className="flex justify-between">
                 <p>Sale Discount</p>
-                <p>
-                  {Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(game.sale_price)}
-                </p>
+                <p>{currencyFormatter(0)}</p>
               </div>
             </div>
             <hr className="border-white/60 my-4" />
             <div className="flex justify-between">
               <p className="font-bold">Total</p>
-              <p className="font-bold">
-                {Intl.NumberFormat("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                }).format(game.sale_price)}
-              </p>
+              <p className="font-bold">{currencyFormatter(game.sale_price)}</p>
             </div>
           </div>
         </div>
@@ -156,10 +140,10 @@ export function ItemOrder({
           />
           <div className="flex flex-col justify-between">
             <div>
-              <p className="text-white_primary text-sm">{game?.name}</p>
-              <p className="text-white_primary/60 text-xs">{game?.developer}</p>
+              <p className="text-white_primary text-sm">{game.name}</p>
+              <p className="text-white_primary/60 text-xs">{game.developer}</p>
             </div>
-            <p>{game?.sale_price}</p>
+            <p>{currencyFormatter(game.sale_price)}</p>
           </div>
         </div>
       </div>

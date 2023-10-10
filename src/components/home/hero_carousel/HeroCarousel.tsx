@@ -21,6 +21,7 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   let prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
+
   useEffect(() => {
     if (sm < 0) {
       return;
@@ -60,14 +61,14 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
       ?.classList.add("active");
     prev.current = index === -1 ? 0 : index;
 
-    // const id = setTimeout(() => {
-    //   requestAnimationFrame(() => {
-    //     setIndex((prev) => (index === -1 ? 1 : (prev + 1) % data.length));
-    //   });
-    // }, 10000);
-    // return () => {
-    //   clearTimeout(id);
-    // };
+    const id = setTimeout(() => {
+      requestAnimationFrame(() => {
+        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % data.length));
+      });
+    }, 10000);
+    return () => {
+      clearTimeout(id);
+    };
   }, [index]);
 
   const onClick = (index: number) => {

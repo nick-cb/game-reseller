@@ -161,7 +161,6 @@ export function useCarousel<
       (entries) => {
         for (const entry of entries) {
           if (entry.intersectionRatio > 0.5) {
-            console.log(entry);
             const newIndex = elementListArr.findIndex((element) =>
               element.isSameNode(entry.target)
             );

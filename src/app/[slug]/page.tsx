@@ -19,7 +19,6 @@ import { BuyNowButton } from "@/components/game/BuyNowButton";
 import SystemRequirements from "@/components/game/SystemRequirements";
 import Scroll, { Item } from "@/components/Scroll";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
-import { TestClientButton } from "@/components/Test";
 
 const criticRec = {
   weak: "51.548667764616276",

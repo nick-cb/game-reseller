@@ -14,8 +14,10 @@ export function BuyNowButton({ game }: { game: Pick<Game, "ID" | "slug"> }) {
       className="text-sm"
       onClick={async () => {
         const isLogin = await getLoggedInStatus();
+        console.log({isLogin});
         if (!isLogin) {
           router.push(`/login?type=modal&order=${game.slug}`);
+          return;
         }
         router.push(pathname + "/order?type=modal");
       }}

@@ -27,10 +27,16 @@ export async function updateOrder(
   `);
 }
 
-export async function updateOrderByPaymentIntent(id: string, {order, db}:{
+export async function updateOrderByPaymentIntent(
+  id: string,
+  {
+    order,
+    db,
+  }: {
     order: Partial<Omit<Orders, "ID">>;
     db?: Connection;
-  }) {
+  },
+) {
   const _db = db || (await connectDB());
 
   return _db.execute(sql`
@@ -38,10 +44,12 @@ export async function updateOrderByPaymentIntent(id: string, {order, db}:{
     set ${Object.entries(order)
       .map(([key, value]) => {
         return (
-          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
+          key +
+          "=" +
+          (typeof value === "string" ? "'" + value + "'" : value || null)
         );
       })
       .join(", ")}
-    where payment_intent = ${id}
+    where payment_intent = '${id}'
   `);
 }

@@ -1,12 +1,12 @@
 import { connectDB, sql } from "@/database";
-import { Orders } from "@/database/models";
+import { CreateOrderPayload, Orders } from "@/database/models";
 import { Connection } from "mysql2/promise";
 
 export async function createOrder({
   order,
   db,
 }: {
-  order: Omit<Orders, "ID">;
+  order: CreateOrderPayload;
   db?: Connection;
 }) {
   const _db = db || (await connectDB());

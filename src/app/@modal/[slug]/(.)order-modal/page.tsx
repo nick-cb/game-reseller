@@ -78,6 +78,7 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
           items: JSON.stringify([
             {
               ID: game.ID,
+              name: game.name,
               type: game.type,
               developer: game.developer,
               publisher: game.publisher,
@@ -86,7 +87,7 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
               discount_price: game.sale_price,
               slug: game.slug,
               base_game_id: null,
-              image: {
+              images: {
                 portrait: game.images.portrait,
               },
             },
