@@ -4,9 +4,7 @@ import { handleSubmitFilter } from "../actions";
 import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
 import "./browse.css";
-import findTagByGroupName from "@/database/repository/tags/select";
 import Filter from "@/components/browse/Filter";
-import { getAllCollections } from "@/database/repository/collection/select";
 import { connectDB } from "@/database";
 import {
   Accordion,
@@ -15,6 +13,8 @@ import {
   AccordionHeader,
 } from "@/components/Accordion";
 import { CollectionRadio, RadioGroup } from "@/components/CollectionRadio";
+import {getAllCollections} from "@/actions/collections";
+import findTagByGroupName from "@/actions/tags";
 
 const layout = async ({ children }: PropsWithChildren) => {
   const db = await connectDB();

@@ -1,3 +1,6 @@
+import { RowDataPacket } from "mysql2";
+import { connectDB } from "..";
+
 export type Game = {
   ID: number;
   name: string;
@@ -176,4 +179,37 @@ export type CreateOrderPayload = {
   succeeded_at: string | null;
   canceled_at: string | null;
   status: "pending" | "succeeded" | "canceled_at";
+};
+
+export type Carts = {
+  ID: number;
+  user_id: number;
+};
+
+export type CartDetails = {
+  ID: number;
+  cart_id: number;
+  game_id: number;
+};
+
+export type CartFull = Carts & {
+  game_list: (Pick<
+    Game,
+    "ID" | "name" | "type" | "developer" | "publisher" | "sale_price" | "slug"
+  > & { images: GameImages[] })[];
+};
+
+export const dbExecute = async <T>({
+  query,
+  single = false,
+}: {
+  query: string;
+  single?: boolean;
+}) => {
+  const db = await connectDB();
+  const response = await db.execute<(RowDataPacket & T)[]>(query);
+  if (single) {
+    return { data: response[0][0] as T };
+  }
+  return { data: response[0] as T[] };
 };

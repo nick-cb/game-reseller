@@ -3,8 +3,7 @@ import {
   AuthUserButton,
   LoginUserButton,
 } from "./lottie-user-button/LottieUserBtn";
-import { decodeToken } from "@/actions/users";
-import { findUserById } from "@/database/repository/user/select";
+import { decodeToken, findUserById } from "@/actions/users";
 
 export async function AuthControls() {
   const refreshToken = cookies().get("refresh_token");

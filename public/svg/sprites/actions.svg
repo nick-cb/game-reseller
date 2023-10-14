@@ -150,5 +150,32 @@
 <symbol id='normal-screen' width="48px" height="48px" viewBox="0,0,256,256"><g fill-rule="nonzero" stroke-width="3" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.33333,5.33333)"><path d="M7.5,17.5h6c2.2,0 4,-1.8 4,-4v-6"></path><path d="M40.5,30.5h-6c-2.2,0 -4,1.8 -4,4v6"></path><path d="M30.5,7.5v6c0,2.2 1.8,4 4,4h6"></path><path d="M17.5,40.5v-6c0,-2.2 -1.8,-4 -4,-4h-6"></path></g></g></symbol>
 <symbol id='chevron-thin-down' width="50px" height="50px" viewBox="0,0,256,256"><g fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M44.98438,12.96875c-0.53125,0.01563 -1.03125,0.23438 -1.39844,0.61719l-18.58594,18.58594l-18.58594,-18.58594c-0.37891,-0.38672 -0.89453,-0.60547 -1.4375,-0.60547c-0.8125,0 -1.54297,0.49609 -1.84766,1.25c-0.30859,0.75391 -0.125,1.61719 0.45703,2.18359l20,20c0.78125,0.78125 2.04688,0.78125 2.82813,0l20,-20c0.59375,-0.57031 0.78125,-1.44922 0.46094,-2.21094c-0.31641,-0.76172 -1.06641,-1.25 -1.89062,-1.23437z"></path></g></g></symbol>
 <symbol id='filter' width="48px" height="48px" viewBox="0,0,256,256"><g fill="none" fill-rule="nonzero" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.33333,5.33333)"><path d="M27.5,35.1v1.9c0,0.3 -0.2,0.6 -0.4,0.8l-5,3.6c-0.7,0.5 -1.6,0 -1.6,-0.8v-16.1"></path><path d="M27.5,24.5v5"></path><path d="M15.8,21.1l4.4,3.4h7.6l10.4,-8.2c1.4,-1.1 2.3,-2.9 2.3,-4.7v-3.1c0,-0.6 -0.4,-1 -1,-1h-31c-0.6,0 -1,0.4 -1,1v3.1c0,1.8 0.8,3.6 2.3,4.7l1.3,1"></path></g></g></symbol>
+<symbol id='cart' width="48px" height="48px" viewBox="0,0,256,256">
+  <g fill-rule="nonzero" stroke-width="none" stroke-linecap="none" stroke-linejoin="none" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+    <g transform="scale(5.33333,5.33333)">
+      <path d="M31.1,32.5h-13.5c-2.4,0 -4.5,-1.7 -4.9,-4.1l-3.2,-16.9" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      </path>
+      <path d="M17.4,11.5h23.5c1.9,0 3.3,1.7 2.9,3.6l-2.5,13.4c-0.4,2.4 -2.5,4.1 -4.9,4.1" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      </path>
+      <path d="M9.5,11.5l-0.3,-1.6c-0.3,-1.4 -1.5,-2.4 -2.9,-2.4h-2.8" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      </path>
+      <circle cx="20" cy="39" r="3" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter">
+      </circle>
+      <circle cx="34" cy="39" r="3" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter">
+      </circle>
+    </g>
+  </g>
+</symbol>
+<symbol id="checkbox" width="48px" height="48px" viewBox="0,0,256,256"><g fill="none" fill-rule="nonzero" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+  <g transform="scale(5.33333,5.33333)">
+    <path d="M40.5,33.6v2.9c0,2.2 -1.8,4 -4,4h-25c-2.2,0 -4,-1.8 -4,-4v-15.5">
+    </path>
+    <path d="M7.5,15.8v-4.3c0,-2.2 1.8,-4 4,-4h25c2.2,0 4,1.8 4,4v15.7">
+    </path>
+    <path d="M14.5,25.5l6,6l14,-14">
+    </path>
+  </g>
+  </g>
+</symbol>
 </defs>
 </svg>

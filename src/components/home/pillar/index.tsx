@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Collections, Game, GameImageGroup } from "@/database/models";
-import { FVideoFullInfo } from "@/database/repository/game/select";
+import { FVideoFullInfo } from "@/actions/game/select";
 import { currencyFormatter } from "@/utils";
 
 type PillarGame = Pick<

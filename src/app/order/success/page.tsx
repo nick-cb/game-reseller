@@ -1,6 +1,6 @@
-import { findOrderByIntent } from "@/database/repository/order/select";
 import { currencyFormatter, pascalCase } from "@/utils";
 import Image from "next/image";
+import {findOrderByIntent} from "@/actions/order";
 
 export default async function OrderSuccessPage({
   searchParams,

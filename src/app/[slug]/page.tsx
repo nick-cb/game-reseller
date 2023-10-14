@@ -10,15 +10,16 @@ import {
   OmitGameId,
   findGameBySlug,
   findMappingById,
-} from "@/database/repository/game/select";
+} from "@/actions/game/select";
 import { CriticAvg, GameImages } from "@/database/models";
 import GameCard from "@/components/game/GameCard";
 import Link from "next/link";
-import { pascalCase } from "@/utils";
+import { currencyFormatter, pascalCase } from "@/utils";
 import { BuyNowButton } from "@/components/game/BuyNowButton";
 import SystemRequirements from "@/components/game/SystemRequirements";
 import Scroll, { Item } from "@/components/Scroll";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
+import { AddToCartButton } from "@/components/game/AddToCartBtn";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -58,7 +59,7 @@ function groupImages(images: OmitGameId<GameImages>[]) {
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const db = await connectDB();
-  const {data: game} = await findGameBySlug(slug, db);
+  const { data: game } = await findGameBySlug(slug, db);
   const logo = game.images.find((img: any) => {
     return img.type.toLowerCase().includes("logo");
   });
@@ -72,12 +73,6 @@ const page = async ({ params }: { params: any }) => {
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =
     groupImages(game.images);
-
-  const testServerAction = async () => {
-    "use server";
-
-    return "hello from server";
-  };
 
   return (
     <div className="pt-6">
@@ -104,20 +99,17 @@ const page = async ({ params }: { params: any }) => {
                 />
               </div>
             ) : null}
-            <p className="text-xs bg-yellow-300 text-default px-2 py-1 w-max rounded">
+            <p className="text-xs bg-white_primary/[.15] text-white_primary px-2 py-1 w-max rounded shadow-sm shadow-black/60">
               {pascalCase(game.type, "_")}
             </p>
             <p className="text-white_primary">
-              {game.sale_price > 0 ? "đ" + game.sale_price : "Free"}
+              {game.sale_price > 0
+                ? currencyFormatter(game.sale_price)
+                : "Free"}
             </p>
             <div className="flex flex-col gap-2">
               <BuyNowButton game={game} />
-              <button
-                className="text-sm py-2 w-full rounded border
-                border-white/60 text-white hover:bg-paper transition-colors"
-              >
-                Add to cart
-              </button>
+              <AddToCartButton game={game} />
             </div>
             <div className="text-white text-sm">
               <div className="flex justify-between items-center py-2 border-b border-white/20">
@@ -194,7 +186,7 @@ const page = async ({ params }: { params: any }) => {
                           {row.map((img) => {
                             return (
                               <div className="w-full aspect-video relative rounded overflow-hidden">
-                                <Image src={img.url} fill alt={img.alt || ''} />
+                                <Image src={img.url} fill alt={img.alt || ""} />
                               </div>
                             );
                           })}
@@ -524,7 +516,8 @@ const page = async ({ params }: { params: any }) => {
                         </ul>
                       ) : (
                         <p>
-                          {Math.round(review.earned_score * 100) /100}/{review.total_score}
+                          {Math.round(review.earned_score * 100) / 100}/
+                          {review.total_score}
                         </p>
                       )}
                       <br />

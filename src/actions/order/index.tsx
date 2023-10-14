@@ -1,6 +1,9 @@
-import { connectDB, sql } from "@/database";
+"use server";
+
 import { CreateOrderPayload, Orders } from "@/database/models";
 import { Connection } from "mysql2/promise";
+import { connectDB, sql } from "@/database";
+import { RowDataPacket } from "mysql2/index";
 
 export async function createOrder({
   order,
@@ -25,5 +28,41 @@ export async function createOrder({
             ${order.card_type ? `'${order.card_type}'` : null}, 
             '${order.user_id}'
     )
+  `);
+}
+
+export async function findOrderByIntent(paymentIntent: string) {
+  const db = await connectDB();
+  const response = await db.execute<(RowDataPacket & Orders)[]>(sql`
+    select * from orders where payment_intent = '${paymentIntent}';
+  `);
+
+  return {
+    data: response[0][0],
+  };
+}
+
+export async function updateOrder(
+  id: number,
+  {
+    order,
+    db,
+  }: {
+    order: Partial<Omit<Orders, "ID">>;
+    db?: Connection;
+  },
+) {
+  const _db = db || (await connectDB());
+
+  return _db.execute(sql`
+    update orders 
+    set ${Object.entries(order)
+      .map(([key, value]) => {
+        return (
+          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
+        );
+      })
+      .join(", ")}
+    where ID = ${id}
   `);
 }

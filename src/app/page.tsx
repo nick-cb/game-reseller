@@ -5,8 +5,8 @@ import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
 import { FeatureCard, FeatureCardItem } from "@/components/HoverPlayVideo";
 import Scroll, { Item } from "@/components/Scroll";
-import { getCollectionByKey } from "@/database/repository/collection/select";
 import { groupImages } from "@/utils/data";
+import {getCollectionByKey} from "@/actions/collections";
 
 export default async function Home() {
   const result = await getCollectionByKey([

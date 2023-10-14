@@ -1,6 +1,6 @@
 "use client";
 
-import { FVideoFullInfo } from "@/database/repository/game/select";
+import { FVideoFullInfo } from "@/actions/game/select";
 import Image from "next/image";
 import {
   DetailedHTMLProps,

@@ -1,3 +1,5 @@
+"use server";
+
 import { connectDB, sql } from "@/database";
 import Reviews, {
   Game,

@@ -1,7 +1,7 @@
 // import bodyParser from "body-parser";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest, response: NextResponse) {
+export async function middleware(request: NextRequest) {
   if (
     (request.nextUrl.href.includes("login") ||
       request.nextUrl.href.includes("signup")) &&
@@ -12,10 +12,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
       new URL(request.nextUrl.pathname, request.url),
     );
   }
-  // if (request.nextUrl.href.includes("webhook")) {
-  //   const parser = bodyParser.raw({ type: "application/json" });
-  //   return parser(request, response, NextResponse.next);
-  // }
 }
 
 export const config = {

@@ -1,5 +1,5 @@
 import { GameImages } from "@/database/models";
-import { OmitGameId } from "@/database/repository/game/select";
+import { OmitGameId } from "@/actions/game/select";
 
 export function groupImages(images: OmitGameId<GameImages>[]) {
   const landscape = images.find((img) => {

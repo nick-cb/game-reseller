@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/utils";
-import { updateOrderByPaymentIntent } from "@/database/repository/order/update";
+import { updateOrderByPaymentIntent } from "@/actions/orders";
 
 export async function POST(request: Request) {
   const payload = await request.text();

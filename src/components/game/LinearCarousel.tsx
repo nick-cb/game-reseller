@@ -6,7 +6,7 @@ import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import { Item, useScroll, useScrollFactory } from "../Scroll";
-import { FVideoFullInfo, OmitGameId } from "@/database/repository/game/select";
+import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 import { GameImages } from "@/database/models";
 
 const SLIDE_INTERVAL = 5000;

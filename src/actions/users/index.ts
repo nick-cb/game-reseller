@@ -8,12 +8,11 @@ import {
   EmailLoginFormPayload,
   EmailSignupFormPayload,
 } from "@/components/auth/email";
-import { connectDB } from "@/database";
-import { findUserByEmail } from "@/database/repository/user/select";
-import { insertUser } from "@/database/repository/user/insert";
-import { updateUserById } from "@/database/repository/user/update";
+import { connectDB, sql } from "@/database";
 import { bucket } from "@/firebase";
 import { uuidv4 } from "@/utils";
+import { Connection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import { Users } from "@/database/models";
 
 export const generateToken = async (payload: Object) => {
   const secret = process.env.JWT_SECRET;
@@ -36,6 +35,134 @@ export const decodeToken = (token: string) => {
   }
   return payload;
 };
+
+type IUserPayload = {
+  full_name: string | null;
+  display_name: string | null;
+  email: string;
+  password: string;
+  avatar: string | null;
+};
+type IUserResult = ResultSetHeader & Users;
+
+export async function insertUser({
+  user,
+  db,
+}: {
+  user: IUserPayload;
+  db: Connection;
+}) {
+  const _db = db || (await connectDB());
+
+  const result = await _db.execute<ResultSetHeader>(sql`
+      insert into users (full_name, display_name, email, password, avatar)
+      values ('${user.full_name}', '${user.display_name}', '${user.email}', '${user.password}', '${user.avatar}');
+  `);
+  if ("insertId" in result[0]) {
+    const insertedUser = await _db.execute<IUserResult[]>(sql`
+      select * from users where ID = ${parseInt(result[0].insertId.toString())}
+    `);
+    return { data: insertedUser[0][0] };
+  }
+
+  throw new Error(
+    "Something went wrong when create user: " + JSON.stringify(user),
+  );
+}
+
+type FUserResult = RowDataPacket & Users;
+
+export async function findUserByEmail({
+  email,
+  db,
+}: {
+  email: string;
+  db?: Connection;
+}) {
+  const _db = db || (await connectDB());
+
+  const result = await _db.execute<FUserResult[]>(sql`
+      select * from users where email = '${email}'
+  `);
+
+  return {
+    data: result[0][0],
+  };
+}
+
+export async function findUserById({
+  id,
+  db,
+}: {
+  id: number;
+  db?: Connection;
+}) {
+  const _db = db || (await connectDB());
+
+  const result = await _db.execute<(RowDataPacket & Users)[]>(sql`
+      select * from users where ID = '${id}'
+  `);
+
+  return {
+    data: result[0][0],
+  };
+}
+
+export async function findUserByStripeId({
+  id,
+  db,
+}: {
+  id: string;
+  db?: Connection;
+}) {
+  const _db = db || (await connectDB());
+
+  const result = await _db.execute<(RowDataPacket & Users)[]>(sql`
+      select * from users where stripe_id = '${id}'
+  `);
+
+  return {
+    data: result[0][0],
+  };
+}
+
+export async function updateUserById(
+  id: number,
+  { user, db }: { user: Partial<Omit<Users, "ID">>; db?: Connection },
+) {
+  const _db = db || (await connectDB());
+
+  _db.execute(sql`
+    update users
+    set ${Object.entries(user)
+      .map(([key, value]) => {
+        return (
+          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
+        );
+      })
+      .join(", ")}
+    where ID = ${id}
+  `);
+}
+
+export async function updateUserByStripeId(
+  id: number,
+  { user, db }: { user: Partial<Omit<Users, "ID">>; db?: Connection },
+) {
+  const _db = db || (await connectDB());
+
+  _db.execute(sql`
+    update users
+    set ${Object.entries(user)
+      .map(([key, value]) => {
+        return (
+          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
+        );
+      })
+      .join(", ")}
+    where stripe_id = ${id}
+  `);
+}
 
 /*TODO: Move this into a model*/
 export const createNewUser = async (values: EmailSignupFormPayload) => {
@@ -156,3 +283,15 @@ export const logout = async () => {
     cookies().delete("refresh_token");
   } catch (error) {}
 };
+
+export async function getUserFromCookie() {
+  const cookie = cookies().get("refresh_token");
+  if (!cookie) {
+    return null;
+  }
+  const payload = decodeToken(cookie.value);
+  if (typeof payload === "string") {
+    return null;
+  }
+  return payload;
+}

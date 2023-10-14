@@ -11,6 +11,9 @@ import ActiveLink from "../components/ActiveLink";
 import { AuthControls } from "@/components/AuthControls";
 import { HideOnRoute } from "@/components/HideOnRoutes";
 import { Suspense } from "react";
+import { SnackContextProvider } from "@/components/SnackContext";
+import { CartButton } from "@/components/cart/CartButton";
+// import { TurboLink } from "@/components/Turbolink";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -59,13 +62,15 @@ export default function RootLayout({
               <HideOnRoute
                 matches={[{ pathname: "/login" }, { pathname: "/signup" }]}
               >
-                <div className="flex gap-2 text-sm pl-4 text-white_primary items-center">
+                <div className="flex gap-4 text-sm pl-4 text-white_primary items-center">
                   <form
-                    className="hidden h-full sm:block"
+                    className="hidden h-full sm:block mr-8"
                     action={handleSubmitSearch}
                   >
                     <SearchbarDistributeTop />
                   </form>
+                  {/* @ts-expect-error Server Component */}
+                  <CartButton />
                   {/* @ts-expect-error Server Component */}
                   <AuthControls />
                 </div>
@@ -79,19 +84,25 @@ export default function RootLayout({
                 { pathname: "/order" },
                 { pathname: "/login" },
                 { pathname: "/signup" },
+                { pathname: "/cart" },
               ]}
             >
-              <nav
-                className="px-4 lg:px-24 xl:px-44 
-              flex gap-4 
-              bg-default/90 backdrop-blur-lg 
-              fixed w-full top-[56px] z-10"
-              >
+              <nav className="px-4 lg:px-24 xl:px-44 flex gap-4 fixed w-full top-[56px] z-10 bg-default">
+                <div
+                  className={
+                    "absolute inset-0 pointer-events-none " +
+                    " [--extended-by:50px] [--cutoff:calc(100%-var(--extended-by))] [--blur:25px] " +
+                    " bottom-[calc(-1*var(--extended-by))] " +
+                    " [-webkit-mask-image:linear-gradient(to_bottom,_black_0,_black_var(--cutoff),_transparent_var(--cutoff))] " +
+                    " [-webkit-backdrop-filter:blur(var(--blur))] " +
+                    " [backdrop-filter:blur(var(--blur))] "
+                  }
+                ></div>
                 <ActiveLink
                   matches={[{ name: "/", exact: true }, { name: "discover" }]}
                 >
                   <Link
-                    className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors"
+                    className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors z-[1]"
                     href={"/"}
                   >
                     Discover
@@ -99,17 +110,20 @@ export default function RootLayout({
                 </ActiveLink>
                 <ActiveLink match="browse">
                   <Link
-                    className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors"
+                    className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors z-[1]"
                     href={"/browse"}
                   >
                     Browse
                   </Link>
                 </ActiveLink>
               </nav>
+              {/* <div className="top-[108px] fixed w-full z-10"> */}
+              {/*   <TurboLink /> */}
+              {/* </div> */}
             </HideOnRoute>
           </Suspense>
-          <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary max-w-[1952px] mx-auto">
-            {children}
+          <main className="px-4 lg:px-24 xl:px-44 pt-[108px] pb-16 text-white_primary max-w-[1952px] mx-auto">
+            <SnackContextProvider>{children}</SnackContextProvider>
             {modal}
           </main>
           <Suspense>
@@ -118,6 +132,7 @@ export default function RootLayout({
                 { pathname: "/login" },
                 { pathname: "/signup" },
                 { pathname: "/browse" },
+                { pathname: "/cart" },
                 { pathname: /^.*\/order/ },
               ]}
             >

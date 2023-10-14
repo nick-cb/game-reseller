@@ -23,7 +23,7 @@ import {
 } from "next/navigation";
 import { Input } from "./Input";
 import { Game, GameImageGroup, GameImages } from "@/database/models";
-import { OmitGameId } from "@/database/repository/game/select";
+import { OmitGameId } from "@/actions/game/select";
 import { RowDataPacket } from "mysql2";
 import { groupImages } from "@/utils/data";
 import Scroll, { Item } from "./Scroll";
@@ -202,7 +202,7 @@ export function SearchResult({
 }) {
   return (
     <div
-      className={`z-20 absolute w-[250px] right-0 rounded 
+      className={`z-20 absolute w-[325px] right-0 rounded 
                     bg-paper_2 shadow-white/10 shadow-md overflow-hidden 
                     h-0 transition-[height] duration-400 ease-in-out ${className}`}
       ref={changeHeight}
@@ -233,7 +233,7 @@ export function SearchResult({
                 >
                   <div
                     id={item.slug.replace("/", "-") + "-infinite-scroll-name"}
-                    className="w-40 flex gap-8"
+                    className="w-[250px] flex gap-8"
                   >
                     <Item
                       as="p"
@@ -266,7 +266,7 @@ export function SearchbarDistributeTop() {
         className={
           " px-2 py-2 border-0 outline-offset-0 outline-0 " +
           " bg-transparent text-sm text-white " +
-          " !w-[12ch] focus:!w-[20ch] transition-[width] ease-in-out duration-300 ${className} "
+          " !w-[12ch] focus:!w-[30ch] transition-[width] ease-in-out duration-300 ${className} "
         }
         placeholder="Search..."
       />

@@ -52,7 +52,7 @@ export function SnackContextProvider({ children }: PropsWithChildren) {
         className="fixed mx-auto flex flex-col justify-start items-center 
         pointer-events-none bg-transparent w-full h-full z-50 
         backdrop:pointer-events-none
-        gap-2"
+        gap-2 inset-0 pt-[116px]"
       >
         {snackQueue.map((snack) => (
           <Snack key={snack.id} snack={snack} onHide={shift} />

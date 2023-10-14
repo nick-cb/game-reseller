@@ -1,7 +1,7 @@
 import React from "react";
 import PortraitGameCard from "@/components/PortraitGameCard";
 import Pagination from "@/components/Pagination";
-import { groupGameByTags } from "@/database/repository/game/select";
+import { groupGameByTags } from "@/actions/game/select";
 import { groupImages } from "@/utils/data";
 
 const page = async ({

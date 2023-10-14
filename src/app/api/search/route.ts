@@ -1,6 +1,6 @@
 import { connectDB, sql } from "@/database";
 import { Game, GameImages } from "@/database/models";
-import { OmitGameId } from "@/database/repository/game/select";
+import { OmitGameId } from "@/actions/game/select";
 import { groupImages } from "@/utils/data";
 import { RowDataPacket } from "mysql2";
 import { NextResponse } from "next/server";
