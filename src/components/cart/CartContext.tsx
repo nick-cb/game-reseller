@@ -15,24 +15,27 @@ const cartContext = createContext<CartContextProps>({
   changeSelectGame: () => {},
 });
 
-export function CartContext({ children }: PropsWithChildren) {
-  const [selected, setSlected] = useState<CartContextProps["selected"]>([]);
+export function CartContext({
+  children,
+  defaultSelected = [],
+}: PropsWithChildren<{ defaultSelected?: CartContextProps["selected"] }>) {
+  const [selected, setSlected] =
+    useState<CartContextProps["selected"]>(defaultSelected);
 
   function changeSelectGame(
     game: CartContextProps["selected"][number],
     options?: { toggle: boolean },
   ) {
-    console.log(game.ID, selected.map(s => s.ID));
     const { toggle } = options || { toggle: true };
     const exist = selected.findIndex((s) => s.ID === game.ID);
     if (exist !== -1) {
       if (toggle) {
         selected.splice(exist, 1);
-        setSlected(selected.filter((s) => s.ID !== game.ID));
+        setSlected([...selected]);
       }
       return;
     }
-    setSlected([...selected, game]);
+    setSlected((prev) => [...prev, game]);
   }
 
   return (
