@@ -7,13 +7,14 @@ export async function POST(request: Request) {
   const sig = request.headers.get("stripe-signature");
 
   let event;
-
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) {
+    return NextResponse.json({
+      status: 500,
+    });
+  }
   try {
-    event = stripe.webhooks.constructEvent(
-      payload,
-      sig as string,
-      "whsec_26b2190125022e254ac977ae3eb50a7462e44dcf655952c64c3120bf54853434",
-    );
+    event = stripe.webhooks.constructEvent(payload, sig as string, secret);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
       if (customerId) {
         const card =
           paymentIntentSucceeded.charges.data[0].payment_method_details.card;
-        console.log({id: paymentIntentSucceeded.id});
+        console.log({ id: paymentIntentSucceeded.id });
         await updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
           order: {
             status: paymentIntentSucceeded.status,
