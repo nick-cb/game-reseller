@@ -1,15 +1,12 @@
 "use client";
 
 import { currencyFormatter } from "@/utils";
-import { Game } from "@/database/models";
+import { useCartContext } from "./CartContext";
 
-export function CartTotal({
-  selected,
-}: {
-  selected: Pick<Game, "ID" | "sale_price">[];
-}) {
+export function CartTotal() {
+  const { gameList } = useCartContext();
   let totalPrice = 0;
-  for (const game of selected) {
+  for (const game of gameList.filter(game => game.checked)) {
     totalPrice += game.sale_price;
   }
 

@@ -1,16 +1,10 @@
 "use client";
 
 import { Dialog, DialogContent } from "../Dialog";
-import { Game } from "@/database/models";
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ItemOrderModal({
-  game,
-  children,
-}: PropsWithChildren<{
-  game: Game;
-}>) {
+export default function ItemOrderModal({ children }: PropsWithChildren) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 

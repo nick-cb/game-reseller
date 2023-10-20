@@ -6,18 +6,23 @@ import {
   SpriteIcon,
   SavePayment,
 } from "@/components/payment/PaymentRadioTab";
-import StripeElements, {
+import {
   StripeCheckoutForm,
+  StripeElementsNullish,
 } from "@/components/payment/Stripe";
-import { groupImages } from "@/utils/data";
 import dayjs from "dayjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { stripe } from "@/utils";
-import { deleteCart, getFullCartByUserId } from "@/actions/cart";
+import { deleteCart } from "@/actions/cart";
 import { connectDB } from "@/database";
 import { serverFind, serverMap } from "@/actions/payments/paypal";
-import { CreateOrderPayload, Orders } from "@/database/models";
+import {
+  CreateOrderPayload,
+  Game,
+  GameImageGroup,
+  Orders,
+} from "@/database/models";
 import {
   Accordion,
   AccordionBody,
@@ -33,7 +38,19 @@ import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { HookFormPrimaryButton } from "@/components/StandardButton";
 import { revalidatePath } from "next/cache";
 
-export default async function CheckoutPage() {
+export async function CheckoutView({
+  gameList,
+  cartId,
+}: {
+  gameList: (Pick<
+    Game,
+    "ID" | "name" | "type" | "developer" | "publisher" | "sale_price" | "slug"
+  > & {
+    checked: boolean;
+    images: GameImageGroup;
+  })[];
+  cartId?: number;
+}) {
   const cookie = cookies().get("refresh_token");
   if (!cookie) {
     redirect("/");
@@ -43,12 +60,11 @@ export default async function CheckoutPage() {
     redirect("/");
   }
   const db = await connectDB();
-  const [{ data: user }, { data: cart }] = await Promise.all([
+  const [{ data: user }] = await Promise.all([
     findUserById({ id: payload.userId, db }),
-    getFullCartByUserId(payload.userId, { db }),
   ]);
 
-  if (!cart || !user) {
+  if (!user) {
     redirect("/");
   }
 
@@ -59,24 +75,15 @@ export default async function CheckoutPage() {
     : null;
   const paymentMethods = paymentMethodRes?.data || [];
 
-  const listGame = cart.game_list
-    .map((game) => {
-      return {
-        ...game,
-        images: groupImages(game.images),
-      };
-    })
-    .filter((game) => game.checked);
-
   let amount = 0;
-  for (const game of listGame) {
-    amount += game.sale_price;
+  for (const game of gameList) {
+    amount += parseFloat(game.sale_price.toString());
   }
 
   const placeOrder = async (order: Partial<CreateOrderPayload>) => {
     "use server";
     const { data: user } = await findUserById({ id: payload.userId });
-    const items = await serverMap(listGame, (game) => {
+    const items = await serverMap(gameList, (game) => {
       return {
         ID: game.ID,
         name: game.name,
@@ -191,8 +198,10 @@ export default async function CheckoutPage() {
           ? dayjs(paymentIntent.canceled_at).format("YYYY-MM-DD HH:mm:ss")
           : undefined,
       });
-      await deleteCart(cart.ID);
-      revalidatePath('/cart');
+      if (cartId) {
+        await deleteCart(cartId);
+      }
+      revalidatePath("/cart");
 
       return {
         orderId,
@@ -208,7 +217,7 @@ export default async function CheckoutPage() {
 
   return (
     <SnackContextProvider>
-      <StripeElements amount={amount} currency={"vnd"}>
+      <StripeElementsNullish amount={amount} currency={"vnd"}>
         <CheckoutForm
           payWithStripe={payWithStripe}
           className={
@@ -220,7 +229,7 @@ export default async function CheckoutPage() {
             },min-content)`,
           }}
         >
-          <MobileGameList gameList={listGame} />
+          <MobileGameList gameList={gameList} />
           <AccordionGroup exclusive defaultValue={0}>
             {!!paymentMethods.length ? (
               <div
@@ -230,20 +239,21 @@ export default async function CheckoutPage() {
                 }}
               >
                 <Accordion index={0}>
-                  <div className="rounded bg-paper">
-                    <AccordionHeader className="px-3 h-max py-2">
-                      Your payment methods
-                    </AccordionHeader>
-                    <AccordionBody remountChild className="px-3 py-2 pb-4">
-                      <ul className="flex flex-col gap-2 ">
-                        {paymentMethods.map((payment) => {
-                          return (
-                            <PaymentItem key={payment.id} payment={payment} />
-                          );
-                        })}
-                      </ul>
-                    </AccordionBody>
-                  </div>
+                  <AccordionHeader className="px-3 h-max py-4 border-b border-white_primary/25 rounded-t bg-paper">
+                    Your payment methods
+                  </AccordionHeader>
+                  <AccordionBody
+                    remountChild
+                    className="px-3 pb-4 rounded-b bg-paper"
+                  >
+                    <ul className="flex flex-col gap-2 ">
+                      {paymentMethods.map((payment) => {
+                        return (
+                          <PaymentItem key={payment.id} payment={payment} />
+                        );
+                      })}
+                    </ul>
+                  </AccordionBody>
                 </Accordion>
               </div>
             ) : null}
@@ -256,13 +266,16 @@ export default async function CheckoutPage() {
                   }}
                 >
                   {!!paymentMethods.length ? (
-                    <AccordionHeader className="px-3 py-2">
+                    <AccordionHeader className="px-3 h-max py-4 border-b border-white_primary/25 rounded-t bg-paper">
                       Other payment methods
                     </AccordionHeader>
                   ) : (
                     <h3 className="uppercase mb-4 text-xl">Payment methods</h3>
                   )}
-                  <AccordionBody remountChild className="px-3 py-2 pb-4">
+                  <AccordionBody
+                    remountChild
+                    className="px-3 py-4 pb-4 rounded-b bg-paper"
+                  >
                     <Scroll containerSelector={"#payment-method-group"}>
                       <ul
                         className={
@@ -322,7 +335,9 @@ export default async function CheckoutPage() {
             ) : null}
           </AccordionGroup>
           <div id="checkout-button" className={"md:col-start-2"}>
-            <HookFormPrimaryButton type="submit">Place order</HookFormPrimaryButton>
+            <HookFormPrimaryButton type="submit">
+              Place order
+            </HookFormPrimaryButton>
           </div>
           <div
             className="hidden md:block col-start-2 row-start-1"
@@ -330,10 +345,10 @@ export default async function CheckoutPage() {
               gridRow: `1 / span ${1 + paymentMethods.length}`,
             }}
           >
-            <OrderSummary totalAmount={amount} gameList={listGame} />
+            <OrderSummary totalAmount={amount} gameList={gameList} />
           </div>
         </CheckoutForm>
-      </StripeElements>
+      </StripeElementsNullish>
     </SnackContextProvider>
   );
 }

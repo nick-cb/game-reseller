@@ -9,6 +9,7 @@ import {
 } from "react";
 import { LoadingIcon2 } from "../loading/LoadingIcon";
 import { useCartContext } from "./CartContext";
+import { useRouter } from "next/navigation";
 
 const breakpoints = [780] as const;
 export function ItemCheckBox({ index }: { index: number }) {
@@ -18,6 +19,7 @@ export function ItemCheckBox({ index }: { index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { b780 } = useBreakpoints(breakpoints);
   const [updating, startUpdate] = useTransition();
+  const router = useRouter();
 
   const animationDuration = b780
     ? b780 >= 0
@@ -38,16 +40,12 @@ export function ItemCheckBox({ index }: { index: number }) {
     if (item.checked) {
       if (navigator.userAgent.indexOf("Safari") > -1) {
         rect1.getAnimations().forEach((animation) => {
-          // if (animation.id !== ani1.id && animation.id !== ani3.id) {
           animation.commitStyles();
           animation.cancel();
-          // }
         });
         rect2.getAnimations().forEach((animation) => {
-          // if (animation.id !== ani2.id && animation.id !== ani4.id) {
           animation.commitStyles();
           animation.cancel();
-          // }
         });
       }
       rect1.animate([{ width: "calc(100% - 20px)" }], {
@@ -56,22 +54,16 @@ export function ItemCheckBox({ index }: { index: number }) {
         fill: "forwards",
       });
       rect2.animate([{ height: "calc(100% - 20px)" }], {
-        // duration: 300,
-        // delay: 100,
         ...animationDuration?.rect2.in.height,
         easing: "linear",
         fill: "forwards",
       });
       rect1.animate([{ height: "calc(100% - 21px)" }], {
-        // duration: 300,
-        // delay: 550,
         ...animationDuration?.rect1.in.height,
         easing: "linear",
         fill: "forwards",
       });
       rect2.animate([{ width: "calc(100% - 20px)" }], {
-        // duration: 500,
-        // delay: 350,
         ...animationDuration?.rect2.in.width,
         easing: "linear",
         fill: "forwards",
@@ -98,6 +90,7 @@ export function ItemCheckBox({ index }: { index: number }) {
                 checked: item.checked,
                 sale_price: item.sale_price,
               });
+              router.refresh();
             });
           }}
           disabled={updating}

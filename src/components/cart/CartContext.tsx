@@ -1,6 +1,5 @@
 "use client";
 
-import { toggleItemChecked } from "@/actions/cart";
 import { Game } from "@/database/models";
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { flushSync } from "react-dom";

@@ -5,13 +5,14 @@ import { groupImages } from "@/utils/data";
 import { currencyFormatter, pascalCase } from "@/utils";
 import { getFullCartByUserId, toggleItemChecked } from "@/actions/cart";
 import { RemoveItemBtn } from "@/components/cart/RemoveItemBtn";
-import { ItemCheckBox } from "../../components/cart/ItemCheckedBox";
+import { ItemCheckBox } from "@/components/cart/ItemCheckedBox";
 import { CartContext } from "@/components/cart/CartContext";
 import { CartTotal } from "@/components/cart/CartTotal";
 import { CheckoutModal } from "@/components/checkout/CheckoutForm";
-import CheckoutPage from "../checkout/page";
+import { CheckoutView } from "@/components/checkout/Checkout";
 import { Game } from "@/database/models";
 import { CheckoutButton } from "@/components/cart/CheckoutButton";
+import { Suspense } from "react";
 
 export default async function cartPage() {
   const user = await getUserFromCookie();
@@ -133,15 +134,16 @@ export default async function cartPage() {
         <div className="md:w-[30%] sticky top-16 h-max">
           <h2 className="text-xl pb-4">Price summary</h2>
           <div className="flex flex-col gap-8 outline outline-1 outline-white_primary/60 rounded px-8 py-6 shadow-md shadow-black/60">
-            <CartTotal
-              selected={grouppedImageCart.game_list.filter(
-                (game) => game.checked,
-              )}
-            />
+            <CartTotal />
           </div>
           <CheckoutModal SubmitButton={<CheckoutButton />}>
-            {/* @ts-expect-error Server Component */}
-            <CheckoutPage />
+            <Suspense>
+              {/* @ts-expect-error Server Component */}
+              <CheckoutView
+                gameList={grouppedImageCart.game_list}
+                cartId={cart.ID}
+              />
+            </Suspense>
           </CheckoutModal>
         </div>
       </div>

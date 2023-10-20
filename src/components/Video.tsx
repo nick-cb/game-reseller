@@ -31,7 +31,7 @@ export default function Video({
 >) {
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(true);
-  const [paused, setPaused] = useState(true);
+  const [paused, setPaused] = useState(false);
   const [controlVisible, setControlVisible] = useState(true);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -107,7 +107,7 @@ export default function Video({
     >
       <video
         ref={videoRef}
-        autoPlay={false}
+        autoPlay={true}
         muted
         preload="metadata"
         poster={thumbnail}

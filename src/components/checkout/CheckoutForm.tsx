@@ -6,18 +6,16 @@ import {
   PropsWithChildren,
   createContext,
   useContext,
-  useEffect,
   useRef,
 } from "react";
 import { StripeElements, Stripe, PaymentIntent } from "@stripe/stripe-js";
 import { Dialog, DialogContent } from "../Dialog";
 import { SnackContext } from "../SnackContext";
 import { useCartContext } from "../cart/CartContext";
-import { createPortal } from "react-dom";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { useStripe, useElements } from "@stripe/react-stripe-js";
+import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { updateOrder } from "@/actions/orders";
+import { useStripeNullish } from "../payment/Stripe";
 
 // export function StripeElementNullish({
 //   paymentIntent,
@@ -109,8 +107,7 @@ export function CheckoutForm({
       }
   >;
 }) {
-  const stripe = useStripe();
-  const element = useElements();
+  const { stripe, elements } = useStripeNullish();
   const { showMessage } = useContext(SnackContext);
   const ref = useRef<HTMLDialogElement>(null);
   const router = useRouter();
@@ -122,10 +119,6 @@ export function CheckoutForm({
     },
     shouldUnregister: true,
   });
-  const values = useWatch({ control: form.control });
-  useEffect(() => {
-    console.log(values);
-  }, [values])
 
   const observeNextActionModal = () => {
     const observer = new MutationObserver((mutationList) => {
@@ -172,14 +165,14 @@ export function CheckoutForm({
         <form
           onSubmit={async (event) => {
             event.preventDefault();
-            if (!stripe || !element) {
+            if (!stripe || !elements) {
               return;
             }
             await form.handleSubmit(async ({ save, method_id }) => {
               const observer = observeNextActionModal();
               try {
                 const methodId =
-                  method_id || (await createPaymentMethod(stripe, element));
+                  method_id || (await createPaymentMethod(stripe, elements));
                 const response =
                   (await payWithStripe({
                     save: save === "yes" ? true : false,

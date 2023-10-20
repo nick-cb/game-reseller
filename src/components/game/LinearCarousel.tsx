@@ -62,7 +62,12 @@ export default function LinearCarousel({
     let timeOut: ReturnType<typeof setTimeout>;
     const animationFrame = requestAnimationFrame(() => {
       timeOut = setTimeout(() => {
-        // goToItem(active.index + 1);
+        const nextIndex = (active.index + 1) % data.length;
+        if (nextIndex === data.length) {
+          goToItem(0);
+        } else {
+          goToItem(nextIndex);
+        }
       }, SLIDE_INTERVAL);
     });
     return () => {
@@ -138,13 +143,16 @@ export default function LinearCarousel({
                     <Video
                       // @ts-ignore
                       video={vid}
-                      // onEnded={() => {
-                      //   setTimeout(() => {
-                      //     setCurrentIndex((prev) => {
-                      //       return (prev + 1) % data.length;
-                      //     });
-                      //   }, SLIDE_INTERVAL);
-                      // }}
+                      onEnded={() => {
+                        setTimeout(() => {
+                          if (index === data.length - 1) {
+                            goToItem(0);
+                            return;
+                          }
+                          goToItem(active.index + 1);
+                        }, SLIDE_INTERVAL);
+                      }}
+                      className="w-full"
                     />
                   ) : null}
                 </Item>

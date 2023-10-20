@@ -7,8 +7,6 @@ import { FeatureCard, FeatureCardItem } from "@/components/HoverPlayVideo";
 import Scroll, { Item } from "@/components/Scroll";
 import { groupImages } from "@/utils/data";
 import { getCollectionByKey } from "@/actions/collections";
-import { ClientButton, ClientForm } from "@/components/ClientForm";
-import { testServerAction } from "./actions";
 
 export default async function Home() {
   const result = await getCollectionByKey([
@@ -31,24 +29,9 @@ export default async function Home() {
     (collection) => collection.collection_key === "feature",
   );
   const feature = data.splice(featureIndex, 1)[0];
-  const serverAction = async () => {
-    "use server";
-    console.log("dispatch server action on button click");
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 3000);
-    });
-    console.log("resolved action");
-  };
 
   return (
     <>
-      <ClientForm action={testServerAction}>
-        <ClientButton>
-          Click me
-        </ClientButton>
-      </ClientForm>
       <HeroCarousel
         data={data[0].list_game.slice(0, 6)}
         className="hidden sm:block"
