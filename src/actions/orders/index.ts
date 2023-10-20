@@ -1,3 +1,5 @@
+"use server";
+
 import { connectDB, sql } from "@/database";
 import { Orders } from "@/database/models";
 import { Connection } from "mysql2/promise";

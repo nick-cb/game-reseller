@@ -3,12 +3,15 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { groupImages } from "@/utils/data";
 import { currencyFormatter, pascalCase } from "@/utils";
-import { getFullCartByUserId } from "@/actions/cart";
-import StandardButton from "@/components/StandardButton";
+import { getFullCartByUserId, toggleItemChecked } from "@/actions/cart";
 import { RemoveItemBtn } from "@/components/cart/RemoveItemBtn";
 import { ItemCheckBox } from "../../components/cart/ItemCheckedBox";
 import { CartContext } from "@/components/cart/CartContext";
 import { CartTotal } from "@/components/cart/CartTotal";
+import { CheckoutModal } from "@/components/checkout/CheckoutForm";
+import CheckoutPage from "../checkout/page";
+import { Game } from "@/database/models";
+import { CheckoutButton } from "@/components/cart/CheckoutButton";
 
 export default async function cartPage() {
   const user = await getUserFromCookie();
@@ -32,14 +35,41 @@ export default async function cartPage() {
   for (const game of cart.game_list) {
     totalPrice += game.sale_price;
   }
+  const toggleChecked = async (game: Pick<Game, "ID">) => {
+    "use server";
+    let index = -1;
+    for (let i = 0; i < grouppedImageCart.game_list.length; i++) {
+      if (grouppedImageCart.game_list[i].ID === game.ID) {
+        index = i;
+        break;
+      }
+    }
+    if (index === -1) {
+      return;
+    }
+    const item = grouppedImageCart.game_list[index];
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 5000);
+    });
+    const { error } = await toggleItemChecked({
+      gameId: item.ID,
+      checked: !item.checked,
+    });
+    return error;
+  };
 
   return (
-    <CartContext defaultSelected={grouppedImageCart.game_list}>
+    <CartContext
+      toggleCheck={toggleChecked}
+      gameList={grouppedImageCart.game_list}
+    >
       <div className="flex flex-col md:flex-row gap-8 xl:gap-16 relative">
         <div className="md:w-[65%]">
           <h2 className="text-xl pb-4">My cart</h2>
           <ul className="flex flex-col gap-4">
-            {grouppedImageCart.game_list.map((item) => {
+            {grouppedImageCart.game_list.map((item, index) => {
               return (
                 <li
                   className={
@@ -47,7 +77,7 @@ export default async function cartPage() {
                   }
                   key={item.ID}
                 >
-                  <ItemCheckBox item={item} />
+                  <ItemCheckBox index={index} />
                   <div className="md:block hidden">
                     <Image
                       src={item.images.portrait.url || ""}
@@ -103,9 +133,16 @@ export default async function cartPage() {
         <div className="md:w-[30%] sticky top-16 h-max">
           <h2 className="text-xl pb-4">Price summary</h2>
           <div className="flex flex-col gap-8 outline outline-1 outline-white_primary/60 rounded px-8 py-6 shadow-md shadow-black/60">
-            <CartTotal />
+            <CartTotal
+              selected={grouppedImageCart.game_list.filter(
+                (game) => game.checked,
+              )}
+            />
           </div>
-          <StandardButton className="mt-8">Go to checkout</StandardButton>
+          <CheckoutModal SubmitButton={<CheckoutButton />}>
+            {/* @ts-expect-error Server Component */}
+            <CheckoutPage />
+          </CheckoutModal>
         </div>
       </div>
     </CartContext>

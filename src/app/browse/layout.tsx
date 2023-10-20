@@ -3,7 +3,6 @@ import { CategoryCheckbox } from "@/components/CategoryCheckbox";
 import { handleSubmitFilter } from "../actions";
 import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
-import "./browse.css";
 import Filter from "@/components/browse/Filter";
 import { connectDB } from "@/database";
 import {
@@ -13,7 +12,7 @@ import {
   AccordionHeader,
 } from "@/components/Accordion";
 import { CollectionRadio, RadioGroup } from "@/components/CollectionRadio";
-import {getAllCollections} from "@/actions/collections";
+import { getAllCollections } from "@/actions/collections";
 import findTagByGroupName from "@/actions/tags";
 
 const layout = async ({ children }: PropsWithChildren) => {
@@ -119,13 +118,17 @@ const layout = async ({ children }: PropsWithChildren) => {
                       <CategoryCheckbox
                         tag={tag}
                         id={tag.tag_key.toString()}
-                        className="w-full h-9"
+                        className="w-full h-9 peer"
                       />
                       <label
                         htmlFor={tag.tag_key}
-                        className="absolute inset-0 h-9 rounded px-2
-                  cursor-pointer flex items-center
-                  text-white/60 hover:text-white_primary bg-default transition-colors"
+                        className={
+                          "absolute inset-0 h-9 rounded px-2 " +
+                          "cursor-pointer flex items-center " +
+                          "text-white/60 hover:text-white_primary bg-default transition-colors " +
+                          " peer-checked:bg-white/[.15] peer-checked:text-white_primary " +
+                          " peer-focus:text-white_primary "
+                        }
                       >
                         {tag.name[0].toUpperCase() + tag.name.substring(1)}
                       </label>

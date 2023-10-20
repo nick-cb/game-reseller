@@ -19,5 +19,10 @@ export const handleSubmitFilter = async (data: FormData) => {
 };
 
 export async function testServerAction() {
-  return 'hello';
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 5000);
+  });
+  console.log("hello");
 }

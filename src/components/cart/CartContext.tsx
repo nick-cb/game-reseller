@@ -1,45 +1,67 @@
 "use client";
 
+import { toggleItemChecked } from "@/actions/cart";
 import { Game } from "@/database/models";
 import { PropsWithChildren, createContext, useContext, useState } from "react";
+import { flushSync } from "react-dom";
+import { SnackContext } from "../SnackContext";
 
 export type CartContextProps = {
-  selected: Pick<Game, "ID" | "sale_price">[];
+  updating: boolean;
+  gameList: (Pick<Game, "ID" | "sale_price"> & { checked: boolean })[];
   changeSelectGame: (
-    game: Pick<Game, "ID" | "sale_price">,
+    game: Pick<Game, "ID" | "sale_price"> & { checked: boolean },
     options?: { toggle: boolean },
-  ) => void;
+  ) => Promise<void>;
 };
 const cartContext = createContext<CartContextProps>({
-  selected: [],
-  changeSelectGame: () => {},
+  updating: false,
+  gameList: [],
+  changeSelectGame: async () => {},
 });
 
 export function CartContext({
   children,
-  defaultSelected = [],
-}: PropsWithChildren<{ defaultSelected?: CartContextProps["selected"] }>) {
-  const [selected, setSlected] =
-    useState<CartContextProps["selected"]>(defaultSelected);
+  gameList = [],
+  toggleCheck,
+}: PropsWithChildren<{
+  gameList?: CartContextProps["gameList"];
+  toggleCheck: (game: Pick<Game, "ID">) => Promise<string | undefined>;
+}>) {
+  const [updating, setUpdating] = useState(false);
+  const [list, setList] = useState<CartContextProps["gameList"]>(gameList);
+  const { showMessage } = useContext(SnackContext);
 
-  function changeSelectGame(
-    game: CartContextProps["selected"][number],
+  async function changeSelectGame(
+    game: CartContextProps["gameList"][number],
     options?: { toggle: boolean },
   ) {
+    flushSync(() => {
+      setUpdating(true);
+    });
     const { toggle } = options || { toggle: true };
-    const exist = selected.findIndex((s) => s.ID === game.ID);
+    const exist = list.findIndex((s) => s.ID === game.ID);
     if (exist !== -1) {
-      if (toggle) {
-        selected.splice(exist, 1);
-        setSlected([...selected]);
+      const item = list[exist];
+      const response = await toggleCheck({ ID: item.ID });
+      if (response) {
+        showMessage({ message: response, type: "error" });
       }
-      return;
+      if (toggle) {
+        list[exist] = {
+          ...list[exist],
+          checked: response ? item.checked : !item.checked,
+        };
+        setList([...list]);
+        setUpdating(false);
+      }
     }
-    setSlected((prev) => [...prev, game]);
   }
 
   return (
-    <cartContext.Provider value={{ selected, changeSelectGame }}>
+    <cartContext.Provider
+      value={{ updating, gameList: list, changeSelectGame }}
+    >
       {children}
     </cartContext.Provider>
   );

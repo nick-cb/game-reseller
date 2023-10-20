@@ -1,8 +1,14 @@
 "use client";
 
-import { ButtonHTMLAttributes, DetailedHTMLProps, SVGProps } from "react";
+import {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+  PropsWithChildren,
+  SVGProps,
+} from "react";
 import { useScroll } from "../Scroll";
-import { useRadio } from "../Radio";
+import { HookFormRadio } from "../Radio";
+import { useController, useFormContext } from "react-hook-form";
 
 export function PaymentTabButton({
   // icon,
@@ -10,13 +16,20 @@ export function PaymentTabButton({
   className,
   type,
   index,
+  method,
   ...props
-}: DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & { index: number }) {
+}: DetailedHTMLProps<ButtonHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
+  PropsWithChildren<{ index: number; method: "stripe" | "paypal" }>) {
+  const { control, resetField } = useFormContext();
+  const {
+    field: { onChange, value },
+  } = useController({ control, name: "payment_method" });
   const { elements, scrollToIndex } = useScroll();
   const active = elements.findIndex((el) => el.isIntersecting) === index;
+  if (active && value !== method) {
+    // resetField("method_id", { defaultValue: "" });
+    onChange(method);
+  }
 
   return (
     <li
@@ -24,25 +37,31 @@ export function PaymentTabButton({
         " 3/4sm:w-28 3/4sm:h-24 rounded-md border-2 border-solid snap-start " +
         " w-24 h-20 " +
         " transition-colors hover:bg-white/25 " +
-        " gap-2 " +
+        " gap-2 relative " +
         (active ? " border-primary " : " border-white/25 ")
       }
     >
-      <label className={"text-sm w-full h-full block"}>
-        <button
-          type={type || "button"}
-          className={
-            "w-full h-full " +
-            " flex flex-col justify-center items-center " +
-            className
-          }
-          onClick={() => {
-            scrollToIndex(index);
-          }}
-          {...props}
-        >
-          {children}
-        </button>
+      <input
+        type={"radio"}
+        id={method}
+        name={"payment_method"}
+        checked={active}
+        onChange={() => {
+          scrollToIndex(index);
+        }}
+        className={"w-full h-full absolute " + "rounded-md " + className}
+        {...props}
+      />
+      <label
+        htmlFor={method}
+        className={
+          "text-sm w-full h-full block bg-paper rounded-md " +
+          "absolute w-full h-full inset-0 flex flex-col justify-center items-center " +
+          "hover:after:bg-white_primary/[.15] after:absolute after:inset-0 after:rounded-md " +
+          "transition-colors "
+        }
+      >
+        {children}
       </label>
     </li>
   );
@@ -102,78 +121,43 @@ export function CheckMarkSvg() {
 }
 
 export function SavePayment({ id }: { id: string }) {
-  const { selected, changeSelected } = useRadio();
-
+  const { register } = useFormContext();
   return (
     <>
       <p className="text-[14.88px] mb-2 ">
         Save this payment method for future purchases
       </p>
       <div className="flex gap-8">
-        <div className="flex items-center">
-          <div className="relative after:absolute after:inset-0 after:bg-default after:rounded-full">
-            <input
-              id={id + "-remember-yes"}
-              // name={id + "-remember-payment"}
-              type="radio"
-              checked={selected === id + "-remember-yes"}
-              aria-checked={selected === id + "-remember-yes"}
-              onClick={(event) => {
-                changeSelected(event.currentTarget.id);
-              }}
-              onChange={() => {
-
-              }}
-              className={
-                "h-5 w-5 block relative peer " +
-                " after:absolute after:rounded-full after:inset-0 " +
-                " after:bg-white_primary/25 checked:after:bg-primary " +
-                " before:absolute before:-left-1 before:-top-1 before:h-7 before:w-7 hover:before:bg-white/30 " +
-                " before:rounded-full before:transition-colors " +
-                " after:z-[1] before:z-[1] "
-              }
-            />
-            <CheckMarkSvg />
-          </div>
-          <label htmlFor={id + "-remember-yes"} className="pl-2">
-            Yes
-          </label>
-        </div>
-        <div className="flex items-center">
-          <div className="relative after:absolute after:inset-0 after:bg-default after:rounded-full">
-            <input
-              id={id + "-remember-no"}
-              // name={id + "-remember-payment"}
-              type="radio"
-              checked={selected === id + "-remember-no"}
-              aria-checked={selected === id + "-remember-no"}
-              onClick={(event) => {
-                changeSelected(event.currentTarget.id);
-              }}
-              onChange={() => {
-
-              }}
-              className={
-                "h-5 w-5 block relative group " +
-                " after:absolute after:rounded-full after:inset-0 " +
-                " after:bg-white_primary/25 checked:after:bg-primary " +
-                " before:absolute before:-left-1 before:-top-1 before:h-7 before:w-7 hover:before:bg-white/30 " +
-                " before:rounded-full before:transition-colors " +
-                " after:z-[1] before:z-[1] "
-              }
-            />
-            <CheckMarkSvg />
-          </div>
-          <label htmlFor={id + "-remember-no"} className="pl-2">
-            No
-          </label>
-        </div>
+        <HookFormRadio
+          id={id + "-remember-yes"}
+          value={"yes"}
+          LabelComponent={
+            <label htmlFor={id + "-remember-yes"} className="pl-2">
+              Yes
+            </label>
+          }
+          className="w-5 h-5"
+          {...register("save")}
+        />
+        <HookFormRadio
+          id={id + "-remember-no"}
+          value={"no"}
+          LabelComponent={
+            <label htmlFor={id + "-remember-no"} className="pl-2">
+              No
+            </label>
+          }
+          className="w-5 h-5"
+          {...register("save")}
+        />
+        <CheckMarkSvg />
       </div>
       <p className="text-xs text-white_primary/60 mt-2">
         By choosing to save your payment information, this payment method will
-        be selected as the default for all purchases made using our payment. 
-        You can delete your saved payment information
-        anytime on this payment screen or by logging in to your account, and selecting payment management in your account settings.
+        be selected as the default for all purchases made using our payment. You
+        can delete your saved payment information anytime on this payment screen
+        or by logging in to your account, and selecting payment management in
+        your account settings.
       </p>
     </>
   );

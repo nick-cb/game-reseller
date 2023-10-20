@@ -3,7 +3,7 @@
 import { CreateOrderPayload, Orders } from "@/database/models";
 import { Connection } from "mysql2/promise";
 import { connectDB, sql } from "@/database";
-import { RowDataPacket } from "mysql2/index";
+import { ResultSetHeader, RowDataPacket } from "mysql2/index";
 
 export async function createOrder({
   order,
@@ -14,12 +14,13 @@ export async function createOrder({
 }) {
   const _db = db || (await connectDB());
 
-  return _db.execute(sql`
+  const response = await _db.execute<ResultSetHeader>(sql`
     insert into orders (payment_intent, amount, payment_method, payment_service, 
                         created_at, items, status, succeeded_at,
                         canceled_at, card_number, card_type, user_id)
-    values ('${order.payment_intent}', '${order.amount}', 
-            '${order.payment_method}', '${order.payment_service}', 
+    values (${order.payment_intent ?  `'${order.payment_intent}'` : ''},
+            '${order.amount}', '${order.payment_method}', 
+            '${order.payment_service}', 
             ${!order.canceled_at ? `'${order.created_at}'` : null}, 
             '${order.items}', '${order.status}',
             ${order.succeeded_at ? `'${order.succeeded_at}'` : null}, 
@@ -29,6 +30,8 @@ export async function createOrder({
             '${order.user_id}'
     )
   `);
+
+  return response[0].insertId;
 }
 
 export async function findOrderByIntent(paymentIntent: string) {

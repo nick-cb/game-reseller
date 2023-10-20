@@ -2,7 +2,7 @@
 
 import { Dialog } from "@/components/Dialog";
 import { useRouter } from "next/navigation";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { SignupView } from "@/components/auth/SignupView";
 import { SnackContextProvider } from "@/components/SnackContext";
 
@@ -11,74 +11,22 @@ export default function SignupModal({
 }: {
   searchParams: Record<string, string>;
 }) {
-  const [visible, setVisible] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
-  const closeDialog = async (
-    _: React.RefObject<HTMLElement>,
-    options?: {
-      goback?: number;
-      replace?: {
-        href: string;
-      };
-    },
-  ) => {
-    const dialog = dialogRef.current;
-    if (!dialog) {
-      return;
-    }
-    const slideOutAnimation = dialog.animate(
-      [{ transform: "translateY(0%)" }, { transform: "translateY(-100%)" }],
-      {
-        easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
-        duration: 300,
-      },
-    );
-    const fadeOutAnimation = dialog.animate([{ opacity: 1 }, { opacity: 0 }], {
-      easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
-      duration: 350,
-    });
-    await Promise.allSettled([
-      slideOutAnimation.finished,
-      fadeOutAnimation.finished,
-    ]);
-    dialog.close();
-    dialog.dataset["goback"] = options?.goback?.toString();
-    dialog.dataset["replace_href"] = options?.replace?.href;
-    setVisible(false);
-  };
-
   useEffect(() => {
     dialogRef.current?.showModal();
-    setVisible(true);
   }, []);
 
   return (
     <Dialog
       ref={dialogRef}
-      onClose={(event) => {
-        const replaceHref = event.currentTarget.dataset["replace_href"];
-        if (replaceHref && replaceHref !== "undefined") {
-          router.replace(replaceHref);
-          return;
-        }
-        const goback = parseInt(event.currentTarget.dataset["goback"] || "1");
-        if (!isNaN(goback) && goback === -1) {
-          return;
-        }
-        for (let i = 0; i < (isNaN(goback) ? 1 : goback); i++) {
-          router.back();
-        }
+      onClose={() => {
+        router.back();
       }}
     >
       <SnackContextProvider>
-        <SignupView
-          order={searchParams["order"]}
-          modal
-          visible={visible}
-          closeDialog={closeDialog}
-        />
+        <SignupView order={searchParams["order"]} modal />
       </SnackContextProvider>
     </Dialog>
   );

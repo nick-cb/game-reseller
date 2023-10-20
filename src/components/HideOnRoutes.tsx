@@ -10,7 +10,7 @@ export function HideOnRoute({
 }: PropsWithChildren<{
   exact?: boolean;
   matches: {
-    pathname: string | RegExp;
+    pathname: string;
     has?: [
       {
         type: "query";
@@ -19,6 +19,7 @@ export function HideOnRoute({
       },
     ];
     exact?: boolean;
+    regex?: boolean;
   }[];
 }>) {
   const pathname = usePathname();
@@ -34,10 +35,13 @@ export function HideOnRoute({
               (query) => searchParams.get(query.key) === query.value,
             )
           : true;
+        const against = match.regex
+          ? new RegExp(match.pathname)
+          : match.pathname;
         return (
           (match.exact
             ? match.pathname === pathname
-            : pathname.match(match.pathname)) && hasQuery
+            : pathname.match(against)) && hasQuery
         );
       });
     }
@@ -45,10 +49,11 @@ export function HideOnRoute({
       const hasQuery = match.has
         ? match.has.map((query) => searchParams.get(query.key) === query.value)
         : true;
+      const against = match.regex ? new RegExp(match.pathname) : match.pathname;
       return (
         (match.exact
           ? match.pathname === pathname
-          : pathname.match(match.pathname)) && hasQuery
+          : pathname.match(against)) && hasQuery
       );
     });
   }, [pathname, exact, matches]);

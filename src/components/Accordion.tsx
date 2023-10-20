@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
@@ -21,19 +22,23 @@ const AccordionGroupContext = createContext<AccordionGroupContextProps>({
 export function AccordionGroup({
   children,
   exclusive = false,
+  defaultValue = [],
 }: PropsWithChildren<{
   exclusive?: boolean;
+  defaultValue?: number | number[];
 }>) {
-  const [activeIndex, setActiveIndex] = useState<number[]>([]);
+  const [activeIndex, setActiveIndex] = useState<number[]>(
+    typeof defaultValue === "number" ? [defaultValue] : defaultValue,
+  );
 
   const toggleActive: AccordionGroupContextProps["toggle"] = ({ index }) => {
     setActiveIndex(() => {
       if (exclusive) {
-        if (activeIndex[0] === index) {
-          return [];
-        } else {
-          return [index];
-        }
+        // if (activeIndex[0] === index) {
+        //   return [];
+        // } else {
+        return [index];
+        // }
       }
       if (activeIndex.includes(index)) {
         const newIndexes = activeIndex.filter((item) => item !== index);
@@ -74,6 +79,7 @@ export function Accordion({
 
 export function AccordionHeader({
   children,
+  className = "",
   onClick,
   ...rest
 }: DetailedHTMLProps<
@@ -82,6 +88,7 @@ export function AccordionHeader({
 >) {
   const { index } = useContext(AccordionContext);
   const { toggle } = useContext(AccordionGroupContext);
+
   return (
     <h3>
       <button
@@ -90,6 +97,7 @@ export function AccordionHeader({
           toggle({ index });
           onClick?.(event);
         }}
+        className={"w-full h-full flex justify-start " + className}
         {...rest}
       >
         {children}
@@ -100,14 +108,18 @@ export function AccordionHeader({
 
 export function AccordionBody({
   children,
+  remountChild,
   ...props
-}: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
+}: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+  remountChild?: boolean;
+}) {
   const { index } = useContext(AccordionContext);
   const { activeIndex } = useContext(AccordionGroupContext);
+  const hidden = !activeIndex.includes(index);
 
   return (
-    <div hidden={!activeIndex.includes(index)} {...props}>
-      {children}
+    <div hidden={hidden} {...props}>
+      {remountChild && hidden ? null : children}
     </div>
   );
 }

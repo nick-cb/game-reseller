@@ -18,7 +18,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createNewUser } from "@/actions/users";
 import { SnackContext } from "@/components/SnackContext";
-import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { BASE_URL } from "@/utils/config";
 
 const currentConfig = {
@@ -43,27 +42,12 @@ const nextConfig = {
 };
 
 export function SignupView({
-  visible = true,
   modal,
   order,
-  closeDialog,
 }: {
-  visible?: boolean;
   modal?: boolean;
   order?: string;
-  closeDialog?: (
-    ref: React.RefObject<HTMLDivElement>,
-    options?: {
-      goback?: number;
-      replace?: {
-        href: string;
-      };
-    },
-  ) => void;
 }) {
-  const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
-    closeDialog ? closeDialog : () => {},
-  );
   const { showMessage } = useContext(SnackContext);
   const router = useRouter();
   const [strategy, setStrategy] = useState<
@@ -109,13 +93,7 @@ export function SignupView({
   };
 
   return (
-    <div
-      className={
-        "h-max " +
-        (!visible ?? (!visible ? "pointer-events-none opacity-0 px-0" : ""))
-      }
-      ref={contentContainerRef}
-    >
+    <>
       <Image
         src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
         width={64}
@@ -127,7 +105,6 @@ export function SignupView({
         <p className="text-xl text-center">Signup</p>
       </div>
       <AnimatedSizeProvider
-        key={visible?.toString()}
         as="div"
         animationOptions={{
           duration: 250,
@@ -155,8 +132,7 @@ export function SignupView({
       >
         <AnimatedSizeItem
           className={"px-5 py-8 w-max "}
-          // @ts-ignore
-          active={!strategy && visible}
+          active={!strategy}
           // delay={50}
         >
           <StrategyList
@@ -168,8 +144,7 @@ export function SignupView({
           />
         </AnimatedSizeItem>
         <AnimatedSizeItem
-          // @ts-ignore
-          active={visible && strategy === "email"}
+          active={strategy === "email"}
           className={
             "absolute px-5 py-8 top-0 opacity-0 " +
             (strategy === "email" ? "" : "pointer-events-none")
@@ -228,6 +203,6 @@ export function SignupView({
           Login now!
         </Link>
       </p>
-    </div>
+    </>
   );
 }

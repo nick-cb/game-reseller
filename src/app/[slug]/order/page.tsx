@@ -107,7 +107,7 @@ export default async function ItemOrderPage({ params }: { params: any }) {
       <ItemOrder
         game={game}
         clientSecret={paymentIntent.client_secret!}
-        rememberPayment={rememberPayment}
+        placeOrder={rememberPayment}
       />
     </div>
   );

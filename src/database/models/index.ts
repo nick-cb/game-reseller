@@ -167,18 +167,25 @@ export type Orders = Omit<CreateOrderPayload, "ID" | "items"> & {
 };
 
 export type CreateOrderPayload = {
-  payment_intent: string | null;
+  payment_intent?: string;
   amount: number;
   payment_method: string;
   payment_service: "stripe" | "paypal";
   created_at: string;
   items: string;
-  card_number: string | null;
-  card_type: string | null;
+  card_number?: string;
+  card_type?: string;
   user_id: number;
-  succeeded_at: string | null;
-  canceled_at: string | null;
-  status: "pending" | "succeeded" | "canceled_at";
+  succeeded_at?: string;
+  canceled_at?: string;
+  status:
+    | "canceled"
+    | "processing"
+    | "requires_capture"
+    | "requires_confirmation"
+    | "requires_payment_method"
+    | "succeeded"
+    | "pending";
 };
 
 export type Carts = {
@@ -196,7 +203,7 @@ export type CartFull = Carts & {
   game_list: (Pick<
     Game,
     "ID" | "name" | "type" | "developer" | "publisher" | "sale_price" | "slug"
-  > & { images: GameImages[] })[];
+  > & { images: GameImages[]; checked: boolean })[];
 };
 
 export const dbExecute = async <T>({

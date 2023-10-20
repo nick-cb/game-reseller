@@ -39,27 +39,23 @@ const nextConfig = {
 };
 
 export function LoginView({
-  visible = true,
+  // visible = true,
   modal,
   order,
-  closeDialog,
+  // closeDialog,
 }: {
-  visible?: boolean;
+  // visible?: boolean;
   modal: boolean;
   order?: string;
-  closeDialog?: (
-    ref: React.RefObject<HTMLDivElement>,
-    options?: { goback?: number },
-  ) => void;
+  // closeDialog?: (
+  //   ref: React.RefObject<HTMLDivElement>,
+  //   options?: { goback?: number },
+  // ) => void;
 }) {
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
   >();
   const [direction, setDirection] = useState<1 | 0>(1);
-
-  const contentContainerRef = useClickOutsideCallback<HTMLDivElement>(
-    closeDialog ? closeDialog : () => {},
-  );
 
   const { showMessage } = useContext(SnackContext);
   const form = useForm<EmailLoginFormPayload>({
@@ -88,7 +84,7 @@ export function LoginView({
     showMessage({ message: "Login successfully", type: "success" });
     setTimeout(() => {
       if (order) {
-        console.log({order, href: BASE_URL + "/" + order + "/order"});
+        console.log({ order, href: BASE_URL + "/" + order + "/order" });
         window.location.href = BASE_URL + "/" + order + "/order";
       } else {
         window.location.href = BASE_URL;
@@ -97,13 +93,7 @@ export function LoginView({
   };
 
   return (
-    <div
-      className={
-        "h-max " +
-        (!visible ?? (!visible ? "pointer-events-none opacity-0 px-0" : ""))
-      }
-      ref={contentContainerRef}
-    >
+    <>
       <Image
         src="https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2"
         width={64}
@@ -115,7 +105,7 @@ export function LoginView({
         <p className="text-xl text-center">Login</p>
       </div>
       <AnimatedSizeProvider
-        key={visible?.toString()}
+        // key={visible?.toString()}
         as="div"
         animationOptions={{
           duration: 250,
@@ -143,7 +133,7 @@ export function LoginView({
       >
         <AnimatedSizeItem
           className={"px-5 py-8 w-max "}
-          active={!strategy && visible}
+          active={!strategy}
           // delay={50}
         >
           <StrategyList
@@ -155,7 +145,7 @@ export function LoginView({
           />
         </AnimatedSizeItem>
         <AnimatedSizeItem
-          active={visible && strategy === "email"}
+          active={strategy === "email"}
           className={
             "absolute px-5 py-8 top-0 opacity-0 " +
             (strategy === "email" ? "" : "pointer-events-none")
@@ -208,6 +198,6 @@ export function LoginView({
           Signup now!
         </Link>
       </p>
-    </div>
+    </>
   );
 }

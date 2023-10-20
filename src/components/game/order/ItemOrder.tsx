@@ -17,13 +17,16 @@ import Image from "next/image";
 export function ItemOrder({
   game,
   clientSecret,
-  rememberPayment,
+  placeOrder: rememberPayment,
 }: {
   game: Pick<Game, "ID" | "name" | "developer" | "sale_price"> & {
     images: GameImageGroup;
   };
   clientSecret: string;
-  rememberPayment: (payment: { type: "stripe" | "paypal" }) => Promise<any>;
+  placeOrder: (payment: {
+    type: "stripe" | "paypal";
+    save: boolean;
+  }) => Promise<any>;
 }) {
   return (
     <>
@@ -32,7 +35,7 @@ export function ItemOrder({
           <RadioGroup toggleAble>
             <div className={"col-start-2 row-start-2"}>
               <SnackContextProvider>
-                <PlaceOrderButton rememberPayment={rememberPayment} />
+                <PlaceOrderButton placeOrder={rememberPayment} />
               </SnackContextProvider>
             </div>
             <div className="col-start-1">

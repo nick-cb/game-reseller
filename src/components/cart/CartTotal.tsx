@@ -1,10 +1,13 @@
 "use client";
 
 import { currencyFormatter } from "@/utils";
-import { useCartContext } from "./CartContext";
+import { Game } from "@/database/models";
 
-export function CartTotal() {
-  const { selected } = useCartContext();
+export function CartTotal({
+  selected,
+}: {
+  selected: Pick<Game, "ID" | "sale_price">[];
+}) {
   let totalPrice = 0;
   for (const game of selected) {
     totalPrice += game.sale_price;

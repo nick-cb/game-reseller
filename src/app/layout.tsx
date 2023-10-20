@@ -14,6 +14,7 @@ import { Suspense } from "react";
 import { SnackContextProvider } from "@/components/SnackContext";
 import { CartButton } from "@/components/cart/CartButton";
 // import { TurboLink } from "@/components/Turbolink";
+import { ClientInspector } from "@/components/ClientInspector";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -40,6 +41,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="scroll-pt-[116px]">
+      <ClientInspector />
       <QueryContext>
         <body className={atkinsonHyper.className + " bg-default"}>
           <header
@@ -85,6 +87,8 @@ export default function RootLayout({
                 { pathname: "/login" },
                 { pathname: "/signup" },
                 { pathname: "/cart" },
+                { pathname: "/checkout" },
+                { pathname: "^.*/order/", regex: true },
               ]}
             >
               <nav className="px-4 lg:px-24 xl:px-44 flex gap-4 fixed w-full top-[56px] z-10 bg-default">
@@ -122,7 +126,7 @@ export default function RootLayout({
               {/* </div> */}
             </HideOnRoute>
           </Suspense>
-          <main className="px-4 lg:px-24 xl:px-44 pt-[108px] pb-16 text-white_primary max-w-[1952px] mx-auto">
+          <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary max-w-[1952px] mx-auto">
             <SnackContextProvider>{children}</SnackContextProvider>
             {modal}
           </main>
@@ -133,7 +137,8 @@ export default function RootLayout({
                 { pathname: "/signup" },
                 { pathname: "/browse" },
                 { pathname: "/cart" },
-                { pathname: /^.*\/order/ },
+                { pathname: "/checkout" },
+                { pathname: "^.*/order/", regex: true },
               ]}
             >
               <form

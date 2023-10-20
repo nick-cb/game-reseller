@@ -1,4 +1,4 @@
-import {decodeToken, findUserById, updateUserById} from "@/actions/users";
+import { decodeToken, findUserById, updateUserById } from "@/actions/users";
 import { ExchangeRate } from "@/app/[slug]/order/page";
 import ItemOrderModal from "@/components/game/OrderModal";
 import { ItemOrder } from "@/components/game/order/ItemOrder";
@@ -8,7 +8,7 @@ import { groupImages } from "@/utils/data";
 import dayjs from "dayjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import {createOrder} from "@/actions/order";
+import { createOrder } from "@/actions/order";
 
 export default async function ItemOrderModalPage({ params }: { params: any }) {
   const { slug } = params;
@@ -40,30 +40,34 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
     description: data.name,
   });
 
-  const rememberPayment = async (
-    payment: { type: "stripe" } | { type: "paypal" },
-  ) => {
+  const placeOrder = async (payment: {
+    type: "stripe" | "paypal";
+    save: boolean;
+  }) => {
     "use server";
 
     const { data: user } = await findUserById({ id: payload.userId });
     let stripeId = user.stripe_id;
-    if (!user.stripe_id) {
-      const newCustomer = await stripe.customers.create({
-        name: user.name,
-      });
-      stripeId = newCustomer.id;
-      await updateUserById(payload.userId, {
-        user: {
-          stripe_id: stripeId,
-        },
-      });
+    if (payment.save) {
+      if (!user.stripe_id) {
+        const newCustomer = await stripe.customers.create({
+          name: user.name,
+        });
+        stripeId = newCustomer.id;
+        await updateUserById(payload.userId, {
+          user: {
+            stripe_id: stripeId,
+          },
+        });
+      } else {
+        await stripe.paymentIntents.update(paymentIntent.id, {
+          customer: stripeId!,
+          setup_future_usage: "off_session",
+        });
+      }
     }
 
     if (payment.type === "stripe") {
-      await stripe.paymentIntents.update(paymentIntent.id, {
-        customer: stripeId!,
-        setup_future_usage: "off_session",
-      });
       await createOrder({
         order: {
           payment_intent: paymentIntent.id,
@@ -106,7 +110,7 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
       <ItemOrder
         game={game}
         clientSecret={paymentIntent.client_secret!}
-        rememberPayment={rememberPayment}
+        placeOrder={placeOrder}
       />
     </ItemOrderModal>
   );

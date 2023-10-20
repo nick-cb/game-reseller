@@ -27,6 +27,7 @@ export async function POST(request: Request) {
       status: 400,
     });
   }
+
   switch (event.type) {
     case "payment_intent.succeeded": {
       const paymentIntentSucceeded = event.data.object as any;
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       if (customerId) {
         const card =
           paymentIntentSucceeded.charges.data[0].payment_method_details.card;
+        console.log({id: paymentIntentSucceeded.id});
         await updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
           order: {
             status: paymentIntentSucceeded.status,

@@ -1,5 +1,6 @@
 "use server";
 
+import { stripe } from "@/utils";
 import { PayPalButtonsComponentProps } from "@paypal/react-paypal-js";
 
 type CreateOrderArgs = Parameters<
@@ -79,4 +80,36 @@ export async function onApprove(data: OnApproveArgs[0], _: OnApproveArgs[1]) {
       Authorization: `Bearer ${tokenPayload.access_token}`,
     },
   }).then((res) => res.json());
+}
+
+export const removePaymentMethod = async (id: string) => {
+  await stripe.paymentMethods.detach(id);
+};
+
+export async function serverMap<T extends any[], G extends unknown>(
+  array: T,
+  callback: (value: T[number], index: number, array: T[]) => G,
+) {
+  return array.map(callback);
+}
+
+export async function serverEvery<T extends any[]>(
+  array: T,
+  callback: (value: T[number], index: number, array: T[]) => any,
+) {
+  return array.every(callback);
+}
+
+export async function serverSome<T extends any[]>(
+  array: T,
+  callback: (value: T[number], index: number, array: T[]) => any,
+) {
+  return array.some(callback);
+}
+
+export async function serverFind<T extends any[]>(
+  array: T,
+  callback: (value: T[number], index: number, obj: any[]) => T[number] | undefined,
+): Promise<T[number] | undefined> {
+  return array.find(callback);
 }
