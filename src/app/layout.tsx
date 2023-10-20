@@ -14,7 +14,6 @@ import { Suspense } from "react";
 import { SnackContextProvider } from "@/components/SnackContext";
 import { CartButton } from "@/components/cart/CartButton";
 // import { TurboLink } from "@/components/Turbolink";
-import { ClientInspector } from "@/components/ClientInspector";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -41,7 +40,6 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="scroll-pt-[116px]">
-      <ClientInspector />
       <QueryContext>
         <body className={atkinsonHyper.className + " bg-default"}>
           <header
