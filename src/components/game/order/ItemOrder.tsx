@@ -31,69 +31,69 @@ export function ItemOrder({
   return (
     <>
       <Scroll containerSelector={"#payment-method-group"}>
-        <StripeElements clientSecret={clientSecret}>
-          <RadioGroup toggleAble>
-            <div className={"col-start-2 row-start-2"}>
-              <SnackContextProvider>
-                <PlaceOrderButton placeOrder={rememberPayment} />
-              </SnackContextProvider>
-            </div>
-            <div className="col-start-1">
-              <h2 className="uppercase mb-4 text-xl">Payment methods</h2>
-              <ul
-                className={
-                  "flex gap-4 3/4sm:gap-8 " + " snap-x snap-mandatory "
-                }
-              >
-                <PaymentTabButton index={0}>
-                  <SpriteIcon
-                    stroke="white"
-                    fill="white"
-                    sprite={"actions"}
-                    id={"card"}
-                  />
-                  Card
-                </PaymentTabButton>
-                <PaymentTabButton index={1}>
-                  <SpriteIcon
-                    fill="none"
-                    stroke="white"
-                    sprite={"actions"}
-                    id={"paypal"}
-                  />
-                  Paypal
-                </PaymentTabButton>
-              </ul>
-              <br />
-              <ul
-                id="payment-method-group"
-                className={
-                  "flex w-[calc(100%+16px)] h-full rounded gap-8 px-2 -translate-x-2 " +
-                  " overflow-x-scroll scrollbar-hidden overflow-y-hidden " +
-                  " snap-x snap-mandatory "
-                }
-              >
-                <Item
-                  as="li"
-                  className={"w-full shrink-0 snap-center stripe-card"}
-                >
-                  <StripeCheckoutForm />
-                  <hr className="border-default my-2" />
-                  <SavePayment id="card" />
-                </Item>
-                <Item as="li" className="w-full shrink-0 snap-center">
-                  <p className="text-[14.88px]">
-                    You will be directed to PayPal to authorize your payment
-                    method, then you will be returned to Penguin Games to
-                    complete this purchase.
-                  </p>
-                  <hr className="my-4 border-default" />
-                  <SavePayment id="paypal" />
-                </Item>
-              </ul>
-            </div>
-          </RadioGroup>
-        </StripeElements>
+        {/* <StripeElements clientSecret={clientSecret}> */}
+        {/*   <RadioGroup toggleAble> */}
+        {/*     <div className={"col-start-2 row-start-2"}> */}
+        {/*       <SnackContextProvider> */}
+        {/*         <PlaceOrderButton placeOrder={rememberPayment} /> */}
+        {/*       </SnackContextProvider> */}
+        {/*     </div> */}
+        {/*     <div className="col-start-1"> */}
+        {/*       <h2 className="uppercase mb-4 text-xl">Payment methods</h2> */}
+        {/*       <ul */}
+        {/*         className={ */}
+        {/*           "flex gap-4 3/4sm:gap-8 " + " snap-x snap-mandatory " */}
+        {/*         } */}
+        {/*       > */}
+        {/*         <PaymentTabButton index={0}> */}
+        {/*           <SpriteIcon */}
+        {/*             stroke="white" */}
+        {/*             fill="white" */}
+        {/*             sprite={"actions"} */}
+        {/*             id={"card"} */}
+        {/*           /> */}
+        {/*           Card */}
+        {/*         </PaymentTabButton> */}
+        {/*         <PaymentTabButton index={1}> */}
+        {/*           <SpriteIcon */}
+        {/*             fill="none" */}
+        {/*             stroke="white" */}
+        {/*             sprite={"actions"} */}
+        {/*             id={"paypal"} */}
+        {/*           /> */}
+        {/*           Paypal */}
+        {/*         </PaymentTabButton> */}
+        {/*       </ul> */}
+        {/*       <br /> */}
+        {/*       <ul */}
+        {/*         id="payment-method-group" */}
+        {/*         className={ */}
+        {/*           "flex w-[calc(100%+16px)] h-full rounded gap-8 px-2 -translate-x-2 " + */}
+        {/*           " overflow-x-scroll scrollbar-hidden overflow-y-hidden " + */}
+        {/*           " snap-x snap-mandatory " */}
+        {/*         } */}
+        {/*       > */}
+        {/*         <Item */}
+        {/*           as="li" */}
+        {/*           className={"w-full shrink-0 snap-center stripe-card"} */}
+        {/*         > */}
+        {/*           <StripeCheckoutForm /> */}
+        {/*           <hr className="border-default my-2" /> */}
+        {/*           <SavePayment id="card" /> */}
+        {/*         </Item> */}
+        {/*         <Item as="li" className="w-full shrink-0 snap-center"> */}
+        {/*           <p className="text-[14.88px]"> */}
+        {/*             You will be directed to PayPal to authorize your payment */}
+        {/*             method, then you will be returned to Penguin Games to */}
+        {/*             complete this purchase. */}
+        {/*           </p> */}
+        {/*           <hr className="my-4 border-default" /> */}
+        {/*           <SavePayment id="paypal" /> */}
+        {/*         </Item> */}
+        {/*       </ul> */}
+        {/*     </div> */}
+        {/*   </RadioGroup> */}
+        {/* </StripeElements> */}
       </Scroll>
       <div className="hidden md:block">
         <h2 className="uppercase text-lg mb-4">Order summary</h2>
