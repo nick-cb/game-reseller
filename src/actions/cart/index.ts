@@ -120,6 +120,9 @@ export async function countCartByUserId(userId: number) {
     select ID from carts where user_id = ${userId};
   `);
   const cart = cartRes[0][0];
+  if (!cart) {
+    return {count: 0};
+  }
   const cartDetailsCount = await db.execute<
     (RowDataPacket & { count: number })[]
   >(sql`
@@ -186,7 +189,7 @@ export async function toggleItemChecked({
 
 export async function deleteCart(cartId: number, options?: { db: Connection }) {
   const { db } = options || {};
-  const _db = db || await connectDB();
+  const _db = db || (await connectDB());
   try {
     await Promise.all([
       _db.execute(sql`
