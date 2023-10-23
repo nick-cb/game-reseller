@@ -11,92 +11,7 @@ export function OrderItemDistribute({
 }: {
   gameList: Orders["items"];
 }) {
-  const [grid, setGrid] = useState<{
-    placements: number[];
-    maxDisplay: { columns: number; rows: number };
-  }>({
-    placements: [],
-    maxDisplay: {
-      columns: 0,
-      rows: 0,
-    },
-  });
-
   useLayoutEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setGrid((prev) => {
-          const { width, height } = entry.contentRect;
-          const columns = Math.floor(width / 150);
-          const rows = Math.floor(height / 200);
-          const newPlacements: number[] = [];
-          const takenRows = rows % 2 === 0 ? 2 : 1;
-          const takenCols = columns % 2 === 0 ? 2 : 3;
-          const rowMid = Math.floor(rows / 2) - 1;
-          const colMid = Math.floor(columns / 2) - 1;
-          const {
-            maxDisplay: { columns: prevCols, rows: prevRows },
-          } = prev;
-          const takenCells = [];
-          if (columns !== prevCols || rows !== prevRows) {
-            for (let i = 0; i < takenRows; i++) {
-              const row = rowMid + i;
-              for (let j = 0; j < takenCols; j++) {
-                const col = colMid + j;
-                takenCells.push(row * columns + col);
-              }
-            }
-            const degree = 360 / (rows * columns);
-            const distance = 360 / gameList.length;
-            let d = Math.round(distance / degree);
-            if (d % columns === 0 && d > 4) {
-              d -= 4;
-            }
-            console.log({ d });
-            for (let i = 0; i < gameList.length; i++) {
-              let previous = newPlacements[i - 1];
-              if (previous === undefined) {
-                previous = 0;
-                newPlacements.push(previous);
-                continue;
-              }
-              let newCell = previous + d;
-              // const pick = [-1, 1];
-              // console.log({ previous, newCell });
-              // if (previous % columns === newCell % columns && d > 4) {
-              //   let random = randomInt(0, 1);
-              //   d = d - pick[random];
-              //   newCell = previous + d;
-              // }
-              // if (previous % columns === newCell % columns) {
-              //   let random = randomInt(-1, 1);
-              //   while (random === 0) {
-              //     random = randomInt(-1, 1);
-              //   }
-              //   newCell -= random;
-              // }
-              while (takenCells.includes(newCell)) {
-                newCell += 1;
-              }
-              newPlacements.push(newCell);
-            }
-
-            return {
-              placements: newPlacements,
-              maxDisplay: { columns, rows },
-            };
-          }
-          return prev;
-        });
-      }
-    });
-
-    const gameGrid = document.querySelector("#game-grid");
-    if (!gameGrid) {
-      return;
-    }
-    observer.observe(gameGrid);
-
     fire(0.25, {
       spread: 26,
       startVelocity: 55,
@@ -119,20 +34,24 @@ export function OrderItemDistribute({
       spread: 120,
       startVelocity: 45,
     });
-    return () => {
-      observer.disconnect();
-    };
   }, [gameList]);
-
+  const list = [
+    "-right-32 -rotate-[30deg] -top-28",
+    "bottom-0 -left-40 -rotate-[15deg]",
+    "-top-32 right-40 -translate-y-1/2 rotate-[25deg]",
+    "left-12 -bottom-56 rotate-[45deg]",
+    "-bottom-64 right-20 -rotate-[10deg]",
+    "-left-14 -top-60 -rotate-[25deg]",
+    "-right-56 -bottom-28 rotate-[10deg]",
+  ];
   return (
     <>
       {gameList.map((item, index) => {
-        const { maxDisplay, placements } = grid;
-        const cell = placements[index];
         const image = item.images.portrait;
         const shadowColor = image.colors.highestSat;
-        const column = (cell % maxDisplay.columns) + 1;
-        const row = Math.floor(cell / maxDisplay.columns) + 1;
+        if (!list[index]) {
+          return null;
+        }
         return (
           <Image
             key={item.ID}
@@ -142,16 +61,12 @@ export function OrderItemDistribute({
             alt={item.name}
             title={item.name}
             className={
-              "rounded z-[1] transition-transform " +
+              "rounded z-[1] absolute " +
               "[--tw-shadow-colored:0_10px_25px_-3px_var(--tw-shadow-color),_0_-2px_10px_0px_var(--tw-shadow-color),_0_4px_6px_-4px_var(--tw-shadow-color)] " +
               "shadow-lg shadow-red-500 transition-opacity " +
-              (cell === undefined ? "opacity-0 " : "")
+              list[index]
             }
-            data-cell={cell}
             style={{
-              gridColumnStart: column,
-              gridRowStart: row,
-              transform: `rotate(${randomInt(-45, 45)}deg)`,
               boxShadow: `var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 10px 25px -3px rgb(${shadowColor}), 0 -2px 10px 0px rgb(${shadowColor}), 0 4px 6px -4px rgb(${shadowColor})`,
             }}
           />

@@ -1,7 +1,6 @@
 import { findOrderById } from "@/actions/order";
 import { getUserFromCookie } from "@/actions/users";
 import { OrderItemDistribute } from "@/components/OrderItemDistribute";
-import { randomInt } from "crypto";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -29,40 +28,77 @@ export default async function OrderSuccessPage({
 
   return (
     <div
-      id="game-grid"
-      className="h-full grid"
-      style={{
-        gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
-        gridTemplateRows: "repeat(auto-fill,minmax(200px,1fr))",
-      }}
+      className="h-full flex justify-center items-center"
+      // style={{
+      //   gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
+      //   gridTemplateRows: "repeat(auto-fill,minmax(200px,1fr))",
+      // }}
     >
-      <div
-        className={
-          "flex flex-col items-center pt-2 " +
-          "bg-paper rounded shadow-black/25 shadow " +
-          "w-[600px] pb-10 place-self-center absolute"
-        }
-      >
-        <Image
-          src={"/you-rock.gif"}
-          alt={"You rock"}
-          width={400}
-          height={200}
-          className="mx-auto"
-        />
-        <br />
-        <h2 className="text-xl mb-2">Thank you for your order!</h2>
-        <p className="text-white_primary/60">
-          You can find your order{" "}
-          <Link
-            href={"/account/orders/" + id}
-            className="underline hover:text-white_primary transition-colors"
-          >
-            here
-          </Link>
-        </p>
-        {items.length === 1
-          ? (() => {
+      <div className={"flex gap-8"}>
+        {/* <ul className="w-[300px] h-[450px] relative"> */}
+        {/*   {items.map((item, index) => { */}
+        {/*     const image = item.images.portrait; */}
+        {/*     const shadowColor = image.colors.highestSat; */}
+        {/*     return ( */}
+        {/*       <li */}
+        {/*         className={ */}
+        {/*           "absolute hover:-translate-y-1/3 transition-transform duration-300 ease-out " + */}
+        {/*           "flex items-center w-full " */}
+        {/*         } */}
+        {/*         style={{ */}
+        {/*           bottom: index * (450 / items.length) * -1 + "px", */}
+        {/*           // transform: `translateY(${index * (450 / items.length)}px)`, */}
+        {/*         }} */}
+        {/*       > */}
+        {/*         <div */}
+        {/*           className="absolute -top-3 left-1/2 -translate-x-1/2 w-[90%] h-1/2 blur-md opacity-60 z-[-1]" */}
+        {/*           style={{ */}
+        {/*             background: `linear-gradient(0deg, #000 0%, transparent 100%)`, */}
+        {/*             // background: `rgb(${shadowColor})`, */}
+        {/*           }} */}
+        {/*         ></div> */}
+        {/*         <Image */}
+        {/*           src={item.images.portrait.url} */}
+        {/*           alt={""} */}
+        {/*           width={300} */}
+        {/*           height={450} */}
+        {/*           className="object-cover w-[300px] h-[450px] rounded-xl shadow-black mx-auto" */}
+        {/*           style={{ */}
+        {/*             width: 300 - (items.length - index) * 5 + "px", */}
+        {/*             boxShadow: `var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 10px 25px -3px rgb(${shadowColor}), 0 -2px 10px 0px rgb(${shadowColor}), 0 4px 6px -4px rgb(${shadowColor})`, */}
+        {/*           }} */}
+        {/*         /> */}
+        {/*       </li> */}
+        {/*     ); */}
+        {/*   })} */}
+        {/* </ul> */}
+        <div
+          className={
+            "flex flex-col items-center pt-2 " +
+            "w-[600px] pb-10 " +
+            "bg-paper rounded shadow-black/25 shadow relative "
+          }
+        >
+          <Image
+            src={"/you-rock.gif"}
+            alt={"You rock"}
+            width={400}
+            height={200}
+            className="mx-auto"
+          />
+          <br />
+          <h2 className="text-xl mb-2">Thank you for your order!</h2>
+          <p className="text-white_primary/60">
+            You can find your order{" "}
+            <Link
+              href={"/account/orders/" + id}
+              className="underline hover:text-white_primary transition-colors"
+            >
+              here
+            </Link>
+          </p>
+          {items.length === 1 ? (
+            (() => {
               const shadowColor = firstItem.images.portrait.colors.highestSat;
               return (
                 <Image
@@ -81,9 +117,11 @@ export default async function OrderSuccessPage({
                 />
               );
             })()
-          : null}
+          ) : (
+            <OrderItemDistribute gameList={items} />
+          )}
+        </div>
       </div>
-      {items.length > 1 ? <OrderItemDistribute gameList={items} /> : null}
     </div>
   );
 }
