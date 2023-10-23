@@ -38,6 +38,7 @@ export type GameImages = {
   alt: string;
   game_id: number;
   row: number;
+  colors: {palette: number[][], highestSat: number[]}
 };
 
 export type Polls = {

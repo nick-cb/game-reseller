@@ -36,7 +36,6 @@ import { SnackContextProvider } from "@/components/SnackContext";
 import Stripe from "stripe";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { HookFormPrimaryButton } from "@/components/StandardButton";
-import { revalidatePath } from "next/cache";
 
 export async function CheckoutView({
   gameList,
@@ -79,6 +78,7 @@ export async function CheckoutView({
   for (const game of gameList) {
     amount += parseFloat(game.sale_price.toString());
   }
+  console.log({amount});
 
   const placeOrder = async (order: Partial<CreateOrderPayload>) => {
     "use server";
@@ -173,7 +173,7 @@ export async function CheckoutView({
         currency: "vnd",
         customer: user.stripe_id,
         payment_method: dedupedMethod?.id || newPaymentMethod.id,
-        return_url: "http://localhost:3000/order/success",
+        // return_url: "http://localhost:3000/order/success",
         use_stripe_sdk: true,
         ...(save ? { setup_future_usage: "off_session" } : {}),
         // mandate_data: {
@@ -201,7 +201,6 @@ export async function CheckoutView({
       if (cartId) {
         await deleteCart(cartId);
       }
-      revalidatePath("/cart");
 
       return {
         orderId,
@@ -230,7 +229,7 @@ export async function CheckoutView({
           }}
         >
           <MobileGameList gameList={gameList} />
-          <AccordionGroup exclusive defaultValue={0}>
+          <AccordionGroup exclusive defaultValue={paymentMethods.length > 0 ? 0 : 1}>
             {!!paymentMethods.length ? (
               <div
                 className="col-start-1 col-end-2"

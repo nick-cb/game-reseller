@@ -42,7 +42,7 @@ export async function addItemToCart(slug: string) {
       insert into carts (user_id) values (${user.ID});
     `);
     const existCartResponse = await db.execute<(RowDataPacket & Carts)[]>(sql`
-      select * from carts where cart_id = ${newCartResponse[0].insertId};
+      select * from carts where id = ${newCartResponse[0].insertId};
     `);
     cart = existCartResponse[0][0];
   }
@@ -102,7 +102,7 @@ export async function getFullCartByUserId(
                                                                    game_images.alt,
                                                                    'game_id', game_images.game_id, 'pos_row',
                                                                    game_images.pos_row,
-                                                                   'url', game_images.url)) as images
+                                                                   'url', game_images.url, 'colors', game_images.colors)) as images
                                   from games
                                            join game_images on games.ID = game_images.game_id
                                   group by games.ID) games

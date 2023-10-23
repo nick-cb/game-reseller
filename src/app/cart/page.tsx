@@ -13,6 +13,7 @@ import { CheckoutView } from "@/components/checkout/Checkout";
 import { Game } from "@/database/models";
 import { CheckoutButton } from "@/components/cart/CheckoutButton";
 import { Suspense } from "react";
+import Link from "next/link";
 
 export default async function cartPage() {
   const user = await getUserFromCookie();
@@ -20,20 +21,18 @@ export default async function cartPage() {
     redirect("/");
   }
   const { data: cart } = await getFullCartByUserId(user.userId);
-  if (!cart || cart.game_list.length === 0) {
-    redirect("/");
-  }
   const grouppedImageCart = {
     ...cart,
-    game_list: cart.game_list.map((game) => {
-      return {
-        ...game,
-        images: groupImages(game.images),
-      };
-    }),
+    game_list:
+      cart?.game_list.map((game) => {
+        return {
+          ...game,
+          images: groupImages(game.images),
+        };
+      }) || [],
   };
   let totalPrice = 0;
-  for (const game of cart.game_list) {
+  for (const game of grouppedImageCart.game_list) {
     totalPrice += game.sale_price;
   }
   const toggleChecked = async (game: Pick<Game, "ID">) => {
@@ -60,6 +59,25 @@ export default async function cartPage() {
     });
     return error;
   };
+
+  if (!cart) {
+    return (
+      <div>
+        <svg className="mx-auto" color="hsl(0, 0%, 20%)">
+          <use xlinkHref="/svg/sprites/actions.svg#cart-empty" />
+        </svg>
+        <br />
+        <h2 className="text-xl mx-auto block w-max">Your cart is empty.</h2>
+        <br />
+        <Link
+          href={"/browse"}
+          className="mx-auto block w-max text-white_primary/60 underline hover:text-white_primary transition-colors"
+        >
+          Start shopping now!
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <CartContext

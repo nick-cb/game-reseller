@@ -18,7 +18,7 @@ export async function createOrder({
     insert into orders (payment_intent, amount, payment_method, payment_service, 
                         created_at, items, status, succeeded_at,
                         canceled_at, card_number, card_type, user_id)
-    values (${order.payment_intent ?  `'${order.payment_intent}'` : ''},
+    values (${order.payment_intent ? `'${order.payment_intent}'` : ""},
             '${order.amount}', '${order.payment_method}', 
             '${order.payment_service}', 
             ${!order.canceled_at ? `'${order.created_at}'` : null}, 
@@ -42,6 +42,27 @@ export async function findOrderByIntent(paymentIntent: string) {
 
   return {
     data: response[0][0],
+  };
+}
+
+export async function findOrderById(
+  id: number,
+  options: {
+    userId: number;
+  },
+) {
+  const { userId } = options;
+  const db = await connectDB();
+  const response = await db.execute<(RowDataPacket & Orders)[]>(sql`
+    select * from orders where id = ${id} and user_id = ${userId};
+  `);
+
+  if (!response[0][0]) {
+    return { data: null };
+  }
+
+  return {
+    data: response[0][0] as Orders,
   };
 }
 
