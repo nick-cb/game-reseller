@@ -21,7 +21,7 @@ const page = async ({
   const response = await groupGameByTags({
     tags: typeof categories === "string" ? categories?.split(",") : [],
     limit,
-    skip,
+    skip: skip * 16,
     keyword: keyword as string,
     collection: collection as string,
   });

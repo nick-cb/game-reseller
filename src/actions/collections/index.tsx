@@ -128,7 +128,7 @@ export type FCollectionByName = RowDataPacket &
 
 export async function getCollectionByKey(key: string[], db?: Connection) {
   const _db = db || (await connectDB());
-  return _db.execute<FCollectionByName[]>(sql`
+  const response = await _db.execute<FCollectionByName[]>(sql`
 select 
   c.*,
   cd.list_game
@@ -219,6 +219,7 @@ from
     ",",
   )}');
 `);
+  return { data: response[0] };
 }
 
 export async function getAllCollections({ db }: { db?: Connection }) {

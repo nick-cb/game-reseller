@@ -246,7 +246,7 @@ export async function groupGameByTags({
       ${whereClause}
       group by games.ID
       ${tags.length > 0 ? havingClause : ""}
-      limit ${skip}, ${limit}
+      limit ${limit} offset ${skip}
       ;
   `);
   const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
