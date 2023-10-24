@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog } from "@/components/Dialog";
+import { Dialog, DialogContent } from "@/components/Dialog";
 import { useRouter } from "next/navigation";
 import React, { useRef, useEffect } from "react";
 import { SignupView } from "@/components/auth/SignupView";
@@ -26,7 +26,9 @@ export default function SignupModal({
       }}
     >
       <SnackContextProvider>
-        <SignupView order={searchParams["order"]} modal />
+        <DialogContent as="div">
+          <SignupView order={searchParams["order"]} modal />
+        </DialogContent>
       </SnackContextProvider>
     </Dialog>
   );

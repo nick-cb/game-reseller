@@ -17,9 +17,7 @@ import Link from "next/link";
 import { useCallback } from "react";
 import {
   useParams,
-  usePathname,
   useRouter,
-  useSearchParams,
 } from "next/navigation";
 import { Input } from "./Input";
 import { Game, GameImageGroup, GameImages } from "@/database/models";
@@ -29,7 +27,6 @@ import { groupImages } from "@/utils/data";
 import Scroll, { Item } from "./Scroll";
 import { pascalCase } from "@/utils";
 import PortraitGameCard from "./PortraitGameCard";
-import { headers } from "next/headers";
 import { BASE_URL } from "@/utils/config";
 
 type SearchbarData = (RowDataPacket &

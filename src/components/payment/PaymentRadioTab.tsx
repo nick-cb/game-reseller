@@ -20,9 +20,9 @@ export function PaymentTabButton({
   ...props
 }: DetailedHTMLProps<ButtonHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
   PropsWithChildren<{ index: number; method: "stripe" | "paypal" }>) {
-  const { control, resetField } = useFormContext();
+  const { control } = useFormContext();
   const {
-    field: { onChange, value },
+    field: { onChange, value, ref },
   } = useController({ control, name: "payment_method" });
   const { elements, scrollToIndex } = useScroll();
   const active = elements.findIndex((el) => el.isIntersecting) === index;
@@ -46,9 +46,12 @@ export function PaymentTabButton({
         id={method}
         name={"payment_method"}
         checked={active}
-        onChange={() => {
+        value={method}
+        onChange={(event) => {
           scrollToIndex(index);
+          onChange(event);
         }}
+        ref={ref}
         className={"w-full h-full absolute " + "rounded-md " + className}
         {...props}
       />
@@ -121,7 +124,6 @@ export function CheckMarkSvg() {
 }
 
 export function SavePayment({ id }: { id: string }) {
-  const { register } = useFormContext();
   return (
     <>
       <p className="text-[14.88px] mb-2 ">
@@ -130,6 +132,7 @@ export function SavePayment({ id }: { id: string }) {
       <div className="flex gap-8">
         <HookFormRadio
           id={id + "-remember-yes"}
+          name="save"
           value={"yes"}
           LabelComponent={
             <label htmlFor={id + "-remember-yes"} className="pl-2">
@@ -137,10 +140,10 @@ export function SavePayment({ id }: { id: string }) {
             </label>
           }
           className="w-5 h-5"
-          {...register("save")}
         />
         <HookFormRadio
           id={id + "-remember-no"}
+          name="save"
           value={"no"}
           LabelComponent={
             <label htmlFor={id + "-remember-no"} className="pl-2">
@@ -148,7 +151,6 @@ export function SavePayment({ id }: { id: string }) {
             </label>
           }
           className="w-5 h-5"
-          {...register("save")}
         />
         <CheckMarkSvg />
       </div>

@@ -28,7 +28,7 @@ export default async function OrderSuccessPage({
 
   return (
     <div
-      className="h-full flex justify-center items-center"
+      className="h-full flex justify-center items-center pt-[200px]"
       // style={{
       //   gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
       //   gridTemplateRows: "repeat(auto-fill,minmax(200px,1fr))",

@@ -4,7 +4,6 @@ import { Tags } from "@/database/models";
 import { useRef, useState } from "react";
 import Sheet from "react-modal-sheet";
 import { CategoryCheckbox } from "../CategoryCheckbox";
-import FilterContextProvider from "../FilterContext";
 import BrowseSearch from "../BrowseSearch";
 import SearchIcon from "../SearchIcon";
 import { useSearchParams } from "next/navigation";
@@ -97,13 +96,17 @@ export default function Filter({ tags }: { tags: Tags[] }) {
                       <CategoryCheckbox
                         tag={tag}
                         id={tag.tag_key.toString()}
-                        className="w-full h-9"
+                        className="w-full h-9 peer"
                       />
                       <label
                         htmlFor={tag.tag_key}
-                        className="absolute inset-0 h-9 rounded px-2
-                        cursor-pointer flex items-center
-                        text-white/60 hover:text-white_primary bg-paper_2 transition-colors"
+                        className={
+                          "absolute inset-0 h-9 rounded px-2 " +
+                          "cursor-pointer flex items-center " +
+                          "text-white/60 hover:text-white_primary bg-paper_2 transition-colors " +
+                          "peer-checked:bg-white/[.15] peer-checked:text-white_primary " +
+                          "peer-focus:text-white_primary "
+                        }
                       >
                         {tag.name[0].toUpperCase() + tag.name.substring(1)}
                       </label>

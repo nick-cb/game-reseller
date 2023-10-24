@@ -12,9 +12,9 @@ export function OrderSummary({
   })[];
 }) {
   return (
-    <>
+    <div>
       <h2 className="uppercase text-lg mb-4">Order summary</h2>
-      <ul className="flex flex-col gap-4 max-h-[80%] overflow-scroll scrollbar-hidden">
+      <ul className="flex flex-col gap-4 max-h-[430px] overflow-scroll scrollbar-hidden">
         {gameList.map((game) => {
           return (
             <li className={"flex gap-4"}>
@@ -43,6 +43,6 @@ export function OrderSummary({
         <div>Total</div>
         <div>{currencyFormatter(totalAmount)}</div>
       </div>
-    </>
+    </div>
   );
 }

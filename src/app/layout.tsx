@@ -14,6 +14,7 @@ import { Suspense } from "react";
 import { SnackContextProvider } from "@/components/SnackContext";
 import { CartButton } from "@/components/cart/CartButton";
 // import { TurboLink } from "@/components/Turbolink";
+import NextTopLoader from "nextjs-toploader";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -119,6 +120,10 @@ export default function RootLayout({
                   </Link>
                 </ActiveLink>
               </nav>
+              <NextTopLoader
+                showSpinner={false}
+                color={"hsl(209, 100%, 45%)"}
+              />
               {/* <div className="top-[108px] fixed w-full z-10"> */}
               {/*   <TurboLink /> */}
               {/* </div> */}

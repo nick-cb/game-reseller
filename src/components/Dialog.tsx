@@ -148,5 +148,6 @@ export function DialogContent<C extends keyof JSX.IntrinsicElements>({
     }
   });
 
+  // @ts-ignore
   return <Component ref={contentContainerRef} {...props} />;
 }

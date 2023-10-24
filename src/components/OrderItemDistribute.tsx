@@ -1,9 +1,8 @@
 "use client";
 
 import { Orders } from "@/database/models";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import Image from "next/image";
-import { randomInt } from "@/utils";
 import { fire } from "@/utils/confettie";
 
 export function OrderItemDistribute({
@@ -38,11 +37,11 @@ export function OrderItemDistribute({
   const list = [
     "-right-32 -rotate-[30deg] -top-28",
     "bottom-0 -left-40 -rotate-[15deg]",
+    "-right-56 -bottom-28 rotate-[10deg]",
     "-top-32 right-40 -translate-y-1/2 rotate-[25deg]",
     "left-12 -bottom-56 rotate-[45deg]",
     "-bottom-64 right-20 -rotate-[10deg]",
     "-left-14 -top-60 -rotate-[25deg]",
-    "-right-56 -bottom-28 rotate-[10deg]",
   ];
   return (
     <>

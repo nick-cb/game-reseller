@@ -140,6 +140,7 @@ export function Item<C extends keyof JSX.IntrinsicElements>({
   }, [observer]);
 
   return (
+    // @ts-ignore
     <Component ref={ref} {...props}>
       {children}
     </Component>

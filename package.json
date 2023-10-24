@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.5.1",
     "next": "13.5.2",
+    "nextjs-toploader": "^1.5.3",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -39,6 +40,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@hookform/devtools": "^4.3.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "20.1.3",

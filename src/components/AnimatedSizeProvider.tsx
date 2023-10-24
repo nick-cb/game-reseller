@@ -79,6 +79,7 @@ export const AnimatedSizeProvider = React.forwardRef(function <
       // @ts-ignore
       value={{ container: componentRef.current, updateSize }}
     >
+      {/* @ts-ignore */}
       <Component {...props} ref={componentRef} />
     </AnimatedSizeContext.Provider>
   );

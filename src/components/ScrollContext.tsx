@@ -73,5 +73,6 @@ export function ObserveElement<C extends keyof JSX.IntrinsicElements>({
   const { radioContentGroupRef } = useContext(scrollContext);
   const Component = typeof as === "string" ? `${as}` : as;
 
+  // @ts-ignore
   return <Component {...props} ref={radioContentGroupRef}>{children}</Component>;
 }

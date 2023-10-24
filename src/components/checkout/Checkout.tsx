@@ -35,7 +35,7 @@ import { OrderSummary } from "@/components/checkout/OrderSummary";
 import { SnackContextProvider } from "@/components/SnackContext";
 import Stripe from "stripe";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
-import { HookFormPrimaryButton } from "@/components/StandardButton";
+import { PlaceOrderButton } from "../game/PlaceOrderButton";
 
 export async function CheckoutView({
   gameList,
@@ -75,7 +75,7 @@ export async function CheckoutView({
   const paymentMethods = paymentMethodRes?.data || [];
 
   let amount = 0;
-  for (const game of gameList) {
+  for (const game of gameList.filter(game => game.checked)) {
     amount += parseFloat(game.sale_price.toString());
   }
   console.log({amount});
@@ -334,9 +334,9 @@ export async function CheckoutView({
             ) : null}
           </AccordionGroup>
           <div id="checkout-button" className={"md:col-start-2"}>
-            <HookFormPrimaryButton type="submit">
+            <PlaceOrderButton>
               Place order
-            </HookFormPrimaryButton>
+            </PlaceOrderButton>
           </div>
           <div
             className="hidden md:block col-start-2 row-start-1"

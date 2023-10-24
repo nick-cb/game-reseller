@@ -48,11 +48,6 @@ export default async function cartPage() {
       return;
     }
     const item = grouppedImageCart.game_list[index];
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 5000);
-    });
     const { error } = await toggleItemChecked({
       gameId: item.ID,
       checked: !item.checked,

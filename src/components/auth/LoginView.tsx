@@ -1,7 +1,6 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { SnackContext } from "@/components/SnackContext";
 import { useForm } from "react-hook-form";
 import { EmailLoginForm, EmailLoginFormPayload } from "@/components/auth/email";

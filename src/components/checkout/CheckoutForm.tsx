@@ -16,6 +16,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { updateOrder } from "@/actions/orders";
 import { useStripeNullish } from "../payment/Stripe";
+import { DevTool } from "@hookform/devtools";
 
 // export function StripeElementNullish({
 //   paymentIntent,
@@ -220,6 +221,7 @@ export function CheckoutForm({
         >
           {children}
         </form>
+        <DevTool control={form.control} />
       </FormProvider>
       <Dialog
         ref={ref}

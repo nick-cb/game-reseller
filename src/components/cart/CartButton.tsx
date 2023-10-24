@@ -6,6 +6,10 @@ export async function CartButton() {
   const user = await getUserFromCookie();
   const { count } = user ? await countCartByUserId(user.userId) : { count: 0 };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Link
       href={"/cart"}
