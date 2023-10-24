@@ -6,9 +6,9 @@ import {
   PropsWithChildren,
   SVGProps,
 } from "react";
-import { useScroll } from "../Scroll";
 import { HookFormRadio } from "../Radio";
 import { useController, useFormContext } from "react-hook-form";
+import {useScroll} from "@/components/scroll/hook";
 
 export function PaymentTabButton({
   // icon,

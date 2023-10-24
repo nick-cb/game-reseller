@@ -1,6 +1,5 @@
 import { createOrder } from "@/actions/order";
 import { decodeToken, findUserById, updateUserById } from "@/actions/users";
-import Scroll, { Item } from "@/components/Scroll";
 import {
   PaymentTabButton,
   SpriteIcon,
@@ -36,6 +35,7 @@ import { SnackContextProvider } from "@/components/SnackContext";
 import Stripe from "stripe";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { PlaceOrderButton } from "../game/PlaceOrderButton";
+import { Scroll, ScrollItem } from "@/components/scroll/index";
 
 export async function CheckoutView({
   gameList,
@@ -309,15 +309,15 @@ export async function CheckoutView({
                           " snap-x snap-mandatory "
                         }
                       >
-                        <Item
+                        <ScrollItem
                           as="li"
                           className={"w-full shrink-0 snap-center stripe-card"}
                         >
                           <StripeCheckoutForm />
                           <hr className="border-default my-2" />
                           <SavePayment id="card" />
-                        </Item>
-                        <Item as="li" className="w-full shrink-0 snap-center">
+                        </ScrollItem>
+                        <ScrollItem as="li" className="w-full shrink-0 snap-center">
                           <p className="text-[14.88px]">
                             You will be directed to PayPal to authorize your
                             payment method, then you will be returned to Penguin
@@ -325,7 +325,7 @@ export async function CheckoutView({
                           </p>
                           <hr className="my-4 border-default" />
                           <SavePayment id="paypal" />
-                        </Item>
+                        </ScrollItem>
                       </ul>
                     </Scroll>
                   </AccordionBody>

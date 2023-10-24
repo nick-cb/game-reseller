@@ -1,6 +1,7 @@
 "use client";
 
-import { useScroll } from "../Scroll";
+
+import {useScroll} from "@/components/scroll/hook";
 
 export default function RequirementButton({
   index,

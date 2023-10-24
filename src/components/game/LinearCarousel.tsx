@@ -5,9 +5,10 @@ import Video from "../Video";
 import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
-import { Item, useScroll, useScrollFactory } from "../Scroll";
 import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 import { GameImages } from "@/database/models";
+import {ScrollItem} from "@/components/scroll/index";
+import {useScroll, useScrollFactory} from "@/components/scroll/hook";
 
 const SLIDE_INTERVAL = 5000;
 export default function LinearCarousel({
@@ -134,7 +135,7 @@ export default function LinearCarousel({
         >
           {sm >= 0
             ? videos.map((vid, index) => (
-                <Item
+                <ScrollItem
                   key={index}
                   as={"li"}
                   className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
@@ -155,11 +156,11 @@ export default function LinearCarousel({
                       className="w-full"
                     />
                   ) : null}
-                </Item>
+                </ScrollItem>
               ))
             : null}
           {images.map((img, index) => (
-            <Item
+            <ScrollItem
               key={index}
               as={"li"}
               className="rounded overflow-hidden w-full shrink-0 snap-start"
@@ -167,7 +168,7 @@ export default function LinearCarousel({
               <div className="relative w-full aspect-video">
                 <Image src={img.url} alt={img.type} fill />
               </div>
-            </Item>
+            </ScrollItem>
           ))}
         </ul>
       </div>
@@ -184,7 +185,7 @@ export default function LinearCarousel({
             {sm >= 0
               ? videos.map((vid, index) => {
                   return (
-                    <Item
+                    <ScrollItem
                       key={index}
                       as="li"
                       factory={factory}
@@ -207,14 +208,14 @@ export default function LinearCarousel({
                           fill
                         />
                       </div>
-                    </Item>
+                    </ScrollItem>
                   );
                 })
               : null}
             {sm >= 0
               ? images.map((img, index) => {
                   return (
-                    <Item
+                    <ScrollItem
                       key={index + videos.length}
                       as="li"
                       factory={factory}
@@ -237,7 +238,7 @@ export default function LinearCarousel({
                           fill
                         />
                       </div>
-                    </Item>
+                    </ScrollItem>
                   );
                 })
               : null}

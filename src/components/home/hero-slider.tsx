@@ -4,8 +4,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
-import Scroll, { Item, useScroll } from "../Scroll";
 import { Game, GameImageGroup } from "@/database/models";
+import { Scroll, ScrollItem } from "@/components/scroll/index";
+import { useScroll } from "@/components/scroll/hook";
 
 type SliderGame = Pick<
   Game,
@@ -94,7 +95,7 @@ export function ScrollBulletIndicator({ index }: { index: number }) {
 
 function SliderItem({ item, index }: { item: SliderGame; index: number }) {
   return (
-    <Item
+    <ScrollItem
       as={"li"}
       className={
         "relative w-11/12 aspect-[9/11] flex-shrink-0 h-full snap-start rounded-xl overflow-hidden flex "
@@ -150,12 +151,12 @@ function SliderItem({ item, index }: { item: SliderGame; index: number }) {
               id={item.slug.replace("/", "-") + "-infinite-scroll-text"}
               className="flex gap-10"
             >
-              <Item
+              <ScrollItem
                 as={"p"}
                 className={"text-sm text-white_primary whitespace-nowrap w-max"}
               >
                 {item.name}
-              </Item>
+              </ScrollItem>
             </div>
           </Scroll>
         </div>
@@ -191,6 +192,6 @@ function SliderItem({ item, index }: { item: SliderGame; index: number }) {
           </button>
         </div>
       </div>
-    </Item>
+    </ScrollItem>
   );
 }

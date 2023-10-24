@@ -1,5 +1,4 @@
 import { RadioGroup } from "@/components/Radio";
-import Scroll, { Item } from "@/components/Scroll";
 import { SnackContextProvider } from "@/components/SnackContext";
 import { PlaceOrderButton } from "@/components/game/PlaceOrderButton";
 import {
@@ -13,6 +12,7 @@ import StripeElements, {
 import { Game, GameImageGroup } from "@/database/models";
 import { currencyFormatter } from "@/utils";
 import Image from "next/image";
+import { Scroll, ScrollItem } from "@/components/scroll";
 
 export function ItemOrder({
   game,

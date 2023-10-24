@@ -24,10 +24,10 @@ import { Game, GameImageGroup, GameImages } from "@/database/models";
 import { OmitGameId } from "@/actions/game/select";
 import { RowDataPacket } from "mysql2";
 import { groupImages } from "@/utils/data";
-import Scroll, { Item } from "./Scroll";
 import { pascalCase } from "@/utils";
 import PortraitGameCard from "./PortraitGameCard";
 import { BASE_URL } from "@/utils/config";
+import {Scroll, ScrollItem} from "@/components/scroll/index";
 
 type SearchbarData = (RowDataPacket &
   Game & {
@@ -232,12 +232,12 @@ export function SearchResult({
                     id={item.slug.replace("/", "-") + "-infinite-scroll-name"}
                     className="w-[250px] flex gap-8"
                   >
-                    <Item
+                    <ScrollItem
                       as="p"
                       className="text-sm text-white/70 whitespace-nowrap w-max"
                     >
                       {item.name}
-                    </Item>
+                    </ScrollItem>
                   </div>
                 </Scroll>
                 <p className="text-xs text-white/60 px-1 bg-paper relative w-max rounded after:rounded after:bg-white/[0.15] after:absolute after:inset-0">

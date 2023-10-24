@@ -4,11 +4,11 @@ import { Pillar } from "@/components/home/pillar";
 import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
 import { FeatureCard } from "@/components/HoverPlayVideo";
-import Scroll, { Item } from "@/components/Scroll";
 import { groupImages } from "@/utils/data";
 import { getCollectionByKey } from "@/actions/collections";
 import { connectDB } from "@/database";
 import { getHeroCarousel } from "@/actions/homepage";
+import { ScrollItem, Scroll } from "@/components/scroll/index";
 
 export default async function Home() {
   const db = await connectDB();
@@ -71,15 +71,16 @@ export default async function Home() {
             >
               {feature?.list_game.slice(0, 3).map((item) => {
                 return (
-                  <Item
+                  <ScrollItem
                     as="li"
+                    key={item.ID}
                     className="sm:w-full group cursor-pointer w-4/5 flex-shrink-0 sm:flex-shrink snap-center first-of-type:snap-start"
                   >
                     <FeatureCard
                       key={item.ID}
                       item={{ ...item, images: groupImages(item.images) }}
                     />
-                  </Item>
+                  </ScrollItem>
                 );
               })}
             </ul>
@@ -90,7 +91,7 @@ export default async function Home() {
       <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
         {pillars.map((collection) => {
           return (
-            <>
+            <React.Fragment key={collection.ID}>
               <Pillar
                 data={{
                   ...collection,
@@ -103,7 +104,7 @@ export default async function Home() {
                 }}
               />
               <hr className="my-4 border-default md:hidden last-of-type:hidden" />
-            </>
+            </React.Fragment>
           );
         })}
       </section>

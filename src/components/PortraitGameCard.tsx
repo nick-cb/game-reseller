@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { Item } from "./Scroll";
 import { currencyFormatter } from "@/utils";
+import { ScrollItem } from "@/components/scroll/index";
 
 const PortraitGameCard = ({
   game,
@@ -19,7 +19,7 @@ const PortraitGameCard = ({
       key={game.slug}
       className={className + " group"}
     >
-      <Item
+      <ScrollItem
         as="div"
         className={
           contentContainerClassName +
@@ -55,9 +55,11 @@ const PortraitGameCard = ({
         <p className="mt-4 text-sm text-white_primary">{game.name}</p>
         <p className="text-xs mt-1 text-white/60">{game.developer}</p>
         <p className="text-sm mt-2 text-white_primary">
-          {parseInt(game.sale_price) === 0 ? "Free" : currencyFormatter(game.sale_price)}
+          {parseInt(game.sale_price) === 0
+            ? "Free"
+            : currencyFormatter(game.sale_price)}
         </p>
-      </Item>
+      </ScrollItem>
     </Link>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
-import Scroll, { Item } from "../Scroll";
 import RequirementButton from "./RequirementButton";
+import { Scroll, ScrollItem } from "@/components/scroll/index";
 
 export default function SystemRequirements({ systems }: { systems: any[] }) {
   return (
@@ -26,7 +26,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
             (detail: any) => !!detail.recommended,
           );
           return (
-            <Item
+            <ScrollItem
               as="li"
               key={system.ID}
               className="grid grid-cols-2 gap-x-8 gap-y-4 w-full flex-shrink-0 snap-center"
@@ -57,7 +57,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                   </React.Fragment>
                 );
               })}
-            </Item>
+            </ScrollItem>
           );
         })}
       </ul>

@@ -9,7 +9,7 @@ import {
   GameImageGroup,
 } from "@/database/models";
 import { FVideoFullInfo } from "@/actions/game/select";
-import { useScroll } from "../Scroll";
+import {useScroll} from "@/components/scroll/hook";
 
 type CarouselGame = Pick<
   Game,

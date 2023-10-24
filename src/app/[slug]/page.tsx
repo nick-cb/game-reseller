@@ -17,9 +17,9 @@ import Link from "next/link";
 import { currencyFormatter, pascalCase } from "@/utils";
 import { BuyNowButton } from "@/components/game/BuyNowButton";
 import SystemRequirements from "@/components/game/SystemRequirements";
-import Scroll, { Item } from "@/components/Scroll";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
 import { AddToCartButton } from "@/components/game/AddToCartBtn";
+import {Scroll, ScrollItem} from "@/components/scroll/index";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -451,7 +451,7 @@ const page = async ({ params }: { params: any }) => {
               >
                 {game.reviews.map((review: any) => {
                   return (
-                    <Item
+                    <ScrollItem
                       as="li"
                       className="w-4/5 sm:w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 snap-center"
                     >
@@ -524,7 +524,7 @@ const page = async ({ params }: { params: any }) => {
                       <p className="text-sm text-white_primary/60 wrap-balance">
                         {review.body}
                       </p>
-                    </Item>
+                    </ScrollItem>
                   );
                 })}
               </ul>
