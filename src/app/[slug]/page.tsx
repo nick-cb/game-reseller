@@ -8,6 +8,7 @@ import rehypeRaw from "rehype-raw";
 import { connectDB } from "@/database";
 import {
   OmitGameId,
+  countGameAddonsById,
   findGameBySlug,
   findMappingById,
 } from "@/actions/game/select";
@@ -19,7 +20,8 @@ import { BuyNowButton } from "@/components/game/BuyNowButton";
 import SystemRequirements from "@/components/game/SystemRequirements";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
 import { AddToCartButton } from "@/components/game/AddToCartBtn";
-import {Scroll, ScrollItem} from "@/components/scroll/index";
+import { Scroll, ScrollItem } from "@/components/scroll/index";
+import ActiveLink from "@/components/ActiveLink";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -60,6 +62,11 @@ const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const db = await connectDB();
   const { data: game } = await findGameBySlug(slug, db);
+  if (!game) {
+    return <div>Game not found</div>;
+  }
+  const { count: addOnCount } = await countGameAddonsById(game.ID);
+
   const logo = game.images.find((img: any) => {
     return img.type.toLowerCase().includes("logo");
   });
@@ -77,6 +84,26 @@ const page = async ({ params }: { params: any }) => {
   return (
     <div className="pt-6">
       <h1 className="text-2xl text-white_primary pb-6">{game.name}</h1>
+      {addOnCount ? (
+        <nav id="game-nav" className="mb-6">
+          <ul className="flex gap-4 items-center">
+            <li>
+              <h2 className="text-lg">
+                <ActiveLink matches={[{ name: slug }]}>
+                    <Link href={slug}>Overview</Link>
+                </ActiveLink>
+              </h2>
+            </li>
+            <li>
+              <h2 className="text-lg">
+                <ActiveLink matches={[{ name: "slug/.*", regex: true }]}>
+                  <Link href={slug + "/add-ons"} className="text-white_primary/60">Add-Ons</Link>
+                </ActiveLink>
+              </h2>
+            </li>
+          </ul>
+        </nav>
+      ) : null}
       <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-6 grid-rows-[min-content_auto] gap-4 md:gap-8 lg:gap-16">
         <section className="col-start-1 col-span-full md:[grid-column:-3/1] row-start-1 row-end-2">
           <Scroll containerSelector="#linear-carousel">

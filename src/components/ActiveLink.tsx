@@ -5,36 +5,39 @@ import React, { PropsWithChildren, useMemo } from "react";
 
 const ActiveLink = ({
   children,
-  match,
-  exact = false,
   matches,
+  allMatch = false,
 }: PropsWithChildren<{
-  match?: string;
-  exact?: boolean;
-  matches?: { name: string; exact?: boolean }[];
+  matches: { name: string; exact?: boolean; regex?: boolean }[];
+  allMatch?: boolean;
 }>) => {
   const pathname = usePathname();
+
   const isMatch = useMemo(() => {
-    if (!matches && !match) {
-      return false;
+    if (allMatch) {
+      return matches?.every(({ name, exact, regex }) => {
+        const against = regex ? new RegExp(name) : name;
+        const match = pathname.match(against);
+        if (exact) {
+          return match && pathname === match[0];
+        }
+        return !!match;
+      });
     }
-    if (matches) {
+    return matches?.some(({ name, exact, regex }) => {
+      const against = regex ? new RegExp(name) : name;
+      const match = pathname.match(against);
       if (exact) {
-        return matches?.every((match) =>
-          match.exact ? match.name === pathname : match.name.includes(pathname)
-        );
+        return match && pathname === match[0];
       }
-      return matches?.some((match) =>
-        match.exact ? match.name === pathname : match.name.includes(pathname)
-      );
-    }
-    if (exact) {
-      return pathname === match;
-    }
-    return pathname.includes(match || "");
-  }, [pathname, match, exact, matches]);
+      return !!match;
+    });
+  }, [pathname, matches]);
+
   return (
-    <div className={`contents ${isMatch ? "active-link" : ""}`}>{children}</div>
+    <div className={`contents ${isMatch ? "active-link " : ""}`}>
+      {children}
+    </div>
   );
 };
 

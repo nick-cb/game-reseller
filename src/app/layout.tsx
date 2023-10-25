@@ -111,7 +111,7 @@ export default function RootLayout({
                     Discover
                   </Link>
                 </ActiveLink>
-                <ActiveLink match="browse">
+                <ActiveLink matches={[{name: "browse" }]}>
                   <Link
                     className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors z-[1]"
                     href={"/browse"}

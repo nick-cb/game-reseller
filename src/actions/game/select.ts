@@ -154,8 +154,8 @@ where slug = '${slug}';
   `);
 
   return {
-    data: response[0][0]
-  }
+    data: response[0][0],
+  };
 }
 
 type FMappingById = RowDataPacket &
@@ -255,4 +255,32 @@ export async function groupGameByTags({
     data: gameRes[0],
     total: countRes[0][0]?.total_count || 0,
   };
+}
+
+export async function countGameAddonsBySlug(slug: string) {
+  const db = await connectDB();
+  const gameRecords = await db.execute<RowDataPacket[]>(sql`
+    select ID from games where slug = '${slug}';
+  `);
+
+  const game = gameRecords[0][0];
+  if (!game) {
+    return { count: 0 };
+  }
+
+  const countRes = await db.execute<(RowDataPacket & { count: number })[]>(sql`
+    select count(*) as count from games where base_game_id = ${game.ID}
+  `);
+
+  return countRes[0][0] as { count: number };
+}
+
+export async function countGameAddonsById(id: number) {
+  const db = await connectDB();
+
+  const countRes = await db.execute<(RowDataPacket & { count: number })[]>(sql`
+    select count(*) as count from games where base_game_id = ${id}
+  `);
+
+  return countRes[0][0] as { count: number };
 }

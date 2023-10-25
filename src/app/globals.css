@@ -585,3 +585,17 @@ input[type='checkbox']:checked + label > .checkbox.animated .svg-elem-3 {
     transform: scale(.75);
   }
 }
+
+
+#game-nav .active-link a,
+#game-nav .active-link a:hover {
+  @apply border-white_primary;
+}
+
+#game-nav a {
+  @apply border-b-2 border-white_primary/0 pb-1 transition-colors block;
+}
+
+#game-nav a:hover {
+  @apply border-white_primary/60;
+}
