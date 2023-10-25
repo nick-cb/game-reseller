@@ -32,7 +32,7 @@ export default function Video({
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [controlVisible, setControlVisible] = useState(true);
+  const [controlVisible, setControlVisible] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -128,7 +128,7 @@ export default function Video({
           setControlVisible(true);
           Object.assign(controlVisibleTimeoutRef, {
             current: setTimeout(() => {
-              // setControlVisible(false);
+              setControlVisible(false);
             }, 5000),
           });
         }}
@@ -137,7 +137,7 @@ export default function Video({
           setControlVisible(true);
           Object.assign(controlVisibleTimeoutRef, {
             current: setTimeout(() => {
-              // setControlVisible(false);
+              setControlVisible(false);
             }, 5000),
           });
         }}

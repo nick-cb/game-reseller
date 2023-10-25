@@ -7,8 +7,8 @@ import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 import { GameImages } from "@/database/models";
-import {ScrollItem} from "@/components/scroll/index";
-import {useScroll, useScrollFactory} from "@/components/scroll/hook";
+import { ScrollItem } from "@/components/scroll/index";
+import { useScroll, useScrollFactory } from "@/components/scroll/hook";
 
 const SLIDE_INTERVAL = 5000;
 export default function LinearCarousel({
@@ -195,7 +195,7 @@ export default function LinearCarousel({
                     >
                       <div
                         className={
-                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start " +
+                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start flex items-center justify-center " +
                           (active.index === index
                             ? " opacity-100 outline outline-1 "
                             : "")
@@ -207,6 +207,18 @@ export default function LinearCarousel({
                           className="rounded sm:block"
                           fill
                         />
+                        <svg
+                          width={16}
+                          height={16}
+                          fill="white"
+                          className="absolute"
+                        >
+                          <use
+                            width={16}
+                            height={16}
+                            xlinkHref={"/svg/sprites/actions.svg#play"}
+                          />
+                        </svg>
                       </div>
                     </ScrollItem>
                   );
