@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import Video from "../Video";
 import Image from "next/image";
 import ChevronButton from "../ChevronButton";
@@ -10,6 +10,11 @@ import { GameImages } from "@/database/models";
 import { ScrollItem } from "@/components/scroll/index";
 import { useScroll, useScrollFactory } from "@/components/scroll/hook";
 
+const isVideo = (
+  media: OmitGameId<GameImages> | OmitGameId<FVideoFullInfo>,
+): media is OmitGameId<FVideoFullInfo> => {
+  return "recipes" in media;
+};
 const SLIDE_INTERVAL = 5000;
 const breakpoints = [640, 1536] as const;
 export default function LinearCarousel({
@@ -19,8 +24,6 @@ export default function LinearCarousel({
   images: OmitGameId<GameImages>[];
   videos: OmitGameId<FVideoFullInfo>[];
 }) {
-  const listRef = useRef<HTMLUListElement>(null);
-  const previewListRef = useRef<HTMLUListElement>(null);
   const data = useMemo(() => {
     const _data: (OmitGameId<FVideoFullInfo> | OmitGameId<GameImages>)[] = [];
     return _data.concat(videos).concat(images);
@@ -59,7 +62,7 @@ export default function LinearCarousel({
   };
 
   useEffect(() => {
-    if ("recipes" in (data[active.index] || {}) && sm >= 0) {
+    if (isVideo(data[active.index]) && sm >= 0) {
       return;
     }
     let timeOut: ReturnType<typeof setTimeout>;
@@ -86,9 +89,9 @@ export default function LinearCarousel({
           <div
             className={
               "w-12 h-full absolute flex justify-center items-center z-[1] " +
-              " left-0  bg-gradient-to-r " +
-              " from-paper_3/40 to-default/0 " +
-              " transition-transform -translate-x-full group-hover:translate-x-0 "
+              "left-0  bg-gradient-to-r " +
+              "from-paper_3/40 to-default/0 " +
+              "transition-transform -translate-x-full group-hover:translate-x-0 "
             }
           >
             <button
@@ -109,9 +112,9 @@ export default function LinearCarousel({
           <div
             className={
               "w-12 h-full absolute flex justify-center items-center z-[1] " +
-              " right-0  bg-gradient-to-l " +
-              " from-paper_3/40 to-default/0 " +
-              " transition-transform translate-x-full group-hover:translate-x-0 "
+              "right-0  bg-gradient-to-l " +
+              "from-paper_3/40 to-default/0 " +
+              "transition-transform translate-x-full group-hover:translate-x-0 "
             }
           >
             <button
@@ -132,7 +135,6 @@ export default function LinearCarousel({
         </div>
         <ul
           id={"linear-carousel"}
-          ref={listRef}
           className="flex overflow-scroll snap-mandatory snap-x scrollbar-hidden"
         >
           {sm >= 0
@@ -142,22 +144,20 @@ export default function LinearCarousel({
                   as={"li"}
                   className="rounded overflow-hidden w-full shrink-0 snap-start"
                 >
-                  {sm >= 0 ? (
-                    <Video
-                      // @ts-ignore
-                      video={vid}
-                      onEnded={() => {
-                        setTimeout(() => {
-                          if (index === data.length - 1) {
-                            goToItem(0);
-                            return;
-                          }
-                          goToItem(active.index + 1);
-                        }, SLIDE_INTERVAL);
-                      }}
-                      className="w-full"
-                    />
-                  ) : null}
+                  <Video
+                    // @ts-ignore
+                    video={vid}
+                    onEnded={() => {
+                      setTimeout(() => {
+                        if (index === data.length - 1) {
+                          goToItem(0);
+                          return;
+                        }
+                        goToItem(active.index + 1);
+                      }, SLIDE_INTERVAL);
+                    }}
+                    className="w-full"
+                  />
                 </ScrollItem>
               ))
             : null}
@@ -178,7 +178,6 @@ export default function LinearCarousel({
         <div className="relative flex justify-center mt-4">
           <ul
             id={"linear-carousel-indicator"}
-            ref={previewListRef}
             className={
               "relative " +
               "overflow-x-scroll overflow-y-visible snap-x snap-mandatory scrollbar-hidden " +
@@ -187,7 +186,7 @@ export default function LinearCarousel({
             }
           >
             {sm >= 0
-              ? videos.map((vid, index) => {
+              ? data.map((item, index) => {
                   return (
                     <ScrollItem
                       key={index}
@@ -211,67 +210,31 @@ export default function LinearCarousel({
                         }}
                       >
                         <Image
-                          src={vid.thumbnail}
-                          alt={""}
+                          src={isVideo(item) ? item.thumbnail : item.url}
+                          alt={isVideo(item) ? "" : item.alt}
                           className="rounded sm:block"
                           width={96}
                           height={56}
                         />
-                        <svg
-                          width={16}
-                          height={16}
-                          fill="white"
-                          className="absolute"
-                        >
-                          <use
+                        {isVideo(item) ? (
+                          <svg
                             width={16}
                             height={16}
-                            xlinkHref={"/svg/sprites/actions.svg#play"}
-                          />
-                        </svg>
+                            fill="white"
+                            className="absolute"
+                          >
+                            <use
+                              width={16}
+                              height={16}
+                              xlinkHref={"/svg/sprites/actions.svg#play"}
+                            />
+                          </svg>
+                        ) : null}
                       </button>
                     </ScrollItem>
                   );
                 })
-              : null}
-            {sm >= 0
-              ? images.map((img, _index) => {
-                  const index = _index + videos.length;
-                  return (
-                    <ScrollItem
-                      key={index}
-                      as="li"
-                      factory={factory}
-                      onClick={() => {
-                        goToItem(index);
-                      }}
-                    >
-                      <button
-                        className={
-                          "relative transition-opacity w-24 h-14 rounded bg-default " +
-                          (active.index === index
-                            ? " opacity-100 outline outline-1 "
-                            : "")
-                        }
-                        style={{
-                          scrollSnapAlign:
-                            index % itemsPerWindow === 0 ? "start" : "",
-                        }}
-                      >
-                        <Image
-                          src={img.url}
-                          alt={img.type}
-                          className="rounded hidden sm:block"
-                          fill
-                          priority
-                        />
-                      </button>
-                    </ScrollItem>
-                  );
-                })
-              : null}
-            {sm < 0
-              ? data.map((item, index) => {
+              : data.map((item, index) => {
                   if ("recipes" in item) {
                     return null;
                   }
@@ -288,8 +251,7 @@ export default function LinearCarousel({
                       }
                     ></li>
                   );
-                })
-              : null}
+                })}
           </ul>
           <ChevronButton
             direction="left"
