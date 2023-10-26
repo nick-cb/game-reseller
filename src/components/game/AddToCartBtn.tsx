@@ -8,7 +8,7 @@ import { useContext, useTransition } from "react";
 import { SnackContext } from "../SnackContext";
 import { LoadingIcon } from "../loading/LoadingIcon";
 
-export function AddToCartButton({ game }: { game: Pick<Game, "ID" | "slug"> }) {
+export function AddToCartButton({ game }: { game: Pick<Game, "ID" | "slug" | "name"> }) {
   const router = useRouter();
   const params = useParams();
   const { showMessage } = useContext(SnackContext);
@@ -31,8 +31,9 @@ export function AddToCartButton({ game }: { game: Pick<Game, "ID" | "slug"> }) {
           const { error } = await addItemToCart(params["slug"]);
           router.refresh();
           if (error) {
-            showMessage({ message: error, type: "error" });
+            return showMessage({ message: error, type: "error" });
           }
+          return showMessage({ message: "Added " + game.name + " to cart", type: "success" });
         });
       }}
     >
