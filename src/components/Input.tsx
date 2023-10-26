@@ -42,7 +42,7 @@ export const InterposedInput = React.forwardRef<
     containerProps,
     ...props
   },
-  ref
+  ref,
 ) {
   const { className: leftIconCl = "" } = leftIconProps || {};
   const { className: rightIconCl = "" } = rightIconProps || {};
@@ -56,7 +56,11 @@ export const InterposedInput = React.forwardRef<
       )}
       <Input className={className} {...props} ref={ref} />
       {rightIcon && (
-        <svg {...rightIconProps} className={"w-5 h-5 " + rightIconCl}>
+        <svg
+          role="button"
+          {...rightIconProps}
+          className={"w-5 h-5 " + rightIconCl}
+        >
           <use xlinkHref={rightIcon}></use>
         </svg>
       )}

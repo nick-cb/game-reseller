@@ -47,7 +47,7 @@ export const useBreakpoints = <T extends number>(
   against?: number,
 ) => {
   const [result, setResult] = useState<{ [K in `b${T}`]: -1 | 0 | 1 }>(
-     createBreakpoints(breakpoints, against).result,
+    createBreakpoints(breakpoints, against).result,
   );
 
   useLayoutEffect(() => {

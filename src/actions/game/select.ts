@@ -4,6 +4,7 @@ import { connectDB, sql } from "@/database";
 import Reviews, {
   Game,
   GameImages,
+  Polls,
   SystemDetails,
   Systems,
   Tags,
@@ -35,6 +36,7 @@ type FBySlug = RowDataPacket &
     >[];
     tags: Tags[];
     reviews: OmitGameId<Reviews>[];
+    polls: OmitGameId<Polls>[]
   };
 
 export type FVideoFullInfo = Videos & {
@@ -57,7 +59,7 @@ export async function findGameBySlug(slug: string, db?: Connection) {
        td.tags   as tags,
        r.reviews as reviews,
        p.polls   as polls
-from games
+  from games
          left join (select gi.game_id,
                            json_arrayagg(
                                    json_object(
@@ -166,14 +168,14 @@ export async function findMappingById(id: number, db?: Connection) {
   const _db = db || (await connectDB());
 
   return _db.execute<FMappingById[]>(sql`
-select *, gi.images
-from games
-         left join (select game_id,
-                           json_arrayagg(json_object('ID', gi.ID, 'type', gi.type, 'pos_row', gi.pos_row, 'alt', gi.alt,
-                                                     'url', gi.url)) as images
-                    from game_images gi
-                    group by game_id) gi on games.ID = gi.game_id
-where base_game_id = ${id};
+    select *, gi.images
+    from games
+             left join (select game_id,
+                               json_arrayagg(json_object('ID', gi.ID, 'type', gi.type, 'pos_row', gi.pos_row, 'alt', gi.alt,
+                                                         'url', gi.url)) as images
+                        from game_images gi
+                        group by game_id) gi on games.ID = gi.game_id
+    where base_game_id = ${id};
 `);
 }
 
@@ -283,4 +285,58 @@ export async function countGameAddonsById(id: number) {
   `);
 
   return countRes[0][0] as { count: number };
+}
+
+export async function getGameAddons({
+  db,
+  limit,
+  skip,
+  keyword,
+  gameId,
+}: {
+  db?: Connection;
+  limit?: number;
+  skip?: number;
+  keyword?: string;
+  gameId: number;
+}) {
+  const _db = db || (await connectDB());
+  let whereClause = sql`where base_game_id = ${gameId}`;
+  if (keyword) {
+    whereClause += sql` 
+      and games.name like '%${keyword}%'
+    `;
+  }
+  const countReq = _db.execute<RowDataPacket[]>(sql`
+      select count(*) as total_count
+      from games
+      ${whereClause}
+      group by games.base_game_id;
+  `);
+  const gameReq = _db.execute<
+    (RowDataPacket &
+      (Game & {
+        images: GameImages[];
+      }))[]
+  >(sql`
+      select games.*, gi.images
+      from games
+               left join (select game_id,
+                                 json_arrayagg(json_object('ID', ID, 'type', type, 'url', url, 'pos_row', pos_row, 'alt',
+                                                           alt)) as images
+                          from game_images
+                          group by game_id) gi
+                         on games.ID = gi.game_id
+      ${whereClause}
+      limit ${limit} offset ${skip}
+      ;
+  `);
+  const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
+
+  return {
+    data: gameRes[0] as (Game & {
+      images: GameImages[];
+    })[],
+    total: countRes[0][0]?.total_count || 0,
+  };
 }

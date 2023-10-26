@@ -38,18 +38,11 @@ const nextConfig = {
 };
 
 export function LoginView({
-  // visible = true,
   modal,
   order,
-  // closeDialog,
 }: {
-  // visible?: boolean;
   modal: boolean;
   order?: string;
-  // closeDialog?: (
-  //   ref: React.RefObject<HTMLDivElement>,
-  //   options?: { goback?: number },
-  // ) => void;
 }) {
   const [strategy, setStrategy] = useState<
     "email" | "facebook" | "google" | "apple"
@@ -104,7 +97,6 @@ export function LoginView({
         <p className="text-xl text-center">Login</p>
       </div>
       <AnimatedSizeProvider
-        // key={visible?.toString()}
         as="div"
         animationOptions={{
           duration: 250,
@@ -133,7 +125,6 @@ export function LoginView({
         <AnimatedSizeItem
           className={"px-5 py-8 w-max "}
           active={!strategy}
-          // delay={50}
         >
           <StrategyList
             type={"login"}
@@ -171,6 +162,7 @@ export function LoginView({
                   setStrategy(undefined);
                   setDirection(0);
                 }}
+                disabled={form.formState.isSubmitting}
               >
                 Go back
               </button>

@@ -20,8 +20,8 @@ export type Game = {
   critic_rec: string | null;
   critic_pct: number | null;
 } & (
-  | { type: "base_game"; base_game_id: null }
-  | { type: "add_on" | "dlc"; base_game_id: number }
+  | { type: "base_game"; base_game_id: null, base_game_slug: null }
+  | { type: "add_on" | "dlc"; base_game_id: number, base_game_slug: string }
 );
 export type CriticAvg = "weak" | "fair" | "strong" | "mighty";
 
@@ -62,6 +62,7 @@ export default interface Reviews {
   game_id: number;
   text: string | null;
   url: string | null;
+  avg_rating: number;
 }
 
 export type Requirements = {

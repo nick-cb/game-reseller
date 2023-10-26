@@ -21,7 +21,8 @@ import SystemRequirements from "@/components/game/SystemRequirements";
 import { ScrollBulletIndicator } from "@/components/home/hero-slider";
 import { AddToCartButton } from "@/components/game/AddToCartBtn";
 import { Scroll, ScrollItem } from "@/components/scroll/index";
-import ActiveLink from "@/components/ActiveLink";
+import { GameNav } from "@/components/game/GameNav";
+import { groupImages } from "@/utils/data";
 
 const criticRec = {
   weak: "51.548667764616276",
@@ -31,7 +32,7 @@ const criticRec = {
     "51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276, 5, 51.548667764616276",
 };
 
-function groupImages(images: OmitGameId<GameImages>[]) {
+function groupLandscape(images: OmitGameId<GameImages>[]) {
   const carousel: OmitGameId<GameImages>[] = [];
   const longDescription: OmitGameId<GameImages>[][] = [];
 
@@ -67,9 +68,6 @@ const page = async ({ params }: { params: any }) => {
   }
   const { count: addOnCount } = await countGameAddonsById(game.ID);
 
-  const logo = game.images.find((img: any) => {
-    return img.type.toLowerCase().includes("logo");
-  });
   const mappingResponse = await findMappingById(
     game.type === "base_game" ? game.ID : game.base_game_id,
   );
@@ -79,30 +77,19 @@ const page = async ({ params }: { params: any }) => {
   const dlcAndAddons = dlc.concat(addOns);
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =
-    groupImages(game.images);
+    groupLandscape(game.images);
+  const { logo, landscape } = groupImages(game.images);
 
   return (
     <div className="pt-6">
       <h1 className="text-2xl text-white_primary pb-6">{game.name}</h1>
-      {addOnCount ? (
-        <nav id="game-nav" className="mb-6">
-          <ul className="flex gap-4 items-center">
-            <li>
-              <h2 className="text-lg">
-                <ActiveLink matches={[{ name: slug }]}>
-                    <Link href={slug}>Overview</Link>
-                </ActiveLink>
-              </h2>
-            </li>
-            <li>
-              <h2 className="text-lg">
-                <ActiveLink matches={[{ name: "slug/.*", regex: true }]}>
-                  <Link href={slug + "/add-ons"} className="text-white_primary/60">Add-Ons</Link>
-                </ActiveLink>
-              </h2>
-            </li>
-          </ul>
-        </nav>
+      {addOnCount || game.base_game_id ? (
+        <div className="mb-6">
+          <GameNav
+            slug={game.base_game_slug || game.slug}
+            type={game.base_game_id ? "add-ons" : "base"}
+          />
+        </div>
       ) : null}
       <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-6 grid-rows-[min-content_auto] gap-4 md:gap-8 lg:gap-16">
         <section className="col-start-1 col-span-full md:[grid-column:-3/1] row-start-1 row-end-2">
@@ -116,16 +103,15 @@ const page = async ({ params }: { params: any }) => {
           col-span-3 md:[grid-column:-1/-3] md:col-start-3 md:col-end-4"
         >
           <div className="flex flex-col gap-4 md:sticky top-[116px]">
-            {logo ? (
-              <div className="relative w-full aspect-[3/2] hidden md:block">
-                <Image
-                  src={logo.url}
-                  fill
-                  alt={`logo of ${game.name}`}
-                  className="object-contain"
-                />
-              </div>
-            ) : null}
+            <div className="relative w-full aspect-[3/2] hidden md:flex justify-center items-center">
+              <Image
+                src={logo?.url || landscape.url}
+                width={420}
+                height={300}
+                alt={`logo of ${game.name}`}
+                className="object-contain rounded"
+              />
+            </div>
             <p className="text-xs bg-white_primary/[.15] text-white_primary px-2 py-1 w-max rounded shadow-sm shadow-black/60">
               {pascalCase(game.type, "_")}
             </p>
@@ -155,9 +141,30 @@ const page = async ({ params }: { params: any }) => {
               </div>
               <div className="flex justify-between items-center py-2 border-b border-white/20">
                 <p className="text-white/60">Platform</p>
-                <p className="text-white_primary">
-                  {game.systems.map((system) => system.os)}
-                </p>
+                <div className="text-white_primary flex items-center gap-2">
+                  {game.systems.some(
+                    (s) => s.os?.toLowerCase()?.includes("window"),
+                  ) ? (
+                    <div title="Windows">
+                      <svg width={24} height={24} fill="white">
+                        <use xlinkHref="/svg/sprites/actions.svg#window" />
+                      </svg>
+                    </div>
+                  ) : null}
+                  {game.systems.some(
+                    (s) => s.os?.toLowerCase()?.includes("mac"),
+                  ) ? (
+                    <div title="Mac os">
+                      <svg width={24} height={24} fill="white">
+                        <use
+                          width={24}
+                          height={24}
+                          xlinkHref="/svg/sprites/actions.svg#mac"
+                        />
+                      </svg>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
@@ -207,12 +214,15 @@ const page = async ({ params }: { params: any }) => {
                 </ReactMarkdown>
                 {longDescriptionImages.length > 0 ? (
                   <div>
-                    {longDescriptionImages.map((row) => {
+                    {longDescriptionImages.map((row, index) => {
                       return (
-                        <div className="flex gap-4 mb-4">
+                        <div className="flex gap-4 mb-4" key={index}>
                           {row.map((img) => {
                             return (
-                              <div className="w-full aspect-video relative rounded overflow-hidden">
+                              <div
+                                key={img.ID}
+                                className="w-full aspect-video relative rounded overflow-hidden"
+                              >
                                 <Image src={img.url} fill alt={img.alt || ""} />
                               </div>
                             );
@@ -230,13 +240,13 @@ const page = async ({ params }: { params: any }) => {
           <>
             <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
               <h2 className="text-xl text-white_primary pb-4">Editions</h2>
-              {editions.map((edition: any) => (
-                <>
+              {editions.map((edition) => (
+                <React.Fragment key={edition.ID}>
                   <div className="flex flex-col gap-4">
                     <GameCard game={edition} type="edition" />
                   </div>
                   <br className="last:hidden" />
-                </>
+                </React.Fragment>
               ))}
             </section>
           </>
@@ -245,13 +255,13 @@ const page = async ({ params }: { params: any }) => {
           <>
             <section className="col-start-1 col-span-full xl:[grid-column:-3/1]">
               <h2 className="text-xl text-white_primary pb-4">Add-ons</h2>
-              {dlcAndAddons.slice(0, 3).map((edition: any) => (
-                <>
+              {dlcAndAddons.slice(0, 3).map((edition) => (
+                <React.Fragment key={edition.ID}>
                   <div className="flex flex-col gap-4">
                     <GameCard game={edition} type="add-on" />
                   </div>
                   <br className="last:hidden" />
-                </>
+                </React.Fragment>
               ))}
               {dlcAndAddons.length > 3 ? (
                 <Link
@@ -276,6 +286,7 @@ const page = async ({ params }: { params: any }) => {
                 const starId = "star-rating-id-" + starIndex;
                 return (
                   <svg
+                    key={starIndex}
                     xmlns="http://www.w3.org/2000/svg"
                     className="svg"
                     viewBox="0 0 36 34"
@@ -312,22 +323,25 @@ const page = async ({ params }: { params: any }) => {
         ) : null}
         {game.polls && (
           <section className="col-start-1 col-span-full xl:[grid-column:-3/1] grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
-            {game.polls.slice(0, 6).map((poll: any) => {
+            {game.polls.slice(0, 6).map((poll) => {
               return (
                 <div
+                  key={poll.ID}
                   className={
                     "bg-paper rounded-md " +
                     " flex xl:flex-col items-center xl:justify-center " +
                     " gap-4 xl:gap-0 p-4 xl:p-0 xl:aspect-[4/3] "
                   }
                 >
-                  <Image
-                    src={poll.result_emoji}
-                    width={42}
-                    height={42}
-                    alt={poll.result_title}
-                    className="xl:mb-4"
-                  />
+                  {poll.result_emoji ? (
+                    <Image
+                      src={poll.result_emoji}
+                      width={42}
+                      height={42}
+                      alt={poll.result_title}
+                      className="xl:mb-4"
+                    />
+                  ) : null}
                   <div className="xl:flex flex-col justify-center items-center">
                     <p className="mb-1 xl:mb-2 text-xs md:text-sm text-white_primary/60">
                       {poll.result_text}
@@ -476,9 +490,10 @@ const page = async ({ params }: { params: any }) => {
                 id="review-list-scroll"
                 className="flex gap-8  overflow-x-scroll scrollbar-hidden snap-mandatory snap-x"
               >
-                {game.reviews.map((review: any) => {
+                {game.reviews.map((review) => {
                   return (
                     <ScrollItem
+                      key={review.ID}
                       as="li"
                       className="w-4/5 sm:w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 snap-center"
                     >
@@ -491,7 +506,7 @@ const page = async ({ params }: { params: any }) => {
                         <ul className="flex gap-2">
                           {[1, 2, 3, 4, 5].map((starIndex) => {
                             const remainder =
-                              review.earned_score < starIndex
+                              review.earned_score! < starIndex
                                 ? review.avg_rating % 1
                                 : 0;
                             const starId = "star-rating-id-" + starIndex;
@@ -543,7 +558,7 @@ const page = async ({ params }: { params: any }) => {
                         </ul>
                       ) : (
                         <p>
-                          {Math.round(review.earned_score * 100) / 100}/
+                          {Math.round(review.earned_score! * 100) / 100}/
                           {review.total_score}
                         </p>
                       )}
@@ -556,9 +571,9 @@ const page = async ({ params }: { params: any }) => {
                 })}
               </ul>
               <ul className="flex gap-4 justify-center my-2">
-                {game.reviews.map((_, index) => {
+                {game.reviews.map((review, index) => {
                   return (
-                    <li className={"sm:even:hidden"}>
+                    <li key={review.ID} className={"sm:even:hidden"}>
                       <ScrollBulletIndicator index={index} />
                     </li>
                   );

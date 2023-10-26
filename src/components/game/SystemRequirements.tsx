@@ -29,7 +29,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
             <ScrollItem
               as="li"
               key={system.ID}
-              className="grid grid-cols-2 gap-x-8 gap-y-4 w-full flex-shrink-0 snap-center"
+              className="grid grid-cols-2 gap-x-8 gap-y-4 w-full flex-shrink-0 snap-center auto-rows-min"
             >
               <h3 className="text-sm">Minimum</h3>
               <h3 className="text-sm">
@@ -39,7 +39,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                 return (
                   <React.Fragment key={detail.ID}>
                     {detail.minimum ? (
-                      <div className="text-sm grid-cols-1">
+                      <div className="text-sm grid-cols-1 h-min">
                         <div className="text-white_primary/60">
                           {detail.title}
                         </div>
@@ -47,7 +47,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                       </div>
                     ) : null}
                     {detail.recommended ? (
-                      <div className="text-sm grid-cols-2">
+                      <div className="text-sm grid-cols-2 h-min">
                         <div className="text-white_primary/60">
                           {detail.title}
                         </div>

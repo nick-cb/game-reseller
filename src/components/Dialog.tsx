@@ -94,7 +94,7 @@ export const Dialog = React.forwardRef<
       <dialog
         ref={internalRef}
         className={
-          "grid bg-paper_2 rounded-lg shadow-lg shadow-black text-white_primary " +
+          "grid bg-paper_2 rounded-lg shadow-lg shadow-black/60 text-white_primary " +
           "overflow-x-hidden overflow-y-scroll scrollbar-hidden " +
           "inset-0 m-auto fixed " +
           "[&:not([open])]:opacity-0 [&:not([open])]:pointer-events-none " +

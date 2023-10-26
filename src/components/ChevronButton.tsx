@@ -18,12 +18,13 @@ const ChevronButton = React.memo(
           e.preventDefault();
           onClick(e);
         }}
-        className={`p-2 h-max rounded-full
-            bg-white/40 opacity-0 transition-opacity 
-            flex justify-center items-center
-            absolute ${
-              direction === "right" ? "-right-3" : "-left-3"
-            } ${className}`}
+        className={
+          "w-8 h-8 rounded-full bg-white/40 " +
+          "flex justify-center items-center " +
+          `absolute ${
+            direction === "right" ? "right-0" : "left-0"
+          } ${className}`
+        }
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +45,7 @@ const ChevronButton = React.memo(
         </svg>
       </button>
     );
-  })
+  }),
 );
 
 export default ChevronButton;

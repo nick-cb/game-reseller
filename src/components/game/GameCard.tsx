@@ -1,3 +1,6 @@
+import { OmitGameId } from "@/actions/game/select";
+import { Game, GameImages } from "@/database/models";
+import { currencyFormatter } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -6,7 +9,9 @@ const GameCard = ({
   game,
   type,
 }: {
-  game: any;
+  game: Pick<Game, "ID" | "name" | "slug" | "description" | "sale_price"> & {
+    images: OmitGameId<GameImages>[];
+  };
   type: "base" | "edition" | "add-on";
 }) => {
   const landscapeImage = game.images.find((g: any) => {
@@ -18,7 +23,7 @@ const GameCard = ({
       <Link href={`/${game.slug}`} className="contents">
         <div className="col-start-1 col-end-6 sm:col-end-3 w-full aspect-video h-full relative">
           <Image
-            src={landscapeImage?.url}
+            src={landscapeImage?.url || ""}
             alt={`landscape of ${type} ${game.name}`}
             fill
           />
@@ -48,7 +53,9 @@ const GameCard = ({
         gap-2 sm:gap-4"
       >
         <p className="text-white_primary">
-          {game.sale_price ? "$" + game.sale_price : "Free"}
+          {parseInt(game.sale_price.toString())
+            ? currencyFormatter(game.sale_price)
+            : "Free"}
         </p>
         <button className="bg-primary text-white py-2 w-full sm:w-44 rounded hover:brightness-105 transition-[filter]">
           Buy now

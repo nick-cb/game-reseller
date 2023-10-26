@@ -44,7 +44,7 @@ const page = async ({
             {data && Array.isArray(data) && data.length ? (
               data.map((game: any) => (
                 <PortraitGameCard
-                  key={game._id}
+                  key={game.ID}
                   game={game}
                   className="snap-start block"
                 />

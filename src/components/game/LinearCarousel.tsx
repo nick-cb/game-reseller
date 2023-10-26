@@ -11,6 +11,7 @@ import { ScrollItem } from "@/components/scroll/index";
 import { useScroll, useScrollFactory } from "@/components/scroll/hook";
 
 const SLIDE_INTERVAL = 5000;
+const breakpoints = [640, 1536] as const;
 export default function LinearCarousel({
   images = [],
   videos = [],
@@ -25,7 +26,8 @@ export default function LinearCarousel({
     return _data.concat(videos).concat(images);
   }, [images, videos]);
 
-  const { b640: sm } = useBreakpoints([640]);
+  const { b640: sm, b1536: xl2 } = useBreakpoints(breakpoints);
+  const itemsPerWindow = xl2 >= 0 ? 7 : 4;
   const factory = useScrollFactory({
     containerSelector: "#linear-carousel-indicator",
     observerOptions: {
@@ -116,7 +118,7 @@ export default function LinearCarousel({
               onClick={() => {
                 goToItem(active.index + 1);
               }}
-              className=" w-8 h-10 flex justify-center items-center focus:outline outline-1 rounded "
+              className="w-8 h-10 flex justify-center items-center focus:outline outline-1 rounded "
             >
               <svg width={24} height={24} fill="white" className="-rotate-90">
                 <use
@@ -138,7 +140,7 @@ export default function LinearCarousel({
                 <ScrollItem
                   key={index}
                   as={"li"}
-                  className="rounded overflow-hidden w-full shrink-0 mr-4 snap-start"
+                  className="rounded overflow-hidden w-full shrink-0 snap-start"
                 >
                   {sm >= 0 ? (
                     <Video
@@ -177,10 +179,12 @@ export default function LinearCarousel({
           <ul
             id={"linear-carousel-indicator"}
             ref={previewListRef}
-            className="py-[1px] px-[1px] relative
-          overflow-auto snap-x snap-mandatory scrollbar-hidden
-          col-start-1 col-end-3 scroll-p-2 [scrollbar-width:none] [-ms-overflw-style:none]
-          gap-4 flex w-max max-w-full"
+            className={
+              "relative " +
+              "overflow-x-scroll overflow-y-visible snap-x snap-mandatory scrollbar-hidden " +
+              "col-start-1 col-end-3 [scrollbar-width:none] [-ms-overflw-style:none] " +
+              "gap-4 flex w-max max-w-[calc(100%-80px)] px-2 scroll-p-2 rounded py-[1px] "
+            }
           >
             {sm >= 0
               ? videos.map((vid, index) => {
@@ -190,22 +194,28 @@ export default function LinearCarousel({
                       as="li"
                       factory={factory}
                       onClick={() => {
+                        console.log({ index });
                         goToItem(index);
                       }}
                     >
-                      <div
+                      <button
                         className={
-                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start flex items-center justify-center " +
+                          "relative transition-opacity w-24 h-14 rounded bg-default flex items-center justify-center " +
                           (active.index === index
                             ? " opacity-100 outline outline-1 "
                             : "")
                         }
+                        style={{
+                          scrollSnapAlign:
+                            index % itemsPerWindow === 0 ? "start" : "",
+                        }}
                       >
                         <Image
                           src={vid.thumbnail}
                           alt={""}
                           className="rounded sm:block"
-                          fill
+                          width={96}
+                          height={56}
                         />
                         <svg
                           width={16}
@@ -219,37 +229,44 @@ export default function LinearCarousel({
                             xlinkHref={"/svg/sprites/actions.svg#play"}
                           />
                         </svg>
-                      </div>
+                      </button>
                     </ScrollItem>
                   );
                 })
               : null}
             {sm >= 0
-              ? images.map((img, index) => {
+              ? images.map((img, _index) => {
+                  const index = _index + videos.length;
                   return (
                     <ScrollItem
-                      key={index + videos.length}
+                      key={index}
                       as="li"
                       factory={factory}
                       onClick={() => {
-                        goToItem(index + videos.length);
+                        goToItem(index);
                       }}
+                      data-index={index}
                     >
-                      <div
+                      <button
                         className={
-                          "relative transition-opacity w-24 h-14 rounded bg-default snap-start " +
-                          (active.index === index + videos.length
+                          "relative transition-opacity w-24 h-14 rounded bg-default " +
+                          (active.index === index
                             ? " opacity-100 outline outline-1 "
                             : "")
                         }
+                        style={{
+                          scrollSnapAlign:
+                            index % itemsPerWindow === 0 ? "start" : "",
+                        }}
                       >
                         <Image
                           src={img.url}
                           alt={img.type}
                           className="rounded hidden sm:block"
                           fill
+                          priority
                         />
-                      </div>
+                      </button>
                     </ScrollItem>
                   );
                 })
@@ -277,24 +294,14 @@ export default function LinearCarousel({
           </ul>
           <ChevronButton
             direction="left"
-            className={
-              "top-1/2 -translate-y-1/2 hidden sm:block " +
-              ((indicatorScroll.elements[0]?.intersectionRatio || 0) < 0.9
-                ? " opacity-100 "
-                : " opacity-0 ")
-            }
+            className={"top-1/2 -translate-y-1/2 hidden sm:flex"}
             onClick={() => {
               indicatorScroll.scrollToNextOffView("left");
             }}
           />
           <ChevronButton
             direction="right"
-            className={
-              "top-1/2 -translate-y-1/2 hidden sm:block " +
-              ((indicatorScroll.elements.at(-1)?.intersectionRatio || 0) < 0.9
-                ? " opacity-100 "
-                : " opacity-0 ")
-            }
+            className={"top-1/2 -translate-y-1/2 hidden sm:flex"}
             onClick={() => {
               indicatorScroll.scrollToNextOffView("right");
             }}
