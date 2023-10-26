@@ -7,13 +7,12 @@ export function GameNav({
   type: "add-ons" | "base";
   slug: string;
 }) {
-  console.log({ type });
   return (
     <nav id="game-nav">
       <ul className="flex gap-4 items-center">
         <li>
           <h2 className={"text-lg " + (type === "base" ? "active-link" : "")}>
-            <Link href={slug} className={"text-white_primary/60 "}>
+            <Link href={"/" + slug} className={"text-white_primary/60 "}>
               Overview
             </Link>
           </h2>

@@ -123,8 +123,9 @@ export function LoginView({
         className={"relative"}
       >
         <AnimatedSizeItem
-          className={"px-5 py-8 w-max "}
+          className={"3/4sm:px-5 py-8 w-max "}
           active={!strategy}
+          delay={50}
         >
           <StrategyList
             type={"login"}
@@ -137,9 +138,10 @@ export function LoginView({
         <AnimatedSizeItem
           active={strategy === "email"}
           className={
-            "absolute px-5 py-8 top-0 opacity-0 " +
+            "absolute w-max 3/4sm:px-5 py-8 top-0 opacity-0 " +
             (strategy === "email" ? "" : "pointer-events-none")
           }
+          delay={100}
         >
           <EmailLoginForm
             form={form}

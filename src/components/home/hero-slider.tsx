@@ -93,7 +93,7 @@ export function ScrollBulletIndicator({ index }: { index: number }) {
   );
 }
 
-function SliderItem({ item, index }: { item: SliderGame; index: number }) {
+function SliderItem({ item }: { item: SliderGame; index: number }) {
   return (
     <ScrollItem
       as={"li"}
@@ -101,10 +101,7 @@ function SliderItem({ item, index }: { item: SliderGame; index: number }) {
         "relative w-11/12 aspect-[9/11] flex-shrink-0 h-full snap-start rounded-xl overflow-hidden flex "
       }
     >
-      <div
-        data-index={index}
-        className="intersect-point absolute left-1/2 top-1/2 bg-blue-200"
-      ></div>
+      <div className="intersect-point absolute left-1/2 top-1/2 bg-blue-200"></div>
       <Link href={"/" + item.slug} className="contents">
         <Image className="" src={item.images.portrait?.url || ""} alt="" fill />
       </Link>

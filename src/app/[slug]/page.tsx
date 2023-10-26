@@ -292,7 +292,6 @@ const page = async ({ params }: { params: any }) => {
                     viewBox="0 0 36 34"
                     width={36}
                     height={36}
-                    data-index={remainder}
                     stroke="rgb(245, 245, 245)"
                     strokeWidth={1}
                   >
@@ -518,7 +517,6 @@ const page = async ({ params }: { params: any }) => {
                                   viewBox="0 0 36 34"
                                   width={14}
                                   height={14}
-                                  data-index={remainder}
                                   stroke="rgb(245, 245, 245)"
                                   strokeWidth={1}
                                 >

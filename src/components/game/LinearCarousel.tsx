@@ -245,7 +245,6 @@ export default function LinearCarousel({
                       onClick={() => {
                         goToItem(index);
                       }}
-                      data-index={index}
                     >
                       <button
                         className={

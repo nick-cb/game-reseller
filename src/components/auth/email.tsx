@@ -23,7 +23,8 @@ export const EmailSignupForm = React.forwardRef<
     <form
       ref={ref}
       className={
-        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 3/4sm:gap-y-4 " + className
+        "grid 3/4sm:grid-cols-[max-content_min-content] gap-x-4 gap-y-2 3/4sm:gap-y-4 " +
+        className
       }
       {...props}
     >
@@ -139,7 +140,8 @@ export const EmailLoginForm = React.forwardRef<
         }}
         leftIcon="/svg/sprites/actions.svg#email"
         placeholder="Enter your email"
-        className="p-3"
+        className="p-3 !text-base"
+        containerProps={{ className: "w-80" }}
         {...register("email")}
       />
       <hr className="3/4sm:hidden my-1 border-paper_2" />
@@ -152,7 +154,8 @@ export const EmailLoginForm = React.forwardRef<
           className: "fill-white !stroke-white ml-3",
         }}
         placeholder="Enter your password"
-        className="p-3"
+        className="p-3 !text-base"
+        containerProps={{ className: "w-80" }}
         {...register("password")}
       />
       <hr className="3/4sm:hidden my-1 border-paper_2" />

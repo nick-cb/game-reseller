@@ -33,7 +33,6 @@ export default function ExpandableDescription({
       }
       ref={ref}
     >
-      {children}
       {show ? (
         <div className={(!expanded ? "bottom-0 absolute " : "") + " w-full"}>
           {!expanded ? (
@@ -41,8 +40,10 @@ export default function ExpandableDescription({
           ) : null}
           <div className="bg-default">
             <button
-              className="bg-paper py-4 w-full rounded text-sm relative 
-            after:bg-white/25 after:absolute after:inset-0 after:opacity-0 after:rounded after:transition-opacity hover:after:opacity-100 "
+              className={
+                "bg-paper py-4 w-full rounded text-sm relative " +
+                "after:bg-white/25 after:absolute after:inset-0 after:opacity-0 after:rounded after:transition-opacity hover:after:opacity-100 "
+              }
               onClick={() => {
                 setExpanded((prev) => !prev);
               }}
@@ -52,6 +53,7 @@ export default function ExpandableDescription({
           </div>
         </div>
       ) : null}
+      {children}
     </div>
   );
 }

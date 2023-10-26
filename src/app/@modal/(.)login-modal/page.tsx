@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent } from "@/components/Dialog";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LoginView } from "@/components/auth/LoginView";
 import { SnackContextProvider } from "@/components/SnackContext";
@@ -14,8 +14,10 @@ export default function LoginModal({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    dialogRef.current?.showModal();
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      dialogRef.current?.showModal();
+    }, 100)
   }, []);
 
   return (
@@ -24,10 +26,10 @@ export default function LoginModal({
       onClose={() => {
         router.back();
       }}
-      className="z-50"
+      className="z-50 min-h-[560px] h-max"
     >
       <SnackContextProvider>
-        <DialogContent as="div">
+        <DialogContent as="div" className={'overflow-hidden h-min'}>
           <LoginView order={searchParams["order"]} modal />
         </DialogContent>
       </SnackContextProvider>

@@ -107,7 +107,7 @@ export default function Video({
     >
       <video
         ref={videoRef}
-        autoPlay={true}
+        autoPlay={false}
         muted
         preload="metadata"
         poster={thumbnail}

@@ -12,7 +12,7 @@ export function MobileGameList({
   return (
     <div className="md:hidden">
       <h2 className="uppercase text-lg mb-4">Order summary</h2>
-      <ul>
+      <ul className="flex flex-col gap-2">
         {gameList.map((game) => {
           return (
             <li className={"w-full bg-paper rounded px-3 py-2 flex gap-4 "}>

@@ -79,7 +79,7 @@ export function CheckoutModal({
         remountChild
         className="lg:w-3/4 2xl:w-1/2 w-full !bg-default !p-0"
       >
-        <DialogContent as="div" className="p-4">
+        <DialogContent as="div" className="p-4 w-full">
           {children}
         </DialogContent>
       </Dialog>

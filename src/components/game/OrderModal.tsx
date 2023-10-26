@@ -22,7 +22,7 @@ export default function ItemOrderModal({ children }: PropsWithChildren) {
     >
       <DialogContent
         as="div"
-        className="flex flex-col-reverse md:grid md:grid-rows-[minmax(0px,auto)_min-content] gap-8"
+        className="flex flex-col-reverse md:grid md:grid-rows-[minmax(0px,auto)_min-content] gap-8 w-full"
       >
         {children}
       </DialogContent>

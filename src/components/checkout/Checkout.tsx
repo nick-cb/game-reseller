@@ -78,7 +78,6 @@ export async function CheckoutView({
   for (const game of gameList.filter(game => game.checked)) {
     amount += parseFloat(game.sale_price.toString());
   }
-  console.log({amount});
 
   const placeOrder = async (order: Partial<CreateOrderPayload>) => {
     "use server";
