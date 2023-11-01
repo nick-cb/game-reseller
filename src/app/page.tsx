@@ -6,12 +6,10 @@ import React from "react";
 import { FeatureCard } from "@/components/HoverPlayVideo";
 import { groupImages } from "@/utils/data";
 import { getCollectionByKey } from "@/actions/collections";
-import { connectDB } from "@/database";
 import { getHeroCarousel } from "@/actions/homepage";
 import { ScrollItem, Scroll } from "@/components/scroll/index";
 
 export default async function Home() {
-  const db = await connectDB();
   // TODO: Using transaction
   // TODO: Save page configuration on db
   const [
@@ -24,7 +22,7 @@ export default async function Home() {
     },
     { data: pillars },
   ] = await Promise.all([
-    getHeroCarousel({ db }),
+    getHeroCarousel(),
     getCollectionByKey(["top_sale"]),
     getCollectionByKey(["feature"]),
     getCollectionByKey(["new_release", "most_played", "top_player_rated"]),

@@ -1,11 +1,9 @@
-import { connectDB, sql } from "@/database";
-import { Connection } from "mysql2/promise";
+import { sql } from "@/database";
+import { RowDataPacket } from "mysql2/promise";
 import { FCollectionByName } from "../collections";
 
-export async function getHeroCarousel(option?: { db: Connection }) {
-  const { db } = option || {};
-  const _db = db || (await connectDB());
-  const response = await _db.execute<FCollectionByName[]>(sql`
+export async function getHeroCarousel() {
+  const response = await sql`
 select 
   c.*,
   cd.list_game
@@ -47,17 +45,7 @@ from
     group by 
       collection_id
   ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, 'hero_carousel');
-`);
+`;
 
-  return { data: response[0][0] };
+  return { data: (response as RowDataPacket[])[0][0] as FCollectionByName };
 }
-
-/*
- * fortnite
- * civ 6
- * God of war
- * Genshin impact
- * Mortal combat 1
- * Cyberpunk 2077
- * Cities: Skylines
- * */

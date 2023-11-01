@@ -49,16 +49,27 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     if (!entry) {
       return;
     }
+    // const { x, y, width, height, right, bottom } =
+    //   entry.target.getBoundingClientRect();
+    // const {
+    //   x: rootX,
+    //   y: rootY,
+    //   width: rootW,
+    //   height: rootH,
+    //   right: rootR,
+    //   bottom: rootB,
+    // } = root.getBoundingClientRect();
 
-    // root.scroll({
-    //   // @ts-ignore
-    //   left: entry.target.offsetLeft,
-    //   behavior: 'smooth',
-    // })
-    entry.target.scrollIntoView({
+    root.scroll({
+      left: entry.boundingClientRect.width * index,
       behavior: "smooth",
-      block: "nearest",
     });
+    // console.log(entry);
+    // entry.target.scrollIntoView({
+    //   block: 'nearest',
+    //   inline: 'nearest',
+    //   behavior: 'smooth',
+    // });
   };
 
   const scrollToPage = (page: number, pageStep: number) => {
@@ -176,3 +187,36 @@ export function useScrollFactory({
 
   return { elements, observer, observerOptions };
 }
+
+/*
+ * const { observer, scrollToIndex } = useScroll('#container', {
+ *  active(elements: Entries[]) {
+ *
+ *  }
+ * });
+ *
+ * <Scroll containerSelector={'#container'} active={(elements: Entries[])=> {}}>
+ *
+ * </Scroll>
+ *
+ * useScroll() {
+ *    const observer = new IntersectionObserver(() => {
+ *
+ *    }, {
+ *
+ *    })
+ *
+ *    goToIndex(index: number) {
+ *      observer.takeRecords();
+ *    }
+ * }
+ * */
+
+/*
+ * What are we worried about? We might need to use observed values and get stalled state
+ * Observer callback being run when the pass threshold, it can be run multiple time with different element
+ * Call goToIndex(index):1 -> scroll root ->
+ * Call goToIndex(index):2
+ *  - Before observer callback run
+ *  - After observer callback run
+ * */

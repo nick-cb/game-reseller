@@ -70,9 +70,7 @@ export default function RootLayout({
                   >
                     <SearchbarDistributeTop />
                   </form>
-                  {/* @ts-expect-error Server Component */}
-                  <CartButton />
-                  {/* @ts-expect-error Server Component */}
+                  {/* <CartButton /> */}
                   <AuthControls />
                 </div>
               </HideOnRoute>
@@ -124,9 +122,6 @@ export default function RootLayout({
                 showSpinner={false}
                 color={"hsl(209, 100%, 45%)"}
               />
-              {/* <div className="top-[108px] fixed w-full z-10"> */}
-              {/*   <TurboLink /> */}
-              {/* </div> */}
             </HideOnRoute>
           </Suspense>
           <main className="px-4 lg:px-24 xl:px-44 pt-[116px] pb-16 text-white_primary max-w-[1952px] mx-auto">

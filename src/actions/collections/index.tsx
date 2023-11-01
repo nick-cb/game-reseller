@@ -1,7 +1,7 @@
 "use server";
 
-import { connectDB, sql } from "@/database";
-import { Connection, RowDataPacket } from "mysql2/promise";
+import { sql } from "@/database";
+import { RowDataPacket } from "mysql2/promise";
 import { Collections, Game, GameImages } from "@/database/models";
 import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 
@@ -14,8 +14,7 @@ export async function getCollections(query: { keys: string[] }) {
   for (const key of keys.slice(1)) {
     queryCondition.concat(`and c.key = ${key}`);
   }
-  const db = await connectDB();
-  const result = await db.execute(sql`
+  const result = await sql`
 select 
   * 
 from 
@@ -104,7 +103,7 @@ from
   ) cd on c.ID = cd.collection_id
   ${queryCondition ? queryCondition : ""}
 ;
-`);
+`;
 
   return result[0];
 }
@@ -126,9 +125,8 @@ export type FCollectionByName = RowDataPacket &
     })[];
   };
 
-export async function getCollectionByKey(key: string[], db?: Connection) {
-  const _db = db || (await connectDB());
-  const response = await _db.execute<FCollectionByName[]>(sql`
+export async function getCollectionByKey(key: string[]) {
+  const response = await sql`
 select 
   c.*,
   cd.list_game
@@ -215,18 +213,19 @@ from
       ) g on collection_details.game_id = g.ID 
     group by 
       collection_id
-  ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, '${key.join(
+  ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, ${key.join(
     ",",
-  )}');
-`);
-  return { data: response[0] };
+  )});
+`;
+  return { data: (response as RowDataPacket[])[0] as FCollectionByName[] };
 }
 
-export async function getAllCollections({ db }: { db?: Connection }) {
-  const _db = db || (await connectDB());
-  const response = await _db.execute<(RowDataPacket & Collections)[]>(sql`
+export async function getAllCollections() {
+  const response = await sql`
     select * from collections;
-  `);
+  `;
 
-  return { data: response[0] };
+  return {
+    data: (response as RowDataPacket[])[0] as (RowDataPacket & Collections)[],
+  };
 }

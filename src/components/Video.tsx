@@ -2,11 +2,12 @@
 
 import { FVideoFullInfo } from "@/actions/game/select";
 import Image from "next/image";
-import {
+import React, {
   DetailedHTMLProps,
   ReactEventHandler,
   VideoHTMLAttributes,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -188,6 +189,7 @@ export default function Video({
               />
             );
           })}
+        <audio></audio>
       </video>
       <audio muted ref={audioRef}>
         {video.recipes
@@ -437,3 +439,201 @@ export function VideoPreview({ video }: { video: any }) {
 
   return <Image src={thumbnail.url} alt={""} />;
 }
+
+/* Video
+ * - autoPlay -> playing: true, paused: false, ended: false
+ * - playing
+ *    -> paused: false, ended: false,
+ *    -> audio:playing: true, audio:paused: false, audio:ended: false
+ * - paused
+ *    -> playing: false, ended: false
+ *    -> audio:playing: false, audio:paused: true, audio:ended: false
+ * - ended -> playing: false, paused: false
+ * */
+
+/* Controls
+ * - visible
+ * */
+
+/* Audio
+ * - volume
+ *   - 0 -> muted: true
+ *   - 1 - 100 -> muted: false
+ * - muted -> volume: auto
+ * - playing -> paused: false, ended: false
+ * - paused -> playing: false, ended: false
+ * - ended -> playing: false, paused: false
+ * */
+
+type VideoState = {
+  autoPlay: boolean;
+  playing: boolean;
+  paused: boolean;
+  ended: boolean;
+  currentTime: number;
+  duration: number;
+  fullscreen: boolean;
+};
+function Video2({
+  autoPlay,
+  children,
+  customControls,
+  onPlay,
+  onPause,
+  ...props
+}: DetailedHTMLProps<
+  VideoHTMLAttributes<HTMLVideoElement>,
+  HTMLVideoElement
+> & {
+  customControls: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoState, changeVideoState] = useReducer(
+    (
+      oldState: VideoState,
+      action:
+        | {
+            type: "init" | "play" | "pause" | "end";
+            video: HTMLVideoElement | null;
+          }
+        | {
+            type: "seek";
+            to: number;
+            video: HTMLVideoElement | null;
+          },
+    ) => {
+      const { type, video } = action;
+      if (!video) {
+        return oldState;
+      }
+      if (type === "init") {
+        return {
+          ...oldState,
+          duration: video.duration,
+          currentTime: video.currentTime,
+        };
+      }
+      if (type === "play") {
+        video.play();
+        return {
+          ...oldState,
+          playing: true,
+          paused: false,
+          ended: false,
+          currentTime: video.currentTime,
+        };
+      }
+      if (type === "pause") {
+        video.pause();
+        return {
+          ...oldState,
+          playing: false,
+          paused: true,
+          ended: false,
+          currentTime: video.currentTime,
+        };
+      }
+      if (type === "end") {
+        video.currentTime = video.duration;
+        return {
+          ...oldState,
+          playing: false,
+          paused: false,
+          ended: true,
+          currentTime: video.duration,
+        };
+      }
+      if (type === "seek") {
+        const { to } = action;
+        video.currentTime = to;
+        return {
+          ...oldState,
+          currentTime: to,
+        };
+      }
+
+      return oldState;
+    },
+    {
+      autoPlay: autoPlay || false,
+      playing: autoPlay || false,
+      paused: !autoPlay || true,
+      ended: false,
+      currentTime: 0,
+      duration: 0,
+      fullscreen: false,
+    },
+  );
+
+  const playVideo: React.ReactEventHandler<HTMLVideoElement> = (event) => {
+    const video = videoRef.current;
+    changeVideoState({ type: "play", video });
+    onPlay?.(event);
+  };
+
+  const pauseVideo: React.ReactEventHandler<HTMLVideoElement> = (event) => {
+    const video = videoRef.current;
+    changeVideoState({ type: "pause", video });
+    onPause?.(event);
+  };
+
+  const loadedMetadata: React.ReactEventHandler<HTMLVideoElement> = (
+    event,
+  ) => {};
+
+  const updateTime: React.ReactEventHandler<HTMLVideoElement> = (event) => {};
+
+  return (
+    <>
+      <video
+        onPlay={playVideo}
+        onPause={pauseVideo}
+        autoPlay={videoState.autoPlay}
+        onLoadedMetadata={loadedMetadata}
+        onTimeUpdate={updateTime}
+        {...props}
+      >
+        {children}
+      </video>
+    </>
+  );
+}
+
+function Controls() {
+  return <div className="flex flex-col items-center"></div>;
+}
+function ProgressBar() {
+  return (
+    <div
+      // ref={progressRef}
+      onClick={(event) => {
+        // const progress = event.currentTarget;
+        // const video = videoRef.current;
+        // const audio = audioRef.current;
+        // if (!video) {
+        //   return;
+        // }
+        // const rect = event.currentTarget.getBoundingClientRect();
+        // const pos = (event.pageX - rect.left) / progress.offsetWidth;
+        // video.currentTime = pos * video.duration;
+        // // @ts-ignore
+        // progress.children.item(0)!.style.width = event.pageX - rect.left + "px";
+        // if (audio) {
+        //   audio.currentTime = pos * video.duration;
+        // }
+      }}
+      className="relative w-4/5 h-1 bg-white_primary/60 overflow-hidden"
+    >
+      <span className="absolute inset-0 w-0 bg-primary"></span>
+    </div>
+  );
+}
+
+{/*
+* <Video>
+*   <source />
+*   <source />
+*   <Audio />
+*   <Controls />
+* </Video>
+*/}

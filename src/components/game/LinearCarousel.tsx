@@ -70,9 +70,9 @@ export default function LinearCarousel({
       timeOut = setTimeout(() => {
         const nextIndex = (active.index + 1) % data.length;
         if (nextIndex === data.length) {
-          goToItem(0);
+          // goToItem(0);
         } else {
-          goToItem(nextIndex);
+          // goToItem(nextIndex);
         }
       }, SLIDE_INTERVAL);
     });
@@ -193,21 +193,20 @@ export default function LinearCarousel({
                       as="li"
                       factory={factory}
                       onClick={() => {
-                        console.log({ index });
                         goToItem(index);
                       }}
                     >
                       <button
                         className={
-                          "relative transition-opacity w-24 h-14 rounded bg-default flex items-center justify-center " +
+                          "relative transition-opacity w-24 h-14 rounded bg-default flex items-center justify-center snap-start " +
                           (active.index === index
                             ? " opacity-100 outline outline-1 "
                             : "")
                         }
-                        style={{
-                          scrollSnapAlign:
-                            index % itemsPerWindow === 0 ? "start" : "",
-                        }}
+                        // style={{
+                        //   scrollSnapAlign:
+                        //     index % itemsPerWindow === 0 ? "start" : "",
+                        // }}
                       >
                         <Image
                           src={isVideo(item) ? item.thumbnail : item.url}

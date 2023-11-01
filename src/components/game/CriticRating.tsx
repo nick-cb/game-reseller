@@ -156,7 +156,7 @@ export function CriticRating({
               <ScrollItem
                 key={review.ID}
                 as="li"
-                className="w-4/5 sm:w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 snap-center"
+                className="w-4/5 sm:w-[calc(100%/2-16px)] bg-paper flex-shrink-0 rounded-md p-4 odd:snap-start"
               >
                 <p>{review.outlet}</p>
                 <p className="text-white_primary/60 text-sm">
