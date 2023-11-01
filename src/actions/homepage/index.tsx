@@ -1,9 +1,8 @@
-import { sql } from "@/database";
-import { RowDataPacket } from "mysql2/promise";
+import { querySingle, sql } from "@/database";
 import { FCollectionByName } from "../collections";
 
 export async function getHeroCarousel() {
-  const response = await sql`
+  return querySingle<FCollectionByName>(sql`
 select 
   c.*,
   cd.list_game
@@ -45,7 +44,5 @@ from
     group by 
       collection_id
   ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, 'hero_carousel');
-`;
-
-  return { data: (response as RowDataPacket[])[0][0] as FCollectionByName };
+`);
 }

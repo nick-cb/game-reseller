@@ -1,12 +1,11 @@
 "use server";
 
-import { sql } from "@/database";
-import { RowDataPacket } from "mysql2/promise";
+import { query, sql } from "@/database";
 import { Collections, Game, GameImages } from "@/database/models";
 import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 
-export async function getCollections(query: { keys: string[] }) {
-  const { keys } = query;
+export async function getCollections(params: { keys: string[] }) {
+  const { keys } = params;
   if (keys.length === 0) {
     return [];
   }
@@ -14,7 +13,7 @@ export async function getCollections(query: { keys: string[] }) {
   for (const key of keys.slice(1)) {
     queryCondition.concat(`and c.key = ${key}`);
   }
-  const result = await sql`
+  return await query(sql`
 select 
   * 
 from 
@@ -102,31 +101,27 @@ from
       collection_id
   ) cd on c.ID = cd.collection_id
   ${queryCondition ? queryCondition : ""}
-;
-`;
-
-  return result[0];
+`);
 }
 
-export type FCollectionByName = RowDataPacket &
-  Collections & {
-    list_game: (Pick<
-      Game,
-      | "ID"
-      | "name"
-      | "slug"
-      | "developer"
-      | "avg_rating"
-      | "sale_price"
-      | "description"
-    > & {
-      images: OmitGameId<GameImages>[];
-      videos: FVideoFullInfo[];
-    })[];
-  };
+export type FCollectionByName = Collections & {
+  list_game: (Pick<
+    Game,
+    | "ID"
+    | "name"
+    | "slug"
+    | "developer"
+    | "avg_rating"
+    | "sale_price"
+    | "description"
+  > & {
+    images: OmitGameId<GameImages>[];
+    videos: FVideoFullInfo[];
+  })[];
+};
 
 export async function getCollectionByKey(key: string[]) {
-  const response = await sql`
+  return await query<FCollectionByName[]>(sql`
 select 
   c.*,
   cd.list_game
@@ -216,16 +211,11 @@ from
   ) cd on c.ID = cd.collection_id where find_in_set(c.collection_key, ${key.join(
     ",",
   )});
-`;
-  return { data: (response as RowDataPacket[])[0] as FCollectionByName[] };
+`);
 }
 
 export async function getAllCollections() {
-  const response = await sql`
+  return query<Collections[]>(sql`
     select * from collections;
-  `;
-
-  return {
-    data: (response as RowDataPacket[])[0] as (RowDataPacket & Collections)[],
-  };
+  `);
 }

@@ -52,20 +52,19 @@ function groupLandscape(images: OmitGameId<GameImages>[]) {
 
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
-  // const db = await connectDB();
   const { data: game } = await findGameBySlug(slug);
   console.log("RUN");
   if (!game) {
     return <div>Game not found</div>;
   }
-  const { count: addOnCount } = await countGameAddonsById(game.ID);
+  const { data: addOnCount } = await countGameAddonsById(game.ID);
 
-  const mappingResponse = await findMappingById(
+  const {data: mappings } = await findMappingById(
     game.type === "base_game" ? game.ID : game.base_game_id,
   );
-  const editions = mappingResponse.filter((g) => g.type.includes("edition"));
-  const dlc = mappingResponse.filter((g) => g.type.includes("dlc"));
-  const addOns = mappingResponse.filter((g) => g.type.includes("add_on"));
+  const editions = mappings.filter((g) => g.type.includes("edition"));
+  const dlc = mappings.filter((g) => g.type.includes("dlc"));
+  const addOns = mappings.filter((g) => g.type.includes("add_on"));
   const dlcAndAddons = dlc.concat(addOns);
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =

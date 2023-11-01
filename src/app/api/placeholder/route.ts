@@ -1,12 +1,15 @@
-import { sql } from "@/database";
+import { query, sql } from "@/database";
 import { Game, GameImages } from "@/database/models";
 import { OmitGameId } from "@/actions/game/select";
 import { groupImages } from "@/utils/data";
-import { RowDataPacket } from "mysql2";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const response = (await sql`
+  const { data } = await query<
+    (Game & {
+      images: OmitGameId<GameImages>[];
+    })[]
+  >(sql`
       select *
       from games
                join (select game_id,
@@ -15,14 +18,10 @@ export async function GET() {
                      from game_images
                      group by game_id) gi on games.ID = gi.game_id
       limit 25;
-  `) as RowDataPacket[];
+  `);
 
   return NextResponse.json({
-    data: (
-      response[0] as (Game & {
-        images: OmitGameId<GameImages>[];
-      })[]
-    ).map((game) => {
+    data: data.map((game) => {
       return { ...game, images: groupImages(game.images) };
     }),
   });

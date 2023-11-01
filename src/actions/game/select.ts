@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/database";
+import { query, querySingle, sql } from "@/database";
 import Reviews, {
   Game,
   GameImages,
@@ -46,7 +46,7 @@ export type FVideoFullInfo = Videos & {
 };
 
 export async function findGameBySlug(slug: string) {
-  const response = (await sql`
+  return querySingle<FBySlug>(sql`
   select *,
        gi.images,
        if(
@@ -152,19 +152,14 @@ export async function findGameBySlug(slug: string) {
                     from polls
                     group by game_id) p on if(games.base_game_id is null, games.ID, games.base_game_id) = p.game_id
 where slug = ${slug};
-  `) as RowDataPacket[];
-
-  return {
-    data: response[0][0] as FBySlug,
-  };
+  `);
 }
 
-type FMappingById = RowDataPacket &
-  Game & {
-    images: OmitGameId<GameImages>[];
-  };
+type FMappingById = Game & {
+  images: OmitGameId<GameImages>[];
+};
 export async function findMappingById(id: number) {
-  const result = (await sql`
+  return query<FMappingById[]>(sql`
     select *, gi.images
     from games
              left join (select game_id,
@@ -173,9 +168,7 @@ export async function findMappingById(id: number) {
                         from game_images gi
                         group by game_id) gi on games.ID = gi.game_id
     where base_game_id = ${id};
-`) as RowDataPacket[];
-
-  return result[0] as FMappingById[];
+`);
 }
 
 type GGameByTags = RowDataPacket &
@@ -258,28 +251,23 @@ export async function groupGameByTags({
 }
 
 export async function countGameAddonsBySlug(slug: string) {
-  const gameRecords = (await sql`
+  const { data: game } = await querySingle<Game>(sql`
     select ID from games where slug = ${slug};
-  `) as RowDataPacket[];
+  `);
 
-  const game = gameRecords[0][0];
   if (!game) {
-    return { count: 0 };
+    return { data: 0 };
   }
 
-  const countRes = (await sql`
+  return await querySingle<number>(sql`
     select count(*) as count from games where base_game_id = ${game.ID}
-  `) as RowDataPacket[];
-
-  return countRes[0][0] as { count: number };
+  `);
 }
 
 export async function countGameAddonsById(id: number) {
-  const countRes = (await sql`
+  return querySingle<number>(sql`
     select count(*) as count from games where base_game_id = ${id}
-  `) as RowDataPacket[];
-
-  return countRes[0][0] as { count: number };
+  `);
 }
 
 export async function getGameAddons({
@@ -318,12 +306,13 @@ export async function getGameAddons({
       limit ${limit} offset ${skip}
       ;
   `;
-  const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
+  const [{data}, {data: total}] = await Promise.all([
+    query<GameImages[]>(gameReq),
+    querySingle(countReq),
+  ]);
 
   return {
-    data: gameRes[0] as (Game & {
-      images: GameImages[];
-    })[],
-    total: (countRes as RowDataPacket[])[0][0]?.total_count || 0,
+    data,
+    total,
   };
 }
