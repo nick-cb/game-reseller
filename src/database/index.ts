@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import mysql, { RowDataPacket } from "mysql2/promise";
 
 export const connection = mysql.createConnection(
   process.env.DATABASE_URL || "",
@@ -20,7 +20,6 @@ const pool = mysql.createPool({
   waitForConnections: true,
 });
 
-
 type Primitive = string | number | bigint | boolean | null | undefined;
 function isTemplateLitteral(
   strings: TemplateStringsArray,
@@ -36,10 +35,10 @@ function isTemplateLitteral(
   );
 }
 
-export async function sql(
+export function sql(
   strings: TemplateStringsArray,
   ...values: Primitive[]
-) {
+): [string, Primitive[]] {
   if (!isTemplateLitteral(strings, ...values)) {
     throw new Error("Incorrect template litteral call");
   }
@@ -48,7 +47,21 @@ export async function sql(
   for (const str of strings.slice(1)) {
     query += `?${str ?? ""}`;
   }
-  console.log(query, values);
 
-  return pool.query(query, values);
+  return [query, values];
 }
+
+export async function query<T extends any[]>(params: ReturnType<typeof sql>) {
+  const [query, values] = params;
+  const result = await pool.query<T>(query, values);
+  return { data: result[0] as T };
+}
+
+export async function querySingle<T extends any>(
+  params: ReturnType<typeof sql>,
+) {
+  const [query, values] = params;
+  const result = await pool.query<RowDataPacket[]>(query, values);
+  return { data: result[0][0] as T };
+}
+export async function insert() {}
