@@ -5,7 +5,6 @@ import remarkBreaks from "remark-breaks";
 import ExpandableDescription from "@/components/ExpandableDescription";
 import LinearCarousel from "@/components/game/LinearCarousel";
 import rehypeRaw from "rehype-raw";
-import { connectDB } from "@/database";
 import {
   OmitGameId,
   countGameAddonsById,
@@ -53,8 +52,9 @@ function groupLandscape(images: OmitGameId<GameImages>[]) {
 
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
-  const db = await connectDB();
-  const { data: game } = await findGameBySlug(slug, db);
+  // const db = await connectDB();
+  const { data: game } = await findGameBySlug(slug);
+  console.log("RUN");
   if (!game) {
     return <div>Game not found</div>;
   }
@@ -63,9 +63,9 @@ const page = async ({ params }: { params: any }) => {
   const mappingResponse = await findMappingById(
     game.type === "base_game" ? game.ID : game.base_game_id,
   );
-  const editions = mappingResponse[0].filter((g) => g.type.includes("edition"));
-  const dlc = mappingResponse[0].filter((g) => g.type.includes("dlc"));
-  const addOns = mappingResponse[0].filter((g) => g.type.includes("add_on"));
+  const editions = mappingResponse.filter((g) => g.type.includes("edition"));
+  const dlc = mappingResponse.filter((g) => g.type.includes("dlc"));
+  const addOns = mappingResponse.filter((g) => g.type.includes("add_on"));
   const dlcAndAddons = dlc.concat(addOns);
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } =

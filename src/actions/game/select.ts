@@ -1,6 +1,6 @@
 "use server";
 
-import { connectDB, sql } from "@/database";
+import { sql } from "@/database";
 import Reviews, {
   Game,
   GameImages,
@@ -36,7 +36,7 @@ type FBySlug = RowDataPacket &
     >[];
     tags: Tags[];
     reviews: OmitGameId<Reviews>[];
-    polls: OmitGameId<Polls>[]
+    polls: OmitGameId<Polls>[];
   };
 
 export type FVideoFullInfo = Videos & {
@@ -45,9 +45,8 @@ export type FVideoFullInfo = Videos & {
   })[];
 };
 
-export async function findGameBySlug(slug: string, db?: Connection) {
-  const _db = db || (await connectDB());
-  const response = await _db.execute<FBySlug[]>(sql`
+export async function findGameBySlug(slug: string) {
+  const response = (await sql`
   select *,
        gi.images,
        if(
@@ -152,11 +151,11 @@ export async function findGameBySlug(slug: string, db?: Connection) {
                                ) as polls
                     from polls
                     group by game_id) p on if(games.base_game_id is null, games.ID, games.base_game_id) = p.game_id
-where slug = '${slug}';
-  `);
+where slug = ${slug};
+  `) as RowDataPacket[];
 
   return {
-    data: response[0][0],
+    data: response[0][0] as FBySlug,
   };
 }
 
@@ -164,10 +163,8 @@ type FMappingById = RowDataPacket &
   Game & {
     images: OmitGameId<GameImages>[];
   };
-export async function findMappingById(id: number, db?: Connection) {
-  const _db = db || (await connectDB());
-
-  return _db.execute<FMappingById[]>(sql`
+export async function findMappingById(id: number) {
+  const result = (await sql`
     select *, gi.images
     from games
              left join (select game_id,
@@ -176,7 +173,9 @@ export async function findMappingById(id: number, db?: Connection) {
                         from game_images gi
                         group by game_id) gi on games.ID = gi.game_id
     where base_game_id = ${id};
-`);
+`) as RowDataPacket[];
+
+  return result[0] as FMappingById[];
 }
 
 type GGameByTags = RowDataPacket &
@@ -185,7 +184,6 @@ type GGameByTags = RowDataPacket &
   };
 export async function groupGameByTags({
   tags,
-  db,
   limit = 20,
   skip = 0,
   keyword,
@@ -198,25 +196,24 @@ export async function groupGameByTags({
   keyword?: string;
   collection?: string;
 }) {
-  const _db = db || (await connectDB());
-  let whereClause = sql`where games.type = 'base_game'`;
+  let whereClause = `where games.type = base_game`;
   if (collection) {
-    whereClause += sql`
+    whereClause += `
       and cd.collection_key = '${collection}'
     `;
   }
   if (tags.length > 0) {
     whereClause += sql`
-      and tags.tag_key in (${tags.map((tag) => `\'${tag}\'`).join(",")})
+      and tags.tag_key in (${tags.map((tag) => tag).join(",")})
     `;
   }
   if (keyword) {
     whereClause += sql` 
-      and games.name like '%${keyword}%'
+      and games.name like %${keyword}%
     `;
   }
-  const havingClause = sql`having count(distinct tag_id) = ${tags.length}`;
-  const countReq = _db.execute<RowDataPacket[]>(sql`
+  const havingClause = `having count(distinct tag_id) = ${tags.length}`;
+  const countReq = sql`
       select count(*) as total_count
       from (
         select games.* 
@@ -230,8 +227,9 @@ export async function groupGameByTags({
         group by games.ID
         ${tags.length > 0 ? havingClause : ""}
       ) as grouped
-  `);
-  const gameReq = _db.execute<GGameByTags[]>(sql`
+  `;
+
+  const gameReq = sql`
       select games.*, gi.images
       from games
                join (select c.ID, c.collection_key, cd.game_id
@@ -250,75 +248,64 @@ export async function groupGameByTags({
       ${tags.length > 0 ? havingClause : ""}
       limit ${limit} offset ${skip}
       ;
-  `);
+  `;
   const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
 
   return {
-    data: gameRes[0],
-    total: countRes[0][0]?.total_count || 0,
+    data: (gameRes as RowDataPacket[])[0] as GGameByTags[],
+    total: (countRes as RowDataPacket[])[0][0]?.total_count || 0,
   };
 }
 
 export async function countGameAddonsBySlug(slug: string) {
-  const db = await connectDB();
-  const gameRecords = await db.execute<RowDataPacket[]>(sql`
-    select ID from games where slug = '${slug}';
-  `);
+  const gameRecords = (await sql`
+    select ID from games where slug = ${slug};
+  `) as RowDataPacket[];
 
   const game = gameRecords[0][0];
   if (!game) {
     return { count: 0 };
   }
 
-  const countRes = await db.execute<(RowDataPacket & { count: number })[]>(sql`
+  const countRes = (await sql`
     select count(*) as count from games where base_game_id = ${game.ID}
-  `);
+  `) as RowDataPacket[];
 
   return countRes[0][0] as { count: number };
 }
 
 export async function countGameAddonsById(id: number) {
-  const db = await connectDB();
-
-  const countRes = await db.execute<(RowDataPacket & { count: number })[]>(sql`
+  const countRes = (await sql`
     select count(*) as count from games where base_game_id = ${id}
-  `);
+  `) as RowDataPacket[];
 
   return countRes[0][0] as { count: number };
 }
 
 export async function getGameAddons({
-  db,
   limit,
   skip,
   keyword,
   gameId,
 }: {
-  db?: Connection;
   limit?: number;
   skip?: number;
   keyword?: string;
   gameId: number;
 }) {
-  const _db = db || (await connectDB());
-  let whereClause = sql`where base_game_id = ${gameId}`;
+  let whereClause = `where base_game_id = ${gameId}`;
   if (keyword) {
-    whereClause += sql` 
-      and games.name like '%${keyword}%'
+    whereClause += ` 
+      and games.name like %${keyword}%
     `;
   }
-  const countReq = _db.execute<RowDataPacket[]>(sql`
+  const countReq = sql`
       select count(*) as total_count
       from games
       ${whereClause}
       group by games.base_game_id;
-  `);
-  const gameReq = _db.execute<
-    (RowDataPacket &
-      (Game & {
-        images: GameImages[];
-      }))[]
-  >(sql`
+  `;
+  const gameReq = sql`
       select games.*, gi.images
       from games
                left join (select game_id,
@@ -330,13 +317,13 @@ export async function getGameAddons({
       ${whereClause}
       limit ${limit} offset ${skip}
       ;
-  `);
+  `;
   const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
 
   return {
     data: gameRes[0] as (Game & {
       images: GameImages[];
     })[],
-    total: countRes[0][0]?.total_count || 0,
+    total: (countRes as RowDataPacket[])[0][0]?.total_count || 0,
   };
 }

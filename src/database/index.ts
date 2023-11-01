@@ -48,6 +48,7 @@ export async function sql(
   for (const str of strings.slice(1)) {
     query += `?${str ?? ""}`;
   }
+  console.log(query, values);
 
   return pool.query(query, values);
 }
