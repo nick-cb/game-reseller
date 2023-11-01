@@ -1,12 +1,11 @@
 "use server";
 
-import { connectDB, sql } from "@/database";
+import { sql } from "@/database";
 import { ResultSetHeader, RowDataPacket } from "mysql2/index";
 import { CartFull, Carts, Game, Users } from "@/database/models";
 import { cookies } from "next/headers";
 import { decodeToken, getUserFromCookie } from "@/actions/users";
 import jwt from "jsonwebtoken";
-import { Connection } from "mysql2/promise";
 
 export async function addItemToCart(slug: string) {
   const cookie = cookies().get("refresh_token");
@@ -17,42 +16,41 @@ export async function addItemToCart(slug: string) {
   if (typeof payload === "string") {
     return { data: null };
   }
-  const db = await connectDB();
 
-  const gameResponse = await db.execute<(RowDataPacket & Game)[]>(sql`
+  const gameResponse = (await sql`
     select * from games where slug = '${slug}';
-  `);
+  `) as RowDataPacket[];
 
-  const game = gameResponse[0][0];
-  const userResponse = await db.execute<(RowDataPacket & Users)[]>(sql`
+  const game = gameResponse[0][0] as Game;
+  const userResponse = (await sql`
     select * from users where ID = ${payload.userId};
-  `);
-  const user = userResponse[0][0];
+  `) as RowDataPacket[];
+  const user = userResponse[0][0] as Users;
   if (!user.refresh_token) {
     return { data: null };
   }
   jwt.verify(user.refresh_token, process.env.JWT_SECRET!);
-  const existCartResponse = await db.execute<(RowDataPacket & Carts)[]>(sql`
+  const existCartResponse = (await sql`
     select * from carts where user_id = ${user.ID};
-  `);
-  let cart = existCartResponse[0][0];
+  `) as RowDataPacket;
+  let cart = existCartResponse[0][0] as Carts;
 
   if (!cart) {
-    const newCartResponse = await db.execute<ResultSetHeader>(sql`
+    const newCartResponse = (await sql`
       insert into carts (user_id) values (${user.ID});
-    `);
-    const existCartResponse = await db.execute<(RowDataPacket & Carts)[]>(sql`
+    `) as ResultSetHeader[];
+    const existCartResponse = (await sql`
       select * from carts where id = ${newCartResponse[0].insertId};
-    `);
-    cart = existCartResponse[0][0];
+    `) as RowDataPacket[];
+    cart = existCartResponse[0][0] as Carts;
   }
 
   try {
-    await db.execute(sql`
+    await sql`
     insert into cart_details (cart_id, game_id, checked) values (${cart.ID}, ${
       game.ID
     }, ${true});
-  `);
+  `;
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes("Duplicate entry")) {
@@ -73,22 +71,17 @@ export async function addItemToCart(slug: string) {
   };
 }
 
-export async function getFullCartByUserId(
-  userId: number,
-  options?: { db: Connection },
-) {
-  const { db } = options || {};
-  const _db = db || (await connectDB());
-  const cartRes = await _db.execute<(RowDataPacket & Carts)[]>(sql`
+export async function getFullCartByUserId(userId: number) {
+  const cartRes = (await sql`
     select ID from carts where user_id = ${userId};
-  `);
-  const cart = cartRes[0][0];
+  `) as RowDataPacket[];
+  const cart = cartRes[0][0] as Carts;
   if (!cart) {
     return {
       data: null,
     };
   }
-  const cartFullRes = await _db.execute<(RowDataPacket & CartFull)[]>(sql`
+  const cartFullRes = (await sql`
     select ID, user_id, game_list
     from carts
              join (select cart_id,
@@ -109,37 +102,33 @@ export async function getFullCartByUserId(
                                  on cart_details.game_id = games.ID
                    group by cart_id) cd on carts.ID = cd.cart_id
     where carts.ID = ${cart.ID};
-  `);
+  `) as RowDataPacket[];
 
   return { data: cartFullRes[0][0] as CartFull };
 }
 
 export async function countCartByUserId(userId: number) {
-  const db = await connectDB();
-  const cartRes = await db.execute<(RowDataPacket & Carts)[]>(sql`
+  const cartRes = (await sql`
     select ID from carts where user_id = ${userId};
-  `);
-  const cart = cartRes[0][0];
+  `) as RowDataPacket[];
+  const cart = cartRes[0][0] as Carts;
   if (!cart) {
-    return {count: 0};
+    return { count: 0 };
   }
-  const cartDetailsCount = await db.execute<
-    (RowDataPacket & { count: number })[]
-  >(sql`
+  const cartDetailsCount = (await sql`
     select count(*) as count from cart_details where cart_id = ${cart.ID};
-  `);
+  `) as RowDataPacket[];
 
-  return cartDetailsCount[0][0];
+  return cartDetailsCount[0][0] as { count: number };
 }
 
-export async function findUserCart(userId: number, { db }: { db: Connection }) {
-  const _db = db || (await connectDB());
-  const cartRes = await _db.execute<(RowDataPacket & Carts)[]>(sql`
+export async function findUserCart(userId: number) {
+  const cartRes = (await sql`
     select ID from carts where user_id = ${userId};
-  `);
+  `) as RowDataPacket[];
 
   const cart = cartRes[0][0];
-  return cart;
+  return cart as Carts;
 }
 
 export async function removeItemFromCart({
@@ -149,11 +138,10 @@ export async function removeItemFromCart({
   gameId: number;
   cartId: number;
 }) {
-  const db = await connectDB();
   try {
-    await db.execute(sql`
+    await sql`
       delete from cart_details where cart_id = ${cartId} and game_id = ${gameId}
-    `);
+    `;
     return { data: null };
   } catch (error) {
     return {
@@ -173,12 +161,11 @@ export async function toggleItemChecked({
   if (!payload) {
     throw Error("UnAuthorized");
   }
-  const db = await connectDB();
-  const cart = await findUserCart(payload.userId, { db });
+  const cart = await findUserCart(payload.userId);
   try {
-    await db.execute(sql`
+    await sql`
       update cart_details set checked=${checked} where cart_id = ${cart.ID} and game_id = ${gameId}
-    `);
+    `;
     return { data: null };
   } catch (error) {
     return {
@@ -187,17 +174,15 @@ export async function toggleItemChecked({
   }
 }
 
-export async function deleteCart(cartId: number, options?: { db: Connection }) {
-  const { db } = options || {};
-  const _db = db || (await connectDB());
+export async function deleteCart(cartId: number) {
   try {
     await Promise.all([
-      _db.execute(sql`
+      sql`
       delete from carts where cart_id = ${cartId};
-    `),
-      _db.execute(sql`
+    `,
+      sql`
       delete from cart_details where cart_id = ${cartId};
-    `),
+    `,
     ]);
   } catch (error) {
     return {

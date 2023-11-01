@@ -25,19 +25,19 @@ export const generateToken = async (payload: Object) => {
 };
 
 export const decodeToken = (token: string) => {
-  // try {
-  //   const secret = process.env.JWT_SECRET;
-  //   if (!secret) {
-  //     throw new Error("Not found JWT_SECRET");
-  //   }
-  //   const payload = jwt.verify(token, secret);
-  //   if (typeof payload !== "string") {
-  //     return payload as jwt.JwtPayload & { userId: number };
-  //   }
-  //   return payload;
-  // } catch (error) {
-  //   return error instanceof Error ? error.message : "unknown error";
-  // }
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("Not found JWT_SECRET");
+    }
+    const payload = jwt.verify(token, secret);
+    if (typeof payload !== "string") {
+      return payload as jwt.JwtPayload & { userId: number };
+    }
+    return payload;
+  } catch (error) {
+    return error instanceof Error ? error.message : "unknown error";
+  }
 };
 
 type IUserPayload = {
