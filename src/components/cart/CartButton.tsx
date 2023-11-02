@@ -4,7 +4,9 @@ import Link from "next/link";
 
 export async function CartButton() {
   const user = await getUserFromCookie();
-  const { count } = user ? await countCartByUserId(user.userId) : { count: 0 };
+  const {
+    data: { count },
+  } = user ? await countCartByUserId(user.userId) : { data: { count: 0 } };
 
   if (!user) {
     return null;
