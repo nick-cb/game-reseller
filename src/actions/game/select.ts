@@ -192,13 +192,13 @@ export async function groupGameByTags({
   let whereClause = `where games.type = base_game`;
   if (collection) {
     whereClause += `
-      and cd.collection_key = '${collection}'
+      and cd.collection_key = ${collection}
     `;
   }
   if (tags.length > 0) {
-    whereClause += sql`
-      and tags.tag_key in (${tags.map((tag) => tag).join(",")})
-    `;
+    // whereClause += sql`
+    //   and tags.tag_key in (${tags.map((tag) => tag).join(",")})
+    // `;
   }
   if (keyword) {
     whereClause += sql` 
@@ -242,11 +242,11 @@ export async function groupGameByTags({
       limit ${limit} offset ${skip}
       ;
   `;
-  const [gameRes, countRes] = await Promise.all([gameReq, countReq]);
+  const [{data}, {data: count  }] = await Promise.all([query<GGameByTags[]>( gameReq), querySingle<{count:number}>( countReq)]);
 
   return {
-    data: (gameRes as RowDataPacket[])[0] as GGameByTags[],
-    total: (countRes as RowDataPacket[])[0][0]?.total_count || 0,
+    data,
+    total: count?.count || 0,
   };
 }
 
@@ -306,13 +306,13 @@ export async function getGameAddons({
       limit ${limit} offset ${skip}
       ;
   `;
-  const [{data}, {data: total}] = await Promise.all([
-    query<GameImages[]>(gameReq),
-    querySingle(countReq),
+  const [{data}, {data: total = {count: 0}}] = await Promise.all([
+    query<(Game & { images: GameImages[] })[]>(gameReq),
+    querySingle<{count: number}>(countReq),
   ]);
 
   return {
     data,
-    total,
+    count: total?.count as number,
   };
 }
