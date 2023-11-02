@@ -5,7 +5,6 @@ import {
   InputHTMLAttributes,
   PropsWithChildren,
   createContext,
-  startTransition,
   useContext,
   useState,
 } from "react";
@@ -77,6 +76,7 @@ export function CollectionRadio({
         }
         router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
       }}
+      onChange={() => {}}
       {...props}
     />
   );

@@ -1,6 +1,6 @@
 "use server";
 
-import { query, querySingle, sql } from "@/database";
+import { pool, query, querySingle, sql } from "@/database";
 import Reviews, {
   Game,
   GameImages,
@@ -189,25 +189,8 @@ export async function groupGameByTags({
   keyword?: string;
   collection?: string;
 }) {
-  let whereClause = `where games.type = base_game`;
-  if (collection) {
-    whereClause += `
-      and cd.collection_key = ${collection}
-    `;
-  }
-  if (tags.length > 0) {
-    // whereClause += sql`
-    //   and tags.tag_key in (${tags.map((tag) => tag).join(",")})
-    // `;
-  }
-  if (keyword) {
-    whereClause += sql` 
-      and games.name like %${keyword}%
-    `;
-  }
-  const havingClause = `having count(distinct tag_id) = ${tags.length}`;
   const countReq = sql`
-      select count(*) as total_count
+      select count(*) as count
       from (
         select games.* 
         from games
@@ -216,9 +199,16 @@ export async function groupGameByTags({
                         join collection_details cd on c.ID = cd.collection_id) cd on games.ID = cd.game_id
                  join tag_details on games.ID = tag_details.game_id
                  join tags on tag_details.tag_id = tags.ID
-        ${whereClause}
+        where games.type = 'base_game'
+          and if(${!!collection}, cd.collection_key = ${collection}, 1)
+          and if(${tags.length > 0}, tags.tag_key in (${tags
+            .map((tag) => tag)
+            .join(",")}), 1)
+          and if(${!!keyword}, games.name like '%${keyword}%', 1)
         group by games.ID
-        ${tags.length > 0 ? havingClause : ""}
+        having if(${tags.length > 0}, count(distinct tag_id) = ${
+          tags.length
+        }, 1)
       ) as grouped
   `;
 
@@ -236,13 +226,24 @@ export async function groupGameByTags({
                          on games.ID = gi.game_id
                join tag_details on games.ID = tag_details.game_id
                join tags on tag_details.tag_id = tags.ID
-      ${whereClause}
+      where games.type = 'base_game'
+        and if(${!!collection}, cd.collection_key = ${collection}, 1)
+        and if(${tags.length > 0}, tags.tag_key in (${tags
+          .map((tag) => tag)
+          .join(",")}), 1)
+        and if(${!!keyword}, games.name like '%${keyword}%', 1)
       group by games.ID
-      ${tags.length > 0 ? havingClause : ""}
+      having if(${tags.length > 0}, count(distinct tag_id) = ${
+        tags.length
+      }, 1)
       limit ${limit} offset ${skip}
       ;
   `;
-  const [{data}, {data: count  }] = await Promise.all([query<GGameByTags[]>( gameReq), querySingle<{count:number}>( countReq)]);
+
+  const [{ data }, { data: count }] = await Promise.all([
+    query<GGameByTags[]>(gameReq),
+    querySingle<{ count: number }>(countReq),
+  ]);
 
   return {
     data,
@@ -306,6 +307,7 @@ export async function getGameAddons({
     query<(Game & { images: GameImages[] })[]>(gameReq),
     querySingle<{ count: number }>(countReq),
   ]);
+  console.log({count: total?.count})
 
   return {
     data,

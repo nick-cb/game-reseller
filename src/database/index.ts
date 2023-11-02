@@ -48,10 +48,7 @@ export function sql(
     query += `?${str ?? ""}`;
   }
   const newValues = values.map((value) => {
-    if (typeof value === "string" || typeof value === "number") {
-      return value;
-    }
-    if (!value) {
+    if (value === undefined) {
       return null;
     }
     return value;

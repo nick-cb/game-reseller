@@ -32,6 +32,7 @@ export default async function AddOnPage({
     skip: skip * 16,
     keyword,
   });
+  console.log({total})
 
   const gameList = data.map((game) => {
     return {
