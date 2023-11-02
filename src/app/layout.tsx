@@ -70,7 +70,9 @@ export default function RootLayout({
                   >
                     <SearchbarDistributeTop />
                   </form>
-                  {/* <CartButton /> */}
+                  {/* @ts-expect-error Server Component */}
+                  <CartButton />
+                  {/* @ts-expect-error Server Component */}
                   <AuthControls />
                 </div>
               </HideOnRoute>
@@ -109,7 +111,7 @@ export default function RootLayout({
                     Discover
                   </Link>
                 </ActiveLink>
-                <ActiveLink matches={[{name: "browse" }]}>
+                <ActiveLink matches={[{ name: "browse" }]}>
                   <Link
                     className="text-sm text-white/60 py-4 hover:text-white_primary transition-colors z-[1]"
                     href={"/browse"}

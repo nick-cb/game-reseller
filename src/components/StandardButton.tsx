@@ -2,7 +2,7 @@
 
 import React from "react";
 import { LoadingIcon } from "./loading/LoadingIcon";
-import { useFormStatus } from "react-dom";
+import { experimental_useFormStatus as useFormStatus } from "react-dom";
 import { useFormContext, useFormState } from "react-hook-form";
 const StandardButton = ({
   className = "",
