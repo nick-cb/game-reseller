@@ -8,10 +8,16 @@ import {
   EmailLoginFormPayload,
   EmailSignupFormPayload,
 } from "@/components/auth/email";
-import { connectDB, sql } from "@/database";
+import {
+  connectDB,
+  insertSingle,
+  querySingle,
+  sql,
+  updateSingle,
+} from "@/database";
 import { bucket } from "@/firebase";
 import { uuidv4 } from "@/utils";
-import { Connection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { Users } from "@/database/models";
 
 export const generateToken = async (payload: Object) => {
@@ -49,24 +55,15 @@ type IUserPayload = {
 };
 type IUserResult = ResultSetHeader & Users;
 
-export async function insertUser({
-  user,
-  db,
-}: {
-  user: IUserPayload;
-  db: Connection;
-}) {
-  const _db = db || (await connectDB());
-
-  const result = await _db.execute<ResultSetHeader>(sql`
+export async function insertUser({ user }: { user: IUserPayload }) {
+  const { data } = await insertSingle(sql`
       insert into users (full_name, display_name, email, password, avatar)
-      values ('${user.full_name}', '${user.display_name}', '${user.email}', '${user.password}', '${user.avatar}');
+      values (${user.full_name}, ${user.display_name}, ${user.email}, ${user.password}, ${user.avatar});
   `);
-  if ("insertId" in result[0]) {
-    const insertedUser = await _db.execute<IUserResult[]>(sql`
-      select * from users where ID = ${parseInt(result[0].insertId.toString())}
+  if ("insertId" in data) {
+    return querySingle<IUserResult>(sql`
+      select * from users where ID = ${parseInt(data.insertId.toString())}
     `);
-    return { data: insertedUser[0][0] };
   }
 
   throw new Error(
@@ -76,73 +73,33 @@ export async function insertUser({
 
 type FUserResult = RowDataPacket & Users;
 
-export async function findUserByEmail({
-  email,
-  db,
-}: {
-  email: string;
-  db?: Connection;
-}) {
-  const _db = db || (await connectDB());
-
-  const result = await _db.execute<FUserResult[]>(sql`
-      select * from users where email = '${email}'
+export async function findUserByEmail({ email }: { email: string }) {
+  return querySingle<FUserResult>(sql`
+      select * from users where email = ${email}
   `);
-
-  return {
-    data: result[0][0],
-  };
 }
 
-export async function findUserById({
-  id,
-  db,
-}: {
-  id: number;
-  db?: Connection;
-}) {
-  const _db = db || (await connectDB());
-
-  const result = await _db.execute<(RowDataPacket & Users)[]>(sql`
-      select * from users where ID = '${id}'
+export async function findUserById({ id }: { id: number }) {
+  return await querySingle<Users>(sql`
+      select * from users where ID = ${id}
   `);
-
-  return {
-    data: result[0][0],
-  };
 }
 
-export async function findUserByStripeId({
-  id,
-  db,
-}: {
-  id: string;
-  db?: Connection;
-}) {
-  const _db = db || (await connectDB());
-
-  const result = await _db.execute<(RowDataPacket & Users)[]>(sql`
-      select * from users where stripe_id = '${id}'
+export async function findUserByStripeId({ id }: { id: string }) {
+  return querySingle<Users>(sql`
+      select * from users where stripe_id = ${id}
   `);
-
-  return {
-    data: result[0][0],
-  };
 }
 
 export async function updateUserById(
   id: number,
-  { user, db }: { user: Partial<Omit<Users, "ID">>; db?: Connection },
+  { user }: { user: Partial<Omit<Users, "ID">> },
 ) {
-  const _db = db || (await connectDB());
-
-  _db.execute(sql`
+  await updateSingle(sql`
     update users
     set ${Object.entries(user)
       .map(([key, value]) => {
-        return (
-          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
-        );
+        return key + "=" + value;
       })
       .join(", ")}
     where ID = ${id}
@@ -151,17 +108,13 @@ export async function updateUserById(
 
 export async function updateUserByStripeId(
   id: number,
-  { user, db }: { user: Partial<Omit<Users, "ID">>; db?: Connection },
+  { user }: { user: Partial<Omit<Users, "ID">> },
 ) {
-  const _db = db || (await connectDB());
-
-  _db.execute(sql`
+  await updateSingle(sql`
     update users
     set ${Object.entries(user)
       .map(([key, value]) => {
-        return (
-          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
-        );
+        return key + "=" + value;
       })
       .join(", ")}
     where stripe_id = ${id}
@@ -174,7 +127,6 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
     const connection = await connectDB();
     const existUser = await findUserByEmail({
       email: values.email,
-      db: connection,
     });
     if (existUser.data) {
       connection.destroy();
@@ -192,7 +144,6 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
         password: encryptedPassword,
         avatar: null,
       },
-      db: connection,
     });
     const avatar = await fetch(
       "https://api.dicebear.com/7.x/lorelei/svg?seed=" + uuidv4(),

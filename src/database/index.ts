@@ -76,3 +76,9 @@ export async function insertSingle(params: ReturnType<typeof sql>) {
   const result = await pool.query<RowDataPacket[]>(query, values);
   return { data: result[0][0] };
 }
+
+export async function updateSingle(params: ReturnType<typeof sql>) {
+  const [query, values] = params;
+  const result = await pool.query<RowDataPacket[]>(query, values);
+  return { data: result[0][0] };
+}

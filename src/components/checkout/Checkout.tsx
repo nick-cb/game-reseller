@@ -60,7 +60,7 @@ export async function CheckoutView({
   }
   const db = await connectDB();
   const [{ data: user }] = await Promise.all([
-    findUserById({ id: payload.userId, db }),
+    findUserById({ id: payload.userId }),
   ]);
 
   if (!user) {
@@ -150,7 +150,7 @@ export async function CheckoutView({
 
       if (!user.stripe_id) {
         const newCustomer = await stripe.customers.create({
-          name: user.name,
+          name: user.full_name || '',
         });
         user.stripe_id = newCustomer.id;
         await updateUserById(payload.userId, {
