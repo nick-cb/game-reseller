@@ -4,7 +4,6 @@ import { handleSubmitFilter } from "../actions";
 import FilterContextProvider from "@/components/FilterContext";
 import BrowseSearch from "@/components/BrowseSearch";
 import Filter from "@/components/browse/Filter";
-import { connectDB } from "@/database";
 import {
   Accordion,
   AccordionBody,
@@ -16,12 +15,10 @@ import { getAllCollections } from "@/actions/collections";
 import findTagByGroupName from "@/actions/tags";
 
 const layout = async ({ children }: PropsWithChildren) => {
-  const db = await connectDB();
-  const [tags, { data: collections = [] }] = await Promise.all([
-    findTagByGroupName("genre", db),
-    getAllCollections({ db }),
+  const [{ data: tags = [] }, { data: collections = [] }] = await Promise.all([
+    findTagByGroupName("genre"),
+    getAllCollections(),
   ]);
-  db.destroy();
 
   return (
     <div className="grid grid-cols-4 gap-8">
@@ -30,7 +27,7 @@ const layout = async ({ children }: PropsWithChildren) => {
       </div>
       <FilterContextProvider>
         <div className="fixed bottom-0 left-0 right-0 p-2 bg-default block md:hidden z-50">
-          <Filter tags={tags[0]} />
+          <Filter tags={tags || []} />
         </div>
         <form
           className="col-start-4 col-end-5 hidden md:block"
@@ -64,6 +61,9 @@ const layout = async ({ children }: PropsWithChildren) => {
                 <RadioGroup toggleAble>
                   <ul className="flex flex-col gap-1">
                     {collections.map((collection) => {
+                      if (!collection) {
+                        return null;
+                      }
                       return (
                         <li
                           key={collection.ID}
@@ -108,7 +108,7 @@ const layout = async ({ children }: PropsWithChildren) => {
               </AccordionHeader>
               <AccordionBody className="mt-1">
                 <ul className="flex flex-col gap-1">
-                  {tags[0].map((tag) => (
+                  {tags.map((tag) => (
                     <li
                       key={tag.ID}
                       className="rounded flex

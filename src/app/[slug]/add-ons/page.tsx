@@ -2,8 +2,8 @@ import { findGameBySlug, getGameAddons } from "@/actions/game/select";
 import Pagination from "@/components/Pagination";
 import PortraitGameCard from "@/components/PortraitGameCard";
 import { GameNav } from "@/components/game/GameNav";
-import { connectDB } from "@/database";
 import { groupImages } from "@/utils/data";
+import { redirect } from "next/navigation";
 
 export default async function AddOnPage({
   params,
@@ -14,9 +14,10 @@ export default async function AddOnPage({
 }) {
   const { slug } = params;
   const { keyword, page } = searchParams;
-  const db = await connectDB();
-  const { data: game } = await findGameBySlug(slug, db);
-
+  const { data: game } = await findGameBySlug(slug);
+  if (!game) {
+    redirect("/");
+  }
   let limit = 16;
   let skip = 0;
   if (page && !isNaN(parseInt(page.toString()))) {
@@ -25,13 +26,13 @@ export default async function AddOnPage({
       skip = _skip - 1;
     }
   }
-  const { data, total } = await getGameAddons({
+  const { data, count: total } = await getGameAddons({
     gameId: game.base_game_id || game.ID,
     limit,
     skip: skip * 16,
     keyword,
-    db,
   });
+
   const gameList = data.map((game) => {
     return {
       ...game,
@@ -46,10 +47,7 @@ export default async function AddOnPage({
         <span className="text-2xl block">DLC & Add-Ons</span>
       </h1>
       <div className="mb-6">
-        <GameNav
-          type={'add-ons'}
-          slug={game.base_game_slug || game.slug}
-        />
+        <GameNav type={"add-ons"} slug={game.base_game_slug || game.slug} />
       </div>
       <div className="grid grid-cols-2 3/4sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-4 gap-y-8 ">
         {gameList.map((game) => {

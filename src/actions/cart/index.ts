@@ -112,9 +112,13 @@ export async function countCartByUserId(userId: number) {
   if (!cart) {
     return { data: { count: 0 } };
   }
-  return querySingle<{ count: number }>(sql`
+  return (await querySingle<{ count: number }>(sql`
     select count(*) as count from cart_details where cart_id = ${cart.ID};
-  `);
+  `)) as {
+    data: {
+      count: number;
+    };
+  };
 }
 
 export async function findUserCart(userId: number) {

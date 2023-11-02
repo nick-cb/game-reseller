@@ -62,7 +62,7 @@ export function sql(
 export async function query<T extends any[]>(params: ReturnType<typeof sql>) {
   const [query, values] = params;
   const result = await pool.query<T>(query, values);
-  return { data: result[0] } as { data: (T[number] | null)[] };
+  return { data: result[0] || [] } as { data: T };
 }
 
 export async function querySingle<T extends any>(

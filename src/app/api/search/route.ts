@@ -1,19 +1,16 @@
-import { connectDB, sql } from "@/database";
+import { query, sql } from "@/database";
 import { Game, GameImages } from "@/database/models";
 import { OmitGameId } from "@/actions/game/select";
 import { groupImages } from "@/utils/data";
-import { RowDataPacket } from "mysql2";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const keyword = searchParams.get("keyword");
-  const db = await connectDB();
-  const response = await db.execute<
-    (RowDataPacket &
-      Game & {
-        images: OmitGameId<GameImages>[];
-      })[]
+  const { data } = await query<
+    (Game & {
+      images: OmitGameId<GameImages>[];
+    })[]
   >(sql`
       select *
       from games
@@ -27,7 +24,7 @@ export async function GET(request: Request) {
   `);
 
   return NextResponse.json({
-    data: response[0].map((game) => {
+    data: data.map((game) => {
       return {
         ...game,
         images: groupImages(game.images),

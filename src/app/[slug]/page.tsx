@@ -53,7 +53,6 @@ function groupLandscape(images: OmitGameId<GameImages>[]) {
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const { data: game } = await findGameBySlug(slug);
-  console.log("RUN");
   if (!game) {
     return <div>Game not found</div>;
   }
