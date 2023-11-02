@@ -1,6 +1,6 @@
 "use server";
 
-import { insertSingle, querySingle, sql } from "@/database";
+import { insertSingle, query, querySingle, sql } from "@/database";
 import { CartFull, Carts, Game, Users } from "@/database/models";
 import { cookies } from "next/headers";
 import { decodeToken, getUserFromCookie } from "@/actions/users";
@@ -17,7 +17,7 @@ export async function addItemToCart(slug: string) {
   }
 
   const { data: game } = await querySingle<Game>(sql`
-    select * from games where slug = '${slug}';
+    select * from games where slug = ${slug};
   `);
   if (!game) {
     return { error: "Request item not found" };
@@ -176,12 +176,9 @@ export async function toggleItemChecked({
 export async function deleteCart(cartId: number) {
   try {
     await Promise.all([
-      sql`
-      delete from carts where cart_id = ${cartId};
-    `,
-      sql`
-      delete from cart_details where cart_id = ${cartId};
-    `,
+      query(sql`
+        delete from cart_details where cart_id = ${cartId};
+      `),
     ]);
   } catch (error) {
     return {

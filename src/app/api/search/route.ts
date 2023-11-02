@@ -19,7 +19,7 @@ export async function GET(request: Request) {
                                                       alt)) as images
                      from game_images
                      group by game_id) gi on games.ID = gi.game_id
-      where name like '%${keyword}%'
+      where name like ${"%" + keyword + "%"}
       limit 10;
   `);
 

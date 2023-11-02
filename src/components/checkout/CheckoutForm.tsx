@@ -205,11 +205,9 @@ export function CheckoutForm({
                   }
                   nextActionModal.close();
                   observer.disconnect();
-                  router.refresh();
-                  return router.push("/order/success?order_id=" + orderId);
                 }
                 router.refresh();
-                router.push("/order/failed?order_id=" + orderId);
+                router.push("/order/success?order_id=" + orderId);
               } catch (error) {
                 if (error instanceof Error) {
                   showMessage({ message: error.message, type: "error" });

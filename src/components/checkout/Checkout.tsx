@@ -101,9 +101,7 @@ export async function CheckoutView({
       };
     });
 
-    const {
-      data: { insertId },
-    } = await createOrder({
+    const response = await createOrder({
       order: {
         amount,
         payment_method: "card",
@@ -115,6 +113,10 @@ export async function CheckoutView({
         ...order,
       },
     });
+
+    const {
+      data: { insertId },
+    } = response
 
     return insertId;
   };
@@ -200,8 +202,10 @@ export async function CheckoutView({
           ? dayjs(paymentIntent.canceled_at).format("YYYY-MM-DD HH:mm:ss")
           : undefined,
       });
+      console.log({orderId, cartId});
       if (cartId) {
-        await deleteCart(cartId);
+        const {error} = await deleteCart(cartId);
+        console.log({error});
       }
 
       return {

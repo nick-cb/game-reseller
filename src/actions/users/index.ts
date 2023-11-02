@@ -16,7 +16,7 @@ import {
   updateSingle,
 } from "@/database";
 import { bucket } from "@/firebase";
-import { uuidv4 } from "@/utils";
+import { isUndefined, uuidv4 } from "@/utils";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { Users } from "@/database/models";
 
@@ -98,30 +98,28 @@ export async function updateUserById(
   id: number,
   { user }: { user: Partial<Omit<Users, "ID">> },
 ) {
+  const {
+    full_name,
+    display_name,
+    email,
+    avatar,
+    password,
+    stripe_id,
+    refresh_token,
+  } = user;
+  // prettier-ignore
   await updateSingle(sql`
     update users
-    set ${Object.entries(user)
-      .map(([key, value]) => {
-        return key + "=" + value;
-      })
-      .join(", ")}
+    set 
+      full_name = if(${!isUndefined(full_name)}, ${full_name}, full_name),
+      display_name = if(${isUndefined(display_name)}, ${display_name}, display_name),
+      email = if(${!isUndefined(email)}, ${email}, email),
+      avatar = if(${!isUndefined(avatar)}, ${avatar}, avatar),
+      password = if(${!isUndefined(password)}, ${password}, password),
+      stripe_id = if(${!isUndefined(stripe_id)}, ${stripe_id}, stripe_id),
+      refresh_token = if(${!isUndefined(refresh_token)}, ${refresh_token}, refresh_token)
     where ID = ${id}
-  `);
-}
-
-export async function updateUserByStripeId(
-  id: number,
-  { user }: { user: Partial<Omit<Users, "ID">> },
-) {
-  await updateSingle(sql`
-    update users
-    set ${Object.entries(user)
-      .map(([key, value]) => {
-        return key + "=" + value;
-      })
-      .join(", ")}
-    where stripe_id = ${id}
-  `);
+  `)
 }
 
 /*TODO: Move this into a model*/

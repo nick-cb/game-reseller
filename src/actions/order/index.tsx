@@ -1,7 +1,7 @@
 "use server";
 
 import { CreateOrderPayload, Orders } from "@/database/models";
-import { insertSingle, querySingle, sql, updateSingle } from "@/database";
+import { insertSingle, querySingle, sql } from "@/database";
 
 export async function createOrder({ order }: { order: CreateOrderPayload }) {
   return insertSingle(sql`
@@ -31,24 +31,5 @@ export async function findOrderById(
   const { userId } = options;
   return await querySingle<Orders>(sql`
     select * from orders where id = ${id} and user_id = ${userId};
-  `);
-}
-
-export async function updateOrder(
-  id: number,
-  {
-    order,
-  }: {
-    order: Partial<Omit<Orders, "ID">>;
-  },
-) {
-  return updateSingle(sql`
-    update orders 
-    set ${Object.entries(order)
-      .map(([key, value]) => {
-        return key + "=" + value;
-      })
-      .join(", ")}
-    where ID = ${id}
   `);
 }
