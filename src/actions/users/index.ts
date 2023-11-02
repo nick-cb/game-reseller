@@ -60,10 +60,13 @@ export async function insertUser({ user }: { user: IUserPayload }) {
       insert into users (full_name, display_name, email, password, avatar)
       values (${user.full_name}, ${user.display_name}, ${user.email}, ${user.password}, ${user.avatar});
   `);
-  if ("insertId" in data) {
-    return querySingle<IUserResult>(sql`
+  if (data.insertId) {
+    const user = await querySingle<IUserResult>(sql`
       select * from users where ID = ${parseInt(data.insertId.toString())}
     `);
+    if (user.data) {
+      return user;
+    }
   }
 
   throw new Error(

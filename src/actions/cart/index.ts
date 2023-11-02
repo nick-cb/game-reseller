@@ -19,10 +19,15 @@ export async function addItemToCart(slug: string) {
   const { data: game } = await querySingle<Game>(sql`
     select * from games where slug = '${slug}';
   `);
-
+  if (!game) {
+    return { error: "Request item not found" };
+  }
   const { data: user } = await querySingle<Users>(sql`
     select * from users where ID = ${payload.userId};
   `);
+  if (!user) {
+    return { error: "User not found" };
+  }
   if (!user.refresh_token) {
     return { data: null };
   }
@@ -43,7 +48,7 @@ export async function addItemToCart(slug: string) {
 
   try {
     await insertSingle(sql`
-    insert into cart_details (cart_id, game_id, checked) values (${cart.ID}, ${
+    insert into cart_details (cart_id, game_id, checked) values (${cart!.ID}, ${
       game.ID
     }, ${true});
   `);
@@ -150,6 +155,9 @@ export async function toggleItemChecked({
   }
   const { data: cart } = await findUserCart(payload.userId);
   try {
+    if (!cart) {
+      throw new Error();
+    }
     await querySingle(sql`
       update cart_details set checked=${checked} where cart_id = ${cart.ID} and game_id = ${gameId}
     `);

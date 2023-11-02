@@ -27,7 +27,7 @@ export default async function Home() {
     getCollectionByKey(["feature"]),
     getCollectionByKey(["new_release", "most_played", "top_player_rated"]),
   ]);
-  const carouselListGame = heroCarousel.list_game.map((game) => {
+  const carouselListGame = heroCarousel?.list_game.map((game) => {
     return {
       ...game,
       images: groupImages(game.images),
@@ -36,26 +36,30 @@ export default async function Home() {
 
   return (
     <>
-      <HeroCarousel data={carouselListGame} className="hidden sm:block" />
+      <HeroCarousel data={carouselListGame || []} className="hidden sm:block" />
       <Scroll containerSelector="#hero-slider">
-        <HeroSlider data={carouselListGame} className="sm:hidden" />
+        <HeroSlider data={carouselListGame || []} className="sm:hidden" />
       </Scroll>
       <hr className="my-4 border-default" />
       <Scroll
-        containerSelector={"#" + topSale.collection_key + "-mobile-scroll-list"}
+        containerSelector={
+          "#" + topSale?.collection_key + "-mobile-scroll-list"
+        }
       >
-        <Carousel
-          collection={{
-            ...topSale,
-            list_game: topSale.list_game.map((game) => {
-              return {
-                ...game,
-                images: groupImages(game.images),
-              };
-            }),
-          }}
-          className="pb-8 relative"
-        />
+        {topSale ? (
+          <Carousel
+            collection={{
+              ...topSale,
+              list_game: topSale.list_game.map((game) => {
+                return {
+                  ...game,
+                  images: groupImages(game.images),
+                };
+              }),
+            }}
+            className="pb-8 relative"
+          />
+        ) : null}
       </Scroll>
       <hr className="my-4 border-default" />
       {feature ? (
@@ -88,6 +92,9 @@ export default async function Home() {
       <hr className="my-6 border-default" />
       <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
         {pillars.map((collection) => {
+          if (!collection) {
+            return null;
+          }
           return (
             <React.Fragment key={collection.ID}>
               <Pillar

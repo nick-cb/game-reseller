@@ -1,4 +1,4 @@
-import mysql, { RowDataPacket } from "mysql2/promise";
+import mysql, { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 export const connection = mysql.createConnection(
   process.env.DATABASE_URL || "",
@@ -47,14 +47,22 @@ export function sql(
   for (const str of strings.slice(1)) {
     query += `?${str ?? ""}`;
   }
-
-  return [query, values];
+  const newValues = values.map((value) => {
+    if (typeof value === "string") {
+      return value;
+    }
+    if (!value) {
+      return null;
+    }
+    return value;
+  });
+  return [query, newValues];
 }
 
 export async function query<T extends any[]>(params: ReturnType<typeof sql>) {
   const [query, values] = params;
   const result = await pool.query<T>(query, values);
-  return { data: result[0] as T };
+  return { data: result[0] } as { data: (T[number] | null)[] };
 }
 
 export async function querySingle<T extends any>(
@@ -62,7 +70,11 @@ export async function querySingle<T extends any>(
 ) {
   const [query, values] = params;
   const result = await pool.query<RowDataPacket[]>(query, values);
-  return { data: result[0][0] as T };
+  const data = result[0][0];
+  if (data) {
+    return { data } as { data: T };
+  }
+  return { data: null };
 }
 
 export async function insert(params: ReturnType<typeof sql>) {
@@ -73,7 +85,7 @@ export async function insert(params: ReturnType<typeof sql>) {
 
 export async function insertSingle(params: ReturnType<typeof sql>) {
   const [query, values] = params;
-  const result = await pool.query<RowDataPacket[]>(query, values);
+  const result = await pool.query<ResultSetHeader[]>(query, values);
   return { data: result[0][0] };
 }
 

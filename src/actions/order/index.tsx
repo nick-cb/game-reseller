@@ -1,48 +1,25 @@
 "use server";
 
 import { CreateOrderPayload, Orders } from "@/database/models";
-import { Connection } from "mysql2/promise";
-import { connectDB, sql } from "@/database";
-import { ResultSetHeader, RowDataPacket } from "mysql2/index";
+import { insertSingle, querySingle, sql, updateSingle } from "@/database";
 
-export async function createOrder({
-  order,
-  db,
-}: {
-  order: CreateOrderPayload;
-  db?: Connection;
-}) {
-  const _db = db || (await connectDB());
-
-  const response = await _db.execute<ResultSetHeader>(sql`
+export async function createOrder({ order }: { order: CreateOrderPayload }) {
+  return insertSingle(sql`
     insert into orders (payment_intent, amount, payment_method, payment_service, 
                         created_at, items, status, succeeded_at,
                         canceled_at, card_number, card_type, user_id)
-    values (${order.payment_intent ? `'${order.payment_intent}'` : ""},
-            '${order.amount}', '${order.payment_method}', 
-            '${order.payment_service}', 
-            ${!order.canceled_at ? `'${order.created_at}'` : null}, 
-            '${order.items}', '${order.status}',
-            ${order.succeeded_at ? `'${order.succeeded_at}'` : null}, 
-            ${order.canceled_at ? `'${order.canceled_at}'` : null}, 
-            ${order.card_number ? `'${order.card_number}'` : null}, 
-            ${order.card_type ? `'${order.card_type}'` : null}, 
-            '${order.user_id}'
-    )
+    values (${order.payment_intent}, ${order.amount}, ${order.payment_method}, 
+            ${order.payment_service}, ${order.canceled_at}, ${order.items}, 
+            ${order.status}, ${order.succeeded_at}, ${order.canceled_at}, 
+            ${order.card_number}, ${order.card_type}, ${order.user_id}
+           )
   `);
-
-  return response[0].insertId;
 }
 
 export async function findOrderByIntent(paymentIntent: string) {
-  const db = await connectDB();
-  const response = await db.execute<(RowDataPacket & Orders)[]>(sql`
+  return querySingle<Orders>(sql`
     select * from orders where payment_intent = '${paymentIntent}';
   `);
-
-  return {
-    data: response[0][0],
-  };
 }
 
 export async function findOrderById(
@@ -52,39 +29,24 @@ export async function findOrderById(
   },
 ) {
   const { userId } = options;
-  const db = await connectDB();
-  const response = await db.execute<(RowDataPacket & Orders)[]>(sql`
+  return await querySingle<Orders>(sql`
     select * from orders where id = ${id} and user_id = ${userId};
   `);
-
-  if (!response[0][0]) {
-    return { data: null };
-  }
-
-  return {
-    data: response[0][0] as Orders,
-  };
 }
 
 export async function updateOrder(
   id: number,
   {
     order,
-    db,
   }: {
     order: Partial<Omit<Orders, "ID">>;
-    db?: Connection;
   },
 ) {
-  const _db = db || (await connectDB());
-
-  return _db.execute(sql`
+  return updateSingle(sql`
     update orders 
     set ${Object.entries(order)
       .map(([key, value]) => {
-        return (
-          key + "=" + (typeof value === "string" ? "'" + value + "'" : value)
-        );
+        return key + "=" + value;
       })
       .join(", ")}
     where ID = ${id}

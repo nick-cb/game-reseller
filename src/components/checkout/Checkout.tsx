@@ -14,7 +14,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { stripe } from "@/utils";
 import { deleteCart } from "@/actions/cart";
-import { connectDB } from "@/database";
 import { serverFind, serverMap } from "@/actions/payments/paypal";
 import {
   CreateOrderPayload,
@@ -58,7 +57,6 @@ export async function CheckoutView({
   if (typeof payload === "string") {
     redirect("/");
   }
-  const db = await connectDB();
   const [{ data: user }] = await Promise.all([
     findUserById({ id: payload.userId }),
   ]);
@@ -75,13 +73,16 @@ export async function CheckoutView({
   const paymentMethods = paymentMethodRes?.data || [];
 
   let amount = 0;
-  for (const game of gameList.filter(game => game.checked)) {
+  for (const game of gameList.filter((game) => game.checked)) {
     amount += parseFloat(game.sale_price.toString());
   }
 
   const placeOrder = async (order: Partial<CreateOrderPayload>) => {
     "use server";
     const { data: user } = await findUserById({ id: payload.userId });
+    if (!user) {
+      throw new Error("User not found");
+    }
     const items = await serverMap(gameList, (game) => {
       return {
         ID: game.ID,
@@ -100,7 +101,9 @@ export async function CheckoutView({
       };
     });
 
-    const id = await createOrder({
+    const {
+      data: { insertId },
+    } = await createOrder({
       order: {
         amount,
         payment_method: "card",
@@ -113,7 +116,7 @@ export async function CheckoutView({
       },
     });
 
-    return id;
+    return insertId;
   };
 
   const dedupePaymentMethod = async (
@@ -150,7 +153,7 @@ export async function CheckoutView({
 
       if (!user.stripe_id) {
         const newCustomer = await stripe.customers.create({
-          name: user.full_name || '',
+          name: user.full_name || "",
         });
         user.stripe_id = newCustomer.id;
         await updateUserById(payload.userId, {
@@ -228,7 +231,10 @@ export async function CheckoutView({
           }}
         >
           <MobileGameList gameList={gameList} />
-          <AccordionGroup exclusive defaultValue={paymentMethods.length > 0 ? 0 : 1}>
+          <AccordionGroup
+            exclusive
+            defaultValue={paymentMethods.length > 0 ? 0 : 1}
+          >
             {!!paymentMethods.length ? (
               <div
                 className="col-start-1 col-end-2"
@@ -316,7 +322,10 @@ export async function CheckoutView({
                           <hr className="border-default my-2" />
                           <SavePayment id="card" />
                         </ScrollItem>
-                        <ScrollItem as="li" className="w-full shrink-0 snap-center">
+                        <ScrollItem
+                          as="li"
+                          className="w-full shrink-0 snap-center"
+                        >
                           <p className="text-[14.88px]">
                             You will be directed to PayPal to authorize your
                             payment method, then you will be returned to Penguin
@@ -333,9 +342,7 @@ export async function CheckoutView({
             ) : null}
           </AccordionGroup>
           <div id="checkout-button" className={"md:col-start-2"}>
-            <PlaceOrderButton>
-              Place order
-            </PlaceOrderButton>
+            <PlaceOrderButton>Place order</PlaceOrderButton>
           </div>
           <div
             className="hidden md:block col-start-2 row-start-1"
