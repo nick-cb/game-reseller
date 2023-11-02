@@ -15,7 +15,7 @@ export const connectDB = async () => {
   }
 };
 
-const pool = mysql.createPool({
+export const pool = mysql.createPool({
   uri: process.env.DATABASE_URL || "",
   waitForConnections: true,
 });
@@ -48,7 +48,7 @@ export function sql(
     query += `?${str ?? ""}`;
   }
   const newValues = values.map((value) => {
-    if (typeof value === "string") {
+    if (typeof value === "string" || typeof value === "number") {
       return value;
     }
     if (!value) {

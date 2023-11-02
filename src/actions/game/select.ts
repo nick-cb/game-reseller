@@ -281,16 +281,11 @@ export async function getGameAddons({
   keyword?: string;
   gameId: number;
 }) {
-  let whereClause = `where base_game_id = ${gameId}`;
-  if (keyword) {
-    whereClause += ` 
-      and games.name like %${keyword}%
-    `;
-  }
   const countReq = sql`
-      select count(*) as total_count
+      select count(*) as count
       from games
-      ${whereClause}
+      where base_game_id = ${gameId} 
+        and if(${!!keyword}, games.name like '%${keyword}%', 1)
       group by games.base_game_id;
   `;
   const gameReq = sql`
@@ -302,17 +297,18 @@ export async function getGameAddons({
                           from game_images
                           group by game_id) gi
                          on games.ID = gi.game_id
-      ${whereClause}
+      where base_game_id = ${gameId} 
+        and if(${!!keyword}, games.name like '%${keyword}%', 1)
       limit ${limit} offset ${skip}
       ;
   `;
-  const [{data}, {data: total = {count: 0}}] = await Promise.all([
+  const [{ data }, { data: total }] = await Promise.all([
     query<(Game & { images: GameImages[] })[]>(gameReq),
-    querySingle<{count: number}>(countReq),
+    querySingle<{ count: number }>(countReq),
   ]);
 
   return {
     data,
-    count: total?.count as number,
+    count: total?.count || 0,
   };
 }
