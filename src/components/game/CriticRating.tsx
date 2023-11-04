@@ -1,6 +1,5 @@
 import Reviews, { CriticAvg, Game } from "@/database/models";
-import { ScrollBulletIndicator } from "../home/hero-slider";
-import { Scroll, ScrollItem } from "../scroll";
+import {Scroll, ScrollBulletIndicator, ScrollItem} from "../scroll";
 import { OmitGameId } from "@/actions/game/select";
 
 const criticRec = {

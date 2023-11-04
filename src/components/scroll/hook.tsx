@@ -11,30 +11,30 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
       return;
     }
     const { left } = root.getBoundingClientRect();
-    let nextOffsetEntry: IntersectionObserverEntry | undefined;
+    let nextOffViewIdx: number = -1;
     if (direction === "right") {
-      nextOffsetEntry = elements.find((el) => {
-        return (
-          el.boundingClientRect.left > left &&
-          thresholds?.some((s) => el.intersectionRatio < s)
-        );
-      });
+      const firstInviewIdx = elements.findIndex(
+        (el) => el.intersectionRatio > 0.5,
+      );
+      nextOffViewIdx = elements
+        .slice(firstInviewIdx)
+        .findIndex((el) => el.intersectionRatio <= 0.5);
     } else {
-      nextOffsetEntry = elements.findLast((el) => {
-        return (
-          el.boundingClientRect.left < left &&
-          thresholds?.some((s) => el.intersectionRatio < s)
-        );
-      });
+      console.log(elements);
+      nextOffViewIdx = elements.findIndex(
+        (el, index) =>
+          el.intersectionRatio <= 0.5 &&
+          elements[index + 1]?.intersectionRatio > 0.5,
+      );
     }
 
-    if (!nextOffsetEntry) {
+    console.log(nextOffViewIdx);
+    if (nextOffViewIdx === -1) {
       return;
     }
-    const { target } = nextOffsetEntry;
-    root.scroll({
-      // @ts-ignore
-      left: target.offsetLeft,
+    const { target, boundingClientRect } = elements[nextOffViewIdx];
+    root.scrollBy({
+      left: boundingClientRect.width,
       behavior: "smooth",
     });
   };
@@ -99,6 +99,7 @@ export function useScrollFactory({
     const root = document.querySelector(containerSelector);
     const newObserver = new IntersectionObserver(
       (entries) => {
+        console.log({entries});
         for (const entry of entries) {
           setElements((prev) => {
             const index = prev.findIndex((el) =>
@@ -118,6 +119,7 @@ export function useScrollFactory({
         ...observerOptions,
       },
     );
+
     setObserver(newObserver);
 
     return () => {

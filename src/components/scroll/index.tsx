@@ -1,14 +1,8 @@
 "use client";
 
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import React, {createContext, PropsWithChildren, useContext, useEffect, useRef,} from "react";
 
-import { useScroll, useScrollFactory } from "@/components/scroll/hook";
+import {useScroll, useScrollFactory} from "@/components/scroll/hook";
 
 export const scrollContext = createContext<{
   elements: IntersectionObserverEntry[];
@@ -87,15 +81,17 @@ export function ScrollButton({
   children,
   method,
   index,
+  direction,
   ...props
 }: {
-  method: "scrollToIndex";
+  method: "scrollToIndex" | "scrollToNextOffView";
+  direction?: "left" | "right";
   index?: number;
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >) {
-  const { scrollToIndex } = useScroll();
+  const { scrollToIndex, scrollToNextOffView } = useScroll();
 
   return (
     <button
@@ -103,10 +99,46 @@ export function ScrollButton({
         if (method === "scrollToIndex" && index !== undefined) {
           scrollToIndex(index);
         }
+        if (method === "scrollToNextOffView" && direction) {
+          scrollToNextOffView(direction);
+        }
       }}
       {...props}
     >
       {children}
     </button>
+  );
+}
+
+export function BulletIndicator({
+  active,
+  onClick,
+}: {
+  active: boolean;
+  onClick?: () => void;
+  groupClassname?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
+        (active ? " bg-white/60 " : "")
+      }
+    ></button>
+  );
+}
+
+export function ScrollBulletIndicator({index}: { index: number }) {
+  const {elements, scrollToIndex} = useScroll();
+  const active = elements[index]?.isIntersecting;
+
+  return (
+      <BulletIndicator
+          active={active}
+          onClick={() => {
+            scrollToIndex(index);
+          }}
+      />
   );
 }

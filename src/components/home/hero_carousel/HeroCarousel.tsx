@@ -15,7 +15,11 @@ type HeroCarouselProps = {
 type HeroCarouselGame = Pick<Game, "ID" | "name" | "slug" | "description"> & {
   images: GameImageGroup;
 };
-const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
+const HeroCarousel = ({
+  children,
+  data,
+  className = "",
+}: PropsWithChildren<HeroCarouselProps>) => {
   const { b640: sm } = useBreakpoints(breakpoints);
   const [index, setIndex] = useState(-1);
   let prev = useRef(0);
@@ -83,35 +87,7 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
     >
       <div className="w-full sm:w-[75%] lg:w-4/5 aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory">
         <ul className="main-list h-full" ref={mainListRef}>
-          {data.map((item, idx) => (
-            <li
-              key={item.ID}
-              className={
-                "main-item snap-start " +
-                (idx === 0
-                  ? index === -1 || index === 0
-                    ? "z-[1]"
-                    : ""
-                  : index === idx
-                  ? "z-[1]"
-                  : "")
-              }
-            >
-              {item.images.landscape?.url && (
-                <Image
-                  className="rounded-lg object-cover h-full w-full"
-                  src={decodeURIComponent(item.images.landscape.url)}
-                  alt=""
-                  width={1280}
-                  height={720}
-                />
-              )}
-              <Cover>
-                <ButtonGroup game={item} />
-                <Description game={item} />
-              </Cover>
-            </li>
-          ))}
+          {children}
         </ul>
       </div>
       <ul ref={previewListRef} className="sm:flex flex-col gap-2 flex-1 hidden">
@@ -154,7 +130,7 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
   );
 };
 
-const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
+export const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
   return (
     <div className="flex gap-4">
       <Link
@@ -175,7 +151,7 @@ const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
   );
 };
 
-const Description = ({ game }: { game: HeroCarouselGame }) => {
+export const Description = ({ game }: { game: HeroCarouselGame }) => {
   return (
     <div className="max-w-sm flex flex-col justify-evenly flex-grow">
       <div

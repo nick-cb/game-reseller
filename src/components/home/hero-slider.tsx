@@ -1,12 +1,12 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useBreakpoints } from "@/hooks/useBreakpoint";
 import { Game, GameImageGroup } from "@/database/models";
-import { Scroll, ScrollItem } from "@/components/scroll/index";
-import { useScroll } from "@/components/scroll/hook";
+import {
+  Scroll,
+  ScrollBulletIndicator,
+  ScrollItem,
+} from "@/components/scroll/index";
 
 type SliderGame = Pick<
   Game,
@@ -14,7 +14,6 @@ type SliderGame = Pick<
 > & {
   images: GameImageGroup;
 };
-const breakpoints = [640] as const;
 export function HeroSlider({
   data,
   className = "",
@@ -22,15 +21,8 @@ export function HeroSlider({
   data: SliderGame[];
   className?: string;
 }) {
-  const { b640: sm } = useBreakpoints(breakpoints);
-  const { elements, scrollToIndex } = useScroll();
-
-  if (sm >= 0) {
-    return null;
-  }
-
   return (
-    <div>
+    <>
       <ul
         id={"hero-slider"}
         className={
@@ -46,50 +38,12 @@ export function HeroSlider({
         {data.map((item, index) => {
           return (
             <li key={item.ID}>
-              <BulletIndicator
-                active={elements[index]?.intersectionRatio > 0.5}
-                onClick={() => {
-                  scrollToIndex(index);
-                }}
-              />
+              <ScrollBulletIndicator index={index} />
             </li>
           );
         })}
       </ul>
-    </div>
-  );
-}
-
-function BulletIndicator({
-  active,
-  onClick,
-}: {
-  active: boolean;
-  onClick?: () => void;
-  groupClassname?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={
-        "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
-        (active ? " bg-white/60 " : "")
-      }
-    ></button>
-  );
-}
-
-export function ScrollBulletIndicator({ index }: { index: number }) {
-  const { elements, scrollToIndex } = useScroll();
-  const active = elements[index]?.isIntersecting;
-
-  return (
-    <BulletIndicator
-      active={active}
-      onClick={() => {
-        scrollToIndex(index);
-      }}
-    />
+    </>
   );
 }
 

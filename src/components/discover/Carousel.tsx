@@ -3,13 +3,9 @@
 import React, { useMemo, useRef } from "react";
 import PortraitGameCard from "../PortraitGameCard";
 import Link from "next/link";
-import {
-  Collections,
-  Game,
-  GameImageGroup,
-} from "@/database/models";
+import { Collections, Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/actions/game/select";
-import {useScroll} from "@/components/scroll/hook";
+import { useScroll } from "@/components/scroll/hook";
 
 type CarouselGame = Pick<
   Game,
@@ -28,10 +24,9 @@ type CarouselProps = {
   collection: Collections & {
     list_game: CarouselGame[];
   };
-  className: string;
 };
 
-const Carousel = ({ collection, className }: CarouselProps) => {
+const Carousel = ({ collection }: CarouselProps) => {
   const listRef = useRef<HTMLDivElement>(null);
   const leftButtonRef = useRef<HTMLButtonElement>(null);
   const rightButtonRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +50,7 @@ const Carousel = ({ collection, className }: CarouselProps) => {
   }, [elements]);
 
   return (
-    <section className={className}>
+    <>
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
@@ -158,7 +153,7 @@ const Carousel = ({ collection, className }: CarouselProps) => {
           />
         </div>
       </div>
-    </section>
+    </>
   );
 };
 
