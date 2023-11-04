@@ -103,7 +103,13 @@ function SliderItem({ item }: { item: SliderGame; index: number }) {
     >
       <div className="intersect-point absolute left-1/2 top-1/2 bg-blue-200"></div>
       <Link href={"/" + item.slug} className="contents">
-        <Image className="" src={item.images.portrait?.url || ""} alt="" fill />
+        <Image
+          className="h-full w-full object-cover absolute"
+          src={item.images.portrait?.url || ""}
+          alt=""
+          width={560}
+          height={681}
+        />
       </Link>
       <div
         className={

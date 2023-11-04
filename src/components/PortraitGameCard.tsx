@@ -39,17 +39,21 @@ const PortraitGameCard = ({
             src={game.images.portrait?.url}
             alt={`portrait of ${game.name}`}
             className={
-              "rounded relative hidden xs-right-pad:block group-focus:scale-110 duration-300 transition-transform"
+              "rounded hidden xs-right-pad:block group-focus:scale-110 duration-300 transition-transform" +
+              "w-full h-full object-cover "
             }
-            fill
+            width={235}
+            height={310}
           />
           <Image
             src={game.images.landscape?.url}
             alt={`portrait of ${game.name}`}
             className={
-              "rounded relative block xs-right-pad:hidden object-cover group-focus:scale-110 transition-transform"
+              "rounded block xs-right-pad:hidden object-cover group-focus:scale-110 transition-transform " +
+              "w-full h-full object-cover "
             }
-            fill
+            width={250}
+            height={115}
           />
         </div>
         <p className="mt-4 text-sm text-white_primary">{game.name}</p>

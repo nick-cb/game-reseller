@@ -99,10 +99,11 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
             >
               {item.images.landscape?.url && (
                 <Image
-                  className="rounded-lg"
+                  className="rounded-lg object-cover h-full w-full"
                   src={decodeURIComponent(item.images.landscape.url)}
                   alt=""
-                  fill
+                  width={1280}
+                  height={720}
                 />
               )}
               <Cover>
@@ -137,7 +138,8 @@ const HeroCarousel = ({ data, className = "" }: HeroCarouselProps) => {
                     alt=""
                     className="absolute"
                     src={decodeURIComponent(item.images.portrait.url)}
-                    fill
+                    width={54}
+                    height={72}
                   />
                 )}
               </div>

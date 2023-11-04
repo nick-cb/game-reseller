@@ -32,12 +32,13 @@ export function FeatureCard({ item }: FeatureCardProps) {
       >
         <Image
           className={
-            "rounded transition-opacity duration-300 " +
+            "rounded transition-opacity duration-300 w-full h-full object-cover " +
             (hasVideos ? " hover:opacity-0 hover:pointer-events-none " : "")
           }
           src={item.images.landscape?.url}
           alt={""}
-          fill
+          width={512}
+          height={288}
         />
         {hasVideos ? (
           <Video

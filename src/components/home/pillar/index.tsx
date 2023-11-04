@@ -57,7 +57,13 @@ export function Pillar({ data }: PillarProps) {
               flex items-center gap-4 snap-start"
             >
               <div className="relative h-28 md:h-18 aspect-[3/4] rounded overflow-hidden">
-                <Image src={game.images.portrait?.url} alt="" fill />
+                <Image
+                  src={game.images.portrait?.url}
+                  alt=""
+                  width={54}
+                  height={72}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <p className="mb-2 text-sm">{game.name}</p>
