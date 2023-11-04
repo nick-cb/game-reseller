@@ -1,19 +1,15 @@
 "use client";
-import { useBreakpoints } from "@/hooks/useBreakpoint";
+import {useBreakpoints} from "@/hooks/useBreakpoint";
 import "./hero-carousel.css";
 import Image from "next/image";
+import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
+import {HeroCarouselGame} from "@/components/home/hero_carousel/Description";
 
 const breakpoints = [640] as const;
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { Game, GameImageGroup } from "@/database/models";
-import Link from "next/link";
 
 type HeroCarouselProps = {
   data: HeroCarouselGame[];
   className?: string;
-};
-type HeroCarouselGame = Pick<Game, "ID" | "name" | "slug" | "description"> & {
-  images: GameImageGroup;
 };
 const HeroCarousel = ({
   children,
@@ -126,66 +122,6 @@ const HeroCarousel = ({
           </li>
         ))}
       </ul>
-    </div>
-  );
-};
-
-export const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
-  return (
-    <div className="flex gap-4">
-      <Link
-        href={`${game.slug}/order`}
-        className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
-      >
-        BUY NOW
-      </Link>
-      <a
-        href="#"
-        className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
-          hover:bg-white/[0.16] transition-colors duration-200 
-          text-center"
-      >
-        ADD TO WISHLIST
-      </a>
-    </div>
-  );
-};
-
-export const Description = ({ game }: { game: HeroCarouselGame }) => {
-  return (
-    <div className="max-w-sm flex flex-col justify-evenly flex-grow">
-      <div
-        className="w-36 lg:w-80 aspect-video relative logo"
-        style={{
-          backgroundImage: game.images.logo?.url
-            ? `url(${decodeURIComponent(game.images.logo.url)})`
-            : "",
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "bottom left",
-        }}
-      >
-        {/* <Image src={} alt="" fill className="object-contain" /> */}
-      </div>
-      <p className="text-white_primary lg:text-lg hidden sm:block">
-        {game.description?.split(".")[0]}
-      </p>
-    </div>
-  );
-};
-
-export const Cover = ({
-  children,
-  className = "",
-}: PropsWithChildren<{ className?: string }>) => {
-  return (
-    <div
-      className={
-        "main-item-cover absolute inset-0 flex flex-col-reverse p-8 justify-between gap-4 lg:gap-8 " +
-        className
-      }
-    >
-      {children}
     </div>
   );
 };

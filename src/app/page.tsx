@@ -1,9 +1,5 @@
 import Carousel from "@/components/discover/Carousel";
-import HeroCarousel, {
-  ButtonGroup,
-  Cover,
-  Description,
-} from "@/components/home/hero_carousel/HeroCarousel";
+import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import { Pillar } from "@/components/home/pillar";
 import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
@@ -13,6 +9,9 @@ import { getCollectionByKey } from "@/actions/collections";
 import { getHeroCarousel } from "@/actions/homepage";
 import { ScrollItem, Scroll, ScrollButton } from "@/components/scroll/index";
 import Image from "next/image";
+import {Description} from "@/components/home/hero_carousel/Description";
+import {Cover} from "@/components/home/hero_carousel/Cover";
+import {ButtonGroup} from "@/components/home/hero_carousel/ButtonGroup";
 
 export default async function Home() {
   // TODO: Using transaction
@@ -64,6 +63,8 @@ export default async function Home() {
                 alt=""
                 width={1280}
                 height={720}
+                // priority
+                // loading="eager"
               />
             )}
             <Cover>
