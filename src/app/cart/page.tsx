@@ -151,7 +151,6 @@ export default async function cartPage() {
           </div>
           <CheckoutModal SubmitButton={<CheckoutButton />}>
             <Suspense>
-              {/* @ts-expect-error Server Component */}
               <CheckoutView
                 gameList={grouppedImageCart.game_list}
                 cartId={cart.ID}

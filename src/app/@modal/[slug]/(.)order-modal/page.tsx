@@ -26,7 +26,6 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
 
   return (
     <ItemOrderModal>
-      {/* @ts-expect-error Server Component */}
       <CheckoutView gameList={[game]} />
     </ItemOrderModal>
   );

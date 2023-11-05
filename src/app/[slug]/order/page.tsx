@@ -29,7 +29,6 @@ export default async function ItemOrderPage({ params }: { params: any }) {
 
   return (
     <div className="flex flex-col-reverse grid-cols-[calc(70%-32px)_30%] md:grid md:grid-rows-[minmax(0px,auto)_min-content] gap-8">
-      {/* @ts-expect-error Server Component */}
       <CheckoutView gameList={[game]} />
     </div>
   );
