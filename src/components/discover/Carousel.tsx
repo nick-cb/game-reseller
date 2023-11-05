@@ -136,8 +136,7 @@ const Carousel = ({ collection }: CarouselProps) => {
               key={game.ID}
               game={game}
               className="snap-start last-of-type:snap-end flex-shrink-0
-              w-[calc(calc(100vw_-_72px)_-_1px)]
-              xs:w-[calc(calc(100vw_-_32px)/2_-_13px)]
+              w-[calc(calc(100vw_-_32px)/2_-_13px)]
               3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]
               sm:w-[calc(calc(100vw_-_32px)/4_-_13px)]
               md:w-[calc(calc(100vw_-_32px)/4_-_13px)]

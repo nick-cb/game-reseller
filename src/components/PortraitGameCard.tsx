@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import React from "react";
 import { currencyFormatter } from "@/utils";
 import { ScrollItem } from "@/components/scroll/index";
@@ -28,32 +27,23 @@ const PortraitGameCard = ({
         }
       >
         <div
-          className={`relative xs-right-pad:aspect-[3/4] overflow-hidden
-          after:rounded after:absolute after:inset-0 after:w-full after:h-full
-          after:transition-opacity after:bg-white after:opacity-0
-          group-hover:after:opacity-[0.1] bg-white/25 rounded
-          h-28 xs-right-pad:h-auto
-          `}
+          className={
+            "relative xs-right-pad:aspect-[3/4] overflow-hidden " +
+            "after:rounded after:absolute after:inset-0 after:w-full after:h-full " +
+            "after:transition-opacity after:bg-white after:opacity-0 " +
+            "group-hover:after:opacity-[0.1] bg-white/25 rounded " +
+            "h-28 xs-right-pad:h-auto "
+          }
         >
-          <Image
-            src={game.images.portrait?.url}
+          <img
+            src={game.images.portrait?.url + "?h=480&w=360&resize=1"}
             alt={`portrait of ${game.name}`}
             className={
-              "rounded hidden xs-right-pad:block group-focus:scale-110 duration-300 transition-transform" +
+              "rounded group-focus:scale-110 duration-300 transition-transform" +
               "w-full h-full object-cover "
             }
-            width={235}
-            height={310}
-          />
-          <Image
-            src={game.images.landscape?.url}
-            alt={`portrait of ${game.name}`}
-            className={
-              "rounded block xs-right-pad:hidden object-cover group-focus:scale-110 transition-transform " +
-              "w-full h-full object-cover "
-            }
-            width={250}
-            height={115}
+            width={360}
+            height={480}
           />
         </div>
         <p className="mt-4 text-sm text-white_primary">{game.name}</p>
