@@ -9,15 +9,24 @@ import { Scroll, ScrollBulletIndicator, ScrollItem } from "@/components/scroll";
 import { Carousel, Indicator, IndicatorList } from "./Carousel";
 import { ButtonGroup } from "./ButtonGroup";
 import { Cover } from "./Cover";
+import { getHeroCarousel } from "@/actions/homepage";
+import { groupImages } from "@/utils/data";
 
 type HeroCarouselProps = {
-  data: HeroCarouselGame[];
   className?: string;
 };
-const HeroCarousel = ({
-  data,
+export async function HeroCarousel({
   className = "",
-}: PropsWithChildren<HeroCarouselProps>) => {
+}: PropsWithChildren<HeroCarouselProps>) {
+  const { data: heroCarousel } = await getHeroCarousel();
+  const data =
+    heroCarousel?.list_game.map((game) => {
+      return {
+        ...game,
+        images: groupImages(game.images),
+      };
+    }) || [];
+
   return (
     <div className={"sm:flex gap-4 lg:gap-8 " + className}>
       <Carousel
@@ -154,10 +163,9 @@ const HeroCarousel = ({
           </ScrollItem>
         ))}
       </Carousel>
-      {/* <ul ref={previewListRef}></ul> */}
     </div>
   );
-};
+}
 
 function MobileIndicator({ data }: { data: HeroCarouselGame[] }) {
   return (

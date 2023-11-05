@@ -1,5 +1,3 @@
-const path = require("path");
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -14,25 +12,8 @@ const nextConfig = {
       },
     ],
   },
-  // webpack: (config, { isServer }) => {
-  //   config.resolve.alias["@dicebear/converter"] = path.resolve(
-  //     __dirname,
-  //     "node_modules/@dicebear/converter/lib/index.js",
-  //   );
-
-  //   return config;
-  // },
   headers: async () => {
     return [
-      {
-        source: "/",
-        headers: [
-          { key: "cache", value: "no-store" },
-          // {
-          //   "Cache-Control": "no-store",
-          // },
-        ],
-      },
       {
         source: "/login",
         headers: [{ key: "type", value: "modal" }],

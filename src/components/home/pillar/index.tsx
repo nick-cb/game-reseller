@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Collections, Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/actions/game/select";
 import { currencyFormatter } from "@/utils";
+import { getCollectionByKey } from "@/actions/collections";
+import React from "react";
+import { groupImages } from "@/utils/data";
 
 type PillarGame = Pick<
   Game,
@@ -21,6 +24,36 @@ type PillarProps = {
     list_game: PillarGame[];
   };
 };
+
+export async function PillarGroup({ names }: { names: string[] }) {
+  const { data: pillars } = await getCollectionByKey(names);
+
+  return (
+    <>
+      {pillars.map((collection) => {
+        if (!collection) {
+          return null;
+        }
+        return (
+          <React.Fragment key={collection.ID}>
+            <Pillar
+              data={{
+                ...collection,
+                list_game: collection.list_game.map((game) => {
+                  return {
+                    ...game,
+                    images: groupImages(game.images),
+                  };
+                }),
+              }}
+            />
+            <hr className="my-4 border-default md:hidden last-of-type:hidden" />
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+}
 
 export function Pillar({ data }: PillarProps) {
   return (
@@ -57,7 +90,10 @@ export function Pillar({ data }: PillarProps) {
             >
               <div className="relative h-28 md:h-18 aspect-[3/4] rounded overflow-hidden">
                 <img
-                  src={game.images.portrait?.url + "?h=128&w=96&quality=medium&resize=1"}
+                  src={
+                    game.images.portrait?.url +
+                    "?h=128&w=96&quality=medium&resize=1"
+                  }
                   alt=""
                   width={96}
                   height={128}

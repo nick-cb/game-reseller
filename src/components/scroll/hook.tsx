@@ -6,11 +6,10 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
   const { elements, observer } = factory || scrollContextReturn;
 
   const scrollToNextOffView = (direction: "left" | "right") => {
-    const { root, thresholds } = observer || {};
+    const { root } = observer || {};
     if (!root || !isElement(root)) {
       return;
     }
-    const { left } = root.getBoundingClientRect();
     let nextOffViewIdx: number = -1;
     if (direction === "right") {
       const firstInviewIdx = elements.findIndex(
@@ -32,7 +31,7 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     if (nextOffViewIdx === -1) {
       return;
     }
-    const { target, boundingClientRect } = elements[nextOffViewIdx];
+    const { boundingClientRect } = elements[nextOffViewIdx];
     root.scrollBy({
       left: boundingClientRect.width,
       behavior: "smooth",
@@ -61,7 +60,7 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     // } = root.getBoundingClientRect();
 
     root.scroll({
-      left: entry.boundingClientRect.width * index,
+      left: entry.boundingClientRect.width,
       behavior: "smooth",
     });
     // console.log(entry);
@@ -99,7 +98,7 @@ export function useScrollFactory({
     const root = document.querySelector(containerSelector);
     const newObserver = new IntersectionObserver(
       (entries) => {
-        console.log({entries});
+        console.log({ entries });
         for (const entry of entries) {
           setElements((prev) => {
             const index = prev.findIndex((el) =>

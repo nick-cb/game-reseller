@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Image from "next/image";
-import { MobileSearch, SearchbarDistributeTop } from "../components/searchbar";
 import QueryContext from "../components/QueryContext";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -15,6 +14,10 @@ import { SnackContextProvider } from "@/components/SnackContext";
 import { CartButton } from "@/components/cart/CartButton";
 // import { TurboLink } from "@/components/Turbolink";
 import NextTopLoader from "nextjs-toploader";
+import {
+  DesktopSearchBar,
+  MobileSearch,
+} from "@/components/home/search/SearchBar";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -68,11 +71,9 @@ export default function RootLayout({
                     className="hidden h-full sm:block mr-8"
                     action={handleSubmitSearch}
                   >
-                    <SearchbarDistributeTop />
+                    <DesktopSearchBar />
                   </form>
-                  {/* @ts-expect-error Server Component */}
                   <CartButton />
-                  {/* @ts-expect-error Server Component */}
                   <AuthControls />
                 </div>
               </HideOnRoute>
@@ -130,7 +131,7 @@ export default function RootLayout({
             <SnackContextProvider>{children}</SnackContextProvider>
             {modal}
           </main>
-          <Suspense>
+          <Suspense fallback={<div>loading...</div>}>
             <HideOnRoute
               matches={[
                 { pathname: "/login" },

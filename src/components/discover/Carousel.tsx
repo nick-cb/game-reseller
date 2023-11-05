@@ -1,56 +1,39 @@
-"use client";
-
-import React, { useMemo, useRef } from "react";
+import React from "react";
 import PortraitGameCard from "../PortraitGameCard";
 import Link from "next/link";
-import { Collections, Game, GameImageGroup } from "@/database/models";
-import { FVideoFullInfo } from "@/actions/game/select";
-import { useScroll } from "@/components/scroll/hook";
+// import { Game, GameImageGroup } from "@/database/models";
+// import { FVideoFullInfo } from "@/actions/game/select";
+import { CarouselButton } from "./Carouse.client";
+import { getCollectionByKey } from "@/actions/collections";
+import { Scroll } from "../scroll";
+import { groupImages } from "@/utils/data";
 
-type CarouselGame = Pick<
-  Game,
-  | "ID"
-  | "name"
-  | "slug"
-  | "developer"
-  | "avg_rating"
-  | "sale_price"
-  | "description"
-> & {
-  images: GameImageGroup;
-  videos: FVideoFullInfo[];
-};
+// type CarouselGame = Pick<
+//   Game,
+//   | "ID"
+//   | "name"
+//   | "slug"
+//   | "developer"
+//   | "avg_rating"
+//   | "sale_price"
+//   | "description"
+// > & {
+//   images: GameImageGroup;
+//   videos: FVideoFullInfo[];
+// };
 type CarouselProps = {
-  collection: Collections & {
-    list_game: CarouselGame[];
-  };
+  name: string;
+  // collection: Collections & {
+  //   list_game: CarouselGame[];
+  // };
 };
 
-const Carousel = ({ collection }: CarouselProps) => {
-  const listRef = useRef<HTMLDivElement>(null);
-  const leftButtonRef = useRef<HTMLButtonElement>(null);
-  const rightButtonRef = useRef<HTMLButtonElement>(null);
-  const { elements, scrollToIndex } = useScroll();
-  const { firstItemInView, lastItemInView } = useMemo(() => {
-    const firstItemInViewIdx = elements.findIndex((el) => el.isIntersecting);
-    const lastItemInViewIdx =
-      elements.findIndex(
-        (el, index) => !el.isIntersecting && index > firstItemInViewIdx,
-      ) - 1;
-    return {
-      firstItemInView: {
-        index: firstItemInViewIdx,
-        element: elements[firstItemInViewIdx],
-      },
-      lastItemInView: {
-        index: lastItemInViewIdx,
-        element: elements[lastItemInViewIdx],
-      },
-    };
-  }, [elements]);
+async function Carousel({ name }: CarouselProps) {
+  const { data } = await getCollectionByKey([name]);
+  const collection = data[0] || [];
 
   return (
-    <>
+    <Scroll containerSelector={"#" + collection.collection_key}>
       <div className={"flex justify-between mb-4"}>
         <Link
           className="text-white text-lg flex items-center group gap-2 w-max pr-4"
@@ -74,56 +57,12 @@ const Carousel = ({ collection }: CarouselProps) => {
           </svg>
         </Link>
         <div className={"flex items-center gap-2"}>
-          <button
-            ref={leftButtonRef}
-            onClick={() => {
-              if (firstItemInView) {
-                scrollToIndex(firstItemInView.index - 1);
-              }
-            }}
-            className={
-              "bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color "
-            }
-          >
-            <svg
-              fill={"transparent"}
-              stroke={
-                elements[0]?.isIntersecting
-                  ? "rgb(255 255 255 / 0.25)"
-                  : "rgb(255 255 255)"
-              }
-              className="-rotate-90 w-[32px] h-[32px]"
-            >
-              <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
-            </svg>
-          </button>
-          <button
-            ref={rightButtonRef}
-            onClick={() => {
-              if (lastItemInView) {
-                scrollToIndex(lastItemInView.index + 1);
-              }
-            }}
-            className="bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color"
-          >
-            <svg
-              fill={"transparent"}
-              stroke={
-                elements.at(-1)?.isIntersecting
-                  ? "rgb(255 255 255 / 0.25)"
-                  : "rgb(255 255 255)"
-              }
-              className="rotate-90 w-[32px] h-[32px]"
-            >
-              <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
-            </svg>
-          </button>
+          <CarouselButton />
         </div>
       </div>
       <div className="relative">
         <div
-          ref={listRef}
-          id={collection.collection_key + "-mobile-scroll-list"}
+          id={collection.collection_key}
           className="flex gap-4 overflow-scroll scrollbar-hidden
           snap-x snap-mandatory grid-cols-10"
         >
@@ -134,7 +73,7 @@ const Carousel = ({ collection }: CarouselProps) => {
           {collection.list_game.map((game) => (
             <PortraitGameCard
               key={game.ID}
-              game={game}
+              game={{ ...game, images: groupImages(game.images) }}
               className="snap-start last-of-type:snap-end flex-shrink-0
               w-[calc(calc(100vw_-_32px)/2_-_13px)]
               3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]
@@ -152,8 +91,8 @@ const Carousel = ({ collection }: CarouselProps) => {
           />
         </div>
       </div>
-    </>
+    </Scroll>
   );
-};
+}
 
 export default Carousel;
