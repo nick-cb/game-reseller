@@ -47,7 +47,7 @@ export function HeroSlider({
   );
 }
 
-function SliderItem({ item }: { item: SliderGame; index: number }) {
+function SliderItem({ item, index }: { item: SliderGame; index: number }) {
   return (
     <ScrollItem
       as={"li"}
@@ -58,11 +58,14 @@ function SliderItem({ item }: { item: SliderGame; index: number }) {
       <div className="intersect-point absolute left-1/2 top-1/2 bg-blue-200"></div>
       <Link href={"/" + item.slug} className="contents">
         <Image
-          className="h-full w-full object-cover absolute"
+          className="h-full w-full object-cover absolute block sm:hidden"
           src={item.images.portrait?.url || ""}
           alt=""
-          width={560}
-          height={681}
+          width={480}
+          height={640}
+          quality={50}
+          priority={index < 2}
+          loading={index < 2 ? "eager" : "lazy"}
         />
       </Link>
       <div

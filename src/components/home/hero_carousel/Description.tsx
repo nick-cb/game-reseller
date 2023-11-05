@@ -3,7 +3,7 @@ import React from "react";
 
 export type HeroCarouselGame = Pick<
   Game,
-  "ID" | "name" | "slug" | "description"
+  "ID" | "name" | "slug" | "description" | 'avg_rating' | 'developer'
 > & {
   images: GameImageGroup;
 };

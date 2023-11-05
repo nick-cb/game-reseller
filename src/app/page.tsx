@@ -1,17 +1,12 @@
 import Carousel from "@/components/discover/Carousel";
 import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
 import { Pillar } from "@/components/home/pillar";
-import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
 import { FeatureCard } from "@/components/HoverPlayVideo";
 import { groupImages } from "@/utils/data";
 import { getCollectionByKey } from "@/actions/collections";
 import { getHeroCarousel } from "@/actions/homepage";
-import { ScrollItem, Scroll, ScrollButton } from "@/components/scroll/index";
-import Image from "next/image";
-import {Description} from "@/components/home/hero_carousel/Description";
-import {Cover} from "@/components/home/hero_carousel/Cover";
-import {ButtonGroup} from "@/components/home/hero_carousel/ButtonGroup";
+import { ScrollItem, Scroll } from "@/components/scroll/index";
 
 export default async function Home() {
   // TODO: Using transaction
@@ -19,16 +14,12 @@ export default async function Home() {
   const [
     { data: heroCarousel },
     {
-      data: [topSale],
-    },
-    {
-      data: [feature],
+      data: [topSale, feature],
     },
     { data: pillars },
   ] = await Promise.all([
     getHeroCarousel(),
-    getCollectionByKey(["top_sale"]),
-    getCollectionByKey(["feature"]),
+    getCollectionByKey(["top_sale", "feature"]),
     getCollectionByKey(["new_release", "most_played", "top_player_rated"]),
   ]);
   const carouselListGame =
@@ -41,41 +32,8 @@ export default async function Home() {
 
   return (
     <>
-      <HeroCarousel data={carouselListGame || []} className="hidden sm:block">
-        {carouselListGame.map((item, idx) => (
-          <li
-            key={item.ID}
-            className={
-              "main-item snap-start "
-              // (idx === 0
-              //   ? index === -1 || index === 0
-              //     ? "z-[1]"
-              //     : ""
-              //   : index === idx
-              //   ? "z-[1]"
-              //   : "")
-            }
-          >
-            {item.images.landscape?.url && (
-              <Image
-                className="rounded-lg object-cover h-full w-full"
-                src={decodeURIComponent(item.images.landscape.url)}
-                alt=""
-                width={1280}
-                height={720}
-                // priority
-                // loading="eager"
-              />
-            )}
-            <Cover>
-              <ButtonGroup game={item} />
-              <Description game={item} />
-            </Cover>
-          </li>
-        ))}
-      </HeroCarousel>
-      <Scroll containerSelector="#hero-slider">
-        <HeroSlider data={carouselListGame || []} className="sm:hidden" />
+      <Scroll containerSelector={"#hero-slider"}>
+        <HeroCarousel data={carouselListGame || []} />
       </Scroll>
       <hr className="my-4 border-default" />
       <Scroll
@@ -85,34 +43,6 @@ export default async function Home() {
       >
         {topSale ? (
           <section className="pb-8 relative">
-            <ScrollButton method={"scrollToNextOffView"} direction="left">
-              <svg
-                fill={"transparent"}
-                // stroke={
-                //   elements[0]?.isIntersecting
-                //     ? "rgb(255 255 255 / 0.25)"
-                //     : "rgb(255 255 255)"
-                // }
-                stroke="rgb(255 255 255 / 0.25)"
-                className="-rotate-90 w-[32px] h-[32px]"
-              >
-                <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
-              </svg>
-            </ScrollButton>
-            <ScrollButton method={"scrollToNextOffView"} direction="right">
-              <svg
-                fill={"transparent"}
-                stroke="rgb(255 255 255 / 0.25)"
-                // stroke={
-                //   elements.at(-1)?.isIntersecting
-                //     ? "rgb(255 255 255 / 0.25)"
-                //     : "rgb(255 255 255)"
-                // }
-                className="rotate-90 w-[32px] h-[32px]"
-              >
-                <use xlinkHref="/svg/sprites/actions.svg#slide-up" />
-              </svg>
-            </ScrollButton>
             <Carousel
               collection={{
                 ...topSale,

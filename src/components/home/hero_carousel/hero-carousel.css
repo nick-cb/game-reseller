@@ -3,16 +3,17 @@
   /* position: relative; */
 }
 
+/* .main-list li { */
+/*   position: relative; */
+/*   flex-shrink: 0; */
+/*   width: 100%; */
+/*   height: 100%; */
+/* } */
 .main-list li {
-  position: relative;
-  flex-shrink: 0;
-  width: 100%;
-  height: 100%;
-}
-.stack-fade-carousel.main-list li {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
+  @apply sm:absolute sm:inset-0 sm:opacity-0;
+  /* position: absolute; */
+  /* inset: 0; */
+  /* opacity: 0; */
 }
 
 /* .main-list li > img { */
@@ -23,24 +24,27 @@
 /*   inset: 0; */
 /* } */
 
-.stack-fade-carousel.main-list li:nth-child(1) {
-  opacity: 1;
+.main-list li:nth-child(1) {
+  @apply sm:opacity-100;
   animation-play-state: paused;
 }
 
-.stack-fade-carousel.main-list li.not-active {
+.main-list li.not-active {
   animation: 300ms cubic-bezier(0.69, 0, 0.83, 0.83) 0s 1 normal forwards
     running hero-carousel-item-go-out;
-  opacity: 0;
+  @apply sm:opacity-0;
+  /* opacity: 0; */
 }
-.stack-fade-carousel.main-list li.active {
+.main-list li.active {
   animation: 200ms cubic-bezier(0.17, 0.17, 0.23, 1) 200ms 1 normal forwards
     running hero-carousel-item-go-in;
-  opacity: 0;
+  @apply sm:opacity-0;
+  /* opacity: 0; */
 }
 
-.stack-fade-carousel.main-list li.active .main-item-cover .logo {
-  opacity: 0;
+.main-list li.active .main-item-cover .logo {
+  @apply sm:opacity-0;
+  /* opacity: 0; */
   animation: 200ms cubic-bezier(0.17, 0.17, 0.23, 1) 300ms 1 normal forwards
     running hero-carousel-item-go-in;
 }
@@ -89,7 +93,7 @@
   }
 }
 
-.hero-carousel-preview-item a {
+.hero-carousel-preview-item div {
   transition: background 200ms;
 }
 
@@ -99,7 +103,7 @@
   transition: opacity 200ms;
 }
 
-.hero-carousel-preview-item.active a {
+.hero-carousel-preview-item.active div {
   @apply bg-paper_2;
   transition: background 200ms 500ms;
 }
@@ -110,12 +114,12 @@
   transition: opacity 200ms 500ms;
 }
 
-.hero-carousel-preview-item.active > a > div {
+.hero-carousel-preview-item.active > div > div {
   animation: 500ms scale-up-down 200ms linear;
   @apply bg-paper_2;
 }
 
-.hero-carousel-preview-item a:focus {
+.hero-carousel-preview-item div:focus {
   @apply bg-paper_2;
 }
 
@@ -123,7 +127,7 @@
   position: relative;
 }
 
-.hero-carousel-preview-item.pointer-none > a {
+.hero-carousel-preview-item.pointer-none > div {
   pointer-events: none;
 }
 
