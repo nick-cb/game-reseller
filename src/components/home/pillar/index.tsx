@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Collections, Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/actions/game/select";
 import { currencyFormatter } from "@/utils";
@@ -57,11 +56,11 @@ export function Pillar({ data }: PillarProps) {
               flex items-center gap-4 snap-start"
             >
               <div className="relative h-28 md:h-18 aspect-[3/4] rounded overflow-hidden">
-                <Image
-                  src={game.images.portrait?.url}
+                <img
+                  src={game.images.portrait?.url + "?h=128&w=96&quality=medium&resize=1"}
                   alt=""
-                  width={54}
-                  height={72}
+                  width={96}
+                  height={128}
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import Video from "./Video";
 import { Game, GameImageGroup } from "@/database/models";
 import { FVideoFullInfo } from "@/actions/game/select";
@@ -30,15 +29,15 @@ export function FeatureCard({ item }: FeatureCardProps) {
             : "")
         }
       >
-        <Image
+        <img
           className={
             "rounded transition-opacity duration-300 w-full h-full object-cover " +
             (hasVideos ? " hover:opacity-0 hover:pointer-events-none " : "")
           }
-          src={item.images.landscape?.url}
+          src={item.images.landscape?.url + "?h=480&w=854&resize=1"}
           alt={""}
-          width={512}
-          height={288}
+          width={854}
+          height={480}
         />
         {hasVideos ? (
           <Video
