@@ -15,7 +15,7 @@ from
         json_object(
           'ID', g.ID, 'name', g.name, 'slug', g.slug,'sale_price', 
           g.sale_price, 'developer', g.developer, 'avg_rating', avg_rating,
-          'images', g.images
+          'images', coalesce(g.images, json_array())
         )
       ) as list_game 
     from 
