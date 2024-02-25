@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --tw-cols-min: 0;
   --tw-cols-max: 1fr;

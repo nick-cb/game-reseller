@@ -1,7 +1,7 @@
 import Carousel from "@/components/discover/Carousel";
-import HeroCarousel from "@/components/home/hero_carousel/HeroCarousel";
-import { PillarGroup } from "@/components/home/pillar";
-import React, { Suspense } from "react";
+import HeroCarousel from "@/features/homepage/hero_carousel/HeroCarousel";
+// import { PillarGroup } from "@/components/home/pillar";
+import React from "react";
 import { Scroll } from "@/components/scroll/index";
 import { Feature } from "@/components/home/feature";
 
@@ -18,13 +18,13 @@ export default async function Home() {
       <hr className="my-4 border-default" />
       <Feature />
       <hr className="my-6 border-default" />
-      <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2">
-        <Suspense>
-          <PillarGroup
-            names={["new_release", "most_played", "top_player_rated"]}
-          />
-        </Suspense>
-      </section>
+      {/* <section className="md:flex gap-8 w-[calc(100%_+_8px)] -translate-x-2"> */}
+      {/*   <Suspense> */}
+      {/*     <PillarGroup */}
+      {/*       names={["new_release", "most_played", "top_player_rated"]} */}
+      {/*     /> */}
+      {/*   </Suspense> */}
+      {/* </section> */}
       {/* <section */}
       {/*   className={ */}
       {/*     "flex flex-col gap-8 relative rounded-lg p-4 overflow-hidden " + */}

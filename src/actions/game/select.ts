@@ -95,7 +95,7 @@ export async function findGameBySlug(slug: string) {
                                                                                    'url', url
                                                                                )
                                                                        ) as variants
-                                                            from video_variants
+                                                            from recipe_variants
                                                             group by recipe_id) vv on vv.recipe_id = vr.ID
                                         group by vr.video_id) vc on vc.video_id = v.ID
                     group by game_id) v on games.ID = v.game_id

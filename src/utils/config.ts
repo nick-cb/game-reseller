@@ -12,3 +12,17 @@ export const BASE_URL =
   typeof window !== "undefined"
     ? `${window.location.protocol}//${window.location.host}`
     : "";
+
+export const LandscapeImages = [
+  "landscape",
+  "carousel",
+  "OfferImageWide",
+  "DieselStoreFrontWide",
+];
+export const PortraitImages = [
+  "portrait",
+  "thumbnail",
+  "tall",
+  "OfferImageTall",
+  "DieselStoreFrontTall",
+];

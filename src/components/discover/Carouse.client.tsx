@@ -5,20 +5,14 @@ import { useScroll } from "../scroll/hook";
 
 export function CarouselButton() {
   const { elements, scrollToIndex } = useScroll();
-  const { firstItemInView, lastItemInView } = useMemo(() => {
-    const firstItemInViewIdx = elements.findIndex((el) => el.isIntersecting);
-    const lastItemInViewIdx =
-      elements.findIndex(
-        (el, index) => !el.isIntersecting && index > firstItemInViewIdx,
-      ) - 1;
+  const { firstItemInView } = useMemo(() => {
+    const firstItemInViewIdx = elements.findIndex(
+      (el) => el.intersectionRatio > 0.5,
+    );
     return {
       firstItemInView: {
         index: firstItemInViewIdx,
         element: elements[firstItemInViewIdx],
-      },
-      lastItemInView: {
-        index: lastItemInViewIdx,
-        element: elements[lastItemInViewIdx],
       },
     };
   }, [elements]);
@@ -49,8 +43,8 @@ export function CarouselButton() {
       </button>
       <button
         onClick={() => {
-          if (lastItemInView) {
-            scrollToIndex(lastItemInView.index + 1);
+          if (firstItemInView) {
+            scrollToIndex(firstItemInView.index + 1);
           }
         }}
         className="bg-paper_2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-color"

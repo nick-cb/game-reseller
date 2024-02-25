@@ -131,9 +131,9 @@ export function MobileSearchModal({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    if (b640 >= 0) {
-      ref.current?.close();
-    }
+    // if (b640 >= 0) {
+    //   ref.current?.close();
+    // }
   }, [b640]);
 
   useEffect(() => {

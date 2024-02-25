@@ -130,7 +130,7 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
       email: values.email,
     });
     if (existUser.data) {
-      connection.destroy();
+      // connection.destroy();
       return {
         ok: false,
         error: "user exist",
@@ -165,7 +165,7 @@ export const createNewUser = async (values: EmailSignupFormPayload) => {
             avatar: url,
           },
         });
-        connection.destroy();
+        // connection.destroy();
         cookies().set("refresh_token", token || "", COOKIES_OPTIONS);
       });
 

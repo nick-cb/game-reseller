@@ -19,7 +19,6 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
         .slice(firstInviewIdx)
         .findIndex((el) => el.intersectionRatio <= 0.5);
     } else {
-      console.log(elements);
       nextOffViewIdx = elements.findIndex(
         (el, index) =>
           el.intersectionRatio <= 0.5 &&
@@ -27,7 +26,6 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
       );
     }
 
-    console.log(nextOffViewIdx);
     if (nextOffViewIdx === -1) {
       return;
     }
@@ -60,7 +58,7 @@ export function useScroll(factory?: ReturnType<typeof useScrollFactory>) {
     // } = root.getBoundingClientRect();
 
     root.scroll({
-      left: entry.boundingClientRect.width,
+      left: entry.boundingClientRect.width * index,
       behavior: "smooth",
     });
     // console.log(entry);
@@ -98,7 +96,6 @@ export function useScrollFactory({
     const root = document.querySelector(containerSelector);
     const newObserver = new IntersectionObserver(
       (entries) => {
-        console.log({ entries });
         for (const entry of entries) {
           setElements((prev) => {
             const index = prev.findIndex((el) =>

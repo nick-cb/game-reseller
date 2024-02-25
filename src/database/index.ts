@@ -1,23 +1,30 @@
 import mysql, { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
-export const connection = mysql.createConnection(
-  process.env.DATABASE_URL || "",
-);
+// export const connection = mysql.createConnection(
+//   process.env.DATABASE_URL || "",
+// );
 export const connectDB = async () => {
-  try {
-    const connection = await mysql.createConnection(
-      process.env.DATABASE_URL || "",
-    );
-    await connection.connect();
-    return connection;
-  } catch (error: any) {
-    process.exit(1);
-  }
+  // try {
+  //   const connection = await mysql.createConnection({
+  //     host: "localhost",
+  //     port: 3306,
+  //     database: "game_reseller",
+  //     user: "root",
+  //   });
+  //   await connection.connect();
+  //   return connection;
+  // } catch (error: any) {
+  //   process.exit(1);
+  // }
 };
 
 export const pool = mysql.createPool({
-  uri: process.env.DATABASE_URL || "",
+  host: "localhost",
+  port: 3306,
+  database: "game_reseller",
+  user: "root",
   waitForConnections: true,
+  connectTimeout: 30000,
 });
 
 type Primitive = string | number | bigint | boolean | null | undefined;
@@ -71,7 +78,7 @@ export async function querySingle<T extends any>(
   if (data) {
     return { data } as { data: T };
   }
-  return { data: null };
+  return { data: undefined };
 }
 
 export async function insert(params: ReturnType<typeof sql>) {

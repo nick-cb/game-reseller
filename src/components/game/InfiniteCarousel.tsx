@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
 import ChevronButton from "../ChevronButton";
-import Video, { VideoPreview } from "../Video";
+// import Video, { VideoPreview } from "../Video";
 
 const InfiniteCarousel = ({
   images = [],
@@ -168,17 +168,17 @@ const InfiniteCarousel = ({
           {videos.map((vid, index) => (
             <li className="w-full shrink-0 snap-start" key={index}>
               <div className="relative w-full aspect-video">
-                <Video
-                  video={vid}
-                  autoPlay
-                  muted
-                  onEnded={() => {
-                    setTimeout(() => {
-                      setCurrentIndex((prev) => prev + 1);
-                    }, 3000);
-                  }}
-                  customControls={false}
-                />
+                {/* <Video */}
+                {/*   video={vid} */}
+                {/*   autoPlay */}
+                {/*   muted */}
+                {/*   onEnded={() => { */}
+                {/*     setTimeout(() => { */}
+                {/*       setCurrentIndex((prev) => prev + 1); */}
+                {/*     }, 3000); */}
+                {/*   }} */}
+                {/*   customControls={false} */}
+                {/* /> */}
               </div>
             </li>
           ))}

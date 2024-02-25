@@ -4,12 +4,12 @@ import React, { PropsWithChildren } from "react";
 import {
   Description,
   HeroCarouselGame,
-} from "@/components/home/hero_carousel/Description";
+} from "@/features/homepage/hero_carousel/Description";
 import { Scroll, ScrollBulletIndicator, ScrollItem } from "@/components/scroll";
 import { Carousel, Indicator, IndicatorList } from "./Carousel";
 import { ButtonGroup } from "./ButtonGroup";
 import { Cover } from "./Cover";
-import { getHeroCarousel } from "@/actions/homepage";
+import { getHeroCarousel } from "@/features/homepage/hero_carousel/HeroCarousel.action";
 import { groupImages } from "@/utils/data";
 
 type HeroCarouselProps = {
@@ -18,14 +18,13 @@ type HeroCarouselProps = {
 export async function HeroCarousel({
   className = "",
 }: PropsWithChildren<HeroCarouselProps>) {
-  const { data: heroCarousel } = await getHeroCarousel();
-  const data =
-    heroCarousel?.list_game.map((game) => {
-      return {
-        ...game,
-        images: groupImages(game.images),
-      };
-    }) || [];
+  const { data: heroCarousel = { list_game: [] } } = await getHeroCarousel();
+  const data = heroCarousel.list_game.map((game) => {
+    return {
+      ...game,
+      images: groupImages(game.images),
+    };
+  });
 
   return (
     <div className={"sm:flex gap-4 lg:gap-8 " + className}>

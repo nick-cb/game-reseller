@@ -1,4 +1,4 @@
-import { HeroCarouselGame } from "@/components/home/hero_carousel/Description";
+import { HeroCarouselGame } from "@/features/homepage/hero_carousel/Description";
 import Link from "next/link";
 import React from "react";
 

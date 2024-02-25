@@ -4,7 +4,7 @@ import Link from "next/link";
 // import { Game, GameImageGroup } from "@/database/models";
 // import { FVideoFullInfo } from "@/actions/game/select";
 import { CarouselButton } from "./Carouse.client";
-import { getCollectionByKey } from "@/actions/collections";
+import { getCollectionByKey, getCollectionByKey2 } from "@/actions/collections";
 import { Scroll } from "../scroll";
 import { groupImages } from "@/utils/data";
 
@@ -28,8 +28,11 @@ type CarouselProps = {
   // };
 };
 
+/**
+ * @params name: Object
+ * */
 async function Carousel({ name }: CarouselProps) {
-  const { data } = await getCollectionByKey([name]);
+  const { data } = await getCollectionByKey2([name]);
   const collection = data[0] || [];
 
   return (

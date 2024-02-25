@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import Video from "../Video";
 import Image from "next/image";
 import ChevronButton from "../ChevronButton";
 import { useBreakpoints } from "@/hooks/useBreakpoint";
@@ -9,7 +8,14 @@ import { FVideoFullInfo, OmitGameId } from "@/actions/game/select";
 import { GameImages } from "@/database/models";
 import { ScrollItem } from "@/components/scroll/index";
 import { useScroll, useScrollFactory } from "@/components/scroll/hook";
+// import { BasicVideo } from "../video/Video";
 
+const priority = {
+  low: 3,
+  medium: 2,
+  high: 1,
+  audio: 0,
+}
 const isVideo = (
   media: OmitGameId<GameImages> | OmitGameId<FVideoFullInfo>,
 ): media is OmitGameId<FVideoFullInfo> => {
@@ -29,8 +35,7 @@ export default function LinearCarousel({
     return _data.concat(videos).concat(images);
   }, [images, videos]);
 
-  const { b640: sm, b1536: xl2 } = useBreakpoints(breakpoints);
-  const itemsPerWindow = xl2 >= 0 ? 7 : 4;
+  const { b640: sm } = useBreakpoints(breakpoints);
   const factory = useScrollFactory({
     containerSelector: "#linear-carousel-indicator",
     observerOptions: {
@@ -144,20 +149,14 @@ export default function LinearCarousel({
                   as={"li"}
                   className="rounded overflow-hidden w-full shrink-0 snap-start"
                 >
-                  <Video
-                    // @ts-ignore
-                    video={vid}
-                    onEnded={() => {
-                      setTimeout(() => {
-                        if (index === data.length - 1) {
-                          goToItem(0);
-                          return;
-                        }
-                        goToItem(active.index + 1);
-                      }, SLIDE_INTERVAL);
-                    }}
-                    className="w-full"
-                  />
+                  {/* <BasicVideo */}
+                  {/*   sources={vid.recipes.filter(({recipe}) => !recipe?.includes("hls")).map(({variants}) => { */}
+                  {/*     return variants.sort((a, b) => priority[b.media_key] - priority[a.media_key])[0].url; */}
+                  {/*   })} */}
+                  {/*   audioSources={vid.recipes.filter(({recipe}) => !recipe?.includes("hls")).map(({variants}) => { */}
+                  {/*     return variants.find(({media_key}) => media_key === "audio")?.url || ''; */}
+                  {/*   })} */}
+                  {/* /> */}
                 </ScrollItem>
               ))
             : null}
@@ -203,10 +202,6 @@ export default function LinearCarousel({
                             ? " opacity-100 outline outline-1 "
                             : "")
                         }
-                        // style={{
-                        //   scrollSnapAlign:
-                        //     index % itemsPerWindow === 0 ? "start" : "",
-                        // }}
                       >
                         <Image
                           src={isVideo(item) ? item.thumbnail : item.url}

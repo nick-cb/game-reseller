@@ -112,7 +112,7 @@ export type VideoVariants = {
   url: string;
   width: number | null;
   height: number | null;
-  media_key: string;
+  media_key: 'low' | 'medium' | 'high' | 'audio';
   content_type: string;
   recipe_id: number;
   duration: number | null;
@@ -206,19 +206,4 @@ export type CartFull = Carts & {
     Game,
     "ID" | "name" | "type" | "developer" | "publisher" | "sale_price" | "slug"
   > & { images: GameImages[]; checked: boolean })[];
-};
-
-export const dbExecute = async <T>({
-  query,
-  single = false,
-}: {
-  query: string;
-  single?: boolean;
-}) => {
-  const db = await connectDB();
-  const response = await db.execute<(RowDataPacket & T)[]>(query);
-  if (single) {
-    return { data: response[0][0] as T };
-  }
-  return { data: response[0] as T[] };
 };

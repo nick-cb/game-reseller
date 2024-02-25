@@ -44,7 +44,7 @@ export async function PillarGroup({ names }: { names: string[] }) {
                     ...game,
                     images: groupImages(game.images),
                   };
-                }),
+                }) as any,
               }}
             />
             <hr className="my-4 border-default md:hidden last-of-type:hidden" />
