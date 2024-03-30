@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useSyncExternalStore } from "react";
 
 const createBreakpoints = <
   T extends number[] | Readonly<number[]>,

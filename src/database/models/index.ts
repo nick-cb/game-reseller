@@ -115,7 +115,7 @@ export type VideoVariants = {
   media_key: 'low' | 'medium' | 'high' | 'audio';
   content_type: string;
   recipe_id: number;
-  duration: number | null;
+  duration: number;
 };
 
 export type Videos = {

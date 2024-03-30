@@ -1,4 +1,4 @@
-export default function ItemLayout({
+export default async function ItemLayout({
   children,
   // modal,
 }: {

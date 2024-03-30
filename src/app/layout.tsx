@@ -94,12 +94,12 @@ export default function RootLayout({
               <nav className="px-4 lg:px-24 xl:px-44 flex gap-4 fixed w-full top-[56px] z-10 bg-default">
                 <div
                   className={
-                    "absolute inset-0 pointer-events-none " +
-                    " [--extended-by:50px] [--cutoff:calc(100%-var(--extended-by))] [--blur:25px] " +
-                    " bottom-[calc(-1*var(--extended-by))] " +
-                    " [-webkit-mask-image:linear-gradient(to_bottom,_black_0,_black_var(--cutoff),_transparent_var(--cutoff))] " +
-                    " [-webkit-backdrop-filter:blur(var(--blur))] " +
-                    " [backdrop-filter:blur(var(--blur))] "
+                    "absolute inset-0 pointer-events-none backdrop-blur "
+                    // " [--extended-by:50px] [--cutoff:calc(100%-var(--extended-by))] [--blur:25px] " +
+                    // " bottom-[calc(-1*var(--extended-by))] " +
+                    // " [-webkit-mask-image:linear-gradient(to_bottom,_black_0,_black_var(--cutoff),_transparent_var(--cutoff))] " +
+                    // " [-webkit-backdrop-filter:blur(var(--blur))] " +
+                    // " [backdrop-filter:blur(var(--blur))] "
                   }
                 ></div>
                 <ActiveLink

@@ -2,9 +2,6 @@ import Link from 'next/link';
 import { Game, GameImageGroup } from '@/database/models';
 import { FVideoFullInfo } from '@/actions/game/select';
 import { currencyFormatter } from '@/utils';
-import { querySingle } from '@/database';
-import { VideoContainer } from '@/hooks/useVideo';
-import { Video } from './video/Video';
 
 export type FeatureCardItem = Pick<Game, 'ID' | 'name' | 'slug' | 'description' | 'sale_price'> & {
   videos: FVideoFullInfo[];
@@ -20,7 +17,7 @@ export async function FeatureCard({ item }: FeatureCardProps) {
     <Link href={'/' + item.slug} className="relative">
       <div
         className={
-          'relative overflow-hidden aspect-video cols-min-1 after:pointer-events-none ' +
+          'relative overflow-hidden aspect-media cols-min-1 after:pointer-events-none ' +
           'after:rounded after:absolute after:inset-0 after:w-full after:h-full ' +
           'after:transition-opacity after:bg-white after:opacity-0 ' +
           (hasVideos ? 'hover:after:opacity-[0.1] bg-white/25 rounded group ' : '')

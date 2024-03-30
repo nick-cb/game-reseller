@@ -95,7 +95,7 @@ export function Carousel({
       <ul
         className={
           "main-list gap-4 sm:gap-0 " +
-          "sm:w-[75%] lg:w-4/5 aspect-[9/11] sm:aspect-[1.6] lg:aspect-video overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory"
+          "sm:w-[75%] lg:w-4/5 aspect-[9/11] sm:aspect-[1.6] lg:aspect-media overflow-scroll rounded-lg relative scrollbar-hidden snap-x snap-mandatory"
         }
         ref={mainListRef}
       >
