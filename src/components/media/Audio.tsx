@@ -1,97 +1,124 @@
 'use client';
 
-import { Mutable } from '@/utils';
-import React, {
-  createContext,
-  useCallback,
-  useMemo,
-  useRef,
-  useSyncExternalStore,
-  use,
-} from 'react';
+import { createContext, use, useRef, useState, useSyncExternalStore } from 'react';
 
-const defaultData = {
-  playing: false,
-  muted: false,
-  volume: 1,
-  currentTime: 0,
-  duration: 0,
-  audio: undefined as HTMLAudioElement | undefined,
-};
-type AudioState = typeof defaultData;
-const store: AudioState[] = [];
-function updateStore(audio: HTMLAudioElement, index: number) {
-  store[index] = {
-    playing: !audio.paused,
-    muted: audio.muted,
-    volume: audio.volume,
-    currentTime: audio.currentTime,
-    duration: audio.duration,
-    audio: audio,
+type AudioEvents = (typeof Store)['events'][number][];
+class Store {
+  public static readonly events = [
+    'play',
+    'pause',
+    'volumechange',
+    'seek',
+    'timeupdate',
+    'loadedmetadata',
+  ] as const;
+  audioRef: React.RefObject<HTMLAudioElement>;
+  data = {
+    event: undefined as undefined | AudioEvents[number],
+    playing: false,
+    muted: false,
+    volume: 1,
+    currentTime: 0,
+    duration: 0,
+    audio: undefined as HTMLAudioElement | undefined,
   };
-}
+  listenerData: Map<Symbol, Store['data']> = new Map();
+  listeners: Set<() => void> = new Set();
 
-const events = ['play', 'pause', 'volumechange', 'seek', 'timeupdate', 'loadedmetadata'] as const;
-const defaultProps = {
-  events: events as Mutable<typeof events>,
-};
-type UseAudioProps = {
-  events: (typeof defaultProps)['events'][number][];
-};
-export function useAudio(props: UseAudioProps = defaultProps) {
-  const { index, audioRef } = use(AudioCtx);
-  const subscribe = useCallback(
-    (callback: () => void) => {
-      const audio = audioRef?.current;
+  constructor(audioRef: React.RefObject<HTMLAudioElement>) {
+    this.audioRef = audioRef;
+    this.subscribe = this.subscribe.bind(this);
+  }
+
+  subscribe(listener: () => void) {
+    const audio = this.audioRef.current;
+    if (!audio) {
+      return () => {};
+    }
+    const notify = (event: Event) => {
+      const audio = this.audioRef.current;
       if (!audio) {
-        return () => {};
+        return;
       }
-      function notify() {
-        const audio = audioRef?.current;
-        if (!audio) {
-          return;
-        }
-        updateStore(audio, index);
-        callback();
+      const type = event.type as AudioEvents[number];
+      this.data = {
+        event: type,
+        playing: !audio?.paused,
+        muted: audio?.muted,
+        volume: audio?.volume,
+        currentTime: audio?.currentTime,
+        duration: audio?.duration,
+        audio,
+      };
+      for (const listener of this.listeners) {
+        listener();
       }
-      // - At this point, there is a chance that loadedmetadata already fired,
-      //   so the store won't be updated by that event and we have to update store manually
-      if (audio.readyState >= 1 && Object.is(store[index], defaultData)) {
-        updateStore(audio, index);
+    };
+    if (!this.listeners.size) {
+      if (audio.readyState >= 1) {
+        notify({ type: 'loadedmetadata' } as Event);
       }
-      for (const event of props.events) {
+      for (const event of Store.events) {
         audio.addEventListener(event, notify);
       }
-      return () => {
-        for (const event of props.events) {
+    }
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+      if (!this.listeners.size) {
+        for (const event of Store.events) {
           audio.removeEventListener(event, notify);
         }
-      };
-    },
-    [index, props.events]
-  );
+      }
+    };
+  }
 
+  getData(symbol: Symbol) {
+    return (options: UseAudioProps) => {
+      const { events } = options;
+      if (!this.data.event) {
+        return this.listenerData.get(symbol) ?? this.data;
+      }
+      if (events.includes(this.data.event)) {
+        this.listenerData.set(symbol, this.data);
+      }
+
+      return this.listenerData.get(symbol) ?? this.data;
+    };
+  }
+
+  register() {
+    const symbol = Symbol();
+    this.listenerData.set(symbol, this.data);
+    return { subscribe: this.subscribe, getData: this.getData(symbol) };
+  }
+}
+
+type UseAudioProps = {
+  events: AudioEvents;
+};
+export function useAudio(props: UseAudioProps = { events: [...Store.events] }) {
+  const { store } = use(AudioCtx);
+  const [reg] = useState(() => store.register());
   return useSyncExternalStore(
-    subscribe,
-    () => store[index],
-    () => defaultData
+    reg.subscribe,
+    () => reg.getData(props),
+    () => store.data
   );
 }
 
 type AudioContext = {
-  index: number;
+  store: Store;
   audioRef?: React.RefObject<HTMLAudioElement>;
 };
 export const AudioCtx = createContext<AudioContext>({
-  index: -1,
+  store: new Store({ current: null }),
   audioRef: { current: null },
 });
-export function AudioContainer(props: React.PropsWithChildren<Omit<AudioContext, 'index'>>) {
+export function AudioContainer(props: React.PropsWithChildren<Omit<AudioContext, 'store'>>) {
   const { children } = props;
   const audioRef = useRef<HTMLAudioElement>(null);
-  const index = useMemo(() => {
-    return store.push({ ...defaultData }) - 1;
-  }, []);
+  const [store] = useState(new Store(audioRef));
 
-  return <AudioCtx.Provider value={{ index, audioRef }}>{children}</AudioCtx.Provider>;
+  return <AudioCtx.Provider value={{ store, audioRef }}>{children}</AudioCtx.Provider>;
 }

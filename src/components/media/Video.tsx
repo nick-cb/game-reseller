@@ -1,18 +1,10 @@
 'use client';
 
-import { Mutable } from '@/utils';
-import React, {
-  createContext,
-  useCallback,
-  useRef,
-  useSyncExternalStore,
-  use,
-  useState,
-} from 'react';
+import { createContext, use, useRef, useState, useSyncExternalStore } from 'react';
 
-type StoreOptions = {
-  events: (typeof Store)['events'][number] | Mutable<(typeof Store)['events'][number]>;
-};
+type VideoEvents = (typeof Store)['events'][number][];
+// type Subscribe = ReturnType<Store['subscribe']>;
+// type VideoData = Store['data'];
 class Store {
   public static readonly events = [
     'play',
@@ -23,10 +15,9 @@ class Store {
     'loadedmetadata',
     'seeking',
   ] as const;
-  private videoRef: React.RefObject<HTMLVideoElement> = { current: null };
-  private options: StoreOptions = { events: Store.events as any };
-  private _listeners: Set<() => void> = new Set();
-  private _data = {
+  videoRef: React.RefObject<HTMLVideoElement>;
+  data = {
+    event: undefined as undefined | VideoEvents[number],
     playing: false,
     muted: false,
     volume: 1,
@@ -35,127 +26,86 @@ class Store {
     video: undefined as HTMLVideoElement | undefined,
     fullscreenElement: null as Element | null,
   };
-  get data() {
-    return this._data;
-  }
-  private callbacks: Map<
-    (listener: () => void) => void,
-    { [key in (typeof Store)['events'][number]]?: Store['data'] }[]
-  > = new Map();
+  listenerData: Map<Symbol, Store['data']> = new Map();
+  listeners: Set<() => void> = new Set();
 
   constructor(videoRef: React.RefObject<HTMLVideoElement>) {
-    if (typeof window === 'undefined') {
-      return;
-    }
     this.videoRef = videoRef;
-    this.notify = this.notify.bind(this);
+    this.subscribe = this.subscribe.bind(this);
   }
 
-  notify(event: Event) {
-    const video = event.currentTarget as HTMLVideoElement;
-    console.log(event.type, this._listeners?.size, video);
-    if (!video) {
-      return;
-    }
-    // this.updateStore(video);
-    const data = {
-      playing: !video.paused,
-      muted: video.muted,
-      volume: video.volume,
-      currentTime: video.currentTime,
-      duration: video.duration,
-      video: video,
-      fullscreenElement: document.fullscreenElement,
-    };
-    for (const callback of this.callbacks.keys()) {
-      this.callbacks.get(callback)?.push({ [event.type]: data });
-      // callback();
-    }
-  }
-
-  updateStore(video: HTMLVideoElement) {
-    this._data = {
-      playing: !video.paused,
-      muted: video.muted,
-      volume: video.volume,
-      currentTime: video.currentTime,
-      duration: video.duration,
-      video: video,
-      fullscreenElement: document.fullscreenElement,
-    };
-  }
-
-  register(callback: (listener: () => void) => void) {
-    if (!this.callbacks.has(callback)) {
-      this.callbacks.set(callback, []);
-    }
-  }
-
-  getData(callback: (listener: () => void) => void, options: StoreOptions) {
-    const { events } = options;
-    const items = this.callbacks.get(callback);
-
-    console.log({ items: [...(items ?? [])] });
-    let item = items?.pop();
-    if (!item) {
-      return this._data;
-    }
-    const [key, values] = Object.entries(item)[0];
-    do {
-      item = items?.pop();
-    } while (!events.includes(key as any) || !items?.length);
-    return values;
-  }
-
-  subscribe() {
+  subscribe(listener: () => void) {
     const video = this.videoRef.current;
-    const { events } = this.options ?? { events: Store.events };
     if (!video) {
       return () => {};
     }
-    const callbacks = this.callbacks;
-    const sub = (listener: any) => {
-      return () => {
-
+    const notify = (event: Event) => {
+      const video = this.videoRef.current;
+      if (!video) {
+        return;
+      }
+      const type = event.type as VideoEvents[number];
+      this.data = {
+        event: type,
+        playing: !video?.paused,
+        muted: video?.muted,
+        volume: video?.volume,
+        currentTime: video?.currentTime,
+        duration: video?.duration,
+        video,
+        fullscreenElement: document.fullscreenElement,
+      };
+      for (const listener of this.listeners) {
+        listener();
+      }
+    };
+    if (!this.listeners.size) {
+      if (video.readyState >= 1) {
+        notify({ type: 'loadedmetadata' } as Event);
+      }
+      for (const event of Store.events) {
+        video.addEventListener(event, notify);
       }
     }
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+      for (const event of Store.events) {
+        video.removeEventListener(event, notify);
+      }
+    };
+  }
 
-    const notifier = this.notify(sub);
-    for (const event of events) {
-      video.addEventListener(event, this.notify);
-    }
+  getData(symbol: Symbol) {
+    return (options: UseVideoProps) => {
+      const { events } = options;
+      if (!this.data.event) {
+        return this.listenerData.get(symbol) ?? this.data;
+      }
+      if (events.includes(this.data.event)) {
+        this.listenerData.set(symbol, this.data);
+      }
+
+      return this.listenerData.get(symbol) ?? this.data;
+    };
+  }
+
+  register() {
+    const symbol = Symbol();
+    this.listenerData.set(symbol, this.data);
+    return { subscribe: this.subscribe, getData: this.getData(symbol) };
   }
 }
 
-const defaultProps = {
-  events: Store.events as Mutable<(typeof Store)['events']>,
+type UseVideoProps = {
+  events: VideoEvents;
 };
-export type UseVideoProps = {
-  events: StoreOptions['events'];
-};
-export function useVideo(props: UseVideoProps = defaultProps, log = false) {
+export function useVideo(props: UseVideoProps = { events: [...Store.events] }) {
   const { store } = use(VideoCtx);
-  // if (log) {
-  //   console.log({ store });
-  // }
-  // const subscribe = useCallback(
-  //   (callback: () => void) => {
-  //     if (log) {
-  //       console.log(store);
-  //     }
-  //     const unsub = store.subscribe(callback, log);
-  //     return () => {
-  //       unsub();
-  //     };
-  //   },
-  //   [props.events]
-  // );
-  const [subscribe] = useState(() => store.subscribe());
-  store.register(subscribe);
-
+  const [reg] = useState(() => store.register());
   return useSyncExternalStore(
-    subscribe,
-    () => store.getData(subscribe, { events: props.events }),
+    reg.subscribe,
+    () => reg.getData(props),
     () => store.data
   );
 }

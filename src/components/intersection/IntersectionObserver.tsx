@@ -10,51 +10,70 @@ import React, {
 } from 'react';
 
 class Store {
+  private containerRef: React.RefObject<HTMLElement>;
   private _listeners: Set<() => void> = new Set();
-  private _data = {
+  data = {
     observer: null as IntersectionObserver | null,
     entries: [] as IntersectionObserverEntry[],
+    firstVisibleIndex: -1,
+    lastVisibleIndex: -1,
   };
-  get data() {
-    return this._data;
-  }
 
   constructor(containerRef: React.RefObject<HTMLElement>) {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    this._data.observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const index = this._data.entries.findIndex((en) => en?.target.isSameNode(entry.target));
-          if (index > -1) {
-            this._data.entries[index] = entry;
-          } else {
-            this._data.entries.push(entry);
-          }
-        }
-        this._data = {
-          ...this._data,
-        };
-        for (const listener of this._listeners) {
-          listener?.();
-        }
-      },
-      {
-        root: containerRef.current,
-        threshold: [0.5, 1],
-      }
-    );
-
-    this._data = {
-      ...this._data,
-    };
+    this.containerRef = containerRef;
+    this.subscribe = this.subscribe.bind(this);
   }
 
   subscribe(listener: () => void) {
     this._listeners.add(listener);
+    if (!this.data.observer) {
+      this.data = {
+        entries: [],
+        firstVisibleIndex: -1,
+        lastVisibleIndex: -1,
+        observer: new IntersectionObserver(
+          (entries) => {
+            let firstVisibleIndex = -1;
+            let lastVisibleIndex = -1;
+            const oldEntries = this.data.entries;
+            for (let i = 0; i < entries.length; i++) {
+              const newEntry = entries[i];
+              const oldEntryIdx = oldEntries.findIndex((e) => e.target.isSameNode(newEntry.target));
+              if (oldEntryIdx !== -1) {
+                oldEntries[oldEntryIdx] = newEntry;
+              } else {
+                oldEntries.push(newEntry);
+              }
+            }
+            for (let i = 0; i < oldEntries.length; i++) {
+              const entry = oldEntries[i];
+              if (firstVisibleIndex === -1 && entry.isIntersecting) {
+                firstVisibleIndex = i;
+              }
+              if (entry.isIntersecting) {
+                lastVisibleIndex = i;
+              }
+            }
+            this.data = {
+              observer: this.data.observer,
+              entries: [...oldEntries],
+              firstVisibleIndex: firstVisibleIndex,
+              lastVisibleIndex: lastVisibleIndex,
+            };
+            for (const listener of this._listeners) {
+              listener?.();
+            }
+          },
+          {
+            root: this.containerRef.current,
+            threshold: [0.5],
+          }
+        ),
+      };
+    }
     return () => {
       this._listeners.delete(listener);
+      // this._data.observer?.disconnect();
     };
   }
 }
@@ -62,17 +81,13 @@ class Store {
 export function useIntersectionObserver() {
   const { store } = use(IntersectionObserverCtx);
 
-  return useSyncExternalStore(
-    (callback) => {
-      const unsub = store.subscribe(callback);
-
-      return () => {
-        unsub();
-      };
-    },
+  const result = useSyncExternalStore(
+    store.subscribe,
     () => store.data,
     () => store.data
   );
+
+  return result;
 }
 
 type IntersectionObserverCtxProps = {
@@ -105,4 +120,3 @@ export function IntersectionObserverRoot(props: React.PropsWithChildren) {
 
   return children;
 }
-

@@ -7,28 +7,19 @@ import React from 'react';
 import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
-  useIntersectionObserver,
 } from '@/components/intersection/IntersectionObserver';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
 import { GameImages } from '@/database/models';
 import { ShowOnBreakpoints } from '@/components/HideOnBreakpoints';
 import { breakpoints, isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
+import { useScroll, ScrollItem } from '@/components/scroll2/ScrollPrimitive';
 
 export type NextPrevControlsProps = {
   totalItems: number;
 };
 
-export function NextPrevControls(props: NextPrevControlsProps) {
-  const { totalItems } = props;
-  const { entries } = useIntersectionObserver();
-  const active = entries.findIndex((entry) => entry.intersectionRatio > 0.5);
-
-  function goToItem(event: React.MouseEvent<HTMLButtonElement | HTMLLIElement>) {
-    const index = parseInt(event.currentTarget.dataset.index || '0');
-    entries[index].target.scrollIntoView({
-      behavior: 'smooth',
-    });
-  }
+export function NextPrevControls() {
+  const { scrollToNextOffView, scrollToPrevOffView } = useScroll();
 
   return (
     <div className="controls absolute inset-0">
@@ -41,8 +32,7 @@ export function NextPrevControls(props: NextPrevControlsProps) {
         )}
       >
         <button
-          data-index={Math.max(0, Math.min(totalItems, active - 1))}
-          onClick={goToItem}
+          onClick={scrollToPrevOffView}
           className="flex h-10 w-8 items-center justify-center rounded outline-1 focus:outline "
         >
           <Icon name="arrow-left-s" variant="line" fill="white" />
@@ -57,8 +47,7 @@ export function NextPrevControls(props: NextPrevControlsProps) {
         )}
       >
         <button
-          data-index={Math.max(0, Math.min(totalItems - 1, active + 1))}
-          onClick={goToItem}
+          onClick={scrollToNextOffView}
           className="flex h-10 w-8 items-center justify-center rounded outline-1 focus:outline "
         >
           <Icon name="arrow-right-s" variant="line" fill="white" />
@@ -71,35 +60,36 @@ export function NextPrevControls(props: NextPrevControlsProps) {
 export type IndicatorProps = {
   item: OmitGameId<FVideoFullInfo> | OmitGameId<GameImages>;
   index: number;
-  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  isActive?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 function Indicator(props: IndicatorProps) {
-  const { item, index, onClick } = props;
+  const { item, index, isActive, onClick } = props;
+
   return (
-    <li>
-      <button
-        className={mergeCls(
-          'relative flex h-14 w-24 snap-start items-center justify-center rounded bg-default transition-opacity'
-          // active.index === index && ' opacity-100 outline outline-1'
-        )}
-        data-index={index}
-        onClick={onClick}
-      >
-        <Image
-          src={isVideo(item) ? item.thumbnail : item.url}
-          alt={''}
-          className="rounded sm:block"
-          width={96}
-          height={56}
-        />
-        {isVideo(item) ? <Icon name="play" className="absolute opacity-60" fill="white" /> : null}
-      </button>
-    </li>
+    <button
+      className={mergeCls(
+        'relative flex h-14 w-24 snap-start items-center justify-center rounded bg-default transition-opacity',
+        isActive && ' opacity-100 outline outline-1'
+      )}
+      data-index={index}
+      onClick={onClick}
+    >
+      <Image
+        src={isVideo(item) ? item.thumbnail : item.url}
+        alt={''}
+        className="rounded sm:block"
+        width={96}
+        height={56}
+      />
+      {isVideo(item) ? <Icon name="play" className="absolute opacity-60" fill="white" /> : null}
+    </button>
   );
 }
 
 function IndicatorNextPrevButton() {
+  const { scrollToPrevOffView, scrollToNextOffView } = useScroll();
   return (
     <>
       <button
@@ -108,6 +98,7 @@ function IndicatorNextPrevButton() {
           'absolute left-0 top-1/2 flex -translate-y-1/2',
           'items-center justify-center'
         )}
+        onClick={scrollToPrevOffView}
       >
         <Icon name="arrow-left-s" variant="line" fill="white" />
       </button>
@@ -117,6 +108,7 @@ function IndicatorNextPrevButton() {
           'absolute right-0 top-1/2 flex -translate-y-1/2',
           'items-center justify-center'
         )}
+        onClick={scrollToNextOffView}
       >
         <Icon name="arrow-right-s" variant="line" fill="white" />
       </button>
@@ -131,14 +123,8 @@ export type IndicatorListProps = {
 
 export function IndicatorList(props: IndicatorListProps) {
   const { videos, images } = props;
-  const { entries } = useIntersectionObserver();
-
-  function click(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    const index = parseInt(event.currentTarget.dataset.index || '0');
-    entries[index].target.scrollIntoView({
-      behavior: 'smooth',
-    });
-  }
+  const { entries, scrollToIndex } = useScroll();
+  const activeList = entries.map((entry) => entry.isIntersecting);
 
   return (
     <IntersectionObserverContainer>
@@ -151,21 +137,32 @@ export function IndicatorList(props: IndicatorListProps) {
               'px-2 py-[1px] [-ms-overflw-style:none] [scrollbar-width:none]'
             )}
           >
-            <ShowOnBreakpoints from={breakpoints}>
-              {videos.map((vid, index) => {
-                return (
-                  <Indicator key={'video-' + vid.ID} index={index} item={vid} onClick={click} />
-                );
-              })}
-            </ShowOnBreakpoints>
+            {/* <ShowOnBreakpoints from={breakpoints}> */}
+            {videos.map((vid, index) => {
+              return (
+                <ScrollItem key={vid.ID}>
+                  <Indicator
+                    key={'video-' + vid.ID}
+                    index={index}
+                    item={vid}
+                    isActive={activeList[index]}
+                    onClick={scrollToIndex}
+                  />
+                </ScrollItem>
+              );
+            })}
+            {/* </ShowOnBreakpoints> */}
             {images.map((img, index) => {
               return (
-                <Indicator
-                  key={'img-' + img.ID}
-                  item={img}
-                  index={videos.length + index}
-                  onClick={click}
-                />
+                <ScrollItem key={img.ID}>
+                  <Indicator
+                    key={'img-' + img.ID}
+                    item={img}
+                    index={videos.length + index}
+                    isActive={activeList[videos.length + index]}
+                    onClick={scrollToIndex}
+                  />
+                </ScrollItem>
               );
             })}
           </ul>

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, {createContext, PropsWithChildren, useContext, useEffect, useRef,} from "react";
+import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 
-import {useScroll, useScrollFactory} from "@/components/scroll/hook";
+import { useScroll, useScrollFactory } from '@/components/scroll/hook';
 
 export const scrollContext = createContext<{
   elements: IntersectionObserverEntry[];
@@ -32,11 +32,7 @@ export function Scroll({
     infiniteScrollOptions,
   });
 
-  return (
-    <scrollContext.Provider value={{ elements, observer }}>
-      {children}
-    </scrollContext.Provider>
-  );
+  return <scrollContext.Provider value={{ elements, observer }}>{children}</scrollContext.Provider>;
 }
 
 export function isElement(element: Element | Document): element is Element {
@@ -54,7 +50,7 @@ export function ScrollItem<C extends keyof JSX.IntrinsicElements>({
     factory?: ReturnType<typeof useScrollFactory>;
   } & JSX.IntrinsicElements[C]
 >) {
-  const Component = typeof as === "string" ? `${as}` : as;
+  const Component = typeof as === 'string' ? `${as}` : as;
   const scrollContextReturn = useContext(scrollContext);
   const { observer } = factory || scrollContextReturn;
   const ref = useRef<HTMLElement>(null);
@@ -84,22 +80,19 @@ export function ScrollButton({
   direction,
   ...props
 }: {
-  method: "scrollToIndex" | "scrollToNextOffView";
-  direction?: "left" | "right";
+  method: 'scrollToIndex' | 'scrollToNextOffView';
+  direction?: 'left' | 'right';
   index?: number;
-} & React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->) {
+} & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) {
   const { scrollToIndex, scrollToNextOffView } = useScroll();
 
   return (
     <button
       onClick={() => {
-        if (method === "scrollToIndex" && index !== undefined) {
+        if (method === 'scrollToIndex' && index !== undefined) {
           scrollToIndex(index);
         }
-        if (method === "scrollToNextOffView" && direction) {
+        if (method === 'scrollToNextOffView' && direction) {
           scrollToNextOffView(direction);
         }
       }}
@@ -122,23 +115,23 @@ export function BulletIndicator({
     <button
       onClick={onClick}
       className={
-        "bg-paper_2 w-2 h-2 rounded-md transition-colors " +
-        (active ? " bg-white/60 " : "")
+        'h-2 w-2 rounded-md bg-paper_2 transition-colors ' + (active ? ' bg-white/60 ' : '')
       }
     ></button>
   );
 }
 
-export function ScrollBulletIndicator({index}: { index: number }) {
-  const {elements, scrollToIndex} = useScroll();
+export function ScrollBulletIndicator({ index }: { index: number }) {
+  const { elements, scrollToIndex } = useScroll();
   const active = elements[index]?.isIntersecting;
 
   return (
-      <BulletIndicator
-          active={active}
-          onClick={() => {
-            scrollToIndex(index);
-          }}
-      />
+    <BulletIndicator
+      active={active}
+      onClick={() => {
+        scrollToIndex(index);
+      }}
+    />
   );
 }
+
