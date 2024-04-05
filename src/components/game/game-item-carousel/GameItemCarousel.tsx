@@ -71,21 +71,10 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                   </div>
                 </ScrollItem>
               ))}
-              {images.map((img, index) => (
-                <ScrollItem
-                  key={img.ID + index}
-                  autoScrollInterval={5000}
-                  className="w-full shrink-0 snap-start overflow-hidden rounded"
-                >
-                  <div className="relative aspect-video w-full">
-                    <Image src={img.url} alt={img.type} fill />
-                  </div>
-                </ScrollItem>
-              ))}
             </ul>
           </IntersectionObserverRoot>
         </div>
-        <IndicatorList videos={videos} images={images} />
+        {shouldShowIndicator ? <IndicatorList videos={videos} images={images} /> : null}
       </IntersectionObserverContainer>
     </div>
   );

@@ -1,15 +1,10 @@
-"use client";
+'use client';
 
-import { useBreakpoints } from "@/hooks/useBreakpoint";
-import {
-  experimental_useOptimistic as useOptimistic,
-  useLayoutEffect,
-  useRef,
-  useTransition,
-} from "react";
-import { LoadingIcon2 } from "../loading/LoadingIcon";
-import { useCartContext } from "./CartContext";
-import { useRouter } from "next/navigation";
+import { useBreakpoints } from '@/hooks/useBreakpoint';
+import { useOptimistic, useLayoutEffect, useRef, useTransition } from 'react';
+import { LoadingIcon2 } from '../loading/LoadingIcon';
+import { useCartContext } from './CartContext';
+import { useRouter } from 'next/navigation';
 
 const breakpoints = [780] as const;
 export function ItemCheckBox({ index }: { index: number }) {
@@ -21,11 +16,7 @@ export function ItemCheckBox({ index }: { index: number }) {
   const [updating, startUpdate] = useTransition();
   const router = useRouter();
 
-  const animationDuration = b780
-    ? b780 >= 0
-      ? animationMedium
-      : animationMobile
-    : null;
+  const animationDuration = b780 ? (b780 >= 0 ? animationMedium : animationMobile) : null;
 
   useLayoutEffect(() => {
     const container = ref.current;
@@ -38,7 +29,7 @@ export function ItemCheckBox({ index }: { index: number }) {
       return;
     }
     if (item.checked) {
-      if (navigator.userAgent.indexOf("Safari") > -1) {
+      if (navigator.userAgent.indexOf('Safari') > -1) {
         rect1.getAnimations().forEach((animation) => {
           animation.commitStyles();
           animation.cancel();
@@ -48,25 +39,25 @@ export function ItemCheckBox({ index }: { index: number }) {
           animation.cancel();
         });
       }
-      rect1.animate([{ width: "calc(100% - 20px)" }], {
+      rect1.animate([{ width: 'calc(100% - 20px)' }], {
         ...animationDuration?.rect1.in.width,
-        easing: "linear",
-        fill: "forwards",
+        easing: 'linear',
+        fill: 'forwards',
       });
-      rect2.animate([{ height: "calc(100% - 20px)" }], {
+      rect2.animate([{ height: 'calc(100% - 20px)' }], {
         ...animationDuration?.rect2.in.height,
-        easing: "linear",
-        fill: "forwards",
+        easing: 'linear',
+        fill: 'forwards',
       });
-      rect1.animate([{ height: "calc(100% - 21px)" }], {
+      rect1.animate([{ height: 'calc(100% - 21px)' }], {
         ...animationDuration?.rect1.in.height,
-        easing: "linear",
-        fill: "forwards",
+        easing: 'linear',
+        fill: 'forwards',
       });
-      rect2.animate([{ width: "calc(100% - 20px)" }], {
+      rect2.animate([{ width: 'calc(100% - 20px)' }], {
         ...animationDuration?.rect2.in.width,
-        easing: "linear",
-        fill: "forwards",
+        easing: 'linear',
+        fill: 'forwards',
       });
     }
   }, [item]);
@@ -77,10 +68,9 @@ export function ItemCheckBox({ index }: { index: number }) {
         <input
           checked={optimisticChecked}
           type="checkbox"
-          id={"checkbox-" + item.ID}
+          id={'checkbox-' + item.ID}
           className={
-            "peer " +
-            "w-8 h-8 md:h-5 md:w-5 absolute block -bottom-1 -right-2 md:-left-2 md:-top-1"
+            'peer ' + 'absolute -bottom-1 -right-2 block h-8 w-8 md:-left-2 md:-top-1 md:h-5 md:w-5'
           }
           onClick={() => {
             setOptimisticChecked(!optimisticChecked);
@@ -105,7 +95,7 @@ export function ItemCheckBox({ index }: { index: number }) {
               return;
             }
             if (optimisticChecked) {
-              if (navigator.userAgent.indexOf("Safari") > -1) {
+              if (navigator.userAgent.indexOf('Safari') > -1) {
                 rect1.getAnimations().forEach((animation) => {
                   // if (animation.id !== ani1.id && animation.id !== ani3.id) {
                   animation.commitStyles();
@@ -119,76 +109,76 @@ export function ItemCheckBox({ index }: { index: number }) {
                   // }
                 });
               }
-              rect1.animate([{ height: "2px" }], {
+              rect1.animate([{ height: '2px' }], {
                 ...animationDuration?.rect1.out?.height,
-                easing: "linear",
-                fill: "forwards",
+                easing: 'linear',
+                fill: 'forwards',
               });
-              rect2.animate([{ width: "2px" }], {
+              rect2.animate([{ width: '2px' }], {
                 ...animationDuration?.rect2.out?.width,
-                easing: "linear",
-                fill: "forwards",
+                easing: 'linear',
+                fill: 'forwards',
               });
               rect1.animate([{ width: 0 }], {
                 ...animationDuration?.rect1.out?.width,
-                easing: "linear",
-                fill: "forwards",
+                easing: 'linear',
+                fill: 'forwards',
               });
               rect2.animate([{ height: 0 }], {
                 ...animationDuration?.rect2.out?.height,
-                easing: "linear",
-                fill: "forwards",
+                easing: 'linear',
+                fill: 'forwards',
               });
               return;
             }
-            rect1.animate([{ width: "calc(100% - 20px)" }], {
+            rect1.animate([{ width: 'calc(100% - 20px)' }], {
               ...animationDuration?.rect1?.in.width,
-              easing: "linear",
-              fill: "forwards",
+              easing: 'linear',
+              fill: 'forwards',
             });
-            rect2.animate([{ height: "calc(100% - 20px)" }], {
+            rect2.animate([{ height: 'calc(100% - 20px)' }], {
               ...animationDuration?.rect2.in?.height,
-              easing: "linear",
-              fill: "forwards",
+              easing: 'linear',
+              fill: 'forwards',
             });
-            rect1.animate([{ height: "calc(100% - 21px)" }], {
+            rect1.animate([{ height: 'calc(100% - 21px)' }], {
               ...animationDuration?.rect1?.in.height,
-              easing: "linear",
-              fill: "forwards",
+              easing: 'linear',
+              fill: 'forwards',
             });
-            rect2.animate([{ width: "calc(100% - 20px)" }], {
+            rect2.animate([{ width: 'calc(100% - 20px)' }], {
               ...animationDuration?.rect2?.in?.width,
-              easing: "linear",
-              fill: "forwards",
+              easing: 'linear',
+              fill: 'forwards',
             });
           }}
         />
         <label
-          htmlFor={"checkbox-" + item.ID}
+          htmlFor={'checkbox-' + item.ID}
           className={
-            "flex justify-center items-center " +
-            " bg-paper w-8 h-8 md:h-5 md:w-5 absolute block -bottom-1 -right-2 md:-left-2 md:-top-1 rounded " +
-            " outline outline-2 outline-default " +
+            'flex items-center justify-center ' +
+            ' absolute -bottom-1 -right-2 block h-8 w-8 rounded bg-paper md:-left-2 md:-top-1 md:h-5 md:w-5 ' +
+            ' outline outline-2 outline-default ' +
             (!updating
-              ? " after:absolute after:rounded after:inset-0 hover:after:bg-white_primary/25 after:transition-colors "
-              : "") +
-            " active:animate-[btn-default-scale-animation_150ms] peer-active:animate-[btn-default-scale-animation_150ms] " +
-            " [--scale:_0.9] " +
-            " [&>div]:peer-checked:opacity-100 [&>div]:peer-checked:delay-0 " +
-            " [&>div]:delay-[550ms] md:[&>div]:delay-[700ms] " +
-            " peer-checked:shadow-inner peer-checked:shadow-white_primary/25 " +
-            " peer-checked:[--tw-shadow-colored:_inset_0_1px_2px_1px_var(--tw-shadow-color)] " +
-            " peer-disabled:bg-paper "
+              ? ' after:absolute after:inset-0 after:rounded after:transition-colors hover:after:bg-white_primary/25 '
+              : '') +
+            ' active:animate-[btn-default-scale-animation_150ms] peer-active:animate-[btn-default-scale-animation_150ms] ' +
+            ' [--scale:_0.9] ' +
+            ' [&>div]:peer-checked:opacity-100 [&>div]:peer-checked:delay-0 ' +
+            ' [&>div]:delay-[550ms] md:[&>div]:delay-[700ms] ' +
+            ' peer-checked:shadow-inner peer-checked:shadow-white_primary/25 ' +
+            ' peer-checked:[--tw-shadow-colored:_inset_0_1px_2px_1px_var(--tw-shadow-color)] ' +
+            ' peer-disabled:bg-paper '
           }
         >
           {b780 ? (
             <>
               <div
                 className={
-                  "absolute h-[calc(100%-1px)] w-[calc(100%-5px)] border-[#9c9c9c] " +
-                  " md:border-t-0 md:border-l-0 md:border-r md:border-b md:left-[unset] md:top-[unset] -right-[2px] -bottom-[2px] md:rounded-br-md " +
-                  " border-t border-l -left-[2px] -top-[2px] rounded-tl-md " +
-                  " opacity-0 pointer-events-none transition-opacity duration-150 "
+                  'absolute h-[calc(100%-1px)] w-[calc(100%-5px)] border-[#9c9c9c] ' +
+                  ' -bottom-[2px] -right-[2px] md:left-[unset] md:top-[unset] md:rounded-br-md md:border-b md:border-l-0 md:border-r md:border-t-0 ' +
+                  ' -left-[2px] -top-[2px] rounded-tl-md border-l border-t ' +
+                  ' pointer-events-none opacity-0 transition-opacity duration-150 '
                 }
               ></div>
               {updating ? (
@@ -196,7 +186,7 @@ export function ItemCheckBox({ index }: { index: number }) {
                   width={18}
                   height={18}
                   fill="white"
-                  stroke={"#9c9c9c"}
+                  stroke={'#9c9c9c'}
                   loading={true}
                 />
               ) : null}
@@ -204,10 +194,10 @@ export function ItemCheckBox({ index }: { index: number }) {
                 <svg
                   version="1.1"
                   xmlns="http://www.w3.org/2000/svg"
-                  width={b780 >= 0 ? "26px" : "32px"}
-                  height={b780 >= 0 ? "26px" : "32px"}
+                  width={b780 >= 0 ? '26px' : '32px'}
+                  height={b780 >= 0 ? '26px' : '32px'}
                   viewBox="0,0,256,256"
-                  className={"checkbox animated "}
+                  className={'checkbox animated '}
                   stroke="white"
                 >
                   <g
@@ -223,13 +213,10 @@ export function ItemCheckBox({ index }: { index: number }) {
                     fontWeight="none"
                     fontSize="none"
                     textAnchor="none"
-                    style={{ mixBlendMode: "normal" }}
+                    style={{ mixBlendMode: 'normal' }}
                   >
                     <g transform="scale(5.33333,5.33333)">
-                      <path
-                        d="M14.5,25.5l6,6l14,-14"
-                        className="svg-elem-3"
-                      ></path>
+                      <path d="M14.5,25.5l6,6l14,-14" className="svg-elem-3"></path>
                     </g>
                   </g>
                 </svg>
@@ -240,24 +227,24 @@ export function ItemCheckBox({ index }: { index: number }) {
       </>
       <div
         className={
-          "absolute w-[calc(100%+20px)] h-[calc(100%+20px)] inset-[-10px] z-[-1] pointer-events-none "
+          'pointer-events-none absolute inset-[-10px] z-[-1] h-[calc(100%+20px)] w-[calc(100%+20px)] '
         }
         ref={ref}
       >
         <div
           className={
-            " w-0 h-[2px] z-[-1] [rx:0.25rem] opacity-100 " +
-            " absolute bottom-0 right-0 md:bottom-auto md:right-auto " +
-            " -translate-x-[10px] -translate-y-[10px] md:translate-x-[10px] md:translate-y-[10px] " +
-            " outline outline-1 outline-[#9c9c9c] rounded "
+            ' z-[-1] h-[2px] w-0 opacity-100 [rx:0.25rem] ' +
+            ' absolute bottom-0 right-0 md:bottom-auto md:right-auto ' +
+            ' -translate-x-[10px] -translate-y-[10px] md:translate-x-[10px] md:translate-y-[10px] ' +
+            ' rounded outline outline-1 outline-[#9c9c9c] '
           }
         />
         <div
           className={
-            "w-[2px] h-0 " +
-            " absolute bottom-0 right-0 md:bottom-auto md:right-auto " +
-            " -translate-x-[10px] -translate-y-[10px] md:translate-x-[10px] md:translate-y-[10px] " +
-            " outline outline-1 outline-[#9c9c9c] rounded "
+            'h-0 w-[2px] ' +
+            ' absolute bottom-0 right-0 md:bottom-auto md:right-auto ' +
+            ' -translate-x-[10px] -translate-y-[10px] md:translate-x-[10px] md:translate-y-[10px] ' +
+            ' rounded outline outline-1 outline-[#9c9c9c] '
           }
         />
       </div>

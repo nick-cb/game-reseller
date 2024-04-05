@@ -1,50 +1,38 @@
-"use client";
+'use client';
 
-import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  PropsWithChildren,
-  SVGProps,
-} from "react";
-import { HookFormRadio } from "../Radio";
-import { useController, useFormContext } from "react-hook-form";
-import {useScroll} from "@/components/scroll/hook";
+import { ButtonHTMLAttributes, DetailedHTMLProps, PropsWithChildren, SVGProps } from 'react';
+import { HookFormRadio } from '../Radio';
+import { useController, useFormContext } from 'react-hook-form';
+import { useScroll } from '@/components/scroll2/ScrollPrimitive';
+import { mergeCls } from '@/utils';
 
-export function PaymentTabButton({
-  // icon,
-  children,
-  className,
-  type,
-  index,
-  method,
-  ...props
-}: DetailedHTMLProps<ButtonHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
-  PropsWithChildren<{ index: number; method: "stripe" | "paypal" }>) {
+type PaymentTabButtonProps = PropsWithChildren<{ index: number; method: 'stripe' | 'paypal' }>;
+export function PaymentTabButton(props: PaymentTabButtonProps) {
+  const { children, index, method } = props;
   const { control } = useFormContext();
   const {
     field: { onChange, value, ref },
-  } = useController({ control, name: "payment_method" });
-  const { elements, scrollToIndex } = useScroll();
-  const active = elements.findIndex((el) => el.isIntersecting) === index;
+  } = useController({ control, name: 'payment_method' });
+  const { entries, scrollToIndex } = useScroll();
+  const active = entries[index]?.isIntersecting;
   if (active && value !== method) {
-    // resetField("method_id", { defaultValue: "" });
     onChange(method);
   }
 
   return (
     <li
       className={
-        " 3/4sm:w-28 3/4sm:h-24 rounded-md border-2 border-solid snap-start " +
-        " w-24 h-20 " +
-        " transition-colors hover:bg-white/25 " +
-        " gap-2 relative " +
-        (active ? " border-primary " : " border-white/25 ")
+        ' snap-start rounded-md border-2 border-solid 3/4sm:h-24 3/4sm:w-28 ' +
+        ' h-20 w-24 ' +
+        ' transition-colors hover:bg-white/25 ' +
+        ' relative gap-2 ' +
+        (active ? ' border-primary ' : ' border-white/25 ')
       }
     >
       <input
-        type={"radio"}
+        type={'radio'}
         id={method}
-        name={"payment_method"}
+        name={'payment_method'}
         checked={active}
         value={method}
         onChange={(event) => {
@@ -52,16 +40,15 @@ export function PaymentTabButton({
           onChange(event);
         }}
         ref={ref}
-        className={"w-full h-full absolute " + "rounded-md " + className}
-        {...props}
+        className={mergeCls('absolute h-full w-full', 'rounded-md')}
       />
       <label
         htmlFor={method}
         className={
-          "text-sm w-full h-full block bg-paper rounded-md " +
-          "absolute w-full h-full inset-0 flex flex-col justify-center items-center " +
-          "hover:after:bg-white_primary/[.15] after:absolute after:inset-0 after:rounded-md " +
-          "transition-colors "
+          'block h-full w-full rounded-md bg-paper text-sm ' +
+          'absolute inset-0 flex h-full w-full flex-col items-center justify-center ' +
+          'after:absolute after:inset-0 after:rounded-md hover:after:bg-white_primary/[.15] ' +
+          'transition-colors '
         }
       >
         {children}
@@ -76,7 +63,7 @@ export function SpriteIcon({
   ...props
 }: { sprite: string; id: string } & SVGProps<SVGSVGElement>) {
   return (
-    <svg width={32} height={32} className="mb-2 mx-auto" {...props}>
+    <svg width={32} height={32} className="mx-auto mb-2" {...props}>
       <use xlinkHref={`/svg/sprites/${sprite}.svg#${id}`} />
     </svg>
   );
@@ -91,9 +78,7 @@ export function CheckMarkSvg() {
       stroke="white"
       width={24}
       height={24}
-      className={
-        "absolute inset-0 z-10 -left-[2px] -top-[2px] pointer-events-none"
-      }
+      className={'pointer-events-none absolute inset-0 -left-[2px] -top-[2px] z-10'}
     >
       <path
         strokeLinejoin="round"
@@ -126,40 +111,37 @@ export function CheckMarkSvg() {
 export function SavePayment({ id }: { id: string }) {
   return (
     <>
-      <p className="text-[14.88px] mb-2 ">
-        Save this payment method for future purchases
-      </p>
+      <p className="mb-2 text-[14.88px] ">Save this payment method for future purchases</p>
       <div className="flex gap-8">
         <HookFormRadio
-          id={id + "-remember-yes"}
+          id={id + '-remember-yes'}
           name="save"
-          value={"yes"}
+          value={'yes'}
           LabelComponent={
-            <label htmlFor={id + "-remember-yes"} className="pl-2">
+            <label htmlFor={id + '-remember-yes'} className="pl-2">
               Yes
             </label>
           }
-          className="w-5 h-5"
+          className="h-5 w-5"
         />
         <HookFormRadio
-          id={id + "-remember-no"}
+          id={id + '-remember-no'}
           name="save"
-          value={"no"}
+          value={'no'}
           LabelComponent={
-            <label htmlFor={id + "-remember-no"} className="pl-2">
+            <label htmlFor={id + '-remember-no'} className="pl-2">
               No
             </label>
           }
-          className="w-5 h-5"
+          className="h-5 w-5"
         />
         <CheckMarkSvg />
       </div>
-      <p className="text-xs text-white_primary/60 mt-2">
-        By choosing to save your payment information, this payment method will
-        be selected as the default for all purchases made using our payment. You
-        can delete your saved payment information anytime on this payment screen
-        or by logging in to your account, and selecting payment management in
-        your account settings.
+      <p className="mt-2 text-xs text-white_primary/60">
+        By choosing to save your payment information, this payment method will be selected as the
+        default for all purchases made using our payment. You can delete your saved payment
+        information anytime on this payment screen or by logging in to your account, and selecting
+        payment management in your account settings.
       </p>
     </>
   );

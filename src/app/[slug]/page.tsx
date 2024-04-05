@@ -18,7 +18,6 @@ import { currencyFormatter, pascalCase } from '@/utils';
 import { BuyNowButton } from '@/components/game/BuyNowButton';
 import SystemRequirements from '@/components/game/SystemRequirements';
 import { AddToCartButton } from '@/components/game/AddToCartBtn';
-import { Scroll } from '@/components/scroll/index';
 import { GameNav } from '@/components/game/GameNav';
 import { groupImages } from '@/utils/data';
 import { CriticRating } from '@/components/game/CriticRating';
@@ -85,7 +84,7 @@ const page = async ({ params }: { params: any }) => {
       ) : null}
       <div className="grid grid-cols-3 grid-rows-[min-content_auto] gap-4 md:grid-cols-5 md:gap-8 lg:gap-16 xl:grid-cols-6">
         <section className="col-span-full col-start-1 row-start-1 row-end-2 md:[grid-column:-3/1]">
-          <GameItemCarousel videos={game.videos} images={carouselImages} />
+          {/* <GameItemCarousel videos={game.videos} images={carouselImages} /> */}
         </section>
         <section
           className="col-span-3 

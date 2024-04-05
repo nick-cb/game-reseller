@@ -1,8 +1,8 @@
 'use client';
 
 import React, { use, useEffect } from 'react';
-import { VideoCtx, useVideo } from './Video2';
-import { AudioCtx, useAudio } from './Audio2';
+import { VideoCtx, useVideo } from './Video';
+import { AudioCtx, useAudio } from './Audio';
 import { isNil, mergeCls } from '@/utils';
 import { Icon } from '../Icon';
 

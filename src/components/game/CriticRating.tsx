@@ -1,10 +1,11 @@
 import Reviews, { CriticAvg, Game } from '@/database/models';
-import { ScrollBulletIndicator, ScrollContainer, ScrollItem } from '../scroll2/ScrollPrimitive';
+import { ScrollContainer, ScrollItem } from '../scroll2/ScrollPrimitive';
 import { OmitGameId } from '@/actions/game/select';
 import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
+import {ScrollBulletIndicator} from "@/components/scroll2/Indicators";
 
 const criticRec = {
   weak: '51.548667764616276',

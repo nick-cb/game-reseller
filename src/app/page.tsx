@@ -1,7 +1,6 @@
 import Carousel from '@/components/discover/Carousel';
 import HeroCarousel from '@/components/home/hero_carousel/HeroCarousel';
 import React, { Suspense } from 'react';
-import { Scroll } from '@/components/scroll/index';
 import { Feature } from '@/components/home/feature';
 import { PillarGroup } from '@/components/home/pillar';
 import Link from 'next/link';
@@ -9,21 +8,19 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <>
-      <Scroll containerSelector={'#hero-slider'}>
-        <HeroCarousel />
-      </Scroll>
+      <HeroCarousel />
       <hr className="my-4 border-default" />
       <section className="relative pb-8">
         <Carousel name={'top_sale'} />
       </section>
-      <hr className="my-4 border-default" />
-      <Feature />
-      <hr className="my-6 border-default" />
-      <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex">
-        <Suspense>
-          <PillarGroup names={['new_release', 'most_played', 'top_player_rated']} />
-        </Suspense>
-      </section>
+      {/* <hr className="my-4 border-default" /> */}
+      {/* <Feature /> */}
+      {/* <hr className="my-6 border-default" /> */}
+      {/* <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex"> */}
+      {/*   <Suspense> */}
+      {/*     <PillarGroup names={['new_release', 'most_played', 'top_player_rated']} /> */}
+      {/*   </Suspense> */}
+      {/* </section> */}
       <section
         className={
           'relative flex flex-col gap-8 overflow-hidden rounded-lg p-4 ' +

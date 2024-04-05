@@ -30,13 +30,13 @@ export const generateToken = async (payload: Object) => {
   throw new Error("No JWT_SECRET found");
 };
 
-export const decodeToken = (token: string) => {
+export const decodeToken = async (token: string) => {
   try {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
       throw new Error("Not found JWT_SECRET");
     }
-    const payload = jwt.verify(token, secret);
+    const payload = await jwt.verify(token, secret);
     if (typeof payload !== "string") {
       return payload as jwt.JwtPayload & { userId: number };
     }

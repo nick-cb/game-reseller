@@ -1,59 +1,43 @@
-import Link from "next/link";
-import React from "react";
-import { currencyFormatter } from "@/utils";
-import { ScrollItem } from "@/components/scroll/index";
+import Link from 'next/link';
+import React from 'react';
+import { currencyFormatter } from '@/utils';
 
-const PortraitGameCard = ({
-  game,
-  className = "",
-  contentContainerClassName = "",
-}: {
+type PortraitGameCardProps = {
   game: any;
   className?: string;
-  contentContainerClassName?: string;
-}) => {
+};
+const PortraitGameCard = ({ game, className = '' }: PortraitGameCardProps) => {
   return (
     <Link
       href={`/${game.slug}`}
       key={game.slug}
-      className={className + " group"}
+      className={className + ' group flex h-full cursor-pointer flex-col justify-between'}
     >
-      <ScrollItem
-        as="div"
+      <div
         className={
-          contentContainerClassName +
-          " " +
-          "group cursor-pointer h-full flex flex-col justify-between"
+          'relative overflow-hidden xs-right-pad:aspect-[3/4] ' +
+          'after:absolute after:inset-0 after:h-full after:w-full after:rounded ' +
+          'after:bg-white after:opacity-0 after:transition-opacity ' +
+          'rounded bg-white/25 group-hover:after:opacity-[0.1] ' +
+          'h-28 xs-right-pad:h-auto '
         }
       >
-        <div
+        <img
+          src={game.images.portrait?.url + '?h=480&w=360&resize=1'}
+          alt={`portrait of ${game.name}`}
           className={
-            "relative xs-right-pad:aspect-[3/4] overflow-hidden " +
-            "after:rounded after:absolute after:inset-0 after:w-full after:h-full " +
-            "after:transition-opacity after:bg-white after:opacity-0 " +
-            "group-hover:after:opacity-[0.1] bg-white/25 rounded " +
-            "h-28 xs-right-pad:h-auto "
+            'rounded transition-transform duration-300 group-focus:scale-110' +
+            'h-full w-full object-cover '
           }
-        >
-          <img
-            src={game.images.portrait?.url + "?h=480&w=360&resize=1"}
-            alt={`portrait of ${game.name}`}
-            className={
-              "rounded group-focus:scale-110 duration-300 transition-transform" +
-              "w-full h-full object-cover "
-            }
-            width={360}
-            height={480}
-          />
-        </div>
-        <p className="mt-4 text-sm text-white_primary">{game.name}</p>
-        <p className="text-xs mt-1 text-white/60">{game.developer}</p>
-        <p className="text-sm mt-2 text-white_primary">
-          {parseInt(game.sale_price) === 0
-            ? "Free"
-            : currencyFormatter(game.sale_price)}
-        </p>
-      </ScrollItem>
+          width={360}
+          height={480}
+        />
+      </div>
+      <p className="mt-4 text-sm text-white_primary">{game.name}</p>
+      <p className="mt-1 text-xs text-white/60">{game.developer}</p>
+      <p className="mt-2 text-sm text-white_primary">
+        {parseInt(game.sale_price) === 0 ? 'Free' : currencyFormatter(game.sale_price)}
+      </p>
     </Link>
   );
 };

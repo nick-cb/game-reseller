@@ -1,14 +1,10 @@
-"use client";
-import {
-  Elements,
-  ElementsConsumer,
-  PaymentElement,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import React, { PropsWithChildren, createContext, useContext } from "react";
+'use client';
+import { Elements, ElementsConsumer, PaymentElement } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import React, { PropsWithChildren, createContext, useContext } from 'react';
 
 export const stripePromise = loadStripe(
-  "pk_test_51Iwqe0KvZqrt4tRI0ZewUir13YIgFCeoaO9AQQb2w6a1Lu8AnWN2TypvEg4Q24xXXM8rL0BChZEjaIdx5FOYgVqQ0081tq7z3V",
+  'pk_test_51Iwqe0KvZqrt4tRI0ZewUir13YIgFCeoaO9AQQb2w6a1Lu8AnWN2TypvEg4Q24xXXM8rL0BChZEjaIdx5FOYgVqQ0081tq7z3V'
 );
 export default function StripeElements({
   children,
@@ -26,12 +22,12 @@ export default function StripeElements({
         // clientSecret,
         amount,
         currency,
-        mode: "payment",
-        paymentMethodCreation: "manual",
+        mode: 'payment',
+        paymentMethodCreation: 'manual',
         fonts: [
           {
             cssSrc:
-              "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+              'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
             family: "'Inter', sans-serif",
           },
         ],
@@ -40,22 +36,22 @@ export default function StripeElements({
             fontFamily: "'Inter', sans-serif",
           },
           rules: {
-            ".Label": {
-              color: "rgb(245, 245, 245)",
-              fontWeight: "500",
-              marginBottom: "8px",
+            '.Label': {
+              color: 'rgb(245, 245, 245)',
+              fontWeight: '500',
+              marginBottom: '8px',
             },
-            ".Input": {
-              backgroundColor: "rgba(245, 245, 245, 0.15)",
-              border: "none",
-              color: "rgb(245, 245, 245)",
-              marginBottom: "8px",
+            '.Input': {
+              backgroundColor: 'rgba(245, 245, 245, 0.15)',
+              border: 'none',
+              color: 'rgb(245, 245, 245)',
+              marginBottom: '8px',
             },
-            ".Input:hover": {
-              backgroundColor: "rgba(245, 245, 245, 0.25)",
+            '.Input:hover': {
+              backgroundColor: 'rgba(245, 245, 245, 0.25)',
             },
-            ".Error": {
-              fontSize: "0.875rem",
+            '.Error': {
+              fontSize: '0.875rem',
             },
           },
         },
@@ -66,13 +62,20 @@ export default function StripeElements({
   );
 }
 
-export function StripeCheckoutForm() {
+type StripeElementsProps = {
+  amount: number;
+};
+export function StripeCheckoutForm(props: StripeElementsProps) {
+  const { amount } = props;
+  if (amount < 0.5) {
+    return null;
+  }
   return (
     <PaymentElement
       options={{
         wallets: {
-          googlePay: "never",
-          applePay: "never",
+          googlePay: 'never',
+          applePay: 'never',
         },
       }}
     />
@@ -80,7 +83,7 @@ export function StripeCheckoutForm() {
 }
 
 type ElementsContextValue = Parameters<
-  React.ComponentProps<typeof ElementsConsumer>["children"]
+  React.ComponentProps<typeof ElementsConsumer>['children']
 >[0];
 const stripeElementCtx = createContext<ElementsContextValue>({
   elements: null,
@@ -103,11 +106,7 @@ export function StripeElementsNullish({
     <StripeElements amount={amount} {...props}>
       <ElementsConsumer>
         {(value) => {
-          return (
-            <stripeElementCtx.Provider value={value}>
-              {children}
-            </stripeElementCtx.Provider>
-          );
+          return <stripeElementCtx.Provider value={value}>{children}</stripeElementCtx.Provider>;
         }}
       </ElementsConsumer>
     </StripeElements>

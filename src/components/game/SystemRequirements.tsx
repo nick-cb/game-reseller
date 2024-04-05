@@ -1,11 +1,16 @@
-import React from "react";
-import RequirementButton from "./RequirementButton";
-import { Scroll, ScrollItem } from "@/components/scroll/index";
+import React from 'react';
+import RequirementButton from './RequirementButton';
+import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
+import {
+  IntersectionObserverContainer,
+  IntersectionObserverRoot,
+} from '@/components/intersection/IntersectionObserver';
+import { mergeCls } from '@/utils';
 
 export default function SystemRequirements({ systems }: { systems: any[] }) {
   return (
-    <Scroll containerSelector="#system-requirements">
-      <ul className="mb-8 flex gap-8 overflow-scroll scrollbar-hidden">
+    <IntersectionObserverContainer>
+      <ul className="scrollbar-hidden mb-8 flex gap-8 overflow-scroll">
         {systems.map((system, index) => {
           return (
             <li key={system.ID}>
@@ -14,53 +19,45 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
           );
         })}
       </ul>
-      <ul
-        id={"system-requirements"}
-        className={
-          "flex gap-8 " +
-          " overflow-scroll snap-mandatory snap-x scrollbar-hidden "
-        }
-      >
-        {systems.map((system) => {
-          const recommended = system.details.filter(
-            (detail: any) => !!detail.recommended,
-          );
-          return (
-            <ScrollItem
-              as="li"
-              key={system.ID}
-              className="grid grid-cols-2 gap-x-8 gap-y-4 w-full flex-shrink-0 snap-center auto-rows-min"
-            >
-              <h3 className="text-sm">Minimum</h3>
-              <h3 className="text-sm">
-                {recommended.length > 0 && "Recommended"}
-              </h3>
-              {system.details.map((detail: any) => {
-                return (
-                  <React.Fragment key={detail.ID}>
-                    {detail.minimum ? (
-                      <div className="text-sm grid-cols-1 h-min">
-                        <div className="text-white_primary/60">
-                          {detail.title}
+      <IntersectionObserverRoot>
+        <ul
+          className={mergeCls(
+            'flex gap-8',
+            'scrollbar-hidden snap-x snap-mandatory overflow-scroll'
+          )}
+        >
+          {systems.map((system) => {
+            const recommended = system.details.filter((detail: any) => !!detail.recommended);
+            return (
+              <ScrollItem
+                key={system.ID}
+                className="grid w-full flex-shrink-0 snap-center auto-rows-min grid-cols-2 gap-x-8 gap-y-4"
+              >
+                <h3 className="text-sm">Minimum</h3>
+                <h3 className="text-sm">{recommended.length > 0 && 'Recommended'}</h3>
+                {system.details.map((detail: any) => {
+                  return (
+                    <React.Fragment key={detail.ID}>
+                      {detail.minimum ? (
+                        <div className="h-min grid-cols-1 text-sm">
+                          <div className="text-white_primary/60">{detail.title}</div>
+                          <div>{detail.minimum}</div>
                         </div>
-                        <div>{detail.minimum}</div>
-                      </div>
-                    ) : null}
-                    {detail.recommended ? (
-                      <div className="text-sm grid-cols-2 h-min">
-                        <div className="text-white_primary/60">
-                          {detail.title}
+                      ) : null}
+                      {detail.recommended ? (
+                        <div className="h-min grid-cols-2 text-sm">
+                          <div className="text-white_primary/60">{detail.title}</div>
+                          <div>{detail.recommended}</div>
                         </div>
-                        <div>{detail.recommended}</div>
-                      </div>
-                    ) : null}
-                  </React.Fragment>
-                );
-              })}
-            </ScrollItem>
-          );
-        })}
-      </ul>
-    </Scroll>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                })}
+              </ScrollItem>
+            );
+          })}
+        </ul>
+      </IntersectionObserverRoot>
+    </IntersectionObserverContainer>
   );
 }

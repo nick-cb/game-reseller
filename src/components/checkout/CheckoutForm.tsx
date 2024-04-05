@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   DetailedHTMLProps,
@@ -7,28 +7,16 @@ import {
   createContext,
   useContext,
   useRef,
-} from "react";
-import { StripeElements, Stripe, PaymentIntent } from "@stripe/stripe-js";
-import { Dialog, DialogContent } from "../Dialog";
-import { SnackContext } from "../SnackContext";
-import { useCartContext } from "../cart/CartContext";
-import { FormProvider, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { updateOrder } from "@/actions/orders";
-import { useStripeNullish } from "../payment/Stripe";
-import { DevTool } from "@hookform/devtools";
-
-// export function StripeElementNullish({
-//   paymentIntent,
-//   children,
-// }: PropsWithChildren<{
-//   paymentIntent: Stripe.Response<Stripe.PaymentIntent> | null;
-// }>) {
-//   if (paymentIntent && paymentIntent.client_secret) {
-//     return null;
-//   }
-//   return <>{children}</>;
-// }
+} from 'react';
+import { StripeElements, Stripe, PaymentIntent } from '@stripe/stripe-js';
+import { Dialog, DialogContent } from '../Dialog';
+import { SnackContext } from '../SnackContext';
+import { useCartContext } from '../cart/CartContext';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { updateOrder } from '@/actions/orders';
+import { useStripeNullish } from '../payment/Stripe';
+import { DevTool } from '@hookform/devtools';
 
 const checkoutContext = createContext<{
   stripe: Stripe | null;
@@ -66,7 +54,7 @@ export function CheckoutModal({
         onSubmit={(e) => {
           e.preventDefault();
           if (gameList.filter((game) => game.checked).length === 0) {
-            showMessage({ message: "No item selected", type: "warning" });
+            showMessage({ message: 'No item selected', type: 'warning' });
             return;
           }
           dialogRef.current?.showModal();
@@ -74,12 +62,8 @@ export function CheckoutModal({
       >
         {SubmitButton}
       </form>
-      <Dialog
-        ref={dialogRef}
-        remountChild
-        className="lg:w-3/4 2xl:w-1/2 w-full !bg-default !p-0"
-      >
-        <DialogContent as="div" className="p-4 w-full">
+      <Dialog ref={dialogRef} remountChild className="w-full !bg-default !p-0 lg:w-3/4 2xl:w-1/2">
+        <DialogContent as="div" className="w-full p-4">
           {children}
         </DialogContent>
       </Dialog>
@@ -89,8 +73,8 @@ export function CheckoutModal({
 
 type CheckoutFormPayload = {
   method_id?: string;
-  method: "stripe" | "paypal";
-  save: "yes" | "no";
+  method: 'stripe' | 'paypal';
+  save: 'yes' | 'no';
 };
 export function CheckoutForm({
   children,
@@ -114,7 +98,7 @@ export function CheckoutForm({
   const router = useRouter();
 
   const form = useForm<CheckoutFormPayload>({
-    mode: "onSubmit",
+    mode: 'onSubmit',
     defaultValues: {
       method_id: undefined,
     },
@@ -139,23 +123,19 @@ export function CheckoutForm({
     return observer;
   };
 
-  const createPaymentMethod = async (
-    stripe: Stripe,
-    element: StripeElements,
-  ) => {
+  const createPaymentMethod = async (stripe: Stripe, element: StripeElements) => {
     const { error: elementError } = await element.submit();
     if (elementError && elementError?.message) {
       throw new Error(elementError.message);
     }
-    const { paymentMethod, error: createPaymentError } =
-      await stripe.createPaymentMethod({
-        elements: element,
-      });
+    const { paymentMethod, error: createPaymentError } = await stripe.createPaymentMethod({
+      elements: element,
+    });
     if (createPaymentError && createPaymentError.message) {
       throw new Error(createPaymentError.message);
     }
     if (!paymentMethod) {
-      throw new Error("Invalid payment method");
+      throw new Error('Invalid payment method');
     }
     return paymentMethod.id;
   };
@@ -172,26 +152,21 @@ export function CheckoutForm({
             await form.handleSubmit(async ({ save, method_id }) => {
               const observer = observeNextActionModal();
               try {
-                const methodId =
-                  method_id || (await createPaymentMethod(stripe, elements));
+                const methodId = method_id || (await createPaymentMethod(stripe, elements));
                 const response =
                   (await payWithStripe({
-                    save: save === "yes" ? true : false,
+                    save: save === 'yes' ? true : false,
                     paymentMethod: methodId,
                   })) || {};
-                if ("error" in response) {
+                if ('error' in response) {
                   throw new Error(response.error);
                 }
                 const { clientSecret, status, orderId } = response;
-                if (clientSecret && status === "requires_action") {
-                  const { error, paymentIntent } =
-                    await stripe.handleNextAction({
-                      clientSecret,
-                    });
-                  if (
-                    paymentIntent?.id &&
-                    paymentIntent.status !== "requires_action"
-                  ) {
+                if (clientSecret && status === 'requires_action') {
+                  const { error, paymentIntent } = await stripe.handleNextAction({
+                    clientSecret,
+                  });
+                  if (paymentIntent?.id && paymentIntent.status !== 'requires_action') {
                     await updateOrder(orderId, {
                       order: { status: paymentIntent.status },
                     });
@@ -207,10 +182,10 @@ export function CheckoutForm({
                   observer.disconnect();
                 }
                 router.refresh();
-                router.push("/order/success?order_id=" + orderId);
+                router.push('/order/success?order_id=' + orderId);
               } catch (error) {
                 if (error instanceof Error) {
-                  showMessage({ message: error.message, type: "error" });
+                  showMessage({ message: error.message, type: 'error' });
                 }
               }
             })();
@@ -223,7 +198,7 @@ export function CheckoutForm({
       </FormProvider>
       <Dialog
         ref={ref}
-        className="h-full w-full !bg-transparent backdrop-filter-none !shadow-none"
+        className="h-full w-full !bg-transparent !shadow-none backdrop-filter-none"
       ></Dialog>
     </>
   );

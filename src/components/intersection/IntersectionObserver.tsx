@@ -12,6 +12,7 @@ import React, {
 class Store {
   private containerRef: React.RefObject<HTMLElement>;
   private _listeners: Set<() => void> = new Set();
+  private options: Exclude<IntersectionObserverInit, 'root'>;
   data = {
     observer: null as IntersectionObserver | null,
     entries: [] as IntersectionObserverEntry[],
@@ -19,8 +20,14 @@ class Store {
     lastVisibleIndex: -1,
   };
 
-  constructor(containerRef: React.RefObject<HTMLElement>) {
+  constructor(
+    containerRef: React.RefObject<HTMLElement>,
+    options?: Exclude<IntersectionObserverInit, 'root'>
+  ) {
     this.containerRef = containerRef;
+    this.options = options || {
+      threshold: [0.5],
+    };
     this.subscribe = this.subscribe.bind(this);
   }
 
@@ -64,10 +71,7 @@ class Store {
               listener?.();
             }
           },
-          {
-            root: this.containerRef.current,
-            threshold: [0.5],
-          }
+          { ...this.options, root: this.containerRef.current }
         ),
       };
     }
@@ -75,6 +79,10 @@ class Store {
       this._listeners.delete(listener);
       // this._data.observer?.disconnect();
     };
+  }
+
+  updateContainerRef(containerRef: React.RefObject<HTMLElement>) {
+    this.containerRef = containerRef;
   }
 }
 
@@ -98,10 +106,15 @@ export const IntersectionObserverCtx = createContext<IntersectionObserverCtxProp
   containerRef: { current: null },
   store: new Store({ current: null }),
 });
-export function IntersectionObserverContainer(props: React.PropsWithChildren) {
+type IntersectionObserverContainerProps = {
+  options?: Exclude<IntersectionObserverInit, 'root'>;
+};
+export function IntersectionObserverContainer(
+  props: React.PropsWithChildren<IntersectionObserverContainerProps>
+) {
   const ref = useRef<HTMLElement>(null);
-  const { children } = props;
-  const [store] = useState(new Store(ref));
+  const { children, options } = props;
+  const [store] = useState(new Store(ref, options));
 
   return (
     <IntersectionObserverCtx.Provider value={{ containerRef: ref, store }}>
@@ -111,10 +124,18 @@ export function IntersectionObserverContainer(props: React.PropsWithChildren) {
 }
 
 export function IntersectionObserverRoot(props: React.PropsWithChildren) {
-  const { containerRef } = use(IntersectionObserverCtx);
+  const { containerRef, store } = use(IntersectionObserverCtx);
   const { children, ...rest } = props;
 
   if (isValidElement(children)) {
+    if ('ref' in children) {
+      if (children.ref) {
+        console.log({ store });
+        store.updateContainerRef(children.ref as React.RefObject<HTMLElement>);
+      }
+      const ref = (children.ref as React.RefObject<HTMLElement>) || containerRef;
+      return React.cloneElement(children, { ...children.props, ...rest, ref: ref });
+    }
     return React.cloneElement(children, { ...children.props, ...rest, ref: containerRef });
   }
 
