@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { mergeCls } from '@/utils';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 export default function ExpandableDescription({
   children,
-  className = "",
+  className = '',
 }: PropsWithChildren<{ className?: string }>) {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
@@ -24,36 +25,32 @@ export default function ExpandableDescription({
     }
   });
 
+  const Gradient = <div className="h-40 w-full bg-gradient-to-t from-default"></div>;
+
   return (
     <div
-      className={
-        (!expanded ? "h-144 overflow-hidden " : "h-max ") +
-        "relative " +
-        className
-      }
+      className={mergeCls('relative', className, !expanded ? 'h-144 overflow-hidden' : 'h-max')}
       ref={ref}
     >
+      {children}
       {show ? (
-        <div className={(!expanded ? "bottom-0 absolute " : "") + " w-full"}>
-          {!expanded ? (
-            <div className="w-full h-40 bg-gradient-to-t from-default"></div>
-          ) : null}
+        <div className={(!expanded ? 'absolute bottom-0 ' : '') + ' w-full'}>
+          {!expanded ? Gradient : null}
           <div className="bg-default">
             <button
               className={
-                "bg-paper py-4 w-full rounded text-sm relative " +
-                "after:bg-white/25 after:absolute after:inset-0 after:opacity-0 after:rounded after:transition-opacity hover:after:opacity-100 "
+                'relative w-full rounded bg-paper py-4 text-sm ' +
+                'after:absolute after:inset-0 after:rounded after:bg-white/25 after:opacity-0 after:transition-opacity hover:after:opacity-100 '
               }
               onClick={() => {
                 setExpanded((prev) => !prev);
               }}
             >
-              {!expanded ? "Show more" : "Show less"}
+              {!expanded ? 'Show more' : 'Show less'}
             </button>
           </div>
         </div>
       ) : null}
-      {children}
     </div>
   );
 }

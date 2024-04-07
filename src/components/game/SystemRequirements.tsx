@@ -26,11 +26,12 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
             'scrollbar-hidden snap-x snap-mandatory overflow-scroll'
           )}
         >
-          {systems.map((system) => {
+          {systems.map((system, index) => {
             const recommended = system.details.filter((detail: any) => !!detail.recommended);
             return (
               <ScrollItem
                 key={system.ID}
+                index={index}
                 className="grid w-full flex-shrink-0 snap-center auto-rows-min grid-cols-2 gap-x-8 gap-y-4"
               >
                 <h3 className="text-sm">Minimum</h3>

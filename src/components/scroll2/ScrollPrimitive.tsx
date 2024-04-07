@@ -11,12 +11,14 @@ export const ScrollContainer = React.forwardRef<HTMLUListElement, JSX.IntrinsicE
 );
 
 type ScrollItemProps = JSX.IntrinsicElements['li'] & {
+  index: number;
   autoScrollInterval?: number;
 };
 export function ScrollItem(props: ScrollItemProps) {
-  const { autoScrollInterval, ...rest } = props;
+  const { index, autoScrollInterval, ...rest } = props;
   const ref = useRef<HTMLLIElement>(null);
-  const { observer, scrollToNextOffView } = useScroll();
+  const { entries, observer, scrollToNextOffView } = useScroll();
+  const isActive = entries[index]?.isIntersecting;
 
   useEffect(() => {
     if (ref.current) {
@@ -25,7 +27,7 @@ export function ScrollItem(props: ScrollItemProps) {
   }, [observer]);
 
   useEffect(() => {
-    if (!autoScrollInterval) {
+    if (!isActive || !autoScrollInterval) {
       return;
     }
     const id = setTimeout(() => {
@@ -34,16 +36,17 @@ export function ScrollItem(props: ScrollItemProps) {
     return () => {
       clearTimeout(id);
     };
-  }, [autoScrollInterval, scrollToNextOffView]);
+  }, [isActive, autoScrollInterval, scrollToNextOffView]);
 
   return <li ref={ref} {...rest} />;
 }
 export function VideoScrollItem(props: ScrollItemProps) {
-  const { autoScrollInterval, ...rest } = props;
-  const { playing, currentTime, duration } = useVideo({
+  const { index, autoScrollInterval, ...rest } = props;
+  const { playing, currentTime, duration, autoPlay } = useVideo({
     events: ['loadedmetadata', 'play', 'pause'],
   });
-  const { observer, scrollToNextOffView } = useScroll();
+  const { entries, observer, scrollToNextOffView } = useScroll();
+  const isActive = entries[index]?.isIntersecting;
   const ref = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
@@ -53,8 +56,17 @@ export function VideoScrollItem(props: ScrollItemProps) {
   }, [observer]);
 
   useEffect(() => {
+    if (!isActive || !autoScrollInterval) {
+      return;
+    }
     let id: NodeJS.Timeout | undefined;
-    if (!playing && currentTime > 0 && currentTime === duration) {
+    const isEndOfVideo = currentTime > 0 && currentTime === duration;
+    if (autoPlay && !playing && isEndOfVideo) {
+      id = setTimeout(() => {
+        scrollToNextOffView({ cycle: true });
+      }, autoScrollInterval);
+    }
+    if (!autoPlay) {
       id = setTimeout(() => {
         scrollToNextOffView({ cycle: true });
       }, autoScrollInterval);
@@ -62,7 +74,7 @@ export function VideoScrollItem(props: ScrollItemProps) {
     return () => {
       clearTimeout(id);
     };
-  }, [playing]);
+  }, [playing, autoScrollInterval, isActive]);
 
   return <li ref={ref} {...rest} />;
 }
@@ -86,7 +98,8 @@ export function useScroll() {
     if (!observer?.root) {
       return;
     }
-    let nextSibling = entries[lastVisibleIndex]?.target.nextElementSibling;
+    let nextSibling = entries[lastVisibleIndex]?.target.nextElementSibling ?? observer.root.firstChild;
+    console.log({nextSibling});
     if (!cycle && lastVisibleIndex === entries.length - 1) {
       nextSibling = null;
     }

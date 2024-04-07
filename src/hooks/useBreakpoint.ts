@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useLayoutEffect, useState, useSyncExternalStore } from "react";
+import { useLayoutEffect, useState } from 'react';
 
 const createBreakpoints = <
   T extends number[] | Readonly<number[]>,
@@ -8,13 +8,13 @@ const createBreakpoints = <
 >(
   breakpoints: T,
   against?: number,
-  previous?: R,
+  previous?: R
 ): {
   result: R;
   changed: boolean;
 } => {
   const result = {} as R;
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     for (const breakpoint of breakpoints) {
       result[`b${breakpoint}` as keyof R] = 0 as R[keyof R];
     }
@@ -23,8 +23,7 @@ const createBreakpoints = <
   const innerAgainst = against || window.innerWidth;
   let flag = false;
   for (const breakpoint of breakpoints) {
-    const current =
-      breakpoint === innerAgainst ? 0 : breakpoint > innerAgainst ? -1 : 1;
+    const current = breakpoint === innerAgainst ? 0 : breakpoint > innerAgainst ? -1 : 1;
     if (previous && !flag) {
       if (previous[`b${breakpoint}` as keyof R] !== current) {
         flag = true;
@@ -44,21 +43,17 @@ const createBreakpoints = <
  * */
 export const useBreakpoints = <T extends number>(
   breakpoints: T[] | readonly T[],
-  against?: number,
+  against?: number
 ) => {
   const [result, setResult] = useState<{ [K in `b${T}`]: -1 | 0 | 1 }>(
-    createBreakpoints(breakpoints, against).result,
+    createBreakpoints(breakpoints, against).result
   );
 
   useLayoutEffect(() => {
     if (typeof window !== undefined) {
-      window.addEventListener("resize", () => {
+      window.addEventListener('resize', () => {
         setResult((prev) => {
-          const { result, changed } = createBreakpoints(
-            breakpoints,
-            against,
-            prev,
-          );
+          const { result, changed } = createBreakpoints(breakpoints, against, prev);
           if (changed) {
             return result;
           }

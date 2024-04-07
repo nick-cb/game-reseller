@@ -34,9 +34,10 @@ export async function HeroCarousel({ className = '' }: PropsWithChildren<HeroCar
           </>
         }
       >
-        {listGame.map((item) => (
+        {listGame.map((item, index) => (
           <ScrollItem
             key={item.ID}
+            index={index}
             className={
               'main-item relative snap-start ' +
               'flex flex-shrink-0 overflow-hidden rounded-xl ' +

@@ -25,7 +25,7 @@ export type OmitSystemId<T extends { system_id: number }> = Omit<
   "system_id"
 >;
 
-type FBySlug = RowDataPacket &
+export type FBySlug = RowDataPacket &
   Game & {
     images: OmitGameId<GameImages>[];
     videos: OmitGameId<FVideoFullInfo>[];

@@ -169,12 +169,12 @@ export async function CheckoutView(props: CheckoutViewProps) {
                           ' snap-x snap-mandatory '
                         }
                       >
-                        <ScrollItem className={'stripe-card w-full shrink-0 snap-center'}>
+                        <ScrollItem index={0} className={'stripe-card w-full shrink-0 snap-center'}>
                           <StripeCheckoutForm amount={amount} />
                           <hr className="my-2 border-default" />
                           <SavePayment id="card" />
                         </ScrollItem>
-                        <ScrollItem className="w-full shrink-0 snap-center">
+                        <ScrollItem index={1} className="w-full shrink-0 snap-center">
                           <p className="text-[14.88px]">
                             You will be directed to PayPal to authorize your payment method, then
                             you will be returned to Penguin Games to complete this purchase.

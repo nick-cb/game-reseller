@@ -201,7 +201,7 @@ export function VideoProgress() {
 }
 
 export function FullScreenButton(props: JSX.IntrinsicElements['button']) {
-  const { video, fullscreenElement } = useVideo({ events: ['loadedmetadata'] });
+  const { video, fullscreenElement } = useVideo({ events: ['loadedmetadata', 'fullscreenchange'] });
   function click(event: React.MouseEvent<HTMLButtonElement>) {
     if (fullscreenElement) {
       document.exitFullscreen();

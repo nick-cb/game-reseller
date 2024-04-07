@@ -34,19 +34,20 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
           <NextPrevControls />
           <IntersectionObserverRoot>
             <ul className="scrollbar-hidden flex snap-x snap-mandatory overflow-scroll">
-              {videos.map((video) => {
+              {videos.map((video, index) => {
                 return (
                   <VideoContainer key={video.ID}>
                     <VideoScrollItem
+                      index={index}
                       autoScrollInterval={5000}
                       className="w-full shrink-0 snap-start overflow-hidden rounded"
                     >
-                      <Video poster={video.thumbnail}>
-                        {getVideoSources(video).map((variant) => {
-                          return <source key={variant.ID} src={variant.url} />;
-                        })}
-                      </Video>
-                      <div className="relative">
+                      <div className='relative'>
+                        <Video poster={video.thumbnail} autoPlay>
+                          {getVideoSources(video).map((variant) => {
+                            return <source key={variant.ID} src={variant.url} />;
+                          })}
+                        </Video>
                         <AudioContainer>
                           <VideoAudio>
                             {getAudioSourcesFromVideo(videos[0]).map((variant) => {
@@ -60,8 +61,9 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                   </VideoContainer>
                 );
               })}
-              {images.map((img) => (
+              {images.map((img, index) => (
                 <ScrollItem
+                  index={index + videos.length}
                   key={img.ID}
                   autoScrollInterval={5000}
                   className="w-full shrink-0 snap-start overflow-hidden rounded"

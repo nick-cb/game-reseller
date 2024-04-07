@@ -60,10 +60,11 @@ export function CriticRating({ game }: CriticRatingProps) {
       <IntersectionObserverContainer>
         <IntersectionObserverRoot>
           <ScrollContainer className="scrollbar-hidden flex snap-x snap-mandatory gap-8 overflow-x-scroll">
-            {game.reviews.map((review) => {
+            {game.reviews.map((review, index) => {
               return (
                 <ScrollItem
                   key={review.ID}
+                  index={index}
                   className="w-4/5 flex-shrink-0 snap-start rounded-md bg-paper p-4 sm:w-[calc(100%/2-16px)] sm:odd:snap-start"
                 >
                   <p>{review.outlet}</p>

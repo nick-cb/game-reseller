@@ -19,7 +19,7 @@ type CarouselProps = {
 /**
  * @params name: Object
  * */
-async function Carousel({ name }: CarouselProps) {
+async function CategoryRow({ name }: CarouselProps) {
   const { data } = await getCollectionByKey2([name]);
   const collection = data[0] || [];
 
@@ -48,8 +48,8 @@ async function Carousel({ name }: CarouselProps) {
             className="scrollbar-hidden flex snap-x snap-mandatory grid-cols-10 gap-4 overflow-scroll"
           >
             {/* <div style={{ inlineSize: '208px' }} className="shrink-0 xs-right-pad:hidden" /> */}
-            {collection.list_game.map((game) => (
-              <ScrollItem>
+            {collection.list_game.map((game, index) => (
+              <ScrollItem index={index}>
                 <PortraitGameCard
                   key={game.ID}
                   game={{ ...game, images: groupImages(game.images) }}
@@ -75,4 +75,4 @@ async function Carousel({ name }: CarouselProps) {
   );
 }
 
-export default Carousel;
+export default CategoryRow;

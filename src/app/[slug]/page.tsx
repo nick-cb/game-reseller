@@ -24,6 +24,8 @@ import { CriticRating } from '@/components/game/CriticRating';
 import { Polls } from '@/components/game/Polls';
 import { AvgRating } from '@/components/game/AvgRating';
 import { DescriptionAndFeature } from '@/components/game/DescriptionAndFeature';
+import { InfoLineItems } from '@/components/game/game-item-carousel/InfoLineItems';
+import { FullDescription } from '@/components/game/game-item-carousel/FullDescription';
 
 function groupLandscape(images: OmitGameId<GameImages>[]) {
   const carousel: OmitGameId<GameImages>[] = [];
@@ -31,11 +33,9 @@ function groupLandscape(images: OmitGameId<GameImages>[]) {
 
   for (const image of images) {
     const type = image.type.toLowerCase();
-    if (
-      (type.includes('wide') || type.includes('carousel') || type.includes('feature')) &&
-      !type.includes('video') &&
-      !image.row
-    ) {
+    const isLandscapeLike =
+      type.includes('wide') || type.includes('carousel') || type.includes('feature');
+    if (isLandscapeLike && !type.includes('video') && !image.row) {
       carousel.push(image);
       continue;
     }
@@ -84,7 +84,7 @@ const page = async ({ params }: { params: any }) => {
       ) : null}
       <div className="grid grid-cols-3 grid-rows-[min-content_auto] gap-4 md:grid-cols-5 md:gap-8 lg:gap-16 xl:grid-cols-6">
         <section className="col-span-full col-start-1 row-start-1 row-end-2 md:[grid-column:-3/1]">
-          {/* <GameItemCarousel videos={game.videos} images={carouselImages} /> */}
+          <GameItemCarousel videos={game.videos} images={carouselImages} />
         </section>
         <section
           className="col-span-3 
@@ -111,41 +111,7 @@ const page = async ({ params }: { params: any }) => {
               <BuyNowButton game={game} />
               <AddToCartButton game={game} />
             </div>
-            <div className="text-sm text-white">
-              <div className="flex items-center justify-between border-b border-white/20 py-2">
-                <p className="text-white/60">Developer</p>
-                <p className="text-white_primary">{game.developer}</p>
-              </div>
-              <div className="flex items-center justify-between border-b border-white/20 py-2">
-                <p className="text-white/60">Publisher</p>
-                <p className="text-white_primary">{game.publisher}</p>
-              </div>
-              <div className="flex items-center justify-between border-b border-white/20 py-2">
-                <p className="text-white/60">Release Date</p>
-                <p className="text-white_primary">
-                  {new Date(game.release_date).toLocaleDateString()}
-                </p>
-              </div>
-              <div className="flex items-center justify-between border-b border-white/20 py-2">
-                <p className="text-white/60">Platform</p>
-                <div className="flex items-center gap-2 text-white_primary">
-                  {game.systems.some((s) => s.os?.toLowerCase()?.includes('window')) ? (
-                    <div title="Windows">
-                      <svg width={24} height={24} fill="white">
-                        <use xlinkHref="/svg/sprites/actions.svg#window" />
-                      </svg>
-                    </div>
-                  ) : null}
-                  {game.systems.some((s) => s.os?.toLowerCase()?.includes('mac')) ? (
-                    <div title="Mac os">
-                      <svg width={24} height={24} fill="white">
-                        <use width={24} height={24} xlinkHref="/svg/sprites/actions.svg#mac" />
-                      </svg>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
+            <InfoLineItems game={game} />
           </div>
         </section>
         <section className="col-span-full md:[grid-column:-3/1]">
@@ -153,38 +119,10 @@ const page = async ({ params }: { params: any }) => {
         </section>
         {game.long_description ? (
           <section className="col-span-full md:[grid-column:-3/1]">
-            <ExpandableDescription>
-              <article className="text-sm text-white_primary/60 transition-colors hover:text-white_primary/80">
-                <ReactMarkdown
-                  components={{ p: 'div', h1: 'h2' }}
-                  className="description-container"
-                  remarkPlugins={[remarkBreaks]}
-                  rehypePlugins={[rehypeRaw]}
-                >
-                  {game.long_description}
-                </ReactMarkdown>
-                {longDescriptionImages.length > 0 ? (
-                  <div>
-                    {longDescriptionImages.map((row, index) => {
-                      return (
-                        <div className="mb-4 flex gap-4" key={index}>
-                          {row.map((img) => {
-                            return (
-                              <div
-                                key={img.ID}
-                                className="relative aspect-video w-full overflow-hidden rounded"
-                              >
-                                <Image src={img.url} fill alt={img.alt || ''} />
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </article>
-            </ExpandableDescription>
+            <FullDescription
+              longDescription={game.long_description}
+              longDescriptionImages={longDescriptionImages}
+            />
           </section>
         ) : null}
         {editions.length > 0 ? (

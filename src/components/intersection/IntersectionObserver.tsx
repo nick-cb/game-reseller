@@ -130,7 +130,6 @@ export function IntersectionObserverRoot(props: React.PropsWithChildren) {
   if (isValidElement(children)) {
     if ('ref' in children) {
       if (children.ref) {
-        console.log({ store });
         store.updateContainerRef(children.ref as React.RefObject<HTMLElement>);
       }
       const ref = (children.ref as React.RefObject<HTMLElement>) || containerRef;

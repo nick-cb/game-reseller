@@ -10,8 +10,7 @@ import {
 } from '@/components/intersection/IntersectionObserver';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
 import { GameImages } from '@/database/models';
-import { ShowOnBreakpoints } from '@/components/HideOnBreakpoints';
-import { breakpoints, isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
+import { isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
 import { useScroll, ScrollItem } from '@/components/scroll2/ScrollPrimitive';
 
 export type NextPrevControlsProps = {
@@ -124,7 +123,6 @@ export type IndicatorListProps = {
 export function IndicatorList(props: IndicatorListProps) {
   const { videos, images } = props;
   const { entries, scrollToIndex } = useScroll();
-  const activeList = entries.map((entry) => entry.isIntersecting);
 
   return (
     <IntersectionObserverContainer>
@@ -137,29 +135,27 @@ export function IndicatorList(props: IndicatorListProps) {
               'px-2 py-[1px] [-ms-overflw-style:none] [scrollbar-width:none]'
             )}
           >
-            {/* <ShowOnBreakpoints from={breakpoints}> */}
             {videos.map((vid, index) => {
               return (
-                <ScrollItem key={vid.ID}>
+                <ScrollItem index={index} key={vid.ID} className="hidden sm:block">
                   <Indicator
                     key={'video-' + vid.ID}
                     index={index}
                     item={vid}
-                    isActive={activeList[index]}
+                    isActive={entries[index]?.isIntersecting}
                     onClick={scrollToIndex}
                   />
                 </ScrollItem>
               );
             })}
-            {/* </ShowOnBreakpoints> */}
             {images.map((img, index) => {
               return (
-                <ScrollItem key={img.ID}>
+                <ScrollItem index={videos.length + index} key={img.ID}>
                   <Indicator
                     key={'img-' + img.ID}
                     item={img}
                     index={videos.length + index}
-                    isActive={activeList[videos.length + index]}
+                    isActive={entries[videos.length + index]?.isIntersecting}
                     onClick={scrollToIndex}
                   />
                 </ScrollItem>

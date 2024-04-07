@@ -1,19 +1,15 @@
-"use client";
+'use client';
 
-import { usePathname, useSearchParams } from "next/navigation";
-import { PropsWithChildren, useMemo } from "react";
+import { usePathname, useSearchParams } from 'next/navigation';
+import { PropsWithChildren, useMemo } from 'react';
 
-export function HideOnRoute({
-  children,
-  matches,
-  exact,
-}: PropsWithChildren<{
+type HideOnRouteProps = {
   exact?: boolean;
   matches: {
     pathname: string;
     has?: [
       {
-        type: "query";
+        type: 'query';
         key: string;
         value: string;
       },
@@ -21,7 +17,8 @@ export function HideOnRoute({
     exact?: boolean;
     regex?: boolean;
   }[];
-}>) {
+};
+export function HideOnRoute({ children, matches, exact }: PropsWithChildren<HideOnRouteProps>) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isMatch = useMemo(() => {
@@ -31,18 +28,10 @@ export function HideOnRoute({
     if (exact) {
       return matches?.every((match) => {
         const hasQuery = match.has
-          ? match.has.map(
-              (query) => searchParams.get(query.key) === query.value,
-            )
+          ? match.has.map((query) => searchParams.get(query.key) === query.value)
           : true;
-        const against = match.regex
-          ? new RegExp(match.pathname)
-          : match.pathname;
-        return (
-          (match.exact
-            ? match.pathname === pathname
-            : pathname.match(against)) && hasQuery
-        );
+        const against = match.regex ? new RegExp(match.pathname) : match.pathname;
+        return (match.exact ? match.pathname === pathname : pathname.match(against)) && hasQuery;
       });
     }
     return matches?.some((match) => {
@@ -50,11 +39,7 @@ export function HideOnRoute({
         ? match.has.map((query) => searchParams.get(query.key) === query.value)
         : true;
       const against = match.regex ? new RegExp(match.pathname) : match.pathname;
-      return (
-        (match.exact
-          ? match.pathname === pathname
-          : pathname.match(against)) && hasQuery
-      );
+      return (match.exact ? match.pathname === pathname : pathname.match(against)) && hasQuery;
     });
   }, [pathname, exact, matches]);
 

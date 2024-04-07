@@ -14,6 +14,7 @@ class Store {
     'timeupdate',
     'loadedmetadata',
     'seeking',
+    'fullscreenchange',
   ] as const;
   videoRef: React.RefObject<HTMLVideoElement>;
   data = {
@@ -23,6 +24,7 @@ class Store {
     volume: 1,
     currentTime: 0,
     duration: 0,
+    autoPlay: false,
     video: undefined as HTMLVideoElement | undefined,
     fullscreenElement: null as Element | null,
   };
@@ -52,7 +54,8 @@ class Store {
         volume: video?.volume,
         currentTime: video?.currentTime,
         duration: video?.duration,
-        video,
+        autoPlay: video?.autoplay,
+        video: video,
         fullscreenElement: document.fullscreenElement,
       };
       for (const listener of this.listeners) {
@@ -66,6 +69,7 @@ class Store {
       for (const event of Store.events) {
         video.addEventListener(event, notify);
       }
+      video.parentElement?.addEventListener('fullscreenchange', notify);
     }
     this.listeners.add(listener);
     return () => {
