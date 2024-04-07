@@ -78,6 +78,7 @@ export const placeOrder = async (params: PlaceOrderParams) => {
   });
 
   const response = await createOrder({
+    // @ts-ignore
     order: {
       payment_method: 'card',
       payment_service: 'stripe',

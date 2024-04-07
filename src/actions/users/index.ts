@@ -245,7 +245,7 @@ export async function getUserFromCookie() {
   if (!cookie) {
     return null;
   }
-  const payload = decodeToken(cookie.value);
+  const payload = await decodeToken(cookie.value);
   if (typeof payload === "string") {
     return null;
   }

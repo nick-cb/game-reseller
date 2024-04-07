@@ -8,7 +8,7 @@ import { decodeToken, findUserById } from "@/actions/users";
 export async function AuthControls() {
   const refreshToken = cookies().get("refresh_token");
   if (refreshToken?.value) {
-    const payload = decodeToken(refreshToken?.value);
+    const payload = await decodeToken(refreshToken?.value);
     if (typeof payload !== "string") {
       const { data: user } = await findUserById({ id: payload.userId });
       if (user) {

@@ -17,7 +17,7 @@ class Store {
     event: undefined as undefined | AudioEvents[number],
     playing: false,
     muted: false,
-    volume: 1,
+    volume: 0,
     currentTime: 0,
     duration: 0,
     audio: undefined as HTMLAudioElement | undefined,

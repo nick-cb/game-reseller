@@ -3,6 +3,7 @@
 import React, { MouseEvent, useEffect, useRef } from 'react';
 import { useIntersectionObserver } from '../intersection/IntersectionObserver';
 import { useVideo } from '../media/Video';
+import { useAudio } from '../media/Audio';
 
 export const ScrollContainer = React.forwardRef<HTMLUListElement, JSX.IntrinsicElements['ul']>(
   function (props, ref) {
@@ -42,9 +43,10 @@ export function ScrollItem(props: ScrollItemProps) {
 }
 export function VideoScrollItem(props: ScrollItemProps) {
   const { index, autoScrollInterval, ...rest } = props;
-  const { playing, currentTime, duration, autoPlay } = useVideo({
+  const { video, playing, currentTime, duration, autoPlay } = useVideo({
     events: ['loadedmetadata', 'play', 'pause'],
   });
+  const { audio } = useAudio({ events: ['loadedmetadata'] });
   const { entries, observer, scrollToNextOffView } = useScroll();
   const isActive = entries[index]?.isIntersecting;
   const ref = useRef<HTMLLIElement>(null);
@@ -76,6 +78,13 @@ export function VideoScrollItem(props: ScrollItemProps) {
     };
   }, [playing, autoScrollInterval, isActive]);
 
+  useEffect(() => {
+    if (!isActive) {
+      video?.pause();
+      audio?.pause();
+    }
+  }, [isActive]);
+
   return <li ref={ref} {...rest} />;
 }
 
@@ -98,8 +107,9 @@ export function useScroll() {
     if (!observer?.root) {
       return;
     }
-    let nextSibling = entries[lastVisibleIndex]?.target.nextElementSibling ?? observer.root.firstChild;
-    console.log({nextSibling});
+    let nextSibling =
+      entries[lastVisibleIndex]?.target.nextElementSibling ?? observer.root.firstChild;
+    console.log({ nextSibling });
     if (!cycle && lastVisibleIndex === entries.length - 1) {
       nextSibling = null;
     }

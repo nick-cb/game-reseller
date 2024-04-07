@@ -104,7 +104,7 @@ type IntersectionObserverCtxProps = {
 };
 export const IntersectionObserverCtx = createContext<IntersectionObserverCtxProps>({
   containerRef: { current: null },
-  store: new Store({ current: null }),
+  store: null as unknown as Store,
 });
 type IntersectionObserverContainerProps = {
   options?: Exclude<IntersectionObserverInit, 'root'>;
