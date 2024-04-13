@@ -1,5 +1,5 @@
 import { FBySlug } from '@/actions/game/select';
-import { Game } from '@/database/models';
+import { Game } from '@/database/models/model';
 
 type InfoLineItemsProps = {
   game: FBySlug;

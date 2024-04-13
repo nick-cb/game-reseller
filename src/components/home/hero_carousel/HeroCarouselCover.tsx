@@ -1,4 +1,4 @@
-import { Game, GameImageGroup } from '@/database/models';
+import { Game, GameImageGroup } from '@/database/models/model';
 import { ButtonGroup } from './ButtonGroup';
 import { Description } from './Description';
 import Image from 'next/image';

@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState } from "react";
 import "./dialog.css";
 import Link from "next/link";
 import Image from "next/image";
-import { Users } from "@/database/models";
+import { Users } from "@/database/models/model";
 import { useClickOutsideCallback } from "@/hooks/useClickOutside";
 import { logout } from "@/actions/users";
 

@@ -91,7 +91,7 @@ export default async function OrderSuccessPage({
           <p className="text-white_primary/60">
             You can find your order{" "}
             <Link
-              href={"/account/orders/" + id}
+              href={"/"}
               className="underline hover:text-white_primary transition-colors"
             >
               here

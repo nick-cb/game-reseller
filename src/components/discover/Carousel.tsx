@@ -2,7 +2,6 @@ import React from 'react';
 import PortraitGameCard from '../PortraitGameCard';
 import Link from 'next/link';
 import { CarouselButton } from './Carouse.client';
-import { getCollectionByKey2 } from '@/actions/collections';
 import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
@@ -11,6 +10,7 @@ import { groupImages } from '@/utils/data';
 import { Icon } from '../Icon';
 import { mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
+import HomeActions from '@/actions2/home-actions';
 
 type CarouselProps = {
   name: string;
@@ -20,7 +20,7 @@ type CarouselProps = {
  * @params name: Object
  * */
 async function CategoryRow({ name }: CarouselProps) {
-  const { data } = await getCollectionByKey2([name]);
+  const { data } = await HomeActions.category.getCategoryRow({ names: [name] });
   const collection = data[0] || [];
 
   return (
@@ -48,8 +48,8 @@ async function CategoryRow({ name }: CarouselProps) {
             className="scrollbar-hidden flex snap-x snap-mandatory grid-cols-10 gap-4 overflow-scroll"
           >
             {/* <div style={{ inlineSize: '208px' }} className="shrink-0 xs-right-pad:hidden" /> */}
-            {collection.list_game.map((game, index) => (
-              <ScrollItem index={index}>
+            {collection.game_list.map((game, index) => (
+              <ScrollItem key={game.ID} index={index}>
                 <PortraitGameCard
                   key={game.ID}
                   game={{ ...game, images: groupImages(game.images) }}

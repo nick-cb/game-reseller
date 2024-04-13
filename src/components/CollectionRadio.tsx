@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { FilterContext } from "./FilterContext";
-import { Collections } from "@/database/models";
+import { Collections } from "@/database/models/model";
 import { usePathname, useRouter } from "next/navigation";
 
 const RadioContext = createContext<{

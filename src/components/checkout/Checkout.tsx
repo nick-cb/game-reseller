@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { stripe } from '@/utils';
 import { deleteCart } from '@/actions/cart';
-import { Game, GameImageGroup, Orders } from '@/database/models';
+import { Game, GameImageGroup, Orders } from '@/database/models/model';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { MobileGameList } from '@/components/checkout/MobileGameList';
 import { PaymentItem } from '@/components/checkout/SavedCardItem';

@@ -1,7 +1,7 @@
 "use client";
 
 import { removeItemFromCart } from "@/actions/cart";
-import { Carts, Game } from "@/database/models";
+import { Carts, Game } from "@/database/models/model";
 import { useContext, useTransition } from "react";
 import { SnackContext } from "../SnackContext";
 import { useRouter } from "next/navigation";

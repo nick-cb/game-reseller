@@ -1,6 +1,3 @@
-import { RowDataPacket } from "mysql2";
-import { connectDB } from "..";
-
 export type Game = {
   ID: number;
   name: string;
@@ -20,10 +17,10 @@ export type Game = {
   critic_rec: string | null;
   critic_pct: number | null;
 } & (
-  | { type: "base_game"; base_game_id: null, base_game_slug: null }
-  | { type: "add_on" | "dlc"; base_game_id: number, base_game_slug: string }
+  | { type: 'base_game'; base_game_id: null; base_game_slug: null }
+  | { type: 'add_on' | 'dlc'; base_game_id: number; base_game_slug: string }
 );
-export type CriticAvg = "weak" | "fair" | "strong" | "mighty";
+export type CriticAvg = 'weak' | 'fair' | 'strong' | 'mighty';
 
 export type GameImageGroup = {
   portrait: GameImages;
@@ -38,7 +35,7 @@ export type GameImages = {
   alt: string;
   game_id: number;
   row: number;
-  colors: {palette: number[][], highestSat: number[]}
+  colors: { palette: number[][]; highestSat: number[] };
 };
 
 export type Polls = {
@@ -149,22 +146,15 @@ export type Users = {
 
 type OrderItem = Pick<
   Game,
-  | "ID"
-  | "name"
-  | "type"
-  | "developer"
-  | "publisher"
-  | "sale_price"
-  | "slug"
-  | "base_game_id"
+  'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug' | 'base_game_id'
 > & {
-  images: Pick<GameImageGroup, "portrait">;
+  images: Pick<GameImageGroup, 'portrait'>;
 } & {
   discounts: any[];
   discount_price: number;
 };
 
-export type Orders = Omit<CreateOrderPayload, "ID" | "items"> & {
+export type Orders = Omit<CreateOrderPayload, 'ID' | 'items'> & {
   items: OrderItem[];
 };
 
@@ -172,7 +162,7 @@ export type CreateOrderPayload = {
   payment_intent?: string;
   amount: number;
   payment_method: string;
-  payment_service: "stripe" | "paypal";
+  payment_service: 'stripe' | 'paypal';
   created_at: string;
   items: string;
   card_number?: string;
@@ -181,13 +171,13 @@ export type CreateOrderPayload = {
   succeeded_at?: string;
   canceled_at?: string;
   status:
-    | "canceled"
-    | "processing"
-    | "requires_capture"
-    | "requires_confirmation"
-    | "requires_payment_method"
-    | "succeeded"
-    | "pending";
+    | 'canceled'
+    | 'processing'
+    | 'requires_capture'
+    | 'requires_confirmation'
+    | 'requires_payment_method'
+    | 'succeeded'
+    | 'pending';
 };
 
 export type Carts = {
@@ -204,6 +194,6 @@ export type CartDetails = {
 export type CartFull = Carts & {
   game_list: (Pick<
     Game,
-    "ID" | "name" | "type" | "developer" | "publisher" | "sale_price" | "slug"
+    'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug'
   > & { images: GameImages[]; checked: boolean })[];
 };

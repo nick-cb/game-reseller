@@ -13,7 +13,9 @@ export default function Home() {
         <CategoryRow name={'top_sale'} />
       </section>
       <hr className="my-4 border-default" />
-      <Feature />
+      <section>
+        <Feature />
+      </section>
       <hr className="my-6 border-default" />
       <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex">
         <Suspense>

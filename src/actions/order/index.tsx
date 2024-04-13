@@ -1,6 +1,6 @@
 "use server";
 
-import { CreateOrderPayload, Orders } from "@/database/models";
+import { CreateOrderPayload, Orders } from "@/database/models/model";
 import { insertSingle, querySingle, sql } from "@/database";
 
 export async function createOrder({ order }: { order: CreateOrderPayload }) {

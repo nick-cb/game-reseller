@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
-import { GameImages } from '@/database/models';
+import { GameImages } from '@/database/models/model';
 import { MediaControls, Video, VideoAudio } from '@/components/media/MediaPrimitive';
 import { VideoContainer } from '@/components/media/Video';
 import { AudioContainer } from '@/components/media/Audio';
@@ -28,56 +28,54 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
   const shouldShowIndicator = videos.length + images.length > 1;
 
   return (
-    <div>
-      <IntersectionObserverContainer>
-        <div className="group relative overflow-hidden">
-          <NextPrevControls />
-          <IntersectionObserverRoot>
-            <ul className="scrollbar-hidden flex snap-x snap-mandatory overflow-scroll">
-              {videos.map((video, index) => {
-                return (
-                  <VideoContainer key={video.ID}>
+    <IntersectionObserverContainer>
+      <div className="group relative overflow-hidden">
+        {shouldShowIndicator ? <NextPrevControls /> : null}
+        <IntersectionObserverRoot>
+          <ul className="scrollbar-hidden flex snap-x snap-mandatory overflow-scroll">
+            {videos.map((video, index) => {
+              return (
+                <VideoContainer key={video.ID}>
+                  <AudioContainer>
                     <VideoScrollItem
                       index={index}
                       autoScrollInterval={5000}
                       className="w-full shrink-0 snap-start overflow-hidden rounded"
                     >
-                      <div className='relative'>
+                      <div className="relative">
                         <Video poster={video.thumbnail} autoPlay>
                           {getVideoSources(video).map((variant) => {
                             return <source key={variant.ID} src={variant.url} />;
                           })}
                         </Video>
-                        <AudioContainer>
-                          <VideoAudio>
-                            {getAudioSourcesFromVideo(videos[0]).map((variant) => {
-                              return <source key={variant?.ID} src={variant?.url} />;
-                            })}
-                          </VideoAudio>
-                          <MediaControls />
-                        </AudioContainer>
+                        <VideoAudio>
+                          {getAudioSourcesFromVideo(videos[0]).map((variant) => {
+                            return <source key={variant?.ID} src={variant?.url} />;
+                          })}
+                        </VideoAudio>
+                        <MediaControls />
                       </div>
                     </VideoScrollItem>
-                  </VideoContainer>
-                );
-              })}
-              {images.map((img, index) => (
-                <ScrollItem
-                  index={index + videos.length}
-                  key={img.ID}
-                  autoScrollInterval={5000}
-                  className="w-full shrink-0 snap-start overflow-hidden rounded"
-                >
-                  <div className="relative aspect-video w-full">
-                    <Image src={img.url} alt={img.type} fill />
-                  </div>
-                </ScrollItem>
-              ))}
-            </ul>
-          </IntersectionObserverRoot>
-        </div>
-        {shouldShowIndicator ? <IndicatorList videos={videos} images={images} /> : null}
-      </IntersectionObserverContainer>
-    </div>
+                  </AudioContainer>
+                </VideoContainer>
+              );
+            })}
+            {images.map((img, index) => (
+              <ScrollItem
+                index={index + videos.length}
+                key={img.ID}
+                autoScrollInterval={5000}
+                className="w-full shrink-0 snap-start overflow-hidden rounded"
+              >
+                <div className="relative aspect-video w-full">
+                  <Image src={img.url} alt={img.type} fill />
+                </div>
+              </ScrollItem>
+            ))}
+          </ul>
+        </IntersectionObserverRoot>
+      </div>
+      {shouldShowIndicator ? <IndicatorList videos={videos} images={images} /> : null}
+    </IntersectionObserverContainer>
   );
 }

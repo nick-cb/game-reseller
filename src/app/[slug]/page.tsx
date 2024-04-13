@@ -1,17 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import ExpandableDescription from '@/components/ExpandableDescription';
 import GameItemCarousel from '@/components/game/game-item-carousel/GameItemCarousel';
-import rehypeRaw from 'rehype-raw';
 import {
   OmitGameId,
   countGameAddonsById,
   findGameBySlug,
   findMappingById,
 } from '@/actions/game/select';
-import { GameImages } from '@/database/models';
+import { GameImages } from '@/database/models/model';
 import GameCard from '@/components/game/GameCard';
 import Link from 'next/link';
 import { currencyFormatter, pascalCase } from '@/utils';
@@ -56,7 +52,6 @@ const page = async ({ params }: { params: any }) => {
   if (!game) {
     return <div>Game not found</div>;
   }
-  const { data: addOnCount } = await countGameAddonsById(game.ID);
 
   const { data: mappings } = await findMappingById(
     game.type === 'base_game' ? game.ID : game.base_game_id
@@ -65,6 +60,7 @@ const page = async ({ params }: { params: any }) => {
   const dlc = mappings.filter((g) => g.type.includes('dlc'));
   const addOns = mappings.filter((g) => g.type.includes('add_on'));
   const dlcAndAddons = dlc.concat(addOns);
+  const addOnCount = editions.length + dlcAndAddons.length;
 
   const { carousel: carouselImages, longDescription: longDescriptionImages } = groupLandscape(
     game.images

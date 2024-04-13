@@ -1,5 +1,5 @@
 import { query, sql } from "@/database";
-import { Game, GameImages } from "@/database/models";
+import { Game, GameImages } from "@/database/models/model";
 import { OmitGameId } from "@/actions/game/select";
 import { groupImages } from "@/utils/data";
 import { NextResponse } from "next/server";

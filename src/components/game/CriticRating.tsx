@@ -1,4 +1,4 @@
-import Reviews, { CriticAvg, Game } from '@/database/models';
+import Reviews, { CriticAvg, Game } from '@/database/models/model';
 import { ScrollContainer, ScrollItem } from '../scroll2/ScrollPrimitive';
 import { OmitGameId } from '@/actions/game/select';
 import {

@@ -1,4 +1,4 @@
-import { Game, GameImageGroup } from "@/database/models";
+import { Game, GameImageGroup } from "@/database/models/model";
 import { currencyFormatter } from "@/utils";
 import Image from "next/image";
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { insertSingle, query, querySingle, sql } from "@/database";
-import { CartFull, Carts, Game, Users } from "@/database/models";
+import { CartFull, Carts, Game, Users } from "@/database/models/model";
 import { cookies } from "next/headers";
 import { decodeToken, getUserFromCookie } from "@/actions/users";
 import jwt from "jsonwebtoken";

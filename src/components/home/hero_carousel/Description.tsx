@@ -1,4 +1,4 @@
-import { Game, GameImageGroup } from "@/database/models";
+import { Game, GameImageGroup } from "@/database/models/model";
 import React from "react";
 
 export type HeroCarouselGame = Pick<

@@ -10,7 +10,7 @@ import { CartContext } from "@/components/cart/CartContext";
 import { CartTotal } from "@/components/cart/CartTotal";
 import { CheckoutModal } from "@/components/checkout/CheckoutForm";
 import { CheckoutView } from "@/components/checkout/Checkout";
-import { Game } from "@/database/models";
+import { Game } from "@/database/models/model";
 import { CheckoutButton } from "@/components/cart/CheckoutButton";
 import { Suspense } from "react";
 import Link from "next/link";

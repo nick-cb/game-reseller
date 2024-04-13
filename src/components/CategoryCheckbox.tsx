@@ -1,17 +1,15 @@
-"use client";
+'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import React, { useContext, useMemo, useState } from "react";
-import { FilterContext } from "./FilterContext";
-import { Tags } from "@/database/models";
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useContext, useMemo, useState } from 'react';
+import { FilterContext } from './FilterContext';
+import { Tags } from '@/database/models/model';
 
-export const CategoryCheckbox = ({
-  tag,
-  ...props
-}: React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
-> & { tag: Tags }) => {
+type CategoryCheckboxProps = JSX.IntrinsicElements['input'] & {
+  tag: Tags;
+};
+export const CategoryCheckbox = (props: CategoryCheckboxProps) => {
+  const { tag, ...rest } = props;
   const { tag_key } = tag;
   const router = useRouter();
   const pathname = usePathname();
@@ -48,14 +46,15 @@ export const CategoryCheckbox = ({
             categories.push(tag_key);
           }
           if (categories.length > 0) {
-            searchParams?.set("categories", categories.join(","));
+            searchParams?.set('categories', categories.join(','));
           } else {
-            searchParams?.delete("categories");
+            searchParams?.delete('categories');
           }
-          searchParams?.delete("page");
-          router.push(`${pathname}${searchParams ? "?" + searchParams : ""}`);
+          searchParams?.delete('page');
+          // @ts-ignore
+          router.push(`${pathname}${searchParams ? '?' + searchParams : ''}`);
         }}
-        {...props}
+        {...rest}
       />
     </>
   );

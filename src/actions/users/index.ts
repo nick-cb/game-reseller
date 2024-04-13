@@ -18,7 +18,7 @@ import {
 import { bucket } from "@/firebase";
 import { isUndefined, uuidv4 } from "@/utils";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
-import { Users } from "@/database/models";
+import { Users } from "@/database/models/model";
 
 export const generateToken = async (payload: Object) => {
   const secret = process.env.JWT_SECRET;

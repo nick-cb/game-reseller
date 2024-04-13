@@ -11,7 +11,7 @@ import Reviews, {
   VideoRecipes,
   VideoVariants,
   Videos,
-} from "@/database/models";
+} from "@/database/models/model";
 import { Connection, RowDataPacket } from "mysql2/promise";
 
 export type OmitGameId<T extends { game_id: number }> = Omit<T, "game_id">;

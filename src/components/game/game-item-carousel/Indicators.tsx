@@ -9,7 +9,7 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
-import { GameImages } from '@/database/models';
+import { GameImages } from '@/database/models/model';
 import { isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
 import { useScroll, ScrollItem } from '@/components/scroll2/ScrollPrimitive';
 

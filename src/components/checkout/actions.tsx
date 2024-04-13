@@ -3,7 +3,7 @@
 import { createOrder } from '@/actions/order';
 import { serverFind, serverMap } from '@/actions/payments/paypal';
 import { findUserById, updateUserById } from '@/actions/users';
-import { CreateOrderPayload, Users } from '@/database/models';
+import { CreateOrderPayload, Users } from '@/database/models/model';
 import { stripe } from '@/utils';
 import dayjs from 'dayjs';
 import Stripe from 'stripe';

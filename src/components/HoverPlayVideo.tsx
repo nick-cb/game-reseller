@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Game, GameImageGroup } from '@/database/models';
+import { Game, GameImageGroup } from '@/database/models/model';
 import { FVideoFullInfo } from '@/actions/game/select';
 import { currencyFormatter } from '@/utils';
 

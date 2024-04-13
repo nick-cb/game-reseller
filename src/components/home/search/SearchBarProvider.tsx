@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { RowDataPacket } from "mysql2/index";
-import { Game, GameImageGroup } from "@/database/models";
+import { Game, GameImageGroup } from "@/database/models/model";
 import { groupImages } from "@/utils/data";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";

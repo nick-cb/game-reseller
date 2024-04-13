@@ -1,4 +1,4 @@
-import { GameImages } from "@/database/models";
+import { GameImages } from "@/database/models/model";
 import { OmitGameId } from "@/actions/game/select";
 import { LandscapeImages, PortraitImages } from "../config";
 

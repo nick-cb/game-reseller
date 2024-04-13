@@ -1,7 +1,7 @@
 "use server";
 
 import { sql, updateSingle } from "@/database";
-import { Orders } from "@/database/models";
+import { Orders } from "@/database/models/model";
 import { isUndefined } from "@/utils";
 
 export async function updateOrder(

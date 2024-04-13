@@ -1,22 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    // ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "firebasestorage.googleapis.com",
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
       },
       {
-        protocol: "https",
-        hostname: "**",
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },
   headers: async () => {
     return [
       {
-        source: "/login",
-        headers: [{ key: "type", value: "modal" }],
+        source: '/login',
+        headers: [{ key: 'type', value: 'modal' }],
       },
     ];
   },
@@ -24,37 +31,37 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: "/login",
+          source: '/login',
           has: [
             {
-              type: "query",
-              key: "type",
-              value: "modal",
+              type: 'query',
+              key: 'type',
+              value: 'modal',
             },
           ],
-          destination: "/login-modal",
+          destination: '/login-modal',
         },
         {
-          source: "/signup",
+          source: '/signup',
           has: [
             {
-              type: "query",
-              key: "type",
-              value: "modal",
+              type: 'query',
+              key: 'type',
+              value: 'modal',
             },
           ],
-          destination: "/signup-modal",
+          destination: '/signup-modal',
         },
         {
-          source: "/:slug/order",
+          source: '/:slug/order',
           has: [
             {
-              type: "query",
-              key: "type",
-              value: "modal",
+              type: 'query',
+              key: 'type',
+              value: 'modal',
             },
           ],
-          destination: "/:slug/order-modal",
+          destination: '/:slug/order-modal',
         },
       ],
     };
@@ -62,31 +69,28 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/signup",
+        source: '/signup',
         has: [
           {
-            type: "cookie",
-            key: "refresh_token",
+            type: 'cookie',
+            key: 'refresh_token',
           },
         ],
-        destination: "/",
+        destination: '/',
         permanent: true,
       },
       {
-        source: "/login",
+        source: '/login',
         has: [
           {
-            type: "cookie",
-            key: "refresh_token",
+            type: 'cookie',
+            key: 'refresh_token',
           },
         ],
-        destination: "/",
+        destination: '/',
         permanent: true,
       },
     ];
-  },
-  experimental: {
-    serverActions: true,
   },
 };
 

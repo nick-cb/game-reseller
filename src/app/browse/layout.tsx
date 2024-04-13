@@ -11,7 +11,7 @@ import {
   AccordionHeader,
 } from "@/components/Accordion";
 import { CollectionRadio, RadioGroup } from "@/components/CollectionRadio";
-import { getAllCollections } from "@/actions/collections";
+import { getAllCollections } from "@/actions/collections/collection";
 import findTagByGroupName from "@/actions/tags";
 
 const layout = async ({ children }: PropsWithChildren) => {

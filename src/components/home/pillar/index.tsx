@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Collections, Game, GameImageGroup } from "@/database/models";
+import { Collections, Game, GameImageGroup } from "@/database/models/model";
 import { FVideoFullInfo } from "@/actions/game/select";
 import { currencyFormatter } from "@/utils";
-import { getCollectionByKey } from "@/actions/collections";
+import { getCollectionByKey } from "@/actions/collections/collection";
 import React from "react";
 import { groupImages } from "@/utils/data";
 

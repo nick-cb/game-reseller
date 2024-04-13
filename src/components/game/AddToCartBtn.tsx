@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { getLoggedInStatus } from "@/actions/users";
-import { Game } from "@/database/models";
+import { Game } from "@/database/models/model";
 import { addItemToCart } from "@/actions/cart";
 import { useContext, useTransition } from "react";
 import { SnackContext } from "../SnackContext";

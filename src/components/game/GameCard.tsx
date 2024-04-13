@@ -1,5 +1,5 @@
 import { OmitGameId } from "@/actions/game/select";
-import { Game, GameImages } from "@/database/models";
+import { Game, GameImages } from "@/database/models/model";
 import { currencyFormatter } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";

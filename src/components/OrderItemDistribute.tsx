@@ -1,6 +1,6 @@
 "use client";
 
-import { Orders } from "@/database/models";
+import { Orders } from "@/database/models/model";
 import { useLayoutEffect } from "react";
 import Image from "next/image";
 import { fire } from "@/utils/confettie";

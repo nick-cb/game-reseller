@@ -1,4 +1,4 @@
-import { Tags } from '@/database/models';
+import { Tags } from '@/database/models/model';
 
 type DescriptionAndFeatureProps = {
   description: string;

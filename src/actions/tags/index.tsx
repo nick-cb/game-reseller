@@ -1,7 +1,7 @@
 "use server";
 
 import { query, sql } from "@/database";
-import { Tags } from "@/database/models";
+import { Tags } from "@/database/models/model";
 
 export default async function findTagByGroupName(groupName: string) {
   return query<Tags[]>(sql`
