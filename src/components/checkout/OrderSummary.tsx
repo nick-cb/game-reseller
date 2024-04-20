@@ -19,7 +19,7 @@ export function OrderSummary({
           return (
             <li className={"flex gap-4"}>
               <Image
-                src={game?.images.portrait?.url}
+                src={game?.images.portraits?.url}
                 alt={""}
                 width={128}
                 height={280}

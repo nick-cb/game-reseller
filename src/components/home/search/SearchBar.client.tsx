@@ -66,7 +66,7 @@ export function DesktopSearchResult({ className = '' }: { className?: string }) 
             key={item.ID}
           >
             <Image
-              src={item.images.portrait.url}
+              src={item.images.portraits[0].url}
               width={50}
               height={70}
               alt={`portrait image of ${item.name}`}

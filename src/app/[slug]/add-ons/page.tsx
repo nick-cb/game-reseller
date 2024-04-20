@@ -50,15 +50,15 @@ export default async function AddOnPage({
         <GameNav type={"add-ons"} slug={game.base_game_slug || game.slug} />
       </div>
       <div className="grid grid-cols-2 3/4sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-4 gap-y-8 ">
-        {gameList.map((game) => {
-          return (
-            <PortraitGameCard
-              key={game.ID}
-              game={game}
-              className="snap-start block"
-            />
-          );
-        })}
+        {/* {gameList.map((game) => { */}
+        {/*   return ( */}
+        {/*     <PortraitGameCard */}
+        {/*       key={game.ID} */}
+        {/*       game={game} */}
+        {/*       className="snap-start block" */}
+        {/*     /> */}
+        {/*   ); */}
+        {/* })} */}
         {total / 32 > 1 ? (
           <Pagination
             total={Math.ceil(total / 32)}

@@ -1,6 +1,7 @@
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
 import { ReactElement, JSXElementConstructor } from 'react';
 import Stripe from 'stripe';
+import util from 'util';
 
 export async function getPageContent(url: any) {
   // This is a really scrappy way to do this.
@@ -156,4 +157,8 @@ export function getAudioSourcesFromVideo(video: OmitGameId<FVideoFullInfo>) {
       const variant = variants.find(({ media_key }) => media_key === 'audio');
       return variant;
     });
+}
+
+export function logDebug(value: any) {
+  console.log(util.inspect(value, { showHidden: false, depth: null, colors: true }));
 }

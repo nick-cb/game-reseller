@@ -1,25 +1,18 @@
-"use client";
+'use client';
 
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
-import { RowDataPacket } from "mysql2/index";
-import { Game, GameImageGroup } from "@/database/models/model";
-import { groupImages } from "@/utils/data";
-import { useRouter } from "next/navigation";
-import { useQuery } from "react-query";
-import { BASE_URL } from "@/utils/config";
-import { useClickOutsideCallback } from "@/hooks/useClickOutside";
-import SearchIcon from "@/components/SearchIcon";
-import SpinnerIcon from "@/components/SpinnerIcon";
+import React, { createContext, PropsWithChildren, useCallback, useRef, useState } from 'react';
+import { RowDataPacket } from 'mysql2/index';
+import { Game, GameImageGroup } from '@/database/models/model';
+import { useRouter } from 'next/navigation';
+import { useQuery } from 'react-query';
+import { BASE_URL } from '@/utils/config';
+import { useClickOutsideCallback } from '@/hooks/useClickOutside';
+import SearchIcon from '@/components/SearchIcon';
+import SpinnerIcon from '@/components/SpinnerIcon';
 
 export type SearchbarData = (RowDataPacket &
   Game & {
-    images: ReturnType<typeof groupImages>;
+    images: GameImageGroup;
   })[];
 export const SearchbarContext = createContext<{
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
@@ -30,7 +23,7 @@ export const SearchbarContext = createContext<{
   changeHeight?: (current: HTMLDivElement | null) => void;
 }>({
   data: [],
-  keyword: "",
+  keyword: '',
   onChange: () => {},
   onFocus: () => {},
   onKeyDown: () => {},
@@ -38,7 +31,7 @@ export const SearchbarContext = createContext<{
 });
 export const SearchbarProvider = ({
   children,
-  className = "",
+  className = '',
   defaultData = [],
   SearchResultSlot,
 }: PropsWithChildren<{
@@ -49,15 +42,15 @@ export const SearchbarProvider = ({
   const router = useRouter();
   const [keyword, setKeyword] = useState<string | null>(null);
   const { isLoading, data: { data } = { data: defaultData } } = useQuery(
-    ["search-by-keyword", keyword],
+    ['search-by-keyword', keyword],
     () =>
       fetch(`${BASE_URL}/api/search?keyword=${keyword}`).then(
         (res) =>
           res.json() as Promise<{
             data: (RowDataPacket & Game & { images: GameImageGroup })[];
-          }>,
+          }>
       ),
-    { enabled: Boolean(keyword) },
+    { enabled: Boolean(keyword) }
   );
 
   const searchResultContainerRef = useRef<HTMLDivElement>(null);
@@ -70,20 +63,20 @@ export const SearchbarProvider = ({
       }
 
       const height = (data.slice(0, 5) || []).length * 92;
-      current.style.height = (height > 0 ? height - 8 : 0) + "px";
+      current.style.height = (height > 0 ? height - 8 : 0) + 'px';
       if (keyword && (data || []).length === 0) {
-        current.style.height = "36px";
+        current.style.height = '36px';
       }
     },
-    [data],
+    [data]
   );
 
   const ref = useClickOutsideCallback<HTMLDivElement>(() => {
     if (!searchResultContainerRef.current) {
       return;
     }
-    if (searchResultContainerRef.current?.style.height !== "0px") {
-      searchResultContainerRef.current.style.height = "0px";
+    if (searchResultContainerRef.current?.style.height !== '0px') {
+      searchResultContainerRef.current.style.height = '0px';
       return;
     }
   });
@@ -95,7 +88,7 @@ export const SearchbarProvider = ({
     changeHeight(searchResultContainerRef.current);
   };
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       router.push(`/browse?keyword=${keyword}`);
     }
@@ -112,11 +105,11 @@ export const SearchbarProvider = ({
         onKeyDown,
       }}
     >
-      <div className={"relative h-full " + className} ref={ref}>
+      <div className={'relative h-full ' + className} ref={ref}>
         <div
-          className={`flex items-center rounded pl-4 pr-2 h-full 
-                    bg-white/[0.15] hover:bg-white/[0.25] 
-                    transition-colors`}
+          className={`flex h-full items-center rounded bg-white/[0.15] pl-4 
+                    pr-2 transition-colors 
+                    hover:bg-white/[0.25]`}
         >
           <SearchIcon />
           {children}

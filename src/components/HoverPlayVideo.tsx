@@ -28,7 +28,7 @@ export async function FeatureCard({ item }: FeatureCardProps) {
             'rounded transition-opacity duration-300 w-full h-full object-cover ' +
             (hasVideos ? ' hover:opacity-0 hover:pointer-events-none ' : '')
           }
-          src={item.images.landscape?.url + '?h=480&w=854&resize=1'}
+          src={item.images.landscapes?.url + '?h=480&w=854&resize=1'}
           alt={''}
           width={854}
           height={480}

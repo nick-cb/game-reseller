@@ -8,7 +8,6 @@ import {
   DesktopIndicator,
   MobileIndicator,
 } from '@/components/home/hero_carousel/HeroCarouselIndicator';
-import { groupImages } from '@/utils/data';
 import HomeActions from '@/actions2/home-actions';
 
 type HeroCarouselProps = {
@@ -17,25 +16,19 @@ type HeroCarouselProps = {
 export async function HeroCarousel({ className = '' }: PropsWithChildren<HeroCarouselProps>) {
   const { data } = await HomeActions.category.getHeroCarousel();
   const { game_list } = data;
-  const gameList = game_list.map((game) => {
-    return {
-      ...game,
-      images: groupImages(game.images),
-    };
-  });
 
   return (
     <div className={'gap-4 sm:flex lg:gap-8 ' + className}>
       <HCarousel
-        length={gameList.length}
+        length={game_list.length}
         Indicator={
           <>
-            <MobileIndicator data={gameList} />
-            <DesktopIndicator data={gameList} />
+            <MobileIndicator data={game_list} />
+            <DesktopIndicator data={game_list} />
           </>
         }
       >
-        {gameList.map((item, index) => (
+        {game_list.map((item, index) => (
           <ScrollItem
             key={item.ID}
             index={index}
@@ -46,8 +39,8 @@ export async function HeroCarousel({ className = '' }: PropsWithChildren<HeroCar
             }
           >
             <HeroCarouselImage
-              desktopSrc={[item.images.landscape.url]}
-              mobileSrc={[item.images.portrait.url]}
+              desktopSrc={[item.images.landscapes[0]?.url]}
+              mobileSrc={[item.images.portraits[0]?.url]}
             />
             <div
               className={

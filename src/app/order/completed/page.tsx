@@ -35,7 +35,7 @@ export default async function OrderSuccessPage({
               return (
                 <li className="bg-paper_2 rounded-md px-4 py-4 flex gap-8">
                   <Image
-                    src={item.images.portrait.url || ""}
+                    src={item.images.portraits.url || ""}
                     alt={""}
                     width={150}
                     height={250}

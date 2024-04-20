@@ -4,6 +4,33 @@ import { query, querySingle, sql } from '@/database';
 import { Collections } from '@/database/models/model';
 import { GameItem } from '@/actions2/home-actions/category';
 
+const groupImageByType = (type: string, colors = false) => {
+  const colorQuery = colors
+    ? sql`json_object(
+            'highestSat', gi.colors -> '$.highestSat',
+            'palette', gi.colors -> '$.palette'
+      )`
+    : sql`json_object('highestSat', json_array(), 'palette', json_array())`;
+
+  return sql`
+  select coalesce(
+    json_arrayagg(
+       json_object(
+           'ID', gi.ID,
+           'url', gi.url,
+           'type', gi.type,
+           'alt', gi.alt,
+           'row', gi.pos_row,
+           'colors', ${colorQuery}
+       )
+    ), json_array())
+  from game_images gi
+  where gi.game_id = g.ID
+    and gi.type = ${type}
+  group by type
+`;
+};
+
 export async function getheroCarousel() {
   const { data: collection } = await querySingle<Partial<Collections>>(sql`
     select ID, name from collections where collection_key = 'hero_carousel'
@@ -20,16 +47,16 @@ export async function getheroCarousel() {
            g.sale_price,
            g.developer,
            g.avg_rating,
-           (select json_arrayagg(
-                       json_object(
-                           'ID', gi.ID, 'url', gi.url, 'type',
-                           gi.type, 'alt', gi.alt, 'row', gi.pos_row
-                       )
-                   ) as images
-            from game_reseller.game_images gi
-            where gi.game_id = g.ID) as images
-    from game_reseller.collection_details cd
-           left join game_reseller.games g on cd.game_id = g.ID
+           json_object(
+               'portraits',
+               (${groupImageByType('portrait')}),
+               'landscapes',
+               (${groupImageByType('landscape')}),
+               'logos',
+               (${groupImageByType('logo')})
+           ) as images
+    from collection_details cd
+           left join games g on cd.game_id = g.ID
     where cd.collection_id = ${collection.ID};
   `);
 
@@ -58,30 +85,11 @@ export async function getCategoryRows(params: GetCategoryRowParams) {
                            'sale_price', g.sale_price,
                            'description', g.description,
                            'images',
-                           (select json_arrayagg(
-                                       json_object(
-                                           'ID', gi.ID,
-                                           'url', gi.url,
-                                           'type', gi.type,
-                                           'alt', gi.alt,
-                                           'game_id', gi.game_id,
-                                           'row', gi.pos_row,
-                                           'colors',
-                                           json_object('highestSat', gi.colors -> '$.highestSat')
-                                       )
-                                   )
-                            from ((select *
-                                   from game_images
-                                   where game_images.type = 'landscape'
-                                     and game_images.game_id = g.ID
-                                   limit 1)
-                                  union
-                                  (select *
-                                   from game_images
-                                   where game_images.type = 'portrait'
-                                     and game_images.game_id = g.ID
-                                   limit 1)) as gi),
-                            'videos', json_array()
+                           json_object(
+                              'portraits',
+                              (${groupImageByType('portrait')})
+                           ),
+                           'videos', json_array()
                        )
                 from games g
                 where g.ID = cd.game_id)) as game_list
@@ -145,35 +153,38 @@ export async function getFeatureRow(params: GetFeatureRowParams) {
   `);
 }
 
-{
-  /*
-- category
-  - share
-  - homepage
-    -> getHeroCarousel
-    -> getCategoryRows
-  - game_detail
-    -> getGameDetailCarousel
-- game
-  - homepage
-  - game_detail
-*/
-}
-
-{
-  /*
-- share
-  - category
-  - game
-- homepage
-  - category
-    -> getheroCarousel
-    -> getCategoryRows
-  - game
-    -> getGameInfo
-- game_detail
-  - category
-  - game
-    -> getGameDetailCarousel
-*/
+type GetPillarGroupParams = {
+  names: string[];
+};
+export async function getPillarGroup(params: GetPillarGroupParams) {
+  const { names } = params;
+  return query<CategoryRow[]>(sql`
+    select c.name,
+           cd.collection_id,
+           json_arrayagg(
+               json_object(
+                   'ID', g.ID,
+                   'name', g.name,
+                   'slug', g.slug,
+                   'sale_price', g.sale_price,
+                   'developer', g.developer,
+                   'avg_rating', g.avg_rating,
+                   'images',
+                   json_object(
+                       'portraits', (${groupImageByType('portrait')}),
+                       'landscapes', json_array(),
+                       'logos', json_array()
+                   )
+               )
+           ) as game_list
+    from collection_details cd
+           inner join (select collection_id, group_concat(game_id order by game_id desc) as game_ids
+                       from collection_details
+                       group by collection_id) group_max on cd.collection_id = group_max.collection_id
+           left join games as g on cd.game_id = g.ID
+           left join collections c on c.ID = cd.collection_id
+    where find_in_set(c.collection_key, ${names.join(',')})
+      and find_in_set(cd.game_id, game_ids) <= 10
+    group by cd.collection_id;
+  `);
 }

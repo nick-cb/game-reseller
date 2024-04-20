@@ -76,13 +76,13 @@ export function HCarousel({
     previewList.children.item(index === -1 ? 0 : index)?.classList.add('active');
     prev.current = index === -1 ? 0 : index;
 
-    const id = setTimeout(() => {
-      requestAnimationFrame(() => {
-        setIndex((prev) => (index === -1 ? 1 : (prev + 1) % length));
-      });
-    }, 10000);
+    // const id = setTimeout(() => {
+    //   requestAnimationFrame(() => {
+    //     setIndex((prev) => (index === -1 ? 1 : (prev + 1) % length));
+    //   });
+    // }, 10000);
     return () => {
-      clearTimeout(id);
+      // clearTimeout(id);
     };
   }, [index, sm]);
 

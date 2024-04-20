@@ -1,20 +1,15 @@
-import Link from "next/link";
-import { Collections, Game, GameImageGroup } from "@/database/models/model";
-import { FVideoFullInfo } from "@/actions/game/select";
-import { currencyFormatter } from "@/utils";
-import { getCollectionByKey } from "@/actions/collections/collection";
-import React from "react";
-import { groupImages } from "@/utils/data";
+import Link from 'next/link';
+import { Collections, Game, GameImageGroup } from '@/database/models/model';
+import { FVideoFullInfo } from '@/actions/game/select';
+import { currencyFormatter } from '@/utils';
+import { getCollectionByKey } from '@/actions/collections/collection';
+import React from 'react';
+import { groupImages } from '@/utils/data';
+import HomeActions from '@/actions2/home-actions';
 
 type PillarGame = Pick<
   Game,
-  | "ID"
-  | "name"
-  | "slug"
-  | "developer"
-  | "avg_rating"
-  | "sale_price"
-  | "description"
+  'ID' | 'name' | 'slug' | 'developer' | 'avg_rating' | 'sale_price' | 'description'
 > & {
   images: GameImageGroup;
   videos: FVideoFullInfo[];
@@ -26,7 +21,7 @@ type PillarProps = {
 };
 
 export async function PillarGroup({ names }: { names: string[] }) {
-  const { data: pillars } = await getCollectionByKey(names);
+  const { data: pillars } = await HomeActions.category.getPillarGroup({ names });
 
   return (
     <>
@@ -39,7 +34,7 @@ export async function PillarGroup({ names }: { names: string[] }) {
             <Pillar
               data={{
                 ...collection,
-                list_game: collection.list_game.map((game) => {
+                list_game: collection.game_list.map((game) => {
                   return {
                     ...game,
                     images: groupImages(game.images),
@@ -47,7 +42,7 @@ export async function PillarGroup({ names }: { names: string[] }) {
                 }) as any,
               }}
             />
-            <hr className="my-4 border-default md:hidden last-of-type:hidden" />
+            <hr className="my-4 border-default last-of-type:hidden md:hidden" />
           </React.Fragment>
         );
       })}
@@ -57,23 +52,21 @@ export async function PillarGroup({ names }: { names: string[] }) {
 
 export function Pillar({ data }: PillarProps) {
   return (
-    <div className="w-full relative">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl translate-x-2">
-          {data.name[0].toUpperCase() + data.name.slice(1)}
-        </h2>
+    <div className="relative w-full">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="translate-x-2 text-xl">{data.name[0].toUpperCase() + data.name.slice(1)}</h2>
         <Link
-          href={"/browse?collection=" + data.collection_key}
-          className="text-[10px] lg:text-xs text-white_primary/60 hover:text-white_primary border border-white/60 px-2 py-1 lg:px-4 lg:py-2 rounded transition-colors"
+          href={'/browse?collection=' + data.collection_key}
+          className="rounded border border-white/60 px-2 py-1 text-[10px] text-white_primary/60 transition-colors hover:text-white_primary lg:px-4 lg:py-2 lg:text-xs"
         >
           VIEW MORE
         </Link>
       </div>
       <div
-        id={"pillar-" + data.collection_key}
-        className="overflow-scroll grid grid-cols-2 cols-min-80
-        md:flex flex-col gap-2 scrollbar-hidden
-        snap-x snap-mandatory"
+        id={'pillar-' + data.collection_key}
+        className="scrollbar-hidden cols-min-80 grid snap-x
+        snap-mandatory grid-cols-2 flex-col gap-2
+        overflow-scroll md:flex"
       >
         {data.list_game.slice(0, 6).map((game, index) => (
           <Link
@@ -85,27 +78,22 @@ export function Pillar({ data }: PillarProps) {
             }}
           >
             <div
-              className="py-2 px-2 rounded hover:bg-paper_2 transition-colors
-              flex items-center gap-4 snap-start"
+              className="flex snap-start items-center gap-4 rounded
+              px-2 py-2 transition-colors hover:bg-paper_2"
             >
-              <div className="relative h-28 md:h-18 aspect-[3/4] rounded overflow-hidden">
+              <div className="relative aspect-[3/4] h-28 overflow-hidden rounded md:h-18">
                 <img
-                  src={
-                    game.images.portrait?.url +
-                    "?h=128&w=96&quality=medium&resize=1"
-                  }
+                  src={game.images.portraits?.url + '?h=128&w=96&quality=medium&resize=1'}
                   alt=""
                   width={96}
                   height={128}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div>
                 <p className="mb-2 text-sm">{game.name}</p>
                 <p className="text-sm text-white/60">
-                  {game.sale_price === 0
-                    ? "Free"
-                    : currencyFormatter(game.sale_price)}
+                  {game.sale_price === 0 ? 'Free' : currencyFormatter(game.sale_price)}
                 </p>
               </div>
             </div>
@@ -115,9 +103,9 @@ export function Pillar({ data }: PillarProps) {
         <div className="col-start-3 row-start-1 row-end-3 w-56 md:hidden"></div>
       </div>
       <div
-        className="pointer-events-none md:hidden
-        absolute bottom-0 h-[calc(100%-28px)] w-80 -right-2 
-        bg-gradient-to-l from-default"
+        className="pointer-events-none absolute
+        -right-2 bottom-0 h-[calc(100%-28px)] w-80 bg-gradient-to-l 
+        from-default md:hidden"
       ></div>
     </div>
   );

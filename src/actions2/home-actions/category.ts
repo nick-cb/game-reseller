@@ -43,16 +43,30 @@ export async function getFeatureRow() {
   }
 }
 
-export async function getPillarGroup() {
-
+type GetPillarGroupParams = {
+  names: string[];
+};
+export async function getPillarGroup(params: GetPillarGroupParams) {
+  try {
+    const { data } = await Q.getPillarGroup(params);
+    return buildArrayCollectionResponse({ collections: data });
+  } catch (error) {
+    console.error('Error in GameService.getPillarGroup', error);
+    return buildArrayCollectionResponse({ collections: [], error });
+  }
 }
 
+// ==============================================================================
 
 export type GameItem = Pick<
   Game,
   'ID' | 'name' | 'slug' | 'developer' | 'avg_rating' | 'sale_price' | 'description'
 > & {
-  images: GameImages[];
+  images: {
+    portraits: GameImages[];
+    landscapes: GameImages[];
+    logos: GameImages[];
+  };
   videos: Videos[];
 };
 type BuildSingleResponseParams = {
@@ -69,7 +83,7 @@ function buildSingleCollectionResponse(params: BuildSingleResponseParams) {
       collection_key: collection?.collection_key ?? '',
       game_list: game_list ?? [],
     },
-    error: (error as unknown) ?? null,
+    error: error instanceof Error ? error : null,
   };
 }
 type BuildArrayResponseParams = {
@@ -90,6 +104,6 @@ function buildArrayCollectionResponse(params: BuildArrayResponseParams) {
 
   return {
     data: data,
-    error: (error as unknown) ?? null,
+    error: error instanceof Error ? error : null,
   };
 }

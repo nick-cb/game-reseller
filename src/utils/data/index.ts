@@ -1,19 +1,22 @@
-import { GameImages } from "@/database/models/model";
-import { OmitGameId } from "@/actions/game/select";
-import { LandscapeImages, PortraitImages } from "../config";
+import { GameImages } from '@/database/models/model';
+import { LandscapeImages, PortraitImages } from '../config';
 
-export function groupImages(images: OmitGameId<GameImages>[]) {
-  const landscape = images.find((img) => {
-    const type = img.type.toLowerCase();
-    return LandscapeImages.includes(type);
-  }) as GameImages;
-  const portrait = images.find((img) => {
-    const type = img.type.toLowerCase();
-    return PortraitImages.includes(type);
-  }) as GameImages;
-  const logo = images.find((img) =>
-    img.type.toLowerCase().includes("logo"),
-  ) as GameImages;
+export function groupImages(images: GameImages[]) {
+  let landscape: GameImages | undefined = undefined;
+  let portrait: GameImages | undefined = undefined;
+  let logo: GameImages | undefined = undefined;
+
+  for (const image of images) {
+    if (LandscapeImages.includes(image.type.toLowerCase()) && !landscape) {
+      landscape = image;
+    }
+    if (PortraitImages.includes(image.type.toLowerCase()) && !portrait) {
+      portrait = image;
+    }
+    if (image.type.toLowerCase().includes('logo') && !logo) {
+      logo = image;
+    }
+  }
 
   return {
     landscape,

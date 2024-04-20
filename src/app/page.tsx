@@ -12,16 +12,16 @@ export default function Home() {
       <section className="relative pb-8">
         <CategoryRow name={'top_sale'} />
       </section>
-      <hr className="my-4 border-default" />
-      <section>
-        <Feature />
-      </section>
-      <hr className="my-6 border-default" />
-      <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex">
-        <Suspense>
-          <PillarGroup names={['new_release', 'most_played', 'top_player_rated']} />
-        </Suspense>
-      </section>
+      {/* <hr className="my-4 border-default" /> */}
+      {/* <section> */}
+      {/*   <Feature /> */}
+      {/* </section> */}
+      {/* <hr className="my-6 border-default" /> */}
+      {/* <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex"> */}
+      {/*   <Suspense> */}
+      {/*     <PillarGroup names={['new_release', 'most_played', 'top_player_rated']} /> */}
+      {/*   </Suspense> */}
+      {/* </section> */}
       {/* <section */}
       {/*   className={ */}
       {/*     'relative flex flex-col gap-8 overflow-hidden rounded-lg p-4 ' + */}

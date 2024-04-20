@@ -29,16 +29,13 @@ export function DesktopIndicator({ data }: { data: HeroCarouselGame[] }) {
             after:absolute after:inset-0 after:bg-paper hover:bg-paper_2"
           title={item.name}
         >
-          <div
-            className="flex h-full w-full items-center gap-4 p-2 focus:bg-paper_2 lg:p-3"
-            // href="#"
-          >
+          <div className="flex h-full w-full items-center gap-4 p-2 focus:bg-paper_2 lg:p-3">
             <div className="relative z-[1] aspect-[0.75] h-full shrink-0 overflow-hidden rounded-lg">
-              {item.images.portrait?.url && (
+              {item.images.portraits[0].url && (
                 <Image
                   alt=""
                   className="absolute"
-                  src={decodeURIComponent(item.images.portrait.url)}
+                  src={decodeURIComponent(item.images.portraits[0].url)}
                   width={54}
                   height={72}
                 />

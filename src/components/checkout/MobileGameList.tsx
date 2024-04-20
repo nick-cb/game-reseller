@@ -17,7 +17,7 @@ export function MobileGameList({
           return (
             <li className={"w-full bg-paper rounded px-3 py-2 flex gap-4 "}>
               <Image
-                src={game?.images.portrait?.url}
+                src={game?.images.portraits?.url}
                 alt={""}
                 width={50}
                 height={70}

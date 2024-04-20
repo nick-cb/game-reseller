@@ -6,7 +6,6 @@ import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
-import { groupImages } from '@/utils/data';
 import { Icon } from '../Icon';
 import { mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
@@ -52,7 +51,7 @@ async function CategoryRow({ name }: CarouselProps) {
               <ScrollItem key={game.ID} index={index}>
                 <PortraitGameCard
                   key={game.ID}
-                  game={{ ...game, images: groupImages(game.images) }}
+                  game={game}
                   className={mergeCls(
                     'w-[calc(calc(100vw_-_32px)/2_-_13px)] flex-shrink-0 snap-start',
                     'last-of-type:snap-end',

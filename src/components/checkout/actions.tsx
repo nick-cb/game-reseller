@@ -72,7 +72,7 @@ export const placeOrder = async (params: PlaceOrderParams) => {
       slug: game.slug,
       base_game_id: null,
       images: {
-        portrait: game.images.portrait,
+        portrait: game.images.portraits,
       },
     };
   });

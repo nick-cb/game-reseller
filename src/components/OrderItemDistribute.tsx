@@ -46,7 +46,7 @@ export function OrderItemDistribute({
   return (
     <>
       {gameList.map((item, index) => {
-        const image = item.images.portrait;
+        const image = item.images.portraits;
         const shadowColor = image.colors.highestSat;
         if (!list[index]) {
           return null;

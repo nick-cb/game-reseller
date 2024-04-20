@@ -1,71 +1,55 @@
-import React from "react";
-import PortraitGameCard from "@/components/PortraitGameCard";
-import Pagination from "@/components/Pagination";
-import { groupGameByTags } from "@/actions/game/select";
-import { groupImages } from "@/utils/data";
+import React from 'react';
+import PortraitGameCard from '@/components/PortraitGameCard';
+import BrowseActions from '@/actions2/browse';
+import { z } from 'zod';
+import Pagination from '@/components/Pagination';
 
-const page = async ({
-  searchParams,
-}: {
+type PageProps = {
   searchParams: { [K in string]: string | string[] | undefined };
-}) => {
-  const { keyword, categories, page, collection } = searchParams;
-  let limit = 16;
-  let skip = 0;
-  if (page && !isNaN(parseInt(page.toString()))) {
-    const _skip = parseInt(page.toString());
-    if (_skip > 0) {
-      skip = _skip - 1;
-    }
-  }
-  const response = await groupGameByTags({
-    tags: typeof categories === "string" ? categories?.split(",") : [],
+};
+const page = async (props: PageProps) => {
+  const { searchParams } = props;
+  const categories = z
+    .string()
+    .catch('')
+    .transform((value) => value.split(',').filter((v) => v !== ''))
+    .parse(searchParams.categories);
+  const keyword = z.string().catch('').parse(searchParams.keyword);
+  const collection = z.string().catch('').parse(searchParams.collection);
+  const page = z.coerce.number().int().catch(1).parse(searchParams.page);
+  const limit = 24;
+  const skip = limit * (page - 1);
+
+  const { data, error, total } = await BrowseActions.game.getGameList({
+    tags: categories,
     limit,
-    skip: skip * 16,
-    keyword: keyword as string,
-    collection: collection as string,
+    skip: skip,
+    keyword: keyword,
+    collection: collection,
   });
 
-  const data = response.data.map((game) => {
-    return {
-      ...game,
-      images: groupImages(game.images),
-    };
-  });
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
-    <>
-      {data ? (
-        <>
-          <div
-            className="grid grid-cols-2 3/4sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 
-            "
-          >
-            {data && Array.isArray(data) && data.length ? (
-              data.map((game: any) => (
-                <PortraitGameCard
-                  key={game.ID}
-                  game={game}
-                  className="snap-start block"
-                />
-              ))
-            ) : (
-              <div>No game found</div>
-            )}
-            {response.total ? (
-              <Pagination
-                total={Math.ceil(response.total / 32)}
-                // @ts-ignore
-                currentPage={parseInt(page?.toString())}
-                className="col-start-1 col-end-3 3/4sm:col-end-4 lg:col-end-5"
-              />
-            ) : null}
-          </div>
-        </>
+    <div className="grid grid-cols-2 gap-x-4 gap-y-8 3/4sm:grid-cols-3 lg:grid-cols-4">
+      {data.length ? (
+        data.map((game: any) => (
+          <PortraitGameCard key={game.ID} game={game} className="block snap-start" />
+        ))
       ) : (
-        <div>{data}</div>
+        <div>No game found</div>
       )}
-    </>
+      {total ? (
+        <Pagination
+          total={total}
+          perPage={limit}
+          currentPage={page}
+          className="col-start-1 col-end-3 3/4sm:col-end-4 lg:col-end-5"
+        />
+      ) : null}
+    </div>
   );
 };
 

@@ -23,9 +23,9 @@ export type Game = {
 export type CriticAvg = 'weak' | 'fair' | 'strong' | 'mighty';
 
 export type GameImageGroup = {
-  portrait: GameImages;
-  landscape: GameImages;
-  logo: GameImages;
+  portraits: GameImages[];
+  landscapes: GameImages[];
+  logos: GameImages[];
 };
 
 export type GameImages = {

@@ -99,10 +99,10 @@ export default async function OrderSuccessPage({
           </p>
           {items.length === 1 ? (
             (() => {
-              const shadowColor = firstItem.images.portrait.colors.highestSat;
+              const shadowColor = firstItem.images.portraits.colors.highestSat;
               return (
                 <Image
-                  src={firstItem.images.portrait.url}
+                  src={firstItem.images.portraits.url}
                   width={150}
                   height={200}
                   alt={firstItem.name}

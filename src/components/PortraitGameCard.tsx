@@ -23,7 +23,7 @@ const PortraitGameCard = ({ game, className = '' }: PortraitGameCardProps) => {
         }
       >
         <img
-          src={game.images.portrait?.url + '?h=480&w=360&resize=1'}
+          src={game.images.portraits[0]?.url + '?h=480&w=360&resize=1'}
           alt={`portrait of ${game.name}`}
           className={
             'rounded transition-transform duration-300 group-focus:scale-110' +

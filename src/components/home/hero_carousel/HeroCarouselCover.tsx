@@ -44,7 +44,7 @@ export function HeroCarouselMobileCover(props: HeroCarouselDesktopCoverProps) {
         }
       >
         <Image
-          src={game.images.logo?.url || ''}
+          src={game.images.logos[0]?.url || ''}
           alt=""
           width={56}
           height={56}
