@@ -22,11 +22,11 @@ export default async function ItemOrderModalPage({ params }: { params: any }) {
     redirect("/");
   }
 
-  const game = { ...data, images: groupImages(data.images), checked: true };
+  const game = { ...data, checked: true };
 
   return (
     <ItemOrderModal>
-      <CheckoutView gameList={[game]} />
+      {/* <CheckoutView gameList={[game]} /> */}
     </ItemOrderModal>
   );
 }

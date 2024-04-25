@@ -16,7 +16,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { updateOrder } from '@/actions/orders';
 import { useStripeNullish } from '../payment/Stripe';
-import { DevTool } from '@hookform/devtools';
+import CheckoutActions from '@/actions2/checkout-actions';
 
 const checkoutContext = createContext<{
   stripe: Stripe | null;
@@ -76,25 +76,24 @@ type CheckoutFormPayload = {
   method: 'stripe' | 'paypal';
   save: 'yes' | 'no';
 };
-export function CheckoutForm({
-  children,
-  payWithStripe,
-  ...props
-}: DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
+type CheckoutFormProps = DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
   payWithStripe: (payload: { paymentMethod: string; save: boolean }) => Promise<
     | {
         error: string;
       }
     | {
-        orderId: number;
+        orderID: number;
         clientSecret: string;
         status: PaymentIntent.Status;
+        error?: undefined;
       }
   >;
-}) {
+};
+export function CheckoutForm(props: CheckoutFormProps) {
+  const { children, payWithStripe, ...rest } = props;
   const { stripe, elements } = useStripeNullish();
   const { showMessage } = useContext(SnackContext);
-  const ref = useRef<HTMLDialogElement>(null);
+  const nextActionModalRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
   const form = useForm<CheckoutFormPayload>({
@@ -105,22 +104,37 @@ export function CheckoutForm({
     shouldUnregister: true,
   });
 
-  const observeNextActionModal = () => {
-    const observer = new MutationObserver((mutationList) => {
-      for (const mutation of mutationList) {
-        const addedNode = mutation.addedNodes.item(0);
-        const iframeNode = addedNode?.childNodes.item(0);
-        if (addedNode && iframeNode instanceof HTMLIFrameElement) {
-          ref.current?.appendChild(iframeNode);
-          ref.current?.showModal();
-        }
+  const handleSubmit = async (params: CheckoutFormPayload) => {
+    const { save, method_id } = params;
+    if (!stripe || !elements) {
+      return;
+    }
+    // We're using the dialog element, which will be put on the top-level layer
+    // and cover everything, include the Stripe's iframe. So we need to move the
+    // iframe to it own dialog element to make it visible.
+    const observer = observeNextActionModal();
+    try {
+      const methodId = method_id || (await createPaymentMethod(stripe, elements));
+      const response = await payWithStripe({
+        save: save === 'yes' ? true : false,
+        paymentMethod: methodId,
+      });
+      if ('error' in response) {
+        throw new Error(response.error);
       }
-    });
-    observer.observe(document.body, {
-      childList: true,
-    });
-
-    return observer;
+      const { clientSecret, status, orderID: orderId } = response;
+      if (clientSecret && status === 'requires_action') {
+        handleNextAction(stripe, orderId, clientSecret);
+        observer.disconnect();
+      }
+      router.refresh();
+      router.push('/order/success?order_id=' + orderId);
+    } catch (error) {
+      if (error instanceof Error) {
+        showMessage({ message: error.message, type: 'error' });
+      }
+      observer.disconnect();
+    }
   };
 
   const createPaymentMethod = async (stripe: Stripe, element: StripeElements) => {
@@ -140,64 +154,56 @@ export function CheckoutForm({
     return paymentMethod.id;
   };
 
+  const handleNextAction = async (stripe: Stripe, orderId: number, clientSecret: string) => {
+    const { error, paymentIntent } = await stripe.handleNextAction({
+      clientSecret,
+    });
+    if (paymentIntent?.id && paymentIntent.status !== 'requires_action') {
+      await CheckoutActions.orders.updateOrderPaymentIntent(orderId, paymentIntent.id);
+    }
+    const nextActionModal = nextActionModalRef.current;
+    if (!nextActionModal) {
+      return;
+    }
+    if (error?.message) {
+      throw new Error(error.message);
+    }
+    nextActionModal.close();
+  };
+
+  const observeNextActionModal = () => {
+    const observer = new MutationObserver((mutationList) => {
+      for (const mutation of mutationList) {
+        const addedNode = mutation.addedNodes.item(0);
+        const iframeNode = addedNode?.childNodes.item(0);
+        if (addedNode && iframeNode instanceof HTMLIFrameElement) {
+          nextActionModalRef.current?.appendChild(iframeNode);
+          nextActionModalRef.current?.showModal();
+        }
+      }
+    });
+    observer.observe(document.body, {
+      childList: true,
+    });
+
+    return observer;
+  };
+
   return (
     <>
       <FormProvider {...form}>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
-            if (!stripe || !elements) {
-              return;
-            }
-            await form.handleSubmit(async ({ save, method_id }) => {
-              const observer = observeNextActionModal();
-              try {
-                const methodId = method_id || (await createPaymentMethod(stripe, elements));
-                const response =
-                  (await payWithStripe({
-                    save: save === 'yes' ? true : false,
-                    paymentMethod: methodId,
-                  })) || {};
-                if ('error' in response) {
-                  throw new Error(response.error);
-                }
-                const { clientSecret, status, orderId } = response;
-                if (clientSecret && status === 'requires_action') {
-                  const { error, paymentIntent } = await stripe.handleNextAction({
-                    clientSecret,
-                  });
-                  if (paymentIntent?.id && paymentIntent.status !== 'requires_action') {
-                    await updateOrder(orderId, {
-                      order: { status: paymentIntent.status },
-                    });
-                  }
-                  const nextActionModal = ref.current;
-                  if (!nextActionModal) {
-                    return;
-                  }
-                  if (error?.message) {
-                    throw new Error(error.message);
-                  }
-                  nextActionModal.close();
-                  observer.disconnect();
-                }
-                router.refresh();
-                router.push('/order/success?order_id=' + orderId);
-              } catch (error) {
-                if (error instanceof Error) {
-                  showMessage({ message: error.message, type: 'error' });
-                }
-              }
-            })();
+            await form.handleSubmit(handleSubmit)();
           }}
-          {...props}
+          {...rest}
         >
           {children}
         </form>
-        <DevTool control={form.control} />
       </FormProvider>
       <Dialog
-        ref={ref}
+        ref={nextActionModalRef}
         className="h-full w-full !bg-transparent !shadow-none backdrop-filter-none"
       ></Dialog>
     </>

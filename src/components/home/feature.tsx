@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import HomeActions from '@/actions2/home-actions';
 
 export async function Feature() {
-  const { data: feature } = await HomeActions.category.getFeatureRow();
+  const { data: feature } = await HomeActions.collections.getFeatureRow();
 
   return (
     <ul className={'scrollbar-hidden flex snap-x snap-mandatory gap-8 overflow-scroll'}>

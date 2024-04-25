@@ -64,6 +64,7 @@ export default async function AddOnPage({
             total={Math.ceil(total / 32)}
             // @ts-ignore
             currentPage={parseInt(page?.toString())}
+            perPage={limit}
             className="col-start-1 col-end-3 3/4sm:col-end-4 lg:col-end-5"
           />
         ) : null}

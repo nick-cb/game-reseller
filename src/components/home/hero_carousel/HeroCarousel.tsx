@@ -14,7 +14,7 @@ type HeroCarouselProps = {
   className?: string;
 };
 export async function HeroCarousel({ className = '' }: PropsWithChildren<HeroCarouselProps>) {
-  const { data } = await HomeActions.category.getHeroCarousel();
+  const { data } = await HomeActions.collections.getHeroCarousel();
   const { game_list } = data;
 
   return (

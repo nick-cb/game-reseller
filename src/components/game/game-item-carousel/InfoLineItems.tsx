@@ -1,8 +1,7 @@
-import { FBySlug } from '@/actions/game/select';
-import { Game } from '@/database/models/model';
+import { GameResponse } from '@/actions2/game-detail-actions/game-details';
 
 type InfoLineItemsProps = {
-  game: FBySlug;
+  game: GameResponse;
 };
 export function InfoLineItems(props: InfoLineItemsProps) {
   const { game } = props;

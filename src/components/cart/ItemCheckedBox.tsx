@@ -5,6 +5,7 @@ import { useOptimistic, useLayoutEffect, useRef, useTransition } from 'react';
 import { LoadingIcon2 } from '../loading/LoadingIcon';
 import { useCartContext } from './CartContext';
 import { useRouter } from 'next/navigation';
+import { ClientGate } from '../ClientGate';
 
 const breakpoints = [780] as const;
 export function ItemCheckBox({ index }: { index: number }) {
@@ -171,58 +172,60 @@ export function ItemCheckBox({ index }: { index: number }) {
             ' peer-disabled:bg-paper '
           }
         >
-          {b780 ? (
-            <>
-              <div
-                className={
-                  'absolute h-[calc(100%-1px)] w-[calc(100%-5px)] border-[#9c9c9c] ' +
-                  ' -bottom-[2px] -right-[2px] md:left-[unset] md:top-[unset] md:rounded-br-md md:border-b md:border-l-0 md:border-r md:border-t-0 ' +
-                  ' -left-[2px] -top-[2px] rounded-tl-md border-l border-t ' +
-                  ' pointer-events-none opacity-0 transition-opacity duration-150 '
-                }
-              ></div>
-              {updating ? (
-                <LoadingIcon2
-                  width={18}
-                  height={18}
-                  fill="white"
-                  stroke={'#9c9c9c'}
-                  loading={true}
-                />
-              ) : null}
-              {!updating ? (
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={b780 >= 0 ? '26px' : '32px'}
-                  height={b780 >= 0 ? '26px' : '32px'}
-                  viewBox="0,0,256,256"
-                  className={'checkbox animated '}
-                  stroke="white"
-                >
-                  <g
-                    fill="none"
-                    fillRule="nonzero"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeMiterlimit="10"
-                    strokeDasharray=""
-                    strokeDashoffset="0"
-                    fontFamily="none"
-                    fontWeight="none"
-                    fontSize="none"
-                    textAnchor="none"
-                    style={{ mixBlendMode: 'normal' }}
+          <ClientGate>
+            {b780 ? (
+              <>
+                <div
+                  className={
+                    'absolute h-[calc(100%-1px)] w-[calc(100%-5px)] border-[#9c9c9c] ' +
+                    ' -bottom-[2px] -right-[2px] md:left-[unset] md:top-[unset] md:rounded-br-md md:border-b md:border-l-0 md:border-r md:border-t-0 ' +
+                    ' -left-[2px] -top-[2px] rounded-tl-md border-l border-t ' +
+                    ' pointer-events-none opacity-0 transition-opacity duration-150 '
+                  }
+                ></div>
+                {updating ? (
+                  <LoadingIcon2
+                    width={18}
+                    height={18}
+                    fill="white"
+                    stroke={'#9c9c9c'}
+                    loading={true}
+                  />
+                ) : null}
+                {!updating ? (
+                  <svg
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={b780 >= 0 ? '26px' : '32px'}
+                    height={b780 >= 0 ? '26px' : '32px'}
+                    viewBox="0,0,256,256"
+                    className={'checkbox animated '}
+                    stroke="white"
                   >
-                    <g transform="scale(5.33333,5.33333)">
-                      <path d="M14.5,25.5l6,6l14,-14" className="svg-elem-3"></path>
+                    <g
+                      fill="none"
+                      fillRule="nonzero"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeMiterlimit="10"
+                      strokeDasharray=""
+                      strokeDashoffset="0"
+                      fontFamily="none"
+                      fontWeight="none"
+                      fontSize="none"
+                      textAnchor="none"
+                      style={{ mixBlendMode: 'normal' }}
+                    >
+                      <g transform="scale(5.33333,5.33333)">
+                        <path d="M14.5,25.5l6,6l14,-14" className="svg-elem-3"></path>
+                      </g>
                     </g>
-                  </g>
-                </svg>
-              ) : null}
-            </>
-          ) : null}
+                  </svg>
+                ) : null}
+              </>
+            ) : null}
+          </ClientGate>
         </label>
       </>
       <div

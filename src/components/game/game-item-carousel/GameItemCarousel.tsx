@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
-import { GameImages } from '@/database/models/model';
+import { GameImageGroup, GameImages } from '@/database/models/model';
 import { MediaControls, Video, VideoAudio } from '@/components/media/MediaPrimitive';
 import { VideoContainer } from '@/components/media/Video';
 import { AudioContainer } from '@/components/media/Audio';
@@ -12,10 +12,11 @@ import {
 } from '../../intersection/IntersectionObserver';
 import { ScrollItem, VideoScrollItem } from '../../scroll2/ScrollPrimitive';
 import { IndicatorList, NextPrevControls } from '@/components/game/game-item-carousel/Indicators';
+import { FindBySlugResult } from '@/actions2/game-detail-actions/queries';
 
 type LinearCarouselProps = {
-  images: OmitGameId<GameImages>[];
-  videos: OmitGameId<FVideoFullInfo>[];
+  images: GameImageGroup;
+  videos: FindBySlugResult['videos'];
 };
 export const isVideo = (
   media: OmitGameId<GameImages> | OmitGameId<FVideoFullInfo>
@@ -24,8 +25,8 @@ export const isVideo = (
 };
 export const breakpoints = [640, 1536] as const;
 export default function GameItemCarousel(props: LinearCarouselProps) {
-  const { images = [], videos = [] } = props;
-  const shouldShowIndicator = videos.length + images.length > 1;
+  const { images, videos = [] } = props;
+  const shouldShowIndicator = videos.length + images.landscapes.length > 1;
 
   return (
     <IntersectionObserverContainer>
@@ -60,7 +61,7 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                 </VideoContainer>
               );
             })}
-            {images.map((img, index) => (
+            {images.landscapes.map((img, index) => (
               <ScrollItem
                 index={index + videos.length}
                 key={img.ID}

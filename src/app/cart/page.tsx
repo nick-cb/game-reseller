@@ -1,58 +1,33 @@
-import { getUserFromCookie } from "@/actions/users";
-import { redirect } from "next/navigation";
-import Image from "next/image";
-import { groupImages } from "@/utils/data";
-import { currencyFormatter, pascalCase } from "@/utils";
-import { getFullCartByUserId, toggleItemChecked } from "@/actions/cart";
-import { RemoveItemBtn } from "@/components/cart/RemoveItemBtn";
-import { ItemCheckBox } from "@/components/cart/ItemCheckedBox";
-import { CartContext } from "@/components/cart/CartContext";
-import { CartTotal } from "@/components/cart/CartTotal";
-import { CheckoutModal } from "@/components/checkout/CheckoutForm";
-import { CheckoutView } from "@/components/checkout/Checkout";
-import { Game } from "@/database/models/model";
-import { CheckoutButton } from "@/components/cart/CheckoutButton";
-import { Suspense } from "react";
-import Link from "next/link";
+import { getUserFromCookie } from '@/actions/users';
+import CartActions from '@/actions2/cart-actions';
+import { CartContext } from '@/components/cart/CartContext';
+import { CartTotal } from '@/components/cart/CartTotal';
+import { CheckoutButton } from '@/components/cart/CheckoutButton';
+import { ItemCheckBox } from '@/components/cart/ItemCheckedBox';
+import { RemoveItemBtn } from '@/components/cart/RemoveItemBtn';
+import { CheckoutView } from '@/components/checkout/Checkout';
+import { CheckoutModal } from '@/components/checkout/CheckoutForm';
+import { Game } from '@/database/models/model';
+import { currencyFormatter, pascalCase } from '@/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function cartPage() {
   const user = await getUserFromCookie();
   if (!user) {
-    redirect("/");
+    redirect('/');
   }
-  const { data: cart } = await getFullCartByUserId(user.userId);
-  const grouppedImageCart = {
-    ...cart,
-    game_list:
-      cart?.game_list.map((game) => {
-        return {
-          ...game,
-          images: groupImages(game.images),
-        };
-      }) || [],
-  };
+  const { data: cart } = await CartActions.carts.getUserCart({ user: { user_id: user.userId } });
   let totalPrice = 0;
-  for (const game of grouppedImageCart.game_list) {
+  for (const game of cart.game_list) {
     totalPrice += game.sale_price;
   }
-  const toggleChecked = async (game: Pick<Game, "ID">) => {
-    "use server";
-    let index = -1;
-    for (let i = 0; i < grouppedImageCart.game_list.length; i++) {
-      if (grouppedImageCart.game_list[i].ID === game.ID) {
-        index = i;
-        break;
-      }
-    }
-    if (index === -1) {
-      return;
-    }
-    const item = grouppedImageCart.game_list[index];
-    const { error } = await toggleItemChecked({
-      gameId: item.ID,
-      checked: !item.checked,
-    });
-    return error;
+  const toggleChecked = async (game: Pick<Game, 'ID'>) => {
+    'use server';
+    const { error } = await CartActions.carts.toggleItemChecked({ game, cart });
+    return error?.message;
   };
 
   if (!cart) {
@@ -62,11 +37,11 @@ export default async function cartPage() {
           <use xlinkHref="/svg/sprites/actions.svg#cart-empty" />
         </svg>
         <br />
-        <h2 className="text-xl mx-auto block w-max">Your cart is empty.</h2>
+        <h2 className="mx-auto block w-max text-xl">Your cart is empty.</h2>
         <br />
         <Link
-          href={"/browse"}
-          className="mx-auto block w-max text-white_primary/60 underline hover:text-white_primary transition-colors"
+          href={'/browse'}
+          className="mx-auto block w-max text-white_primary/60 underline transition-colors hover:text-white_primary"
         >
           Start shopping now!
         </Link>
@@ -75,63 +50,56 @@ export default async function cartPage() {
   }
 
   return (
-    <CartContext
-      toggleCheck={toggleChecked}
-      gameList={grouppedImageCart.game_list}
-    >
-      <div className="flex flex-col md:flex-row gap-8 xl:gap-16 relative">
+    <CartContext toggleCheck={toggleChecked} gameList={cart.game_list}>
+      <div className="relative flex flex-col gap-8 md:flex-row xl:gap-16">
         <div className="md:w-[65%]">
-          <h2 className="text-xl pb-4">My cart</h2>
+          <h2 className="pb-4 text-xl">My cart</h2>
           <ul className="flex flex-col gap-4">
-            {grouppedImageCart.game_list.map((item, index) => {
+            {cart.game_list.map((item, index) => {
               return (
                 <li
                   className={
-                    "bg-paper_2 rounded px-4 py-4 flex flex-col md:flex-row gap-4 md:gap-8 shadow-sm shadow-black/25 relative group "
+                    'group relative flex flex-col gap-4 rounded bg-paper_2 px-4 py-4 shadow-sm shadow-black/25 md:flex-row md:gap-8 '
                   }
                   key={item.ID}
                 >
                   <ItemCheckBox index={index} />
-                  <div className="md:block hidden">
+                  <div className="hidden md:block">
                     <Image
-                      src={item.images.portrait.url || ""}
-                      alt={""}
+                      src={item.images.portraits[0].url || ''}
+                      alt={''}
                       width={130}
                       height={200}
                       className="rounded"
                     />
                   </div>
-                  <div className="md:hidden block">
+                  <div className="block md:hidden">
                     <Image
-                      src={item.images.landscape.url || ""}
-                      alt={""}
+                      src={item.images.landscapes[0].url || ''}
+                      alt={''}
                       width={300}
                       height={200}
-                      className="rounded w-full h-[100px] 3/4sm:h-[300px] object-cover"
+                      className="h-[100px] w-full rounded object-cover 3/4sm:h-[300px]"
                     />
                   </div>
-                  <div className="flex-grow flex flex-col text-sm">
-                    <div className="text-xs px-2 py-1 rounded w-max bg-white_primary/[.15] uppercase shadow-sm shadow-default">
-                      {pascalCase(item.type, "_")}
+                  <div className="flex flex-grow flex-col text-sm">
+                    <div className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs uppercase shadow-sm shadow-default">
+                      {pascalCase(item.type, '_')}
                     </div>
-                    <div className="flex justify-between mt-2 mb-1">
-                      <p className="font-bold block text-base">{item.name}</p>
+                    <div className="mb-1 mt-2 flex justify-between">
+                      <p className="block text-base font-bold">{item.name}</p>
                       <p className="block">
-                        {item.sale_price === 0
-                          ? "Free"
-                          : currencyFormatter(item.sale_price)}
+                        {item.sale_price === 0 ? 'Free' : currencyFormatter(item.sale_price)}
                       </p>
                     </div>
-                    <p className="text-white_primary/60 text-xs">
-                      {item.developer}
-                    </p>
-                    <hr className="border-white/60 my-3 w-[calc(100%+32px)] -translate-x-4 md:hidden" />
-                    <div className="md:mt-auto w-4/5 md:w-full mx-auto md:mx-[unset] flex md:justify-end gap-4">
+                    <p className="text-xs text-white_primary/60">{item.developer}</p>
+                    <hr className="my-3 w-[calc(100%+32px)] -translate-x-4 border-white/60 md:hidden" />
+                    <div className="mx-auto flex w-4/5 gap-4 md:mx-[unset] md:mt-auto md:w-full md:justify-end">
                       <button
                         className={
-                          "block hover:text-white_primary w-36 px-2 py-2 rounded " +
-                          " hover:bg-paper transition-colors hover:shadow-default/25 shadow-sm text-white_primary/60 outline outline-1 " +
-                          " w-full md:w-auto "
+                          'block w-36 rounded px-2 py-2 hover:text-white_primary ' +
+                          ' text-white_primary/60 shadow-sm outline outline-1 transition-colors hover:bg-paper hover:shadow-default/25 ' +
+                          ' w-full md:w-auto '
                         }
                       >
                         Move to wishlist
@@ -144,17 +112,14 @@ export default async function cartPage() {
             })}
           </ul>
         </div>
-        <div className="md:w-[30%] sticky top-16 h-max">
-          <h2 className="text-xl pb-4">Price summary</h2>
-          <div className="flex flex-col gap-8 outline outline-1 outline-white_primary/60 rounded px-8 py-6 shadow-md shadow-black/60">
+        <div className="sticky top-16 h-max md:w-[30%]">
+          <h2 className="pb-4 text-xl">Price summary</h2>
+          <div className="flex flex-col gap-8 rounded px-8 py-6 shadow-md shadow-black/60 outline outline-1 outline-white_primary/60">
             <CartTotal />
           </div>
           <CheckoutModal SubmitButton={<CheckoutButton />}>
             <Suspense>
-              <CheckoutView
-                gameList={grouppedImageCart.game_list}
-                cartId={cart.ID}
-              />
+              <CheckoutView gameList={cart.game_list} cartId={cart.ID} />
             </Suspense>
           </CheckoutModal>
         </div>

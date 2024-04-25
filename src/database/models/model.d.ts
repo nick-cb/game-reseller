@@ -148,17 +148,18 @@ type OrderItem = Pick<
   Game,
   'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug' | 'base_game_id'
 > & {
-  images: Pick<GameImageGroup, 'portrait'>;
+  images: Pick<GameImageGroup, 'portraits'>;
 } & {
   discounts: any[];
   discount_price: number;
 };
 
-export type Orders = Omit<CreateOrderPayload, 'ID' | 'items'> & {
+export type Orders = Omit<CreateOrderPayload, 'items'> & {
   items: OrderItem[];
 };
 
 export type CreateOrderPayload = {
+  ID: number;
   payment_intent?: string;
   amount: number;
   payment_method: string;

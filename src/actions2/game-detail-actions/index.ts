@@ -1,4 +1,4 @@
-import * as game from './game';
+import * as games from './game-details';
 
-const GameActions = { game };
-export default GameActions;
+const GameDetailActions = { games };
+export default GameDetailActions;

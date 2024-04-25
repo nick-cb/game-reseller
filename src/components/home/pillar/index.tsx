@@ -21,7 +21,7 @@ type PillarProps = {
 };
 
 export async function PillarGroup({ names }: { names: string[] }) {
-  const { data: pillars } = await HomeActions.category.getPillarGroup({ names });
+  const { data: pillars } = await HomeActions.collections.getPillarGroup({ names });
 
   return (
     <>

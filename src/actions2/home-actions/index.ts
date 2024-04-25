@@ -1,4 +1,4 @@
-import * as category from './category';
+import * as collections from './collections';
 
-const HomeActions = { category };
+const HomeActions = { collections };
 export default HomeActions;

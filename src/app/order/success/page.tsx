@@ -1,25 +1,24 @@
-import { findOrderById } from "@/actions/order";
-import { getUserFromCookie } from "@/actions/users";
-import { OrderItemDistribute } from "@/components/OrderItemDistribute";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { findOrderById } from '@/actions/order';
+import { getUserFromCookie } from '@/actions/users';
+import ShareActions from '@/actions2/share';
+import { OrderItemDistribute } from '@/components/OrderItemDistribute';
+import { logDebug } from '@/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function OrderSuccessPage({
   searchParams,
 }: {
   searchParams: Record<string, string>;
 }) {
-  const id = parseInt(searchParams["order_id"]);
+  const id = parseInt(searchParams['order_id']);
   const payload = await getUserFromCookie();
   if (!payload) {
-    redirect("/");
+    redirect('/');
   }
-  const { data: order } = isNaN(id)
-    ? { data: null }
-    : await findOrderById(id, {
-        userId: payload.userId,
-      });
+  const { data: order } = isNaN(id) ? { data: null } : await ShareActions.orders.findOrderByID(id);
+  logDebug(order);
   if (!order) {
     return <div>Order not found</div>;
   }
@@ -28,13 +27,13 @@ export default async function OrderSuccessPage({
 
   return (
     <div
-      className="h-full flex justify-center items-center pt-[200px]"
+      className="flex h-full items-center justify-center pt-[200px]"
       // style={{
       //   gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
       //   gridTemplateRows: "repeat(auto-fill,minmax(200px,1fr))",
       // }}
     >
-      <div className={"flex gap-8"}>
+      <div className={'flex gap-8'}>
         {/* <ul className="w-[300px] h-[450px] relative"> */}
         {/*   {items.map((item, index) => { */}
         {/*     const image = item.images.portrait; */}
@@ -74,42 +73,39 @@ export default async function OrderSuccessPage({
         {/* </ul> */}
         <div
           className={
-            "flex flex-col items-center pt-2 " +
-            "w-[600px] pb-10 " +
-            "bg-paper rounded shadow-black/25 shadow relative "
+            'flex flex-col items-center pt-2 ' +
+            'w-[600px] pb-10 ' +
+            'relative rounded bg-paper shadow shadow-black/25 '
           }
         >
           <Image
-            src={"/you-rock.gif"}
-            alt={"You rock"}
+            src={'/you-rock.gif'}
+            alt={'You rock'}
             width={400}
             height={200}
             className="mx-auto"
           />
           <br />
-          <h2 className="text-xl mb-2">Thank you for your order!</h2>
+          <h2 className="mb-2 text-xl">Thank you for your order!</h2>
           <p className="text-white_primary/60">
-            You can find your order{" "}
-            <Link
-              href={"/"}
-              className="underline hover:text-white_primary transition-colors"
-            >
+            You can find your order{' '}
+            <Link href={'/'} className="underline transition-colors hover:text-white_primary">
               here
             </Link>
           </p>
           {items.length === 1 ? (
             (() => {
-              const shadowColor = firstItem.images.portraits.colors.highestSat;
+              const shadowColor = firstItem.images.portraits[0].colors.highestSat;
               return (
                 <Image
-                  src={firstItem.images.portraits.url}
+                  src={firstItem.images.portraits[0].url}
                   width={150}
                   height={200}
                   alt={firstItem.name}
                   title={firstItem.name}
                   className={
-                    "rounded absolute right-10 translate-x-1/2 -rotate-[30deg] -translate-y-1/2 top-10 " +
-                    "[--tw-shadow-colored:0_10px_25px_-3px_var(--tw-shadow-color),_0_-2px_10px_0px_var(--tw-shadow-color),_0_4px_6px_-4px_var(--tw-shadow-color)] "
+                    'absolute right-10 top-10 -translate-y-1/2 translate-x-1/2 -rotate-[30deg] rounded ' +
+                    '[--tw-shadow-colored:0_10px_25px_-3px_var(--tw-shadow-color),_0_-2px_10px_0px_var(--tw-shadow-color),_0_4px_6px_-4px_var(--tw-shadow-color)] '
                   }
                   style={{
                     boxShadow: `var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 10px 25px -3px rgb(${shadowColor}), 0 -2px 10px 0px rgb(${shadowColor}), 0 4px 6px -4px rgb(${shadowColor})`,

@@ -1,12 +1,10 @@
 import { decodeToken, findUserById } from '@/actions/users';
 import { PaymentTabButton, SpriteIcon, SavePayment } from '@/components/payment/PaymentRadioTab';
 import { StripeCheckoutForm, StripeElementsNullish } from '@/components/payment/Stripe';
-import dayjs from 'dayjs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { stripe } from '@/utils';
-import { deleteCart } from '@/actions/cart';
-import { Game, GameImageGroup, Orders } from '@/database/models/model';
+import { Game, GameImageGroup } from '@/database/models/model';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { MobileGameList } from '@/components/checkout/MobileGameList';
 import { PaymentItem } from '@/components/checkout/SavedCardItem';
@@ -19,12 +17,8 @@ import {
   IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
 import { ScrollItem } from '../scroll2/ScrollPrimitive';
-import { getPaymentMethod, placeOrder } from './actions';
+import CheckoutActions from '@/actions2/checkout-actions';
 
-type PayWithStripeParams = {
-  paymentMethod: string;
-  save: boolean;
-};
 export type CheckoutViewProps = {
   gameList: (Pick<
     Game,
@@ -61,57 +55,17 @@ export async function CheckoutView(props: CheckoutViewProps) {
     amount += parseFloat(game.sale_price.toString());
   }
 
-  const payWithStripe = async ({ paymentMethod, save }: PayWithStripeParams) => {
-    'use server';
-    try {
-      if (!paymentMethod) {
-        return { error: 'Please provide a valid payment method' };
-      }
-      const { id, card, customer } = await getPaymentMethod({
-        user,
-        paymentMethod,
-        paymentMethods,
-      });
-      const { brand, last4 } = card || {};
-      const paymentIntent = await stripe.paymentIntents.create({
-        confirm: true,
-        amount: amount,
-        currency: 'vnd',
-        customer: customer as string,
-        payment_method: id,
-        use_stripe_sdk: true,
-        ...(save ? { setup_future_usage: 'off_session' } : {}),
-      });
-      const newOrder = {
-        payment_intent: paymentIntent!.id,
-        created_at: dayjs(paymentIntent?.created).format('YYYY-MM-DD HH:mm:ss'),
-        card_type: brand || undefined,
-        card_number: last4 || undefined,
-        amount: amount,
-        status: ['canceled', 'succeeded'].includes(paymentIntent.status)
-          ? (paymentIntent.status as Orders['status'])
-          : 'pending',
-      };
-      const orderId = await placeOrder({ userId: user.ID, order: newOrder, gameList });
-      if (cartId) {
-        await deleteCart(cartId);
-      }
-
-      return {
-        orderId,
-        clientSecret: paymentIntent.client_secret!,
-        status: paymentIntent.status,
-      };
-    } catch (error) {
-      return { error: error instanceof Error ? error.message : '' };
-    }
-  };
-
   return (
     <SnackContextProvider>
       <StripeElementsNullish amount={amount} currency={'vnd'}>
         <CheckoutForm
-          payWithStripe={payWithStripe}
+          payWithStripe={await CheckoutActions.orders.payWithStripe({
+            cartId: cartId!,
+            user,
+            amount,
+            gameList,
+            paymentMethods,
+          })}
           className={'flex grid-cols-[calc(70%-32px)_30%] flex-col gap-8 md:grid'}
           style={{ gridTemplateRows: `repeat(${4 + paymentMethods.length},min-content)` }}
         >

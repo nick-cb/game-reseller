@@ -1,15 +1,11 @@
-"use client";
+'use client';
 
-import { Orders } from "@/database/models/model";
-import { useLayoutEffect } from "react";
-import Image from "next/image";
-import { fire } from "@/utils/confettie";
+import { Orders } from '@/database/models/model';
+import { useLayoutEffect } from 'react';
+import Image from 'next/image';
+import { fire } from '@/utils/confettie';
 
-export function OrderItemDistribute({
-  gameList,
-}: {
-  gameList: Orders["items"];
-}) {
+export function OrderItemDistribute({ gameList }: { gameList: Orders['items'] }) {
   useLayoutEffect(() => {
     fire(0.25, {
       spread: 26,
@@ -35,18 +31,18 @@ export function OrderItemDistribute({
     });
   }, [gameList]);
   const list = [
-    "-right-32 -rotate-[30deg] -top-28",
-    "bottom-0 -left-40 -rotate-[15deg]",
-    "-right-56 -bottom-28 rotate-[10deg]",
-    "-top-32 right-40 -translate-y-1/2 rotate-[25deg]",
-    "left-12 -bottom-56 rotate-[45deg]",
-    "-bottom-64 right-20 -rotate-[10deg]",
-    "-left-14 -top-60 -rotate-[25deg]",
+    '-right-32 -rotate-[30deg] -top-28',
+    'bottom-0 -left-40 -rotate-[15deg]',
+    '-right-56 -bottom-28 rotate-[10deg]',
+    '-top-32 right-40 -translate-y-1/2 rotate-[25deg]',
+    'left-12 -bottom-56 rotate-[45deg]',
+    '-bottom-64 right-20 -rotate-[10deg]',
+    '-left-14 -top-60 -rotate-[25deg]',
   ];
   return (
     <>
       {gameList.map((item, index) => {
-        const image = item.images.portraits;
+        const image = item.images.portraits[0];
         const shadowColor = image.colors.highestSat;
         if (!list[index]) {
           return null;
@@ -60,9 +56,9 @@ export function OrderItemDistribute({
             alt={item.name}
             title={item.name}
             className={
-              "rounded z-[1] absolute " +
-              "[--tw-shadow-colored:0_10px_25px_-3px_var(--tw-shadow-color),_0_-2px_10px_0px_var(--tw-shadow-color),_0_4px_6px_-4px_var(--tw-shadow-color)] " +
-              "shadow-lg shadow-red-500 transition-opacity " +
+              'absolute z-[1] rounded ' +
+              '[--tw-shadow-colored:0_10px_25px_-3px_var(--tw-shadow-color),_0_-2px_10px_0px_var(--tw-shadow-color),_0_4px_6px_-4px_var(--tw-shadow-color)] ' +
+              'shadow-lg shadow-red-500 transition-opacity ' +
               list[index]
             }
             style={{

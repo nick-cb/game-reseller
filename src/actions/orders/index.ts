@@ -1,16 +1,16 @@
-"use server";
+'use server';
 
-import { sql, updateSingle } from "@/database";
-import { Orders } from "@/database/models/model";
-import { isUndefined } from "@/utils";
+import { sql, updateSingle } from '@/database';
+import { Orders } from '@/database/models/model';
+import { isUndefined } from '@/utils';
 
 export async function updateOrder(
   id: number,
   {
     order,
   }: {
-    order: Partial<Omit<Orders, "ID">>;
-  },
+    order: Partial<Omit<Orders, 'ID'>>;
+  }
 ) {
   const {
     items,
@@ -27,7 +27,6 @@ export async function updateOrder(
     payment_service,
   } = order;
 
-  // prettier-ignore
   return updateSingle(sql`
     update orders
       set 
@@ -52,8 +51,8 @@ export async function updateOrderByPaymentIntent(
   {
     order,
   }: {
-    order: Partial<Omit<Orders, "ID">>;
-  },
+    order: Partial<Omit<Orders, 'ID'>>;
+  }
 ) {
   const {
     items,

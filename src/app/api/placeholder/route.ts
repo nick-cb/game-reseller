@@ -1,8 +1,7 @@
-import { query, sql } from "@/database";
-import { Game, GameImages } from "@/database/models/model";
-import { OmitGameId } from "@/actions/game/select";
-import { groupImages } from "@/utils/data";
-import { NextResponse } from "next/server";
+import { query, sql } from '@/database';
+import { Game, GameImages } from '@/database/models/model';
+import { OmitGameId } from '@/actions/game/select';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   const { data } = await query<
@@ -21,8 +20,6 @@ export async function GET() {
   `);
 
   return NextResponse.json({
-    data: data.map((game) => {
-      return { ...game, images: groupImages(game.images) };
-    }),
+    data: data,
   });
 }

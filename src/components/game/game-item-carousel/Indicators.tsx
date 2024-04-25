@@ -9,7 +9,7 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
-import { GameImages } from '@/database/models/model';
+import { GameImageGroup, GameImages } from '@/database/models/model';
 import { isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
 import { useScroll, ScrollItem } from '@/components/scroll2/ScrollPrimitive';
 
@@ -117,7 +117,7 @@ function IndicatorNextPrevButton() {
 
 export type IndicatorListProps = {
   videos: OmitGameId<FVideoFullInfo>[];
-  images: OmitGameId<GameImages>[];
+  images: GameImageGroup;
 };
 
 export function IndicatorList(props: IndicatorListProps) {
@@ -148,7 +148,7 @@ export function IndicatorList(props: IndicatorListProps) {
                 </ScrollItem>
               );
             })}
-            {images.map((img, index) => {
+            {images.landscapes.map((img, index) => {
               return (
                 <ScrollItem index={videos.length + index} key={img.ID}>
                   <Indicator

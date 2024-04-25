@@ -50,7 +50,7 @@ export async function onLinkNavigate(callback: Function) {
 }
 
 export const pascalCase = (type: string, delimiter: string) => {
-  const segments = type.split(delimiter);
+  const segments = type.split(delimiter).filter((segment) => !!segment);
   let final = '';
   for (const segment of segments) {
     final += ' ';

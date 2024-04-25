@@ -25,11 +25,11 @@ export default async function ItemOrderPage({ params }: { params: any }) {
     redirect("/");
   }
 
-  const game = { ...data, images: groupImages(data.images), checked: true };
+  const game = { ...data, checked: true };
 
   return (
     <div className="flex flex-col-reverse grid-cols-[calc(70%-32px)_30%] md:grid md:grid-rows-[minmax(0px,auto)_min-content] gap-8">
-      <CheckoutView gameList={[game]} />
+      {/* <CheckoutView gameList={[game]} /> */}
     </div>
   );
 }

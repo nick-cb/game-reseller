@@ -2,7 +2,7 @@ import "server-only";
 
 import { sql } from '@/database';
 
-export const groupImageByType = (type: string, colors = false) => {
+export const groupImageByType = (type: string | string[], colors = false) => {
   const colorQuery = colors
     ? sql`json_object(
             'highestSat', gi.colors -> '$.highestSat',
@@ -24,7 +24,7 @@ export const groupImageByType = (type: string, colors = false) => {
     ), json_array())
   from game_images gi
   where gi.game_id = g.ID
-    and gi.type = ${type}
+    and gi.type in (${type})
   group by type
 `;
 

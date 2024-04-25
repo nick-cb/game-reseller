@@ -1,71 +1,35 @@
-import React from 'react';
-import Image from 'next/image';
-import GameItemCarousel from '@/components/game/game-item-carousel/GameItemCarousel';
-import {
-  OmitGameId,
-  countGameAddonsById,
-  findGameBySlug,
-  findMappingById,
-} from '@/actions/game/select';
-import { GameImages } from '@/database/models/model';
-import GameCard from '@/components/game/GameCard';
-import Link from 'next/link';
-import { currencyFormatter, pascalCase } from '@/utils';
-import { BuyNowButton } from '@/components/game/BuyNowButton';
-import SystemRequirements from '@/components/game/SystemRequirements';
+import { findMappingById } from '@/actions/game/select';
+import GameDetailActions from '@/actions2/game-detail-actions';
 import { AddToCartButton } from '@/components/game/AddToCartBtn';
-import { GameNav } from '@/components/game/GameNav';
-import { groupImages } from '@/utils/data';
-import { CriticRating } from '@/components/game/CriticRating';
-import { Polls } from '@/components/game/Polls';
 import { AvgRating } from '@/components/game/AvgRating';
+import { BuyNowButton } from '@/components/game/BuyNowButton';
+import { CriticRating } from '@/components/game/CriticRating';
 import { DescriptionAndFeature } from '@/components/game/DescriptionAndFeature';
-import { InfoLineItems } from '@/components/game/game-item-carousel/InfoLineItems';
+import GameCard from '@/components/game/GameCard';
+import { GameNav } from '@/components/game/GameNav';
+import { Polls } from '@/components/game/Polls';
+import SystemRequirements from '@/components/game/SystemRequirements';
 import { FullDescription } from '@/components/game/game-item-carousel/FullDescription';
-
-function groupLandscape(images: OmitGameId<GameImages>[]) {
-  const carousel: OmitGameId<GameImages>[] = [];
-  const longDescription: OmitGameId<GameImages>[][] = [];
-
-  for (const image of images) {
-    const type = image.type.toLowerCase();
-    const isLandscapeLike =
-      type.includes('wide') || type.includes('carousel') || type.includes('feature');
-    if (isLandscapeLike && !type.includes('video') && !image.row) {
-      carousel.push(image);
-      continue;
-    }
-    if (image.row) {
-      if (!longDescription[image.row]) {
-        longDescription[image.row] = [];
-      }
-      longDescription[image.row].push(image);
-    }
-  }
-
-  return { carousel, longDescription };
-}
+import GameItemCarousel from '@/components/game/game-item-carousel/GameItemCarousel';
+import { InfoLineItems } from '@/components/game/game-item-carousel/InfoLineItems';
+import { currencyFormatter, pascalCase } from '@/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
-  const { data: game } = await findGameBySlug(slug);
+  const { data: game } = await GameDetailActions.games.findBySlug({ slug });
   if (!game) {
     return <div>Game not found</div>;
   }
 
-  const { data: mappings } = await findMappingById(
-    game.type === 'base_game' ? game.ID : game.base_game_id
-  );
+  const { data: mappings } = await findMappingById(game.ID);
   const editions = mappings.filter((g) => g.type.includes('edition'));
   const dlc = mappings.filter((g) => g.type.includes('dlc'));
   const addOns = mappings.filter((g) => g.type.includes('add_on'));
   const dlcAndAddons = dlc.concat(addOns);
   const addOnCount = editions.length + dlcAndAddons.length;
-
-  const { carousel: carouselImages, longDescription: longDescriptionImages } = groupLandscape(
-    game.images
-  );
-  const { logo, landscape } = groupImages(game.images);
 
   return (
     <div className="pt-6">
@@ -80,7 +44,7 @@ const page = async ({ params }: { params: any }) => {
       ) : null}
       <div className="grid grid-cols-3 grid-rows-[min-content_auto] gap-4 md:grid-cols-5 md:gap-8 lg:gap-16 xl:grid-cols-6">
         <section className="col-span-full col-start-1 row-start-1 row-end-2 md:[grid-column:-3/1]">
-          <GameItemCarousel videos={game.videos} images={carouselImages} />
+          <GameItemCarousel videos={game.videos} images={game.images} />
         </section>
         <section
           className="col-span-3 
@@ -90,7 +54,7 @@ const page = async ({ params }: { params: any }) => {
           <div className="top-[116px] flex flex-col gap-4 md:sticky">
             <div className="relative hidden aspect-[3/2] w-full items-center justify-center md:flex">
               <Image
-                src={logo?.url || landscape.url}
+                src={game.images.logos?.[0]?.url}
                 width={420}
                 height={300}
                 alt={`logo of ${game.name}`}
@@ -115,10 +79,7 @@ const page = async ({ params }: { params: any }) => {
         </section>
         {game.long_description ? (
           <section className="col-span-full md:[grid-column:-3/1]">
-            <FullDescription
-              longDescription={game.long_description}
-              longDescriptionImages={longDescriptionImages}
-            />
+            <FullDescription longDescription={game.long_description} longDescriptionImages={[]} />
           </section>
         ) : null}
         {editions.length > 0 ? (

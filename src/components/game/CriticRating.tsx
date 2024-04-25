@@ -166,6 +166,7 @@ function RatingCircle({ rating }: { rating: number }) {
     </svg>
   );
 }
+
 function StarRating({ earned_score, avg_rating }: { earned_score: number; avg_rating: number }) {
   return (
     <ul className="flex gap-2">
