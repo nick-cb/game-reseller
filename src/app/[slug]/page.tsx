@@ -1,40 +1,37 @@
-import { findMappingById } from '@/actions/game/select';
 import GameDetailActions from '@/actions2/game-detail-actions';
+import { HActions } from '@/actions2/home-actions';
 import { AddToCartButton } from '@/components/game/AddToCartBtn';
 import { AvgRating } from '@/components/game/AvgRating';
 import { BuyNowButton } from '@/components/game/BuyNowButton';
 import { CriticRating } from '@/components/game/CriticRating';
 import { DescriptionAndFeature } from '@/components/game/DescriptionAndFeature';
-import GameCard from '@/components/game/GameCard';
 import { GameNav } from '@/components/game/GameNav';
 import { Polls } from '@/components/game/Polls';
+import { RelatedGames } from '@/components/game/RelateGames';
 import SystemRequirements from '@/components/game/SystemRequirements';
 import { FullDescription } from '@/components/game/game-item-carousel/FullDescription';
 import GameItemCarousel from '@/components/game/game-item-carousel/GameItemCarousel';
 import { InfoLineItems } from '@/components/game/game-item-carousel/InfoLineItems';
 import { currencyFormatter, pascalCase } from '@/utils';
 import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
-  const { data: game } = await GameDetailActions.games.findBySlug({ slug });
+  const [gameDetailRes, mappingCheckRes] = await Promise.allSettled([
+    GameDetailActions.games.findBySlug({ slug }),
+    GameDetailActions.games.hasMapping(slug),
+  ]);
+  const game = gameDetailRes.status === 'fulfilled' ? gameDetailRes.value.data : null;
+  const hasMapping = mappingCheckRes.status === 'fulfilled' ? mappingCheckRes.value : false;
   if (!game) {
     return <div>Game not found</div>;
   }
 
-  const { data: mappings } = await findMappingById(game.ID);
-  const editions = mappings.filter((g) => g.type.includes('edition'));
-  const dlc = mappings.filter((g) => g.type.includes('dlc'));
-  const addOns = mappings.filter((g) => g.type.includes('add_on'));
-  const dlcAndAddons = dlc.concat(addOns);
-  const addOnCount = editions.length + dlcAndAddons.length;
-
   return (
     <div className="pt-6">
       <h1 className="pb-6 text-2xl text-white_primary">{game.name}</h1>
-      {addOnCount || game.base_game_id ? (
+      {hasMapping || game.base_game_id ? (
         <div className="mb-6">
           <GameNav
             slug={game.base_game_slug || game.slug}
@@ -82,46 +79,9 @@ const page = async ({ params }: { params: any }) => {
             <FullDescription longDescription={game.long_description} longDescriptionImages={[]} />
           </section>
         ) : null}
-        {editions.length > 0 ? (
-          <>
-            <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
-              <h2 className="pb-4 text-xl text-white_primary">Editions</h2>
-              {editions.map((edition) => (
-                <React.Fragment key={edition.ID}>
-                  <div className="flex flex-col gap-4">
-                    <GameCard game={edition} type="edition" />
-                  </div>
-                  <br className="last:hidden" />
-                </React.Fragment>
-              ))}
-            </section>
-          </>
-        ) : null}
-        {dlcAndAddons.length > 0 ? (
-          <>
-            <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
-              <h2 className="pb-4 text-xl text-white_primary">Add-ons</h2>
-              {dlcAndAddons.slice(0, 3).map((edition) => (
-                <React.Fragment key={edition.ID}>
-                  <div className="flex flex-col gap-4">
-                    <GameCard game={edition} type="add-on" />
-                  </div>
-                  <br className="last:hidden" />
-                </React.Fragment>
-              ))}
-              {dlcAndAddons.length > 3 ? (
-                <Link
-                  href={'#'}
-                  className="block w-full rounded border border-white_primary/60 py-4
-                  text-center text-sm 
-                  transition-colors hover:bg-paper"
-                >
-                  See more
-                </Link>
-              ) : null}
-            </section>
-          </>
-        ) : null}
+        <Suspense>
+          <RelatedGames game={game} />
+        </Suspense>
         {game.avg_rating ? (
           <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
             <h2 className="pb-4 text-xl">Player Ratings</h2>

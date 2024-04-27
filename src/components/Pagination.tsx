@@ -14,6 +14,8 @@ type PaginationProps = {
 const Pagination = (props: PaginationProps) => {
   const { total, perPage, currentPage, className = '' } = props;
   const searchParams = useSearchParams();
+  if (total <= perPage) return null;
+
   return (
     <ul className={mergeCls(className, 'flex w-full items-center justify-center gap-2')}>
       {Array(Math.ceil(total / perPage))

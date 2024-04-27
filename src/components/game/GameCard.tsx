@@ -1,69 +1,59 @@
-import { OmitGameId } from "@/actions/game/select";
-import { Game, GameImages } from "@/database/models/model";
-import { currencyFormatter } from "@/utils";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import { Game, GameImageGroup } from '@/database/models/model';
+import { currencyFormatter } from '@/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
-const GameCard = ({
-  game,
-  type,
-}: {
-  game: Pick<Game, "ID" | "name" | "slug" | "description" | "sale_price"> & {
-    images: OmitGameId<GameImages>[];
+type GameCardProps = {
+  game: Pick<Game, 'ID' | 'name' | 'slug' | 'description' | 'sale_price'> & {
+    images: GameImageGroup;
   };
-  type: "base" | "edition" | "add-on";
-}) => {
-  const landscapeImage = game.images.find((g: any) => {
-    const type = g.type.toLowerCase();
-    return type.includes("landscape") || type.includes("wide");
-  });
+  type: 'base' | 'edition' | 'add-on';
+};
+const GameCard = (props: GameCardProps) => {
+  const { game, type } = props;
+  const { images } = game;
+
   return (
-    <div className="game-card grid grid-cols-5 rounded overflow-hidden bg-paper_2">
+    <div className="game-card grid grid-cols-5 overflow-hidden rounded bg-paper_2">
       <Link href={`/${game.slug}`} className="contents">
-        <div className="col-start-1 col-end-6 sm:col-end-3 w-full aspect-video h-full relative">
-          <Image
-            src={landscapeImage?.url || ""}
-            alt={`landscape of ${type} ${game.name}`}
-            fill
-          />
+        <div className="relative col-start-1 col-end-6 aspect-video h-full w-full sm:col-end-3">
+          <Image src={images.landscapes[0]?.url} alt={`landscape of ${type} ${game.name}`} fill />
         </div>
         <div
-          className="row-start-2 sm:row-start-1 col-start-1 sm:col-start-3 col-end-6
-        py-4 px-4 sm:px-2 md:px-4 lg:px-8
-        text-white_primary
-        flex flex-col gap-2"
+          className="col-start-1 col-end-6 row-start-2 flex flex-col
+        gap-2 px-4 py-4 text-white_primary sm:col-start-3
+        sm:row-start-1
+        sm:px-2 md:px-4 lg:px-8"
         >
           <div className="flex items-center gap-2">
-            <p className="py-1 px-2 bg-paper w-max text-xs text-white_primary rounded self-start whitespace-nowrap">
+            <p className="w-max self-start whitespace-nowrap rounded bg-paper px-2 py-1 text-xs text-white_primary">
               {type.toUpperCase()}
             </p>
             <p className="text-sm">{game.name}</p>
           </div>
-          <summary className="text-xs lg:text-sm text-white/60 list-none line-clamp-2 md:line-clamp-3 lg:line-clamp-4">
+          <summary className="line-clamp-2 list-none text-xs text-white/60 md:line-clamp-3 lg:line-clamp-4 lg:text-sm">
             {game.description}
           </summary>
         </div>
       </Link>
       <div
-        className="row-start-3 col-start-1 col-end-6 sm:row-start-2
-        border-t border-white/20
-        py-2 sm:py-4 px-4
-        flex sm:flex-row flex-col justify-end sm:items-center
-        gap-2 sm:gap-4"
+        className="col-start-1 col-end-6 row-start-3 flex
+        flex-col justify-end
+        gap-2 border-t border-white/20
+        px-4 py-2 sm:row-start-2 sm:flex-row sm:items-center
+        sm:gap-4 sm:py-4"
       >
         <p className="text-white_primary">
-          {parseInt(game.sale_price.toString())
-            ? currencyFormatter(game.sale_price)
-            : "Free"}
+          {parseInt(game.sale_price.toString()) ? currencyFormatter(game.sale_price) : 'Free'}
         </p>
-        <button className="bg-primary text-white py-2 w-full sm:w-44 rounded hover:brightness-105 transition-[filter]">
+        <button className="w-full rounded bg-primary py-2 text-white transition-[filter] hover:brightness-105 sm:w-44">
           Buy now
         </button>
         <button
-          className="text-sm
-          py-2 w-full sm:w-44 rounded border
-          border-white/60 text-white hover:bg-paper transition-colors"
+          className="w-full
+          rounded border border-white/60 py-2 text-sm
+          text-white transition-colors hover:bg-paper sm:w-44"
         >
           Add to cart
         </button>

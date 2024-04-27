@@ -6,11 +6,11 @@ import Stripe from 'stripe';
 import ShareActions from '../share';
 import * as Q from './queries';
 
-type PayWithStripeClientPayload = {
+export type PayWithStripeClientPayload = {
   paymentMethod: string;
   save: boolean;
 };
-type PayWithStripeParams = {
+export type PayWithStripeParams = {
   cartId: number;
   paymentMethods: Stripe.PaymentMethod[];
   user: Pick<Users, 'ID' | 'full_name' | 'stripe_id'>;
@@ -74,6 +74,5 @@ export async function payWithStripe(params: PayWithStripeParams) {
 export async function updateOrderPaymentIntent(orderID: number, paymentIntent: string) {
   try {
     const { data } = await Q.updateOrderPaymentIntent(orderID, paymentIntent);
-    console.log({ data });
   } catch (error) {}
 }

@@ -1,24 +1,20 @@
-import './hero-carousel.css';
-import React, { PropsWithChildren } from 'react';
-import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
-import { HCarousel } from './Carousel';
-import { HeroCarouselImage } from './HeroCarouselImage';
-import { HeroCarouselDesktopCover, HeroCarouselMobileCover } from './HeroCarouselCover';
+import HomeActions from '@/actions2/home-actions';
 import {
   DesktopIndicator,
   MobileIndicator,
 } from '@/components/home/hero_carousel/HeroCarouselIndicator';
-import HomeActions from '@/actions2/home-actions';
+import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
+import { HCarousel } from './Carousel';
+import { HeroCarouselDesktopCover, HeroCarouselMobileCover } from './HeroCarouselCover';
+import { HeroCarouselImage } from './HeroCarouselImage';
+import './hero-carousel.css';
 
-type HeroCarouselProps = {
-  className?: string;
-};
-export async function HeroCarousel({ className = '' }: PropsWithChildren<HeroCarouselProps>) {
-  const { data } = await HomeActions.collections.getHeroCarousel();
+export async function HeroCarousel() {
+  const { data } = await HomeActions.collections.getHeroCarousel2();
   const { game_list } = data;
 
   return (
-    <div className={'gap-4 sm:flex lg:gap-8 ' + className}>
+    <div className={'gap-4 sm:flex lg:gap-8'}>
       <HCarousel
         length={game_list.length}
         Indicator={

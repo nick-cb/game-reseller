@@ -1,6 +1,6 @@
 import React from 'react';
 import PortraitGameCard from '@/components/PortraitGameCard';
-import BrowseActions from '@/actions2/browse';
+import BrowseActions from '@/actions2/browse-actions';
 import { z } from 'zod';
 import Pagination from '@/components/Pagination';
 
@@ -20,7 +20,7 @@ const page = async (props: PageProps) => {
   const limit = 24;
   const skip = limit * (page - 1);
 
-  const { data, error, total } = await BrowseActions.game.getGameList({
+  const { data, error, total } = await BrowseActions.games.getGameList({
     tags: categories,
     limit,
     skip: skip,

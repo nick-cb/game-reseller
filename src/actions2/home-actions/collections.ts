@@ -3,7 +3,7 @@
 import { Collections, Game, GameImages, Videos } from '@/database/models/model';
 import * as Q from './queries';
 
-export async function getHeroCarousel() {
+export async function getHeroCarousel2() {
   try {
     const { collection, game_list } = await Q.getheroCarousel();
     return buildSingleCollectionResponse({ collection, game_list, error: null });

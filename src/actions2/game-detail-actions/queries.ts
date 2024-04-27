@@ -1,6 +1,6 @@
 'use server';
 
-import { querySingle, sql } from '@/database';
+import { query, querySingle, sql } from '@/database';
 import { groupImageByType } from '../share/images';
 import Reviews, {
   Game,
@@ -13,6 +13,7 @@ import Reviews, {
   VideoVariants,
   Videos,
 } from '@/database/models/model';
+import { DefaultPagination } from '@/utils';
 
 export type FindBySlugResult = Game & {
   images: GameImageGroup;
@@ -148,4 +149,89 @@ export async function findBySlug(params: FindBySlugParams) {
     from games g
     where g.slug = ${slug}
   `);
+}
+
+type FindMappingByIDResult = {
+  type: string;
+  game_list: (Pick<
+    Game,
+    'ID' | 'name' | 'slug' | 'sale_price' | 'developer' | 'avg_rating' | 'description'
+  > & {
+    images: GameImageGroup;
+  })[];
+};
+export async function findMappingByID(ID: number) {
+  return query<FindMappingByIDResult[]>(sql`
+    select type,
+           json_arrayagg(
+               json_object(
+                   'ID', g.ID,
+                   'name', g.name,
+                   'slug', g.slug,
+                   'sale_price', g.sale_price,
+                   'developer', g.developer,
+                   'avg_rating', g.avg_rating,
+                   'description', g.description,
+                   'images',
+                   json_object(
+                     'portraits', json_array(),
+                     'landscapes', coalesce((${groupImageByType('landscape')}), json_array()),
+                     'logos', json_array()
+                   )
+               )
+           ) as game_list
+    from games g
+    where base_game_id = ${ID}
+    group by type;
+  `);
+}
+
+export async function hasMapping(slug: string) {
+  return querySingle<{ data: boolean }>(sql`
+    select exists(select 1 from games where base_game_slug = ${slug}) as data
+  `);
+}
+
+export type FindMappingListByIndexedInfoParams = {
+  base_game_id?: number;
+  base_game_slug?: string;
+  keyword?: string;
+  pagination?: { limit: number; skip: number };
+};
+export async function findMappingListByIndexedInfo(params: FindMappingListByIndexedInfoParams) {
+  const { base_game_id, base_game_slug, keyword } = params;
+  const { pagination = DefaultPagination } = params;
+  const countQuery = sql`
+    select count(*) as total
+    from games g
+    where if(${!!base_game_id}, base_game_id = ${base_game_id ?? -1}, true)
+    and if(${!!base_game_slug}, slug = ${base_game_slug ?? ''}, true);
+  `;
+  const dataQuery = sql`
+    select g.*,
+      json_object(
+        'portraits', (${groupImageByType('portrait')}),
+        'landscapes', json_array(),
+        'logos', json_array()
+      ) as images
+    from games g
+    where if(${!!base_game_id}, g.base_game_id = ${base_game_id ?? -1}, true)
+    and if(${!!base_game_slug}, g.slug = ${base_game_slug ?? ''}, true)
+    and if(${!!keyword}, g.name like ${'%' + keyword + '%'}, true)
+    limit ${pagination.limit} offset ${pagination.skip};
+  `;
+
+  const [dataRes, countRes] = await Promise.allSettled([
+    query<
+      (Game & {
+        images: GameImageGroup;
+      })[]
+    >(dataQuery),
+    querySingle<{ total: number }>(countQuery),
+  ]);
+
+  return {
+    data: dataRes.status === 'fulfilled' ? dataRes.value.data : [],
+    total: countRes.status === 'fulfilled' ? countRes.value.data?.total : 0,
+  };
 }

@@ -162,3 +162,13 @@ export function getAudioSourcesFromVideo(video: OmitGameId<FVideoFullInfo>) {
 export function logDebug(value: any) {
   console.log(util.inspect(value, { showHidden: false, depth: null, colors: true }));
 }
+
+export const ImageGroups = {
+  PORTRAIT: ['portrait'],
+  LOGO: ['logo', 'ProductLogo'],
+};
+
+export const DefaultPagination = {
+  limit: 24,
+  skip: 0,
+};

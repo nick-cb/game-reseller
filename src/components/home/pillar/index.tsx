@@ -1,22 +1,12 @@
-import Link from 'next/link';
-import { Collections, Game, GameImageGroup } from '@/database/models/model';
-import { FVideoFullInfo } from '@/actions/game/select';
+import HomeActions, { GameItem } from '@/actions2/home-actions';
+import { Collections } from '@/database/models/model';
 import { currencyFormatter } from '@/utils';
-import { getCollectionByKey } from '@/actions/collections/collection';
+import Link from 'next/link';
 import React from 'react';
-import { groupImages } from '@/utils/data';
-import HomeActions from '@/actions2/home-actions';
 
-type PillarGame = Pick<
-  Game,
-  'ID' | 'name' | 'slug' | 'developer' | 'avg_rating' | 'sale_price' | 'description'
-> & {
-  images: GameImageGroup;
-  videos: FVideoFullInfo[];
-};
 type PillarProps = {
   data: Collections & {
-    list_game: PillarGame[];
+    game_list: GameItem[];
   };
 };
 
@@ -24,29 +14,19 @@ export async function PillarGroup({ names }: { names: string[] }) {
   const { data: pillars } = await HomeActions.collections.getPillarGroup({ names });
 
   return (
-    <>
+    <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex">
       {pillars.map((collection) => {
         if (!collection) {
           return null;
         }
         return (
           <React.Fragment key={collection.ID}>
-            <Pillar
-              data={{
-                ...collection,
-                list_game: collection.game_list.map((game) => {
-                  return {
-                    ...game,
-                    images: groupImages(game.images),
-                  };
-                }) as any,
-              }}
-            />
+            <Pillar data={collection} />
             <hr className="my-4 border-default last-of-type:hidden md:hidden" />
           </React.Fragment>
         );
       })}
-    </>
+    </section>
   );
 }
 
@@ -68,7 +48,7 @@ export function Pillar({ data }: PillarProps) {
         snap-mandatory grid-cols-2 flex-col gap-2
         overflow-scroll md:flex"
       >
-        {data.list_game.slice(0, 6).map((game, index) => (
+        {data.game_list.slice(0, 6).map((game, index) => (
           <Link
             key={game.ID}
             href={`/${game.slug}`}
@@ -83,7 +63,7 @@ export function Pillar({ data }: PillarProps) {
             >
               <div className="relative aspect-[3/4] h-28 overflow-hidden rounded md:h-18">
                 <img
-                  src={game.images.portraits?.url + '?h=128&w=96&quality=medium&resize=1'}
+                  src={game.images.portraits[0]?.url + '?h=128&w=96&quality=medium&resize=1'}
                   alt=""
                   width={96}
                   height={128}

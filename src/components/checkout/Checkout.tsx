@@ -1,23 +1,24 @@
 import { decodeToken, findUserById } from '@/actions/users';
-import { PaymentTabButton, SpriteIcon, SavePayment } from '@/components/payment/PaymentRadioTab';
-import { StripeCheckoutForm, StripeElementsNullish } from '@/components/payment/Stripe';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { stripe } from '@/utils';
-import { Game, GameImageGroup } from '@/database/models/model';
+import CheckoutActions from '@/actions2/checkout-actions';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
-import { MobileGameList } from '@/components/checkout/MobileGameList';
-import { PaymentItem } from '@/components/checkout/SavedCardItem';
-import { OrderSummary } from '@/components/checkout/OrderSummary';
 import { SnackContextProvider } from '@/components/SnackContext';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
+import { MobileGameList } from '@/components/checkout/MobileGameList';
+import { OrderSummary } from '@/components/checkout/OrderSummary';
+import { PaymentItem } from '@/components/checkout/SavedCardItem';
+import { PaymentTabButton, SavePayment, SpriteIcon } from '@/components/payment/PaymentRadioTab';
+import { StripeCheckoutForm, StripeElementsNullish } from '@/components/payment/Stripe';
+import { Game, GameImageGroup } from '@/database/models/model';
+import { stripe } from '@/utils';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import React from 'react';
 import { PlaceOrderButton } from '../game/PlaceOrderButton';
 import {
-  IntersectionObserverContainer,
-  IntersectionObserverRoot,
+    IntersectionObserverContainer,
+    IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
 import { ScrollItem } from '../scroll2/ScrollPrimitive';
-import CheckoutActions from '@/actions2/checkout-actions';
 
 export type CheckoutViewProps = {
   gameList: (Pick<

@@ -1,4 +1,5 @@
-import * as game from './game';
+export * from './game';
+import * as games from './game';
 
-const BrowseActions = { game };
+const BrowseActions = { games };
 export default BrowseActions;

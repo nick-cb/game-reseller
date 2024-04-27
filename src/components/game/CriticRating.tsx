@@ -15,7 +15,7 @@ const criticRec = {
 };
 type CriticRatingProps = {
   game: Pick<Game, 'name' | 'critic_pct' | 'critic_avg' | 'critic_rec'> & {
-    reviews: OmitGameId<Reviews>[];
+    reviews: Reviews[];
   };
 };
 export function CriticRating({ game }: CriticRatingProps) {

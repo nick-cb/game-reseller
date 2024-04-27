@@ -118,31 +118,17 @@ export async function getFeatureRow(params: GetFeatureRowParams) {
                            'sale_price', g.sale_price,
                            'description', g.description,
                            'images',
+                           json_object(
+                              'portraits', (${groupImageByType('portrait')}),
+                              'landscapes', (${groupImageByType('landscape')})
+                           ),
+                           'videos', 
                            (select json_arrayagg(
-                                       json_object(
-                                           'ID', gi.ID,
-                                           'url', gi.url,
-                                           'type', gi.type,
-                                           'alt', gi.alt,
-                                           'game_id', gi.game_id,
-                                           'row', gi.pos_row,
-                                           'colors',
-                                           json_object('highestSat', gi.colors -> '$.highestSat')
-                                       )
-                                   )
-                            from ((select *
-                                   from game_images
-                                   where game_images.type = 'landscape'
-                                     and game_images.game_id = g.ID
-                                   limit 1)
-                                  ) as gi),
-                            'videos', 
-                            (select json_arrayagg(
-                                         json_object('ID', v.ID,
-                                                     'thumbnail', v.thumbnail))
-                             from videos v
-                             where v.game_id = g.ID
-                             limit 1)
+                                        json_object('ID', v.ID,
+                                                    'thumbnail', v.thumbnail))
+                            from videos v
+                            where v.game_id = g.ID
+                            limit 1)
                        )
                 from games g
                 where g.ID = cd.game_id)) as game_list

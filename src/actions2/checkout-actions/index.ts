@@ -1,7 +1,7 @@
+export * from './orders';
 import * as orders from './orders';
 
 const CheckoutActions = {
-  orders
+  orders,
 }
-
 export default CheckoutActions;
