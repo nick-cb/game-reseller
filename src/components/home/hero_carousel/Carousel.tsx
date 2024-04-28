@@ -26,6 +26,7 @@ const carouselCtx = createContext({} as ContextProps);
 
 const breakpoints = [640] as const;
 export function HCarousel({
+  length,
   children,
   Indicator,
 }: PropsWithChildren<{ length: number; Indicator: React.ReactNode }>) {

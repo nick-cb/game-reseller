@@ -15,7 +15,7 @@ import { useCartContext } from '../cart/CartContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useStripeNullish } from '../payment/Stripe';
-import CheckoutActions, { actions } from '@/actions2/checkout-actions';
+import CheckoutActions from '@/actions2/checkout-actions';
 
 const checkoutContext = createContext<{
   stripe: Stripe | null;
@@ -160,7 +160,6 @@ export function CheckoutForm(props: CheckoutFormProps) {
     if (paymentIntent?.id && paymentIntent.status !== 'requires_action') {
       await CheckoutActions.orders.updateOrderPaymentIntent(orderId, paymentIntent.id);
     }
-    actions.payWithStripe();
     const nextActionModal = nextActionModalRef.current;
     if (!nextActionModal) {
       return;

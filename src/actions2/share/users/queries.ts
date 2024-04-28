@@ -1,6 +1,6 @@
 'use server';
 
-import { sql, updateSingle } from '@/database';
+import { querySingle, sql, updateSingle } from '@/database';
 import { Users } from '@/database/models/model';
 import { isUndefined } from '@/utils';
 
@@ -21,5 +21,11 @@ export async function updateUserByID(ID: number, params: UpdateUserByIDParams) {
       stripe_id = if(${!isUndefined(stripe_id)}, ${stripe_id}, stripe_id),
       refresh_token = if(${!isUndefined(refresh_token)}, ${refresh_token}, refresh_token)
     where ID = ${ID}
+  `);
+}
+
+export async function getUserByEmail(email: string) {
+  return await querySingle<Users>(sql`
+    select * from users where email = ${email}
   `);
 }

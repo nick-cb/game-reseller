@@ -1,8 +1,6 @@
-import { findOrderById } from '@/actions/order';
 import { getUserFromCookie } from '@/actions/users';
 import ShareActions from '@/actions2/share';
 import { OrderItemDistribute } from '@/components/OrderItemDistribute';
-import { logDebug } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -18,7 +16,6 @@ export default async function OrderSuccessPage({
     redirect('/');
   }
   const { data: order } = isNaN(id) ? { data: null } : await ShareActions.orders.findOrderByID(id);
-  logDebug(order);
   if (!order) {
     return <div>Order not found</div>;
   }
@@ -26,51 +23,8 @@ export default async function OrderSuccessPage({
   const firstItem = items[0];
 
   return (
-    <div
-      className="flex h-full items-center justify-center pt-[200px]"
-      // style={{
-      //   gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
-      //   gridTemplateRows: "repeat(auto-fill,minmax(200px,1fr))",
-      // }}
-    >
+    <div className="flex h-full items-center justify-center pt-[200px]">
       <div className={'flex gap-8'}>
-        {/* <ul className="w-[300px] h-[450px] relative"> */}
-        {/*   {items.map((item, index) => { */}
-        {/*     const image = item.images.portrait; */}
-        {/*     const shadowColor = image.colors.highestSat; */}
-        {/*     return ( */}
-        {/*       <li */}
-        {/*         className={ */}
-        {/*           "absolute hover:-translate-y-1/3 transition-transform duration-300 ease-out " + */}
-        {/*           "flex items-center w-full " */}
-        {/*         } */}
-        {/*         style={{ */}
-        {/*           bottom: index * (450 / items.length) * -1 + "px", */}
-        {/*           // transform: `translateY(${index * (450 / items.length)}px)`, */}
-        {/*         }} */}
-        {/*       > */}
-        {/*         <div */}
-        {/*           className="absolute -top-3 left-1/2 -translate-x-1/2 w-[90%] h-1/2 blur-md opacity-60 z-[-1]" */}
-        {/*           style={{ */}
-        {/*             background: `linear-gradient(0deg, #000 0%, transparent 100%)`, */}
-        {/*             // background: `rgb(${shadowColor})`, */}
-        {/*           }} */}
-        {/*         ></div> */}
-        {/*         <Image */}
-        {/*           src={item.images.portrait.url} */}
-        {/*           alt={""} */}
-        {/*           width={300} */}
-        {/*           height={450} */}
-        {/*           className="object-cover w-[300px] h-[450px] rounded-xl shadow-black mx-auto" */}
-        {/*           style={{ */}
-        {/*             width: 300 - (items.length - index) * 5 + "px", */}
-        {/*             boxShadow: `var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 10px 25px -3px rgb(${shadowColor}), 0 -2px 10px 0px rgb(${shadowColor}), 0 4px 6px -4px rgb(${shadowColor})`, */}
-        {/*           }} */}
-        {/*         /> */}
-        {/*       </li> */}
-        {/*     ); */}
-        {/*   })} */}
-        {/* </ul> */}
         <div
           className={
             'flex flex-col items-center pt-2 ' +

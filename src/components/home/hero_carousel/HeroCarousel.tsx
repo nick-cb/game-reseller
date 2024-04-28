@@ -10,7 +10,7 @@ import { HeroCarouselImage } from './HeroCarouselImage';
 import './hero-carousel.css';
 
 export async function HeroCarousel() {
-  const { data } = await HomeActions.collections.getHeroCarousel2();
+  const { data } = await HomeActions.collections.getHeroCarousel();
   const { game_list } = data;
 
   return (

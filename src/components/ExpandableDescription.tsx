@@ -1,56 +1,44 @@
-'use client';
-
 import { mergeCls } from '@/utils';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { PropsWithChildren } from 'react';
 
-export default function ExpandableDescription({
-  children,
-  className = '',
-}: PropsWithChildren<{ className?: string }>) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [show, setShow] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    const container = ref.current;
-    if (!container) {
-      return;
-    }
-    let childrenHeight = 0;
-    for (const child of container.children) {
-      childrenHeight += child.clientHeight;
-    }
-    if (!show && childrenHeight > container.clientHeight) {
-      setShow(true);
-    }
-  });
-
-  const Gradient = <div className="h-40 w-full bg-gradient-to-t from-default"></div>;
-
+type ExpandableDescriptionProps = {
+  className?: string;
+};
+export default function ExpandableDescription(
+  props: PropsWithChildren<ExpandableDescriptionProps>
+) {
+  const { children, className = '' } = props;
   return (
     <div
-      className={mergeCls('relative', className, !expanded ? 'h-144 overflow-hidden' : 'h-max')}
-      ref={ref}
+      className={mergeCls(
+        `relative max-h-[40rem] overflow-hidden pb-12 has-[input[name='expandable-description']:checked]:max-h-max has-[input[name='expandable-description']:checked]:overflow-auto`,
+        'group',
+        className
+      )}
     >
       {children}
-      {show ? (
-        <div className={(!expanded ? 'absolute bottom-0 ' : '') + ' w-full'}>
-          {!expanded ? Gradient : null}
-          <div className="bg-default">
-            <button
-              className={
-                'relative w-full rounded bg-paper py-4 text-sm ' +
-                'after:absolute after:inset-0 after:rounded after:bg-white/25 after:opacity-0 after:transition-opacity hover:after:opacity-100 '
-              }
-              onClick={() => {
-                setExpanded((prev) => !prev);
-              }}
-            >
-              {!expanded ? 'Show more' : 'Show less'}
-            </button>
-          </div>
+      <div className={'absolute bottom-0 w-full'}>
+        <div
+          id="expandable-description-gradient-bg"
+          className="h-40 w-full bg-gradient-to-t from-default group-has-[input[name='expandable-description']:checked]:hidden"
+        ></div>
+        <div className="bg-default">
+          <label
+            className={mergeCls(
+              'group relative flex h-12 items-center justify-center rounded bg-paper',
+              'after:absolute after:inset-0 after:rounded after:bg-white/25 after:opacity-0 after:transition-opacity hover:after:opacity-100'
+            )}
+          >
+            <input type="checkbox" name="expandable-description" className="hidden" />
+            <span className="hidden group-has-[input[name='expandable-description']:not(:checked)]:block">
+              Show more
+            </span>
+            <span className="hidden group-has-[input[name='expandable-description']:checked]:block">
+              Show less
+            </span>
+          </label>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }

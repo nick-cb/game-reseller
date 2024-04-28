@@ -14,9 +14,15 @@ export async function updateUserByID(ID: number, params: Q.UpdateUserByIDParams)
 
 export async function getUserByID(ID: number) {
   try {
+  } catch (error) {}
+}
 
+export async function getUserByEmail(email: string) {
+  try {
+    const { data } = await Q.getUserByEmail(email);
+    return buildSingleResponse({ data: data });
   } catch (error) {
-
+    return buildSingleResponse({ error });
   }
 }
 
@@ -34,6 +40,7 @@ function buildSingleResponse(params: BuildSingleResponseParams) {
       email: data?.email ?? '',
       avatar: data?.avatar ?? '',
       refresh_token: data?.refresh_token ?? '',
+      password: data?.password ?? '',
     },
     error: error instanceof Error ? error.message : error,
   };
