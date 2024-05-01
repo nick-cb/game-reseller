@@ -12,8 +12,8 @@ export async function Paypal() {
     >
       <PayPalButtons
         fundingSource="paypal"
-        createOrder={await CheckoutActions.orders.payWithPaypal({ amount: 1000 })}
-        onApprove={CheckoutActions.orders.approvePaypalOrder}
+        createOrder={await CheckoutActions.payments.payWithPaypal({ amount: 1000 })}
+        onApprove={CheckoutActions.payments.approvePaypalOrder}
       />
     </PayPalScriptProvider>
   );

@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import StandardButton from '../StandardButton';
 import { Game } from '@/database/models/model';
-import ShareActions from '@/actions/share';
+import UserActions from '@/actions/users-actions';
 
 export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
   const router = useRouter();
@@ -13,7 +13,7 @@ export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
     <StandardButton
       className="text-sm"
       onClick={async () => {
-        const isLogin = await ShareActions.users.checkLoginStatus();
+        const isLogin = await UserActions.users.checkLoginStatus();
         if (!isLogin) {
           router.push(`/login?type=modal&order=${game.slug}`);
           return;

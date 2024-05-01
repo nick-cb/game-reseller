@@ -3,8 +3,8 @@
 import { Users } from '@/database/models/model';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
-import ShareActions from '../share';
 import { COOKIES_OPTIONS } from '@/utils/config';
+import UserActions from '../users-actions';
 
 type LoginParams = {
   email: string;
@@ -13,7 +13,7 @@ type LoginParams = {
 export async function login(params: LoginParams) {
   try {
     const { email } = params;
-    const { data } = await ShareActions.users.getUserByEmail(email);
+    const { data } = await UserActions.users.getUserByEmail(email);
     if (data.ID === -1) {
       return buildSingleResponse({ error: new Error('User not found') });
     }
@@ -22,8 +22,8 @@ export async function login(params: LoginParams) {
       return buildSingleResponse({ error: new Error('Invalid password') });
     }
 
-    const token = await ShareActions.users.generateToken({ ID: data.ID });
-    await ShareActions.users.updateUserByID(data.ID, { user: { refresh_token: token } });
+    const token = await UserActions.users.generateToken({ ID: data.ID });
+    await UserActions.users.updateUserByID(data.ID, { user: { refresh_token: token } });
     cookies().set('refresh_token', token, COOKIES_OPTIONS);
 
     return buildSingleResponse({ data });
@@ -43,12 +43,12 @@ type SignupParams = {
 };
 export async function signup(params: SignupParams) {
   try {
-    const { data, error } = await ShareActions.users.createUser(params);
+    const { data, error } = await UserActions.users.createUser(params);
     if (error) {
       return buildSingleResponse({ error });
     }
-    const token = await ShareActions.users.generateToken({ ID: data.ID });
-    await ShareActions.users.updateUserByID(data.ID, { user: { refresh_token: token } });
+    const token = await UserActions.users.generateToken({ ID: data.ID });
+    await UserActions.users.updateUserByID(data.ID, { user: { refresh_token: token } });
     cookies().set('refresh_token', token, COOKIES_OPTIONS);
 
     return buildSingleResponse({ data });
@@ -63,11 +63,11 @@ export async function logout() {
     if (!cookie) {
       return;
     }
-    const payload = await ShareActions.users.decodeToken({ token: cookie.value });
+    const payload = await UserActions.users.decodeToken({ token: cookie.value });
     if (typeof payload === 'string') {
       return;
     }
-    await ShareActions.users.updateUserByID(payload.userId, {
+    await UserActions.users.updateUserByID(payload.userId, {
       user: { refresh_token: null },
     });
     cookies().delete('refresh_token');

@@ -2,7 +2,7 @@
 
 import { querySingle, sql } from '@/database';
 import { Carts, Game, GameImageGroup } from '@/database/models/model';
-import { groupImageByType } from '../share/images';
+import { groupImageByType } from '../share/queries/images';
 
 export type UserCart = Carts & {
   game_list: (Pick<

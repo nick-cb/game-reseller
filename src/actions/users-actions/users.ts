@@ -4,15 +4,15 @@ import { Users } from '@/database/models/model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import * as Q from './queries';
-import ShareActions from '..';
 import { uuidv4 } from '@/utils';
 import { bucket } from '@/firebase';
 import { cookies } from 'next/headers';
+import UserActions from '.';
 
 export async function createUser(params: Q.CreateUserParams) {
   try {
     const { email, password } = params;
-    const existUser = await ShareActions.users.getUserByEmail(email);
+    const existUser = await UserActions.users.getUserByEmail(email);
     if (existUser.data.ID !== -1) {
       throw new Error('User already exists');
     }
@@ -22,7 +22,7 @@ export async function createUser(params: Q.CreateUserParams) {
 
     const file = await generateAvatarForUser({ user: { ID: data.insertId } });
     const url = file.publicUrl();
-    await ShareActions.users.updateUserByID(data.insertId, { user: { avatar: url } });
+    await UserActions.users.updateUserByID(data.insertId, { user: { avatar: url } });
 
     return buildSingleResponse({ data: { ID: data.insertId } });
   } catch (error) {

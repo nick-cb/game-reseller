@@ -1,7 +1,7 @@
 'use server';
 
 import { query, querySingle, sql } from '@/database';
-import { groupImageByType } from '../share/images';
+import { groupImageByType } from '../../share/queries/images';
 import Reviews, {
   Game,
   GameImageGroup,

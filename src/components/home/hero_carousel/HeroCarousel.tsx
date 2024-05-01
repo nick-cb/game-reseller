@@ -1,4 +1,3 @@
-import HomeActions from '@/actions/home-actions';
 import {
   DesktopIndicator,
   MobileIndicator,
@@ -9,9 +8,10 @@ import { HeroCarouselDesktopCover, HeroCarouselMobileCover } from './HeroCarouse
 import { HeroCarouselImage } from './HeroCarouselImage';
 import './hero-carousel.css';
 import { mergeCls } from '@/utils';
+import CollectionActions from '@/actions/collections-actions';
 
 export async function HeroCarousel() {
-  const { data } = await HomeActions.collections.getHeroCarousel();
+  const { data } = await CollectionActions.homepage.getHeroCarousel();
   const { game_list } = data;
 
   return (

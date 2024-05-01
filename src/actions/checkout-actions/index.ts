@@ -1,7 +1,7 @@
-export * from './orders';
-import * as orders from './orders';
+export * from './payments';
+import * as payments from './payments';
 
 const CheckoutActions = {
-  orders,
+  payments: payments,
 }
 export default CheckoutActions;

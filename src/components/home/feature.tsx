@@ -1,9 +1,9 @@
 import { FeatureCard } from '../HoverPlayVideo';
 import { Suspense } from 'react';
-import HomeActions from '@/actions/home-actions';
+import CollectionActions from '@/actions/collections-actions';
 
 export async function Feature() {
-  const { data: feature } = await HomeActions.collections.getFeatureRow();
+  const { data: feature } = await CollectionActions.homepage.getFeatureRow();
 
   return (
     <section>

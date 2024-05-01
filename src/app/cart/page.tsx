@@ -1,5 +1,5 @@
 import CartActions from '@/actions/cart-actions';
-import ShareActions from '@/actions/share';
+import UserActions from '@/actions/users-actions';
 import { CartContext } from '@/components/cart/CartContext';
 import { CartTotal } from '@/components/cart/CartTotal';
 import { CheckoutButton } from '@/components/cart/CheckoutButton';
@@ -15,18 +15,18 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export default async function cartPage() {
-  const user = await ShareActions.users.getUserInfoInCookie();
+  const user = await UserActions.users.getUserInfoInCookie();
   if (!user) {
     redirect('/');
   }
-  const { data: cart } = await CartActions.carts.getUserCart({ user: { user_id: user.userId } });
+  const { data: cart } = await CartActions.cartPage.getUserCart({ user: { user_id: user.userId } });
   let totalPrice = 0;
   for (const game of cart.game_list) {
     totalPrice += game.sale_price;
   }
   const toggleChecked = async (game: Pick<Game, 'ID'>) => {
     'use server';
-    const { error } = await CartActions.carts.toggleItemChecked({ game, cart });
+    const { error } = await CartActions.cartPage.toggleItemChecked({ game, cart });
     return error?.message;
   };
 

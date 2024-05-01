@@ -1,4 +1,4 @@
-import GameDetailActions from '@/actions/game-detail-actions';
+import GameActions from '@/actions/games-actions';
 import { AddToCartButton } from '@/components/game/AddToCartBtn';
 import { AvgRating } from '@/components/game/AvgRating';
 import { BuyNowButton } from '@/components/game/BuyNowButton';
@@ -18,8 +18,8 @@ import React, { Suspense } from 'react';
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
   const [gameDetailRes, mappingCheckRes] = await Promise.allSettled([
-    GameDetailActions.games.findBySlug({ slug }),
-    GameDetailActions.games.hasMapping(slug),
+    GameActions.gameDetailPage.findBySlug({ slug }),
+    GameActions.gameDetailPage.hasMapping(slug),
   ]);
   const game = gameDetailRes.status === 'fulfilled' ? gameDetailRes.value.data : null;
   const hasMapping = mappingCheckRes.status === 'fulfilled' ? mappingCheckRes.value : false;

@@ -22,7 +22,7 @@ export function RemoveCardBtn({
     <button
       onClick={() => {
         startDelete(async () => {
-          await CheckoutActions.orders.removePaymentMethod(paymentMethod.id);
+          await CheckoutActions.payments.removePaymentMethod(paymentMethod.id);
           router.refresh();
         });
       }}

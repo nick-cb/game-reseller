@@ -18,7 +18,7 @@ import {
   IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
 import { ScrollItem } from '../scroll2/ScrollPrimitive';
-import ShareActions from '@/actions/share';
+import UserActions from '@/actions/users-actions';
 
 export type CheckoutViewProps = {
   gameList: (Pick<
@@ -36,11 +36,11 @@ export async function CheckoutView(props: CheckoutViewProps) {
   if (!cookie) {
     return redirect('/');
   }
-  const payload = await ShareActions.users.decodeToken({ token: cookie.value });
+  const payload = await UserActions.users.decodeToken({ token: cookie.value });
   if (typeof payload === 'string') {
     return redirect('/');
   }
-  const { data: user } = await ShareActions.users.getUserByID(payload.userId);
+  const { data: user } = await UserActions.users.getUserByID(payload.userId);
   if (!user) {
     return redirect('/');
   }
@@ -60,7 +60,7 @@ export async function CheckoutView(props: CheckoutViewProps) {
     <SnackContextProvider>
       <StripeElementsNullish amount={amount} currency={'vnd'}>
         <CheckoutForm
-          payWithStripe={await CheckoutActions.orders.payWithStripe({
+          payWithStripe={await CheckoutActions.payments.payWithStripe({
             cartId: cartId!,
             user,
             amount,

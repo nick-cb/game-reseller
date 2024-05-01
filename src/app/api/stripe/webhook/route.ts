@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/utils';
-import ShareActions from '@/actions/share';
+import OrderActions from '@/actions/order-actions';
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       if (customerId) {
         const card = paymentIntentSucceeded.charges.data[0].payment_method_details.card;
         console.log({ id: paymentIntentSucceeded.id });
-        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
+        await OrderActions.orders.updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
           order: {
             status: paymentIntentSucceeded.status,
             card_type: card.brand,
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       const customerId = typeof customer === 'string' ? customer : customer?.id;
       if (customerId) {
         const card = paymentIntentCanceled.charges.data[0]?.payment_method_details?.card;
-        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentCanceled.id, {
+        await OrderActions.orders.updateOrderByPaymentIntent(paymentIntentCanceled.id, {
           order: {
             status: paymentIntentCanceled.status,
             card_type: card?.brand || null,
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       const customerId = typeof customer === 'string' ? customer : customer?.id;
       if (customerId) {
         const card = paymentIntentPaymentFailed.charges.data[0]?.payment_method_details?.card;
-        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentPaymentFailed.id, {
+        await OrderActions.orders.updateOrderByPaymentIntent(paymentIntentPaymentFailed.id, {
           order: {
             status: paymentIntentPaymentFailed.status,
             card_type: card?.brand || null,

@@ -1,5 +1,4 @@
-import GameDetailActions from '@/actions/game-detail-actions';
-import ShareActions from '@/actions/share';
+import GameActions from '@/actions/games-actions';
 import Pagination from '@/components/Pagination';
 import PortraitGameCard from '@/components/PortraitGameCard';
 import { GameNav } from '@/components/game/GameNav';
@@ -13,14 +12,14 @@ export default async function AddOnPage({ params, searchParams }: AddOnPageProps
   const { slug } = params;
   const keyword = z.string().catch('').parse(searchParams.keyword);
   const page = z.coerce.number().int().catch(1).parse(searchParams.page);
-  const { data: game, error } = await ShareActions.games.getMinimalInfo({slug});
+  const { data: game, error } = await GameActions.games.getMinimalInfo({slug});
   if (error) {
     // TODO: Handle error
     return null;
   }
   const limit = 16;
   const skip = limit * (page - 1);
-  const { data, pagination } = await GameDetailActions.games.findMappingList({
+  const { data, pagination } = await GameActions.gameDetailPage.findMappingList({
     base_game_id: game.ID,
     keyword,
     pagination: { limit, skip },

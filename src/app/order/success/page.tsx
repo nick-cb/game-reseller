@@ -1,4 +1,5 @@
-import ShareActions from '@/actions/share';
+import OrderActions from '@/actions/order-actions';
+import UserActions from '@/actions/users-actions';
 import { OrderItemDistribute } from '@/components/OrderItemDistribute';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,11 +11,11 @@ export default async function OrderSuccessPage({
   searchParams: Record<string, string>;
 }) {
   const id = parseInt(searchParams['order_id']);
-  const payload = await ShareActions.users.getUserInfoInCookie();
+  const payload = await UserActions.users.getUserInfoInCookie();
   if (!payload) {
     redirect('/');
   }
-  const { data: order } = isNaN(id) ? { data: null } : await ShareActions.orders.findOrderByID(id);
+  const { data: order } = isNaN(id) ? { data: null } : await OrderActions.orders.findOrderByID(id);
   if (!order) {
     return <div>Order not found</div>;
   }

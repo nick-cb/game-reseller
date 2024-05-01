@@ -1,11 +1,11 @@
-import HomeActions, { GameItem } from '@/actions/home-actions';
+import CollectionActions, { GameItem } from '@/actions/collections-actions';
 import { Collections } from '@/database/models/model';
 import { currencyFormatter } from '@/utils';
 import Link from 'next/link';
 import React from 'react';
 
 export async function PillarGroup({ names }: { names: string[] }) {
-  const { data: pillars } = await HomeActions.collections.getPillarGroup({ names });
+  const { data: pillars } = await CollectionActions.homepage.getPillarGroup({ names });
 
   return (
     <section className="w-[calc(100%_+_8px)] -translate-x-2 gap-8 md:flex">

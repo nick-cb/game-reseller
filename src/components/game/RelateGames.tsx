@@ -1,4 +1,4 @@
-import GameDetailActions from '@/actions/game-detail-actions';
+import GameActions from '@/actions/games-actions';
 import React from 'react';
 import GameCard from './GameCard';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ type RelatedGamesProps = {
 };
 export async function RelatedGames(props: RelatedGamesProps) {
   const { game } = props;
-  const { data, error } = await GameDetailActions.games.findMappingGroupByID(game.ID);
+  const { data, error } = await GameActions.gameDetailPage.findMappingGroupByID(game.ID);
   if (error) {
     return null;
   }

@@ -1,4 +1,4 @@
-import { GameItem } from '@/actions/home-actions';
+import { GameItem } from '@/actions/collections-actions';
 import { Game, GameImageGroup } from '@/database/models/model';
 import { FVideoFullInfo } from '@/type';
 import { currencyFormatter } from '@/utils';

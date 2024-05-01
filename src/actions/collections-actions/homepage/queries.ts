@@ -2,7 +2,7 @@
 
 import { query, querySingle, sql } from '@/database';
 import { Collections } from '@/database/models/model';
-import { GameItem } from '@/actions/home-actions/collections';
+import {GameItem} from "@/actions/collections-actions";
 
 const groupImageByType = (type: string, colors = false) => {
   const colorQuery = colors

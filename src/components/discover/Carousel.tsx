@@ -9,7 +9,7 @@ import {
 import { Icon } from '../Icon';
 import { mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
-import HomeActions from '@/actions/home-actions';
+import CollectionActions from '@/actions/collections-actions';
 
 type CarouselProps = {
   name: string;
@@ -19,7 +19,7 @@ type CarouselProps = {
  * @params name: Object
  * */
 async function CategoryRow({ name }: CarouselProps) {
-  const { data } = await HomeActions.collections.getCategoryRow({ names: [name] });
+  const { data } = await CollectionActions.homepage.getCategoryRow({ names: [name] });
   const collection = data[0] || [];
 
   return (

@@ -11,7 +11,7 @@ import {
 } from '../../intersection/IntersectionObserver';
 import { ScrollItem, VideoScrollItem } from '../../scroll2/ScrollPrimitive';
 import { IndicatorList, NextPrevControls } from '@/components/game/game-item-carousel/Indicators';
-import { FindBySlugResult } from '@/actions/game-detail-actions/queries';
+import { FindBySlugResult } from '@/actions/games-actions/game-detail-page/queries';
 import { OmitGameId, FVideoFullInfo } from '@/type';
 
 type LinearCarouselProps = {

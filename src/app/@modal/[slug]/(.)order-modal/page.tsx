@@ -1,18 +1,18 @@
 import ItemOrderModal from '@/components/game/OrderModal';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import GameDetailActions from '@/actions/game-detail-actions';
-import ShareActions from '@/actions/share';
+import GameActions from '@/actions/games-actions';
 import { CheckoutView } from '@/components/checkout/Checkout';
+import UserActions from '@/actions/users-actions';
 
 export default async function ItemOrderModalPage({ params }: { params: any }) {
   const { slug } = params;
-  const { data } = await GameDetailActions.games.findBySlug(slug.replace('(.)', ''));
+  const { data } = await GameActions.gameDetailPage.findBySlug(slug.replace('(.)', ''));
   const cookie = cookies().get('refresh_token');
   if (!cookie) {
     redirect('/');
   }
-  const payload = ShareActions.users.decodeToken({ token: cookie.value });
+  const payload = UserActions.users.decodeToken({ token: cookie.value });
   if (typeof payload === 'string') {
     redirect('/');
   }

@@ -5,7 +5,8 @@ import { Game } from '@/database/models/model';
 import { useContext, useTransition } from 'react';
 import { SnackContext } from '../SnackContext';
 import { LoadingIcon } from '../loading/LoadingIcon';
-import ShareActions from '@/actions/share';
+import CartActions from '@/actions/cart-actions';
+import UserActions from '@/actions/users-actions';
 
 export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'name'> }) {
   const router = useRouter();
@@ -14,7 +15,7 @@ export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'na
   const [adding, startAddToCart] = useTransition();
 
   const addItemToCart = async () => {
-    const isLogin = await ShareActions.users.checkLoginStatus();
+    const isLogin = await UserActions.users.checkLoginStatus();
     if (!isLogin) {
       router.push(`/login?type=modal&order=${game.slug}`);
       return;
@@ -23,7 +24,7 @@ export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'na
       if (typeof params['slug'] !== 'string') {
         return;
       }
-      const { error } = await ShareActions.carts.addItemToCart({ game: { ID: game.ID } });
+      const { error } = await CartActions.carts.addItemToCart({ game: { ID: game.ID } });
       router.refresh();
       if (error) {
         return showMessage({ message: error.message, type: 'error' });

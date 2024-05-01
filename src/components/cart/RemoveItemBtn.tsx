@@ -5,8 +5,8 @@ import { useContext, useTransition } from 'react';
 import { SnackContext } from '../SnackContext';
 import { useRouter } from 'next/navigation';
 import { LoadingIcon } from '../loading/LoadingIcon';
-import ShareActions from '@/actions/share';
 import { mergeCls } from '@/utils';
+import CartActions from '@/actions/cart-actions';
 
 type RemoveItemBtnProps = {
   cart: Pick<Carts, 'ID'>;
@@ -22,7 +22,7 @@ export function RemoveItemBtn(props: RemoveItemBtnProps) {
     <button
       onClick={async () => {
         startRemove(async () => {
-          const { error } = await ShareActions.carts.removeItemFromCart(cart.ID, { item: game });
+          const { error } = await CartActions.carts.removeItemFromCart(cart.ID, { item: game });
           if (error) {
             return showMessage({ message: error.message, type: 'error' });
           }

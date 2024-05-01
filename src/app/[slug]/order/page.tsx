@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import GameDetailActions from '@/actions/game-detail-actions';
+import GameActions from '@/actions/games-actions';
 import { CheckoutView } from '@/components/checkout/Checkout';
-import ShareActions from '@/actions/share';
+import UserActions from '@/actions/users-actions';
 
 export type ExchangeRate = {
   date: string;
@@ -10,12 +10,12 @@ export type ExchangeRate = {
 };
 export default async function ItemOrderPage({ params }: { params: any }) {
   const { slug } = params;
-  const { data } = await GameDetailActions.games.findBySlug(slug.replace('(.)', ''));
+  const { data } = await GameActions.gameDetailPage.findBySlug(slug.replace('(.)', ''));
   const cookie = cookies().get('refresh_token');
   if (!cookie) {
     redirect('/');
   }
-  const payload = ShareActions.users.decodeToken({ token: cookie.value });
+  const payload = UserActions.users.decodeToken({ token: cookie.value });
   if (typeof payload === 'string') {
     redirect('/');
   }

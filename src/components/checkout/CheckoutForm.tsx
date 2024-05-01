@@ -158,7 +158,7 @@ export function CheckoutForm(props: CheckoutFormProps) {
       clientSecret,
     });
     if (paymentIntent?.id && paymentIntent.status !== 'requires_action') {
-      await CheckoutActions.orders.updateOrderPaymentIntent(orderId, paymentIntent.id);
+      await CheckoutActions.payments.updateOrderPaymentIntent(orderId, paymentIntent.id);
     }
     const nextActionModal = nextActionModalRef.current;
     if (!nextActionModal) {

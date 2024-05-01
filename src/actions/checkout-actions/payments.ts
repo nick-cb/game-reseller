@@ -1,11 +1,13 @@
 'use server';
 
-import { Game, GameImageGroup, Users } from '@/database/models/model';
-import { stripe } from '@/utils';
-import { PayPalButtonsComponentProps } from '@paypal/react-paypal-js';
+import {Game, GameImageGroup, Users} from '@/database/models/model';
+import {stripe} from '@/utils';
+import {PayPalButtonsComponentProps} from '@paypal/react-paypal-js';
 import Stripe from 'stripe';
-import ShareActions from '../share';
 import * as Q from './queries';
+import CartActions from '../cart-actions';
+import UserActions from '../users-actions';
+import OrderActions from '../order-actions';
 
 export type PayWithStripeClientPayload = {
   paymentMethod: string;
@@ -21,6 +23,49 @@ export type PayWithStripeParams = {
     'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug'
   > & { images: GameImageGroup; checked: boolean })[];
 };
+export type UpsertChoosenPaymentMethodParams = {
+  user: Pick<Users, 'ID' | 'full_name' | 'stripe_id'>;
+  paymentMethod: string;
+  paymentMethods: Stripe.PaymentMethod[];
+};
+
+export async function upsertChoosenPaymentMethod(params: UpsertChoosenPaymentMethodParams) {
+  const {user, paymentMethod, paymentMethods} = params;
+  let stripeId = user.stripe_id;
+  if (!stripeId) {
+    const newCustomer = await stripe.customers.create({
+      name: user.full_name || '',
+    });
+    stripeId = newCustomer.id;
+    const {error} = await UserActions.users.updateUserByID(user.ID, {
+      user: {stripe_id: stripeId},
+    });
+  }
+
+  const newPaymentMethod = await stripe.paymentMethods.retrieve(paymentMethod);
+  const dedupedMethod = await dedupePaymentMethod({newPaymentMethod, paymentMethods});
+
+  return dedupedMethod;
+}
+
+export type DedupePaymentMethodParams = {
+  newPaymentMethod: Stripe.PaymentMethod;
+  paymentMethods: Stripe.PaymentMethod[];
+};
+
+export async function dedupePaymentMethod(params: DedupePaymentMethodParams) {
+  const {newPaymentMethod, paymentMethods} = params;
+  const {fingerprint: newFingerprint} = newPaymentMethod.card || {};
+  const existPaymentMethod = paymentMethods.find((method) => {
+    const {fingerprint: oldFingerprint} = method.card || {};
+    if (!!oldFingerprint && !!newFingerprint && newFingerprint === oldFingerprint) {
+      return method;
+    }
+    return undefined;
+  });
+  return existPaymentMethod || newPaymentMethod || undefined;
+}
+
 export async function payWithStripe(params: PayWithStripeParams) {
   const { cartId, paymentMethods, user, amount, gameList } = params;
   return async (payload: PayWithStripeClientPayload) => {
@@ -29,7 +74,7 @@ export async function payWithStripe(params: PayWithStripeParams) {
     if (!paymentMethod) {
       return { error: 'Invalid payment method' };
     }
-    const { id, card, customer } = await ShareActions.payments.upsertChoosenPaymentMethod({
+    const { id, card, customer } = await upsertChoosenPaymentMethod({
       paymentMethods,
       paymentMethod,
       user,
@@ -45,7 +90,7 @@ export async function payWithStripe(params: PayWithStripeParams) {
       use_stripe_sdk: true,
       ...(save ? { setup_future_usage: 'off_session' } : {}),
     });
-    const { data, error } = await ShareActions.orders.createOrder({
+    const { data, error } = await OrderActions.orders.createOrder({
       order: {
         items: gameList,
         amount: amount,
@@ -62,7 +107,7 @@ export async function payWithStripe(params: PayWithStripeParams) {
       // TODO: Handle error
     }
 
-    await ShareActions.carts.deleteCartByID(cartId);
+    await CartActions.carts.deleteCartByID(cartId);
 
     return {
       orderID: data.ID,

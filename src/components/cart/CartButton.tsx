@@ -1,12 +1,13 @@
-import ShareActions from '@/actions/share';
+import CartActions from '@/actions/cart-actions';
+import UserActions from '@/actions/users-actions';
 import Link from 'next/link';
 
 export async function CartButton() {
-  const user = await ShareActions.users.getUserInfoInCookie();
+  const user = await UserActions.users.getUserInfoInCookie();
   if (!user) {
     return null;
   }
-  const { count } = await ShareActions.carts.countItemsInCartByUserID(user.ID);
+  const { count } = await CartActions.carts.countItemsInCartByUserID(user.ID);
 
   return (
     <Link

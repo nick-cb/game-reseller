@@ -6,12 +6,13 @@ import BrowseSearch from '@/components/BrowseSearch';
 import Filter from '@/components/browse/Filter';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { CollectionRadio, RadioGroup } from '@/components/CollectionRadio';
-import ShareActions from '@/actions/share';
+import CollectionActions from '../../actions/collections-actions';
+import TagsActions from '@/actions/tags-actions';
 
 const layout = async ({ children }: PropsWithChildren) => {
   const [{ data: tags }, { data: collections }] = await Promise.all([
-    ShareActions.tags.getTagListByGroupName({ groupName: 'genre' }),
-    ShareActions.collections.getAllCollections(),
+    TagsActions.tags.getTagListByGroupName({ groupName: 'genre' }),
+    CollectionActions.collections.getAllCollections(),
   ]);
 
   return (
