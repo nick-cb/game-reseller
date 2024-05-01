@@ -1,5 +1,5 @@
-import { getUserFromCookie } from '@/actions/users';
 import CartActions from '@/actions2/cart-actions';
+import ShareActions from '@/actions2/share';
 import { CartContext } from '@/components/cart/CartContext';
 import { CartTotal } from '@/components/cart/CartTotal';
 import { CheckoutButton } from '@/components/cart/CheckoutButton';
@@ -15,7 +15,7 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export default async function cartPage() {
-  const user = await getUserFromCookie();
+  const user = await ShareActions.users.getUserInfoInCookie();
   if (!user) {
     redirect('/');
   }

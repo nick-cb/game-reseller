@@ -4,9 +4,9 @@ import { Game } from '@/database/models/model';
 import * as Q from './queries';
 import { isUndefined } from '@/utils';
 
-export async function getMinimalInfoBySlug(slug: string) {
+export async function getMinimalInfo(params: Q.GetMinimalInfoParams) {
   try {
-    const { data } = await Q.getMinimalInfoBySlug(slug);
+    const { data } = await Q.getMinimalInfoBySlug(params);
     return buildSingeGame({ data });
   } catch (error) {
     return buildSingeGame({ error });

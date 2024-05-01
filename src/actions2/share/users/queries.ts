@@ -1,8 +1,23 @@
 'use server';
 
-import { querySingle, sql, updateSingle } from '@/database';
+import { insertSingle, querySingle, sql, updateSingle } from '@/database';
 import { Users } from '@/database/models/model';
 import { isUndefined } from '@/utils';
+
+export type CreateUserParams = {
+  full_name: string | null;
+  display_name: string | null;
+  email: string;
+  password: string;
+  avatar: string | null;
+}
+export async function createUser(params: CreateUserParams) {
+  const { full_name, display_name, email, password, avatar } = params;
+  return insertSingle(sql`
+    insert into users (full_name, display_name, email, password, avatar)
+    values (${full_name}, ${display_name}, ${email}, ${password}, ${avatar});
+  `);
+}
 
 export type UpdateUserByIDParams = {
   user: Partial<Users>;
@@ -21,6 +36,12 @@ export async function updateUserByID(ID: number, params: UpdateUserByIDParams) {
       stripe_id = if(${!isUndefined(stripe_id)}, ${stripe_id}, stripe_id),
       refresh_token = if(${!isUndefined(refresh_token)}, ${refresh_token}, refresh_token)
     where ID = ${ID}
+  `);
+}
+
+export async function getUserByID(ID: number) {
+  return await querySingle<Users>(sql`
+    select * from users where ID = ${ID}
   `);
 }
 

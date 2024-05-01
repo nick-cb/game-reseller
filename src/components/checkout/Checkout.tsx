@@ -1,4 +1,3 @@
-import { decodeToken, findUserById } from '@/actions/users';
 import CheckoutActions from '@/actions2/checkout-actions';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { SnackContextProvider } from '@/components/SnackContext';
@@ -15,10 +14,11 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 import { PlaceOrderButton } from '../game/PlaceOrderButton';
 import {
-    IntersectionObserverContainer,
-    IntersectionObserverRoot,
+  IntersectionObserverContainer,
+  IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
 import { ScrollItem } from '../scroll2/ScrollPrimitive';
+import ShareActions from '@/actions2/share';
 
 export type CheckoutViewProps = {
   gameList: (Pick<
@@ -36,11 +36,11 @@ export async function CheckoutView(props: CheckoutViewProps) {
   if (!cookie) {
     return redirect('/');
   }
-  const payload = await decodeToken(cookie.value);
+  const payload = await ShareActions.users.decodeToken({ token: cookie.value });
   if (typeof payload === 'string') {
     return redirect('/');
   }
-  const { data: user } = await findUserById({ id: payload.userId });
+  const { data: user } = await ShareActions.users.getUserByID(payload.userId);
   if (!user) {
     return redirect('/');
   }

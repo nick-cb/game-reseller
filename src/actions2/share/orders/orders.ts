@@ -58,13 +58,20 @@ export async function createOrder(params: CreateOrderParams) {
 
 type UpdateOrderByIDParams = {
   order: Partial<Omit<Orders, 'ID'>>;
-}
+};
 export async function updateOrderByID(ID: number, params: UpdateOrderByIDParams) {
   try {
     return Q.updateOrderByID(ID, params);
-  } catch (error) {
+  } catch (error) {}
+}
 
-  }
+export async function updateOrderByPaymentIntent(
+  payment_intent: string,
+  params: Q.UpdateOrderByPaymentIntentParams
+) {
+  try {
+    return Q.updateOrderByPaymentIntent(payment_intent, params);
+  } catch (error) {}
 }
 
 export async function findOrderByID(ID: number) {
@@ -77,7 +84,7 @@ export async function findOrderByID(ID: number) {
 }
 
 type BuildSingleResponseParams = {
-  data?: Partial<Orders | Omit<Orders, 'items'> & {items: string}>;
+  data?: Partial<Orders | (Omit<Orders, 'items'> & { items: string })>;
   error?: unknown;
 };
 function buildSingleResponse(params: BuildSingleResponseParams) {
@@ -89,7 +96,10 @@ function buildSingleResponse(params: BuildSingleResponseParams) {
       amount: data?.amount ?? -1,
       payment_method: data?.payment_method ?? '',
       payment_service: data?.payment_service ?? '',
-      items: typeof data?.items === 'string' ? JSON.parse(data.items) as OrderItem[] : (data?.items ?? []),
+      items:
+        typeof data?.items === 'string'
+          ? (JSON.parse(data.items) as OrderItem[])
+          : data?.items ?? [],
       card_number: data?.card_number ?? '',
       card_type: data?.card_type ?? '',
       user_id: data?.user_id ?? -1,

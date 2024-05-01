@@ -1,14 +1,9 @@
-"use client";
+'use client';
 
-import { removePaymentMethod } from "@/actions/payments/paypal";
-import { useRouter } from "next/navigation";
-import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  PropsWithChildren,
-  useTransition,
-} from "react";
-import { LoadingIcon2 } from "../loading/LoadingIcon";
+import { useRouter } from 'next/navigation';
+import { ButtonHTMLAttributes, DetailedHTMLProps, PropsWithChildren, useTransition } from 'react';
+import { LoadingIcon2 } from '../loading/LoadingIcon';
+import CheckoutActions from '@/actions2/checkout-actions';
 
 export function RemoveCardBtn({
   paymentMethod,
@@ -27,20 +22,14 @@ export function RemoveCardBtn({
     <button
       onClick={() => {
         startDelete(async () => {
-          await removePaymentMethod(paymentMethod.id);
+          await CheckoutActions.orders.removePaymentMethod(paymentMethod.id);
           router.refresh();
         });
       }}
       {...props}
     >
       {deleting ? (
-        <LoadingIcon2
-          fill="white"
-          stroke={"#9c9c9c"}
-          width={24}
-          height={24}
-          loading={deleting}
-        />
+        <LoadingIcon2 fill="white" stroke={'#9c9c9c'} width={24} height={24} loading={deleting} />
       ) : (
         children
       )}

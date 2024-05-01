@@ -4,12 +4,6 @@ import { currencyFormatter } from '@/utils';
 import Link from 'next/link';
 import React from 'react';
 
-type PillarProps = {
-  data: Collections & {
-    game_list: GameItem[];
-  };
-};
-
 export async function PillarGroup({ names }: { names: string[] }) {
   const { data: pillars } = await HomeActions.collections.getPillarGroup({ names });
 
@@ -30,6 +24,11 @@ export async function PillarGroup({ names }: { names: string[] }) {
   );
 }
 
+type PillarProps = {
+  data: Collections & {
+    game_list: GameItem[];
+  };
+};
 export function Pillar({ data }: PillarProps) {
   return (
     <div className="relative w-full">

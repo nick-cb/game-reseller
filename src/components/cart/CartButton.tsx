@@ -1,24 +1,20 @@
-import { countCartByUserId } from "@/actions/cart";
-import { getUserFromCookie } from "@/actions/users";
-import Link from "next/link";
+import ShareActions from '@/actions2/share';
+import Link from 'next/link';
 
 export async function CartButton() {
-  const user = await getUserFromCookie();
-  const {
-    data: { count },
-  } = user ? await countCartByUserId(user.userId) : { data: { count: 0 } };
-
+  const user = await ShareActions.users.getUserInfoInCookie();
   if (!user) {
     return null;
   }
+  const { count } = await ShareActions.carts.countItemsInCartByUserID(user.ID);
 
   return (
     <Link
-      href={"/cart"}
-      className="w-8 h-8 rounded-full bg-white/25 flex justify-center items-center transition-all hover:scale-110 relative"
+      href={'/cart'}
+      className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/25 transition-all hover:scale-110"
     >
       {count ? (
-        <div className="absolute -top-1 -right-1 text-xs w-4 h-4 flex justify-center items-center bg-[#666666] outline-2 outline outline-paper rounded-full">
+        <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#666666] text-xs outline outline-2 outline-paper">
           {count}
         </div>
       ) : null}

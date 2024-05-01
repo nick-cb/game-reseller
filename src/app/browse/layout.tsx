@@ -6,7 +6,6 @@ import BrowseSearch from '@/components/BrowseSearch';
 import Filter from '@/components/browse/Filter';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { CollectionRadio, RadioGroup } from '@/components/CollectionRadio';
-import { getAllCollections } from '@/actions/collections/collection';
 import ShareActions from '@/actions2/share';
 
 const layout = async ({ children }: PropsWithChildren) => {

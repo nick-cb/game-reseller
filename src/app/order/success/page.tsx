@@ -1,4 +1,3 @@
-import { getUserFromCookie } from '@/actions/users';
 import ShareActions from '@/actions2/share';
 import { OrderItemDistribute } from '@/components/OrderItemDistribute';
 import Image from 'next/image';
@@ -11,7 +10,7 @@ export default async function OrderSuccessPage({
   searchParams: Record<string, string>;
 }) {
   const id = parseInt(searchParams['order_id']);
-  const payload = await getUserFromCookie();
+  const payload = await ShareActions.users.getUserInfoInCookie();
   if (!payload) {
     redirect('/');
   }

@@ -4,7 +4,6 @@ import { Users } from '@/database/models/model';
 import { stripe } from '@/utils';
 import Stripe from 'stripe';
 import ShareActions from '..';
-import { serverFind } from '@/actions/payments/paypal';
 
 type UpsertChoosenPaymentMethodParams = {
   user: Pick<Users, 'ID' | 'full_name' | 'stripe_id'>;
@@ -37,7 +36,7 @@ type DedupePaymentMethodParams = {
 export async function dedupePaymentMethod(params: DedupePaymentMethodParams) {
   const { newPaymentMethod, paymentMethods } = params;
   const { fingerprint: newFingerprint } = newPaymentMethod.card || {};
-  const existPaymentMethod = await serverFind(paymentMethods, (method) => {
+  const existPaymentMethod = paymentMethods.find((method) => {
     const { fingerprint: oldFigerprint } = method.card || {};
     if (!!oldFigerprint && !!newFingerprint && newFingerprint === oldFigerprint) {
       return method;

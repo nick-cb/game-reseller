@@ -8,7 +8,7 @@ export type UserCart = Carts & {
   game_list: (Pick<
     Game,
     'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug'
-  > & { images: GameImageGroup; checked: boolean })[];
+  > & { game_id: number; images: GameImageGroup; checked: boolean })[];
 };
 type GetUserCartParams = {
   user: { user_id: number };
@@ -22,7 +22,8 @@ export async function getUserCart(params: GetUserCartParams) {
        c.user_id,
        (select json_arrayagg(
                    json_object(
-                       'ID', g.ID,
+                       'ID', cd.ID,
+                       'game_id', g.ID,
                        'name', g.name,
                        'slug', g.slug,
                        'type', g.type,

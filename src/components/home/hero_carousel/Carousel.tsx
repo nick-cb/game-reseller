@@ -6,15 +6,15 @@ import {
 } from '@/components/intersection/IntersectionObserver';
 import { useBreakpoints } from '@/hooks/useBreakpoint';
 import React, {
-  useState,
-  useRef,
-  useEffect,
-  createContext,
-  PropsWithChildren,
-  useContext,
   DetailedHTMLProps,
-  LiHTMLAttributes,
   HTMLAttributes,
+  LiHTMLAttributes,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 
 type ContextProps = {

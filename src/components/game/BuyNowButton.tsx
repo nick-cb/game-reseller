@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import StandardButton from "../StandardButton";
-import { getLoggedInStatus } from "@/actions/users";
-import { Game } from "@/database/models/model";
+import { usePathname, useRouter } from 'next/navigation';
+import StandardButton from '../StandardButton';
+import { Game } from '@/database/models/model';
+import ShareActions from '@/actions2/share';
 
-export function BuyNowButton({ game }: { game: Pick<Game, "ID" | "slug"> }) {
+export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -13,13 +13,12 @@ export function BuyNowButton({ game }: { game: Pick<Game, "ID" | "slug"> }) {
     <StandardButton
       className="text-sm"
       onClick={async () => {
-        const isLogin = await getLoggedInStatus();
-        console.log({isLogin});
+        const isLogin = await ShareActions.users.checkLoginStatus();
         if (!isLogin) {
           router.push(`/login?type=modal&order=${game.slug}`);
           return;
         }
-        router.push(pathname + "/order?type=modal");
+        router.push(pathname + '/order?type=modal');
       }}
     >
       BUY NOW

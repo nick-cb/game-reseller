@@ -1,6 +1,6 @@
 'use client';
 
-import { login } from '@/actions/users';
+import AuthActions from '@/actions2/auth-actions';
 import { AnimatedSizeItem, AnimatedSizeProvider } from '@/components/AnimatedSizeProvider';
 import { SnackContext } from '@/components/SnackContext';
 import { EmailLoginForm, EmailLoginFormPayload } from '@/components/auth/email';
@@ -36,9 +36,9 @@ export function LoginView({ modal, order }: { modal: boolean; order?: string }) 
   const { handleSubmit } = form;
 
   const submitHandler = async (values: EmailLoginFormPayload) => {
-    const { error } = await login(values);
+    const { error } = await AuthActions.users.login(values);
     if (error) {
-      showMessage({ message: error, type: 'error' });
+      showMessage({ message: error.message, type: 'error' });
       return;
     }
     showMessage({ message: 'Login successfully', type: 'success' });

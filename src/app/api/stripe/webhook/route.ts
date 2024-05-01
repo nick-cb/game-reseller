@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import { stripe } from "@/utils";
-import { updateOrderByPaymentIntent } from "@/actions/orders";
+import { NextResponse } from 'next/server';
+import { stripe } from '@/utils';
+import ShareActions from '@/actions2/share';
 
 export async function POST(request: Request) {
   const payload = await request.text();
-  const sig = request.headers.get("stripe-signature");
+  const sig = request.headers.get('stripe-signature');
 
   let event;
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -30,15 +30,14 @@ export async function POST(request: Request) {
   }
 
   switch (event.type) {
-    case "payment_intent.succeeded": {
+    case 'payment_intent.succeeded': {
       const paymentIntentSucceeded = event.data.object as any;
       const customer = paymentIntentSucceeded.customer;
-      const customerId = typeof customer === "string" ? customer : customer?.id;
+      const customerId = typeof customer === 'string' ? customer : customer?.id;
       if (customerId) {
-        const card =
-          paymentIntentSucceeded.charges.data[0].payment_method_details.card;
+        const card = paymentIntentSucceeded.charges.data[0].payment_method_details.card;
         console.log({ id: paymentIntentSucceeded.id });
-        await updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
+        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentSucceeded.id, {
           order: {
             status: paymentIntentSucceeded.status,
             card_type: card.brand,
@@ -49,17 +48,16 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({
         status: 200,
-        message: "Payment succeeded",
+        message: 'Payment succeeded',
       });
     }
-    case "payment_intent.canceled": {
+    case 'payment_intent.canceled': {
       const paymentIntentCanceled = event.data.object as any;
       const customer = paymentIntentCanceled.customer;
-      const customerId = typeof customer === "string" ? customer : customer?.id;
+      const customerId = typeof customer === 'string' ? customer : customer?.id;
       if (customerId) {
-        const card =
-          paymentIntentCanceled.charges.data[0]?.payment_method_details?.card;
-        await updateOrderByPaymentIntent(paymentIntentCanceled.id, {
+        const card = paymentIntentCanceled.charges.data[0]?.payment_method_details?.card;
+        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentCanceled.id, {
           order: {
             status: paymentIntentCanceled.status,
             card_type: card?.brand || null,
@@ -70,18 +68,16 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({
         status: 200,
-        message: "Payment succeeded",
+        message: 'Payment succeeded',
       });
     }
-    case "payment_intent.payment_failed": {
+    case 'payment_intent.payment_failed': {
       const paymentIntentPaymentFailed = event.data.object as any;
       const customer = paymentIntentPaymentFailed.customer;
-      const customerId = typeof customer === "string" ? customer : customer?.id;
+      const customerId = typeof customer === 'string' ? customer : customer?.id;
       if (customerId) {
-        const card =
-          paymentIntentPaymentFailed.charges.data[0]?.payment_method_details
-            ?.card;
-        await updateOrderByPaymentIntent(paymentIntentPaymentFailed.id, {
+        const card = paymentIntentPaymentFailed.charges.data[0]?.payment_method_details?.card;
+        await ShareActions.orders.updateOrderByPaymentIntent(paymentIntentPaymentFailed.id, {
           order: {
             status: paymentIntentPaymentFailed.status,
             card_type: card?.brand || null,
@@ -92,7 +88,7 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({
         status: 200,
-        message: "Payment succeeded",
+        message: 'Payment succeeded',
       });
     }
     default:

@@ -62,7 +62,7 @@ function buildGameItem(params: BuildGameItemParams) {
       ID: game.ID ?? -1,
       name: !isUndefined(game.name) ? game.name : '',
       slug: !isUndefined(game.slug) ? game.slug : '',
-      type: !isUndefined(game.type) ? game.type : '',
+      type: (!isUndefined(game.type) ? game.type : '') as Game['type'],
       base_game_id: !isUndefined(game.base_game_id) ? game.base_game_id : -1,
       base_game_slug: !isUndefined(game.base_game_slug) ? game.base_game_slug : '',
       developer: !isUndefined(game.developer) ? game.developer : '',

@@ -145,7 +145,8 @@ type GetPillarGroupParams = {
 export async function getPillarGroup(params: GetPillarGroupParams) {
   const { names } = params;
   return query<CategoryRow[]>(sql`
-    select c.name,
+    select c.ID,
+           c.name,
            cd.collection_id,
            json_arrayagg(
                json_object(

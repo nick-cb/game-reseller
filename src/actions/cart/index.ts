@@ -1,18 +1,19 @@
-"use server";
+'use server';
 
-import { insertSingle, query, querySingle, sql } from "@/database";
-import { CartFull, Carts, Game, Users } from "@/database/models/model";
-import { cookies } from "next/headers";
-import { decodeToken, getUserFromCookie } from "@/actions/users";
-import jwt from "jsonwebtoken";
+import { insertSingle, query, querySingle, sql } from '@/database';
+import { CartFull, Carts, Game, Users } from '@/database/models/model';
+import { cookies } from 'next/headers';
+import { getUserFromCookie } from '@/actions/users';
+import jwt from 'jsonwebtoken';
+import ShareActions from '@/actions2/share';
 
 export async function addItemToCart(slug: string) {
-  const cookie = cookies().get("refresh_token");
+  const cookie = cookies().get('refresh_token');
   if (!cookie) {
     return { data: null };
   }
-  const payload = await decodeToken(cookie.value);
-  if (typeof payload === "string") {
+  const payload = await ShareActions.users.decodeToken({ token: cookie.value });
+  if (typeof payload === 'string') {
     return { data: null };
   }
 
@@ -20,13 +21,13 @@ export async function addItemToCart(slug: string) {
     select * from games where slug = ${slug};
   `);
   if (!game) {
-    return { error: "Request item not found" };
+    return { error: 'Request item not found' };
   }
   const { data: user } = await querySingle<Users>(sql`
     select * from users where ID = ${payload.userId};
   `);
   if (!user) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
   if (!user.refresh_token) {
     return { data: null };
@@ -48,20 +49,18 @@ export async function addItemToCart(slug: string) {
 
   try {
     await insertSingle(sql`
-    insert into cart_details (cart_id, game_id, checked) values (${cart!.ID}, ${
-      game.ID
-    }, ${true});
+    insert into cart_details (cart_id, game_id, checked) values (${cart!.ID}, ${game.ID}, ${true});
   `);
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes("Duplicate entry")) {
+      if (error.message.includes('Duplicate entry')) {
         return {
-          error: "Item already in cart",
+          error: 'Item already in cart',
           data: null,
         };
       }
       return {
-        error: "unkown error",
+        error: 'unkown error',
         data: null,
       };
     }
@@ -127,13 +126,7 @@ export async function findUserCart(userId: number) {
   `);
 }
 
-export async function removeItemFromCart({
-  gameId,
-  cartId,
-}: {
-  gameId: number;
-  cartId: number;
-}) {
+export async function removeItemFromCart({ gameId, cartId }: { gameId: number; cartId: number }) {
   try {
     await querySingle(sql`
       delete from cart_details where cart_id = ${cartId} and game_id = ${gameId}
@@ -141,21 +134,15 @@ export async function removeItemFromCart({
     return { data: null };
   } catch (error) {
     return {
-      error: "something went wrong",
+      error: 'something went wrong',
     };
   }
 }
 
-export async function toggleItemChecked({
-  gameId,
-  checked,
-}: {
-  gameId: number;
-  checked: boolean;
-}) {
+export async function toggleItemChecked({ gameId, checked }: { gameId: number; checked: boolean }) {
   const payload = await getUserFromCookie();
   if (!payload) {
-    throw Error("UnAuthorized");
+    throw Error('UnAuthorized');
   }
   const { data: cart } = await findUserCart(payload.userId);
   try {
@@ -168,7 +155,7 @@ export async function toggleItemChecked({
     return { data: null };
   } catch (error) {
     return {
-      error: "something went wrong",
+      error: 'something went wrong',
     };
   }
 }
@@ -182,7 +169,7 @@ export async function deleteCart(cartId: number) {
     ]);
   } catch (error) {
     return {
-      error: "something went wrong",
+      error: 'something went wrong',
     };
   }
 
