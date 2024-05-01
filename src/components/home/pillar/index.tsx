@@ -1,4 +1,4 @@
-import HomeActions, { GameItem } from '@/actions2/home-actions';
+import HomeActions, { GameItem } from '@/actions/home-actions';
 import { Collections } from '@/database/models/model';
 import { currencyFormatter } from '@/utils';
 import Link from 'next/link';

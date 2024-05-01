@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SnackContext } from '@/components/SnackContext';
 import { BASE_URL } from '@/utils/config';
-import AuthActions from '@/actions2/auth-actions';
+import AuthActions from '@/actions/auth-actions';
 
 export function SignupView({ modal, order }: { modal?: boolean; order?: string }) {
   const { showMessage } = useContext(SnackContext);

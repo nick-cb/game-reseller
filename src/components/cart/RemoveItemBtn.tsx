@@ -5,7 +5,7 @@ import { useContext, useTransition } from 'react';
 import { SnackContext } from '../SnackContext';
 import { useRouter } from 'next/navigation';
 import { LoadingIcon } from '../loading/LoadingIcon';
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 import { mergeCls } from '@/utils';
 
 type RemoveItemBtnProps = {

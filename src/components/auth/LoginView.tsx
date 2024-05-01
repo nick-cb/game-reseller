@@ -1,6 +1,6 @@
 'use client';
 
-import AuthActions from '@/actions2/auth-actions';
+import AuthActions from '@/actions/auth-actions';
 import { AnimatedSizeItem, AnimatedSizeProvider } from '@/components/AnimatedSizeProvider';
 import { SnackContext } from '@/components/SnackContext';
 import { EmailLoginForm, EmailLoginFormPayload } from '@/components/auth/email';

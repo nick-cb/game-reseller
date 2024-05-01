@@ -1,5 +1,5 @@
-import CartActions from '@/actions2/cart-actions';
-import ShareActions from '@/actions2/share';
+import CartActions from '@/actions/cart-actions';
+import ShareActions from '@/actions/share';
 import { CartContext } from '@/components/cart/CartContext';
 import { CartTotal } from '@/components/cart/CartTotal';
 import { CheckoutButton } from '@/components/cart/CheckoutButton';

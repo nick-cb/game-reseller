@@ -1,4 +1,4 @@
-import CheckoutActions from '@/actions2/checkout-actions';
+import CheckoutActions from '@/actions/checkout-actions';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { SnackContextProvider } from '@/components/SnackContext';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
@@ -18,7 +18,7 @@ import {
   IntersectionObserverRoot,
 } from '../intersection/IntersectionObserver';
 import { ScrollItem } from '../scroll2/ScrollPrimitive';
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 
 export type CheckoutViewProps = {
   gameList: (Pick<

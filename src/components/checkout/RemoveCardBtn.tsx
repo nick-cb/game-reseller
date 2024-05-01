@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { ButtonHTMLAttributes, DetailedHTMLProps, PropsWithChildren, useTransition } from 'react';
 import { LoadingIcon2 } from '../loading/LoadingIcon';
-import CheckoutActions from '@/actions2/checkout-actions';
+import CheckoutActions from '@/actions/checkout-actions';
 
 export function RemoveCardBtn({
   paymentMethod,

@@ -5,7 +5,7 @@ import { Game } from '@/database/models/model';
 import { useContext, useTransition } from 'react';
 import { SnackContext } from '../SnackContext';
 import { LoadingIcon } from '../loading/LoadingIcon';
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 
 export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'name'> }) {
   const router = useRouter();

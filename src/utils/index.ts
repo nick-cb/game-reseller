@@ -1,4 +1,4 @@
-import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
+import { OmitGameId, FVideoFullInfo } from '@/type';
 import { ReactElement, JSXElementConstructor } from 'react';
 import Stripe from 'stripe';
 import util from 'util';

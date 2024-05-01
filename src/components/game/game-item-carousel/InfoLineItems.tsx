@@ -1,4 +1,4 @@
-import { GameResponse } from '@/actions2/game-detail-actions/game-details';
+import { GameResponse } from '@/actions/game-detail-actions/game-details';
 
 type InfoLineItemsProps = {
   game: GameResponse;

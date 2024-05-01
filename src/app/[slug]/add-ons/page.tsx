@@ -1,5 +1,5 @@
-import GameDetailActions from '@/actions2/game-detail-actions';
-import ShareActions from '@/actions2/share';
+import GameDetailActions from '@/actions/game-detail-actions';
+import ShareActions from '@/actions/share';
 import Pagination from '@/components/Pagination';
 import PortraitGameCard from '@/components/PortraitGameCard';
 import { GameNav } from '@/components/game/GameNav';

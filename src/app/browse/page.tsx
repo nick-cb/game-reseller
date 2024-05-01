@@ -1,6 +1,6 @@
 import React from 'react';
 import PortraitGameCard from '@/components/PortraitGameCard';
-import BrowseActions from '@/actions2/browse-actions';
+import BrowseActions from '@/actions/browse-actions';
 import { z } from 'zod';
 import Pagination from '@/components/Pagination';
 

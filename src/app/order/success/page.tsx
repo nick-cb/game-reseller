@@ -1,4 +1,4 @@
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 import { OrderItemDistribute } from '@/components/OrderItemDistribute';
 import Image from 'next/image';
 import Link from 'next/link';

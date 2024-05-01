@@ -1,6 +1,6 @@
-import { FVideoFullInfo } from '@/actions/game/select';
-import { GameItem } from '@/actions2/home-actions';
+import { GameItem } from '@/actions/home-actions';
 import { Game, GameImageGroup } from '@/database/models/model';
+import { FVideoFullInfo } from '@/type';
 import { currencyFormatter } from '@/utils';
 import Link from 'next/link';
 

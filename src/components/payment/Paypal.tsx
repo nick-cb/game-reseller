@@ -1,4 +1,4 @@
-import CheckoutActions from '@/actions2/checkout-actions';
+import CheckoutActions from '@/actions/checkout-actions';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 export async function Paypal() {

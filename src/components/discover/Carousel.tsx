@@ -9,7 +9,7 @@ import {
 import { Icon } from '../Icon';
 import { mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll2/ScrollPrimitive';
-import HomeActions from '@/actions2/home-actions';
+import HomeActions from '@/actions/home-actions';
 
 type CarouselProps = {
   name: string;

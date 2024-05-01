@@ -1,8 +1,8 @@
 import ItemOrderModal from '@/components/game/OrderModal';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import GameDetailActions from '@/actions2/game-detail-actions';
-import ShareActions from '@/actions2/share';
+import GameDetailActions from '@/actions/game-detail-actions';
+import ShareActions from '@/actions/share';
 import { CheckoutView } from '@/components/checkout/Checkout';
 
 export default async function ItemOrderModalPage({ params }: { params: any }) {

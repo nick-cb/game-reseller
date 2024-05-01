@@ -1,5 +1,5 @@
-import { OmitGameId } from '@/actions/game/select';
 import { Polls } from '@/database/models/model';
+import { OmitGameId } from '@/type';
 import Image from 'next/image';
 
 type PollProps = {

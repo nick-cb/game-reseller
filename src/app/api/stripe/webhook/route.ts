@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/utils';
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 
 export async function POST(request: Request) {
   const payload = await request.text();

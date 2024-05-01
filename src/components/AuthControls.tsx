@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { AuthUserButton, LoginUserButton } from './lottie-user-button/LottieUserBtn';
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 
 export async function AuthControls() {
   const refreshToken = cookies().get('refresh_token');

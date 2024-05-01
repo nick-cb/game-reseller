@@ -8,10 +8,10 @@ import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
-import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
 import { GameImageGroup, GameImages } from '@/database/models/model';
 import { isVideo } from '@/components/game/game-item-carousel/GameItemCarousel';
 import { useScroll, ScrollItem } from '@/components/scroll2/ScrollPrimitive';
+import { OmitGameId, FVideoFullInfo } from '@/type';
 
 export type NextPrevControlsProps = {
   totalItems: number;

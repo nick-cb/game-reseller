@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import { FVideoFullInfo, OmitGameId } from '@/actions/game/select';
 import { GameImageGroup, GameImages } from '@/database/models/model';
 import { MediaControls, Video, VideoAudio } from '@/components/media/MediaPrimitive';
 import { VideoContainer } from '@/components/media/Video';
@@ -12,7 +11,8 @@ import {
 } from '../../intersection/IntersectionObserver';
 import { ScrollItem, VideoScrollItem } from '../../scroll2/ScrollPrimitive';
 import { IndicatorList, NextPrevControls } from '@/components/game/game-item-carousel/Indicators';
-import { FindBySlugResult } from '@/actions2/game-detail-actions/queries';
+import { FindBySlugResult } from '@/actions/game-detail-actions/queries';
+import { OmitGameId, FVideoFullInfo } from '@/type';
 
 type LinearCarouselProps = {
   images: GameImageGroup;

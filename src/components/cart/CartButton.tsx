@@ -1,4 +1,4 @@
-import ShareActions from '@/actions2/share';
+import ShareActions from '@/actions/share';
 import Link from 'next/link';
 
 export async function CartButton() {

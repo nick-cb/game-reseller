@@ -1,4 +1,4 @@
-import HomeActions from '@/actions2/home-actions';
+import HomeActions from '@/actions/home-actions';
 import {
   DesktopIndicator,
   MobileIndicator,
