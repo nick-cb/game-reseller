@@ -1,6 +1,7 @@
 import { OmitGameId, FVideoFullInfo } from '@/type';
 import { ReactElement, JSXElementConstructor } from 'react';
 import Stripe from 'stripe';
+import { global } from 'styled-jsx/css';
 import util from 'util';
 
 export async function getPageContent(url: any) {
@@ -159,7 +160,10 @@ export function getAudioSourcesFromVideo(video: OmitGameId<FVideoFullInfo>) {
     });
 }
 
-export function logDebug(value: any) {
+function logDebug(value: any, options = { envs: ['development'] }) {
+  if (options.envs.includes(process.env.NODE_ENV || 'development') === false) {
+    return;
+  }
   console.log(util.inspect(value, { showHidden: false, depth: null, colors: true }));
 }
 
@@ -172,3 +176,12 @@ export const DefaultPagination = {
   limit: 24,
   skip: 0,
 };
+
+declare global {
+  /**
+   * console.log with util.inspect
+   */
+  function logDebug(value: any): void;
+}
+const __global = (typeof window !== 'undefined' ? window : global) as any;
+__global.logDebug = logDebug;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { SignupView } from "@/components/auth/SignupView";
+import { SignupView } from "@/components/pages/auth/SignupView";
 
 export default function SignupPage({
   searchParams,

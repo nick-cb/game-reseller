@@ -20,7 +20,7 @@ export const connectDB = async () => {
 };
 
 export const pool = mysql.createPool({
-  host: process.env.DATABASE_URL ?? 'localhost',
+  host: process.env.DATABASE_HOST ?? 'localhost',
   port: 3306,
   database: process.env.DATABASE_NAME ?? 'game_reseller',
   user: process.env.DATABASE_USER,

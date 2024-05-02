@@ -3,7 +3,7 @@
 import { Dialog, DialogContent } from '@/components/Dialog';
 import { useRouter } from 'next/navigation';
 import React, { useRef, useEffect } from 'react';
-import { SignupView } from '@/components/auth/SignupView';
+import { SignupView } from '@/components/pages/auth/SignupView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
 export default function SignupModal({ searchParams }: { searchParams: Record<string, string> }) {

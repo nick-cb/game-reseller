@@ -3,7 +3,7 @@
 import { Dialog, DialogContent } from '@/components/Dialog';
 import { useLayoutEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoginView } from '@/components/auth/LoginView';
+import { LoginView } from '@/components/pages/auth/LoginView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
 export default function LoginModal({ searchParams }: { searchParams: Record<string, string> }) {

@@ -1,8 +1,8 @@
-import CategoryRow from '@/components/discover/Carousel';
-import HeroCarousel from '@/components/home/hero_carousel/HeroCarousel';
+import CategoryRow from '@/components/pages/discover/Carousel';
+import HeroCarousel from '@/components/pages/home/hero_carousel';
 import React, { Suspense } from 'react';
-import { Feature } from '@/components/home/feature';
-import { PillarGroup } from '@/components/home/pillar';
+import { Feature } from '@/components/pages/home/feature';
+import { PillarGroup } from '@/components/pages/home/pillar';
 
 export default function Home() {
   return (

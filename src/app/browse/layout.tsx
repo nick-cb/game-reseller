@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { CategoryCheckbox } from '@/components/CategoryCheckbox';
 import FilterContextProvider from '@/components/FilterContext';
 import BrowseSearch from '@/components/BrowseSearch';
-import Filter from '@/components/browse/Filter';
+import Filter from '@/components/pages/browse/Filter';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { CollectionRadio, RadioGroup } from '@/components/CollectionRadio';
 import CollectionActions from '../../actions/collections-actions';

@@ -1,4 +1,4 @@
-import { LoginView } from "@/components/auth/LoginView";
+import { LoginView } from "@/components/pages/auth/LoginView";
 import Image from "next/image";
 
 export default function LoginPage({

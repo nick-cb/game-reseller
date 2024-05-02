@@ -8,7 +8,7 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { CheckMarkSvg } from "./payment/PaymentRadioTab";
+import { CheckMarkSvg } from "@/components/pages/payment/PaymentRadioTab";
 import { FieldValues, RegisterOptions, useFormContext } from "react-hook-form";
 
 const RadioGroupContext = createContext<{

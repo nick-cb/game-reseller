@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import GameActions from '@/actions/games-actions';
-import { CheckoutView } from '@/components/checkout/Checkout';
+import { CheckoutView } from '@/components/pages/checkout/Checkout';
 import UserActions from '@/actions/users-actions';
 
 export type ExchangeRate = {

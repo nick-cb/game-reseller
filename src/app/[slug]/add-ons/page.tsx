@@ -1,7 +1,7 @@
 import GameActions from '@/actions/games-actions';
 import Pagination from '@/components/Pagination';
 import PortraitGameCard from '@/components/PortraitGameCard';
-import { GameNav } from '@/components/game/GameNav';
+import { GameNav } from '@/components/pages/game/GameNav';
 import { z } from 'zod';
 
 type AddOnPageProps = {

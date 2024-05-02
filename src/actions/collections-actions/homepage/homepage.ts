@@ -24,7 +24,7 @@ export async function getCategoryRow(params: GetCategoryRowParams) {
     return buildArrayCollectionResponse({ collections: data });
   } catch (error) {
     console.error('Error in GameService.getCategoryRow', error);
-    return buildArrayCollectionResponse({ collections: [], error });
+    return buildArrayCollectionResponse({ error });
   }
 }
 
@@ -78,19 +78,19 @@ function buildSingleCollectionResponse(params: BuildSingleResponseParams) {
   return {
     data: {
       ID: collection?.ID ?? -1,
-      name: collection?.name ?? '',
-      collection_key: collection?.collection_key ?? '',
+      name: collection?.name ?? '--',
+      collection_key: collection?.collection_key ?? '--',
       game_list: game_list ?? [],
     },
     error: error instanceof Error ? error : null,
   };
 }
 type BuildArrayResponseParams = {
-  collections: Partial<Collections & { game_list: GameItem[] }>[];
+  collections?: Partial<Collections & { game_list: GameItem[] }>[];
   error?: unknown;
 };
 function buildArrayCollectionResponse(params: BuildArrayResponseParams) {
-  const { collections = [], error } = params;
+  const { collections = [{ game_list: [] }], error } = params;
   const data = collections.map((c) => {
     const { data } = buildSingleCollectionResponse({
       collection: c,

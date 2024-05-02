@@ -11,13 +11,13 @@ import { AuthControls } from "@/components/AuthControls";
 import { HideOnRoute } from "@/components/HideOnRoutes";
 import { Suspense } from "react";
 import { SnackContextProvider } from "@/components/SnackContext";
-import { CartButton } from "@/components/cart/CartButton";
+import { CartButton } from "@/components/pages/cart/CartButton";
 // import { TurboLink } from "@/components/Turbolink";
 import NextTopLoader from "nextjs-toploader";
 import {
   DesktopSearchBar,
   MobileSearch,
-} from "@/components/home/search/SearchBar";
+} from "@/components/pages/home/search/SearchBar";
 
 const atkinsonHyper = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
