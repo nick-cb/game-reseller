@@ -8,7 +8,13 @@ const Icons = {
     'fullscreen',
     'fullscreen-exit',
   ] as const,
-  arrow: ['arrow-right-s', 'arrow-left-s'] as const,
+  arrow: [
+    'arrow-right-s',
+    'arrow-left-s',
+    'arrow-down-circle',
+    'arrow-down',
+    'arrow-down-s',
+  ] as const,
 };
 type IconKeys = keyof typeof Icons;
 type IconNames = (typeof Icons)[IconKeys][number];

@@ -7,6 +7,7 @@ import { CategoryCheckbox } from '../../CategoryCheckbox';
 import BrowseSearch from '../../BrowseSearch';
 import SearchIcon from '../../SearchIcon';
 import { useSearchParams } from 'next/navigation';
+import { Icon } from '@/components/Icon';
 
 type FilterProps = {
   tags: Tags[];
@@ -19,35 +20,26 @@ export default function Filter(props: FilterProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
 
+  const openSheetManually = (event: React.TouchEvent | React.MouseEvent) => {
+    event.preventDefault();
+    setOpen(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 500);
+  };
+
   return (
     <>
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex h-9 flex-grow items-center rounded bg-white/[0.15] pl-4 transition-colors hover:bg-white/25">
           <SearchIcon />
           <input
-            onTouchStart={(event) => {
-              event.preventDefault();
-              setOpen(true);
-              setTimeout(() => {
-                inputRef.current?.focus();
-              }, 500);
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              setOpen(true);
-              setTimeout(() => {
-                inputRef.current?.focus();
-              }, 500);
-            }}
+            onTouchStart={openSheetManually}
+            onClick={openSheetManually}
             className="h-full w-full bg-transparent"
           />
         </div>
-        <button
-          onClick={() => {
-            setOpen(true);
-          }}
-          className="relative"
-        >
+        <button onClick={openSheetManually} className="relative">
           <svg width={24} height={24} stroke="white" className="m-auto">
             <use width={24} height={24} xlinkHref="/svg/sprites/actions.svg#filter" />
           </svg>
@@ -82,7 +74,7 @@ export default function Filter(props: FilterProps) {
           <Sheet.Content className="bg-paper_2 px-2 text-white_primary">
             <Sheet.Scroller draggableAt="both">
               <BrowseSearch className="mb-4" ref={inputRef} />
-              <div className="mb-2">Category</div>
+              <div className="mb-2">Tags</div>
               <ul className="flex flex-col gap-1">
                 {tags.map((tag) => {
                   return (
