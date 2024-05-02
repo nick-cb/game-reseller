@@ -1,4 +1,4 @@
-import ExpandableDescription from '@/components/ExpandableDescription';
+import ExpandableDescription from '@/components/pages/game/ExpandableDescription';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkBreaks from 'remark-breaks';

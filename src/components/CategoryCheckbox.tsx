@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useContext, useMemo, useState } from 'react';
-import { FilterContext } from './FilterContext';
+import { FilterContext } from './pages/browse/FilterContext';
 import { Tags } from '@/database/models/model';
 
 type CategoryCheckboxProps = JSX.IntrinsicElements['input'] & {

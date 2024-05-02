@@ -1,6 +1,6 @@
 import OrderActions from '@/actions/order-actions';
 import UserActions from '@/actions/users-actions';
-import { OrderItemDistribute } from '@/components/OrderItemDistribute';
+import { OrderItemDistribute } from '@/components/pages/order/OrderItemDistribute';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';

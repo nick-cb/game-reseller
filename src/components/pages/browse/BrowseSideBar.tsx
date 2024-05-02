@@ -1,8 +1,8 @@
 import { AccordionGroup, Accordion, AccordionHeader, AccordionBody } from '@/components/Accordion';
 import BrowseSearch from '@/components/BrowseSearch';
 import { CategoryCheckbox } from '@/components/CategoryCheckbox';
-import { CollectionRadio } from '@/components/CollectionRadio';
-import FilterContextProvider from '@/components/FilterContext';
+import { CollectionRadio } from '@/components/pages/browse/CollectionRadio';
+import FilterContextProvider from '@/components/pages/browse/FilterContext';
 import { RadioGroup } from '@/components/Radio';
 import Filter from './Filter';
 import CollectionActions from '@/actions/collections-actions';
