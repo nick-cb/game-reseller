@@ -17,9 +17,8 @@ type GetCategoryRowParams = {
   names: string[];
 };
 export async function getCategoryRow(params: GetCategoryRowParams) {
-  const { names } = params;
-
   try {
+    const { names } = params;
     const { data } = await Q.getCategoryRows({ names });
 
     return buildArrayCollectionResponse({ collections: data });

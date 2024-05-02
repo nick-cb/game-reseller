@@ -27,12 +27,12 @@ const Pagination = (props: PaginationProps) => {
             <li key={index}>
               <Link
                 href={`/browse?${params.toString()}`}
-                className={
-                  'relative block overflow-hidden rounded bg-paper px-4 py-2 text-white_primary ' +
-                  ' after:absolute after:inset-0 after:transition-colors after:hover:bg-white_primary/25 ' +
-                  (!currentPage && index === 0 ? ' bg-white_primary/25' : '') +
-                  (currentPage === index + 1 ? ' bg-white_primary/25' : '')
-                }
+                className={mergeCls(
+                  'relative block overflow-hidden rounded bg-paper px-4 py-2 text-white_primary',
+                  'after:absolute after:inset-0 after:transition-colors after:hover:bg-white_primary/25',
+                  !currentPage && index === 0 && ' bg-white_primary/25',
+                  currentPage === index + 1 && ' bg-white_primary/25'
+                )}
               >
                 {index + 1}
               </Link>

@@ -12,7 +12,7 @@ export default async function AddOnPage({ params, searchParams }: AddOnPageProps
   const { slug } = params;
   const keyword = z.string().catch('').parse(searchParams.keyword);
   const page = z.coerce.number().int().catch(1).parse(searchParams.page);
-  const { data: game, error } = await GameActions.games.getMinimalInfo({slug});
+  const { data: game, error } = await GameActions.games.getMinimalInfo({ slug });
   if (error) {
     // TODO: Handle error
     return null;

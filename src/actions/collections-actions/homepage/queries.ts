@@ -87,7 +87,9 @@ export async function getCategoryRows(params: GetCategoryRowParams) {
                            'images',
                            json_object(
                               'portraits',
-                              (${groupImageByType('portrait')})
+                              (${groupImageByType('portrait')}),
+                              'landscapes', json_array(),
+                              'logos', json_array()
                            ),
                            'videos', json_array()
                        )

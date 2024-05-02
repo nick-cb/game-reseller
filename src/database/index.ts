@@ -1,4 +1,5 @@
 import mysql, { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { z } from 'zod';
 
 // export const connection = mysql.createConnection(
 //   process.env.DATABASE_URL || "",
@@ -19,10 +20,11 @@ export const connectDB = async () => {
 };
 
 export const pool = mysql.createPool({
-  host: 'localhost',
+  host: process.env.DATABASE_URL ?? 'localhost',
   port: 3306,
-  database: 'game_reseller',
-  user: 'root',
+  database: process.env.DATABASE_NAME ?? 'game_reseller',
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
   waitForConnections: true,
   connectTimeout: 30000,
 });

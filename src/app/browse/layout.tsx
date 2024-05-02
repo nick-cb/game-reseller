@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import { CategoryCheckbox } from '@/components/CategoryCheckbox';
-import { handleSubmitFilter } from '../actions';
 import FilterContextProvider from '@/components/FilterContext';
 import BrowseSearch from '@/components/BrowseSearch';
 import Filter from '@/components/browse/Filter';
@@ -22,7 +21,8 @@ const layout = async ({ children }: PropsWithChildren) => {
         <div className="fixed bottom-0 left-0 right-0 z-50 block bg-default p-2 md:hidden">
           <Filter tags={tags || []} />
         </div>
-        <form className="col-start-4 col-end-5 hidden md:block" action={handleSubmitFilter}>
+        {/* TODO: Using action to search */}
+        <form className="col-start-4 col-end-5 hidden md:block">
           <noscript>
             <button
               className="mb-4 w-full rounded bg-primary
