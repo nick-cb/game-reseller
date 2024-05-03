@@ -10,7 +10,7 @@ import TagsActions from '@/actions/tags-actions';
 import { Collections, Tags } from '@/database/models/model';
 import { Icon } from '@/components/Icon';
 
-export async function BrowseCarousel() {
+export async function BrowseSideBar() {
   const [{ data: tags }, { data: collections }] = await Promise.all([
     TagsActions.tags.getTagListByGroupName({ groupName: 'genre' }),
     CollectionActions.collections.getAllCollections(),

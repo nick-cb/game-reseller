@@ -1,21 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import SearchIcon from './SearchIcon';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { mergeCls } from '@/utils';
 
-const BrowseSearch = React.forwardRef<HTMLInputElement, { className?: string }>(
+const BrowseSearch = forwardRef<HTMLInputElement, { className?: string }>(
   ({ className = '' }, ref) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
     return (
       <div
-        className={
-          className +
-          ' ' +
+        className={mergeCls(
+          className,
           'flex items-center rounded bg-white/[0.15] px-4 transition-colors hover:bg-white/25'
-        }
+        )}
       >
         <SearchIcon />
         <input

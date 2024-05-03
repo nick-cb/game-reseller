@@ -1,86 +1,69 @@
-import React from "react";
-import { LabelHTMLAttributes, useState } from "react";
+import React, { useRef } from 'react';
+import { LabelHTMLAttributes, useState } from 'react';
 
-export function InputLabel({
-  className = "",
-  children,
-  ...props
-}: React.DetailedHTMLProps<
+type InputLabelProps = React.DetailedHTMLProps<
   LabelHTMLAttributes<HTMLLabelElement>,
   HTMLLabelElement
->) {
+>;
+export function InputLabel(props: InputLabelProps) {
+  const { className = '', children, ...rest } = props;
   return (
-    <label
-      className={"flex items-center gap-4 justify-between " + className}
-      {...props}
-    >
+    <label className={'flex items-center justify-between gap-4 ' + className} {...rest}>
       {children}
     </label>
   );
 }
 
-export const InterposedInput = React.forwardRef<
-  HTMLInputElement,
-  {
-    leftIcon?: string;
-    rightIcon?: string;
-    leftIconProps?: React.SVGProps<SVGSVGElement>;
-    rightIconProps?: React.SVGProps<SVGSVGElement>;
-    containerProps?: React.ComponentProps<typeof InputWrapper>;
-    containerClassName?: string;
-  } & React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >
->(function (
-  {
+type InterposedInputProps = {
+  leftIcon?: string;
+  rightIcon?: string;
+  leftIconProps?: React.SVGProps<SVGSVGElement>;
+  rightIconProps?: React.SVGProps<SVGSVGElement>;
+  containerProps?: React.ComponentProps<typeof InputWrapper>;
+  containerClassName?: string;
+} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+export const InterposedInput = function (props: InterposedInputProps) {
+  const {
     leftIcon,
     leftIconProps,
     rightIconProps,
     rightIcon,
-    className = "",
+    className = '',
     containerProps,
-    ...props
-  },
-  ref,
-) {
-  const { className: leftIconCl = "" } = leftIconProps || {};
-  const { className: rightIconCl = "" } = rightIconProps || {};
+    ref,
+    ...rest
+  } = props;
+  console.log({ref});
+  const { className: leftIconCl = '' } = leftIconProps || {};
+  const { className: rightIconCl = '' } = rightIconProps || {};
 
   return (
     <InputWrapper {...containerProps}>
       {leftIcon && (
-        <svg {...leftIconProps} className={"w-5 h-5 " + leftIconCl}>
+        <svg {...leftIconProps} className={'h-5 w-5 ' + leftIconCl}>
           <use xlinkHref={leftIcon}></use>
         </svg>
       )}
-      <Input className={className} {...props} ref={ref} />
+      <Input className={className} {...rest} ref={ref} />
       {rightIcon && (
-        <svg
-          role="button"
-          {...rightIconProps}
-          className={"w-5 h-5 " + rightIconCl}
-        >
+        <svg role="button" {...rightIconProps} className={'h-5 w-5 ' + rightIconCl}>
           <use xlinkHref={rightIcon}></use>
         </svg>
       )}
     </InputWrapper>
   );
-});
+};
 
 function InputWrapper({
   className,
   children,
   ...props
-}: React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->) {
+}: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
   return (
     <div
       className={`flex items-center rounded
-      bg-white/[0.15] hover:bg-white/[0.25] 
-      transition-colors ${className}`}
+      bg-white/[0.15] transition-colors 
+      hover:bg-white/[0.25] ${className}`}
       {...props}
     >
       {children}
@@ -90,18 +73,15 @@ function InputWrapper({
 
 export const Input = React.forwardRef<
   HTMLInputElement,
-  React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >
+  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 >(function ({ className, ...props }, ref) {
   return (
     <input
       ref={ref}
       name="keyword"
-      className={`p-2 border-0 outline-offset-0 outline-0
-        bg-transparent text-sm text-white
-        w-[30ch] ${className}`}
+      className={`w-[30ch] border-0 bg-transparent p-2
+        text-sm text-white outline-0
+        outline-offset-0 ${className}`}
       {...props}
     />
   );
@@ -115,18 +95,16 @@ export const PasswordInput = React.forwardRef<
 
   return (
     <InterposedInput
-      type={show ? "text" : "password"}
+      type={show ? 'text' : 'password'}
       leftIconProps={{
-        className: "fill-white stroke-white ml-2",
+        className: 'fill-white stroke-white ml-2',
       }}
       leftIcon="/svg/sprites/actions.svg#password"
       rightIcon={
-        show
-          ? "/svg/sprites/actions.svg#opened-eye"
-          : "/svg/sprites/actions.svg#closed-eye"
+        show ? '/svg/sprites/actions.svg#opened-eye' : '/svg/sprites/actions.svg#closed-eye'
       }
       rightIconProps={{
-        className: "mr-2 fill-none stroke-white",
+        className: 'mr-2 fill-none stroke-white',
         onClick: () => {
           setShow((prev) => !prev);
         },
