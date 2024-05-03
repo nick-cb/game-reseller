@@ -19,6 +19,15 @@ export const connectDB = async () => {
   // }
 };
 
+console.log({
+  host: process.env.DATABASE_HOST ?? 'localhost',
+  port: 3306,
+  database: process.env.DATABASE_NAME ?? 'game_reseller',
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  waitForConnections: true,
+  connectTimeout: 30000,
+});
 export const pool = mysql.createPool({
   host: process.env.DATABASE_HOST ?? 'localhost',
   port: 3306,
