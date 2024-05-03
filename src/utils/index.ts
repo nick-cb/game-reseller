@@ -72,6 +72,7 @@ export async function renderComponentToString(
   component: ReactElement<any, string | JSXElementConstructor<any>>
 ) {
   const ReactDOMServer = (await import('react-dom/server')).default;
+  // @ts-ignore
   return ReactDOMServer.renderToString(component);
 }
 

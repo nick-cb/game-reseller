@@ -2,12 +2,11 @@
 
 import { Tags } from '@/database/models/model';
 import { useRef, useState } from 'react';
-import Sheet from 'react-modal-sheet';
+import Sheet from '../../react-modal-sheet';
 import { CategoryCheckbox } from '../../CategoryCheckbox';
 import BrowseSearch from '../../BrowseSearch';
 import SearchIcon from '../../SearchIcon';
 import { useSearchParams } from 'next/navigation';
-import { Icon } from '@/components/Icon';
 
 type FilterProps = {
   tags: Tags[];
