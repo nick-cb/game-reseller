@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { LabelHTMLAttributes, useState } from 'react';
 
 type InputLabelProps = React.DetailedHTMLProps<
@@ -14,26 +14,20 @@ export function InputLabel(props: InputLabelProps) {
   );
 }
 
-type InterposedInputProps = {
-  leftIcon?: string;
-  rightIcon?: string;
-  leftIconProps?: React.SVGProps<SVGSVGElement>;
-  rightIconProps?: React.SVGProps<SVGSVGElement>;
-  containerProps?: React.ComponentProps<typeof InputWrapper>;
-  containerClassName?: string;
-} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-export const InterposedInput = function (props: InterposedInputProps) {
-  const {
-    leftIcon,
-    leftIconProps,
-    rightIconProps,
-    rightIcon,
-    className = '',
-    containerProps,
-    ref,
-    ...rest
-  } = props;
-  console.log({ref});
+export const InterposedInput = React.forwardRef<
+  HTMLInputElement,
+  {
+    leftIcon?: string;
+    rightIcon?: string;
+    leftIconProps?: React.SVGProps<SVGSVGElement>;
+    rightIconProps?: React.SVGProps<SVGSVGElement>;
+    containerProps?: React.ComponentProps<typeof InputWrapper>;
+    containerClassName?: string;
+  } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+>(function (
+  { leftIcon, leftIconProps, rightIconProps, rightIcon, className = '', containerProps, ...props },
+  ref
+) {
   const { className: leftIconCl = '' } = leftIconProps || {};
   const { className: rightIconCl = '' } = rightIconProps || {};
 
@@ -44,7 +38,7 @@ export const InterposedInput = function (props: InterposedInputProps) {
           <use xlinkHref={leftIcon}></use>
         </svg>
       )}
-      <Input className={className} {...rest} ref={ref} />
+      <Input className={className} {...props} ref={ref} />
       {rightIcon && (
         <svg role="button" {...rightIconProps} className={'h-5 w-5 ' + rightIconCl}>
           <use xlinkHref={rightIcon}></use>
@@ -52,7 +46,7 @@ export const InterposedInput = function (props: InterposedInputProps) {
       )}
     </InputWrapper>
   );
-};
+});
 
 function InputWrapper({
   className,
