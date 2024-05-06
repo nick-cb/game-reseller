@@ -26,7 +26,7 @@ const options =
     : 
     {
       host: process.env.DATABASE_HOST ?? 'localhost',
-      port: 3306,
+      port: parseInt(process.env.DATABASE_PORT ?? '3306'),
       database: process.env.DATABASE_NAME ?? 'game_reseller',
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
