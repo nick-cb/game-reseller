@@ -109,7 +109,6 @@ export function useScroll() {
     }
     let nextSibling =
       entries[lastVisibleIndex]?.target.nextElementSibling ?? observer.root.firstChild;
-    console.log({ nextSibling });
     if (!cycle && lastVisibleIndex === entries.length - 1) {
       nextSibling = null;
     }

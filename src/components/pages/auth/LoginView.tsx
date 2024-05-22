@@ -11,7 +11,6 @@ import { GobackButton, StrategyItem, StrategyLayout } from '@/components/pages/a
 export type Strategy = 'no-strategy' | 'email' | 'facebook' | 'google' | 'apple';
 export function LoginView() {
   const searchParams = useSearchParams();
-  console.log(Array.from(searchParams.entries()));
 
   return (
     <>

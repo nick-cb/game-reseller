@@ -1,16 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import "./snack.css";
-import { uuidv4 } from "@/utils";
+import React from 'react';
+import { createContext, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
+import './snack.css';
+import { uuidv4 } from '@/utils';
 
 export const SnackContext = createContext<{
   showMessage: (snack: Snack) => void;
@@ -19,7 +12,7 @@ export const SnackContext = createContext<{
 });
 export type Snack = {
   message: string;
-  type: "success" | "error" | "warning" | "info";
+  type: 'success' | 'error' | 'warning' | 'info';
   timeout?: number;
 };
 export function SnackContextProvider({ children }: PropsWithChildren) {
@@ -49,10 +42,10 @@ export function SnackContextProvider({ children }: PropsWithChildren) {
     <SnackContext.Provider value={{ showMessage }}>
       <dialog
         open={snackQueue.length > 0}
-        className="fixed mx-auto flex flex-col justify-start items-center 
-        pointer-events-none bg-transparent w-full h-full z-50 
-        backdrop:pointer-events-none
-        gap-2 inset-0 pt-[116px]"
+        className="pointer-events-none fixed inset-0 z-50 mx-auto flex 
+        h-full w-full flex-col items-center justify-start 
+        gap-2
+        bg-transparent pt-[116px] backdrop:pointer-events-none"
       >
         {snackQueue.map((snack) => (
           <Snack key={snack.id} snack={snack} onHide={shift} />
@@ -75,14 +68,14 @@ const Snack = React.memo(function ({
   useEffect(() => {
     const animation = ref.current?.animate(
       [
-        { width: "0ch", opacity: 0 },
-        { width: snack.message.length + 4 + "ch", opacity: 1 },
+        { width: '0ch', opacity: 0 },
+        { width: snack.message.length + 4 + 'ch', opacity: 1 },
       ],
       {
         duration: 300,
-        easing: "cubic-bezier(0.5, -0.3, 0.1, 1.5)",
-        fill: "forwards",
-      },
+        easing: 'cubic-bezier(0.5, -0.3, 0.1, 1.5)',
+        fill: 'forwards',
+      }
     );
     animation?.finished.then(() => {
       setTimeout(() => {
@@ -101,7 +94,7 @@ const Snack = React.memo(function ({
   return (
     <div
       ref={ref}
-      className="bg-primary rounded text-white text-center py-2 shadow-md w-0 opacity-0"
+      className="w-0 rounded bg-primary py-2 text-center text-white opacity-0 shadow-md"
       style={{
         background: colors[snack.type].bg,
       }}
@@ -112,8 +105,8 @@ const Snack = React.memo(function ({
 });
 
 const colors = {
-  warning: { bg: "#d97706" },
-  info: { bg: "hsl(209, 100%, 45%)" },
-  error: { bg: "#dc2626" },
-  success: { bg: "#059669" },
+  warning: { bg: '#d97706' },
+  info: { bg: 'hsl(209, 100%, 45%)' },
+  error: { bg: '#dc2626' },
+  success: { bg: '#059669' },
 };

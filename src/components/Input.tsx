@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { LabelHTMLAttributes, useState } from 'react';
 
 type InputLabelProps = React.DetailedHTMLProps<
@@ -48,7 +48,25 @@ export const InterposedInput = React.forwardRef<
   );
 });
 
-function InputWrapper({
+type DualIconInputProps = JSX.IntrinsicElements['div'] & {
+  lefIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+};
+export const DualIconWrapper = forwardRef<HTMLDivElement, DualIconInputProps>(
+  function (props, ref) {
+    const { lefIcon, rightIcon, children, ...rest } = props;
+
+    return (
+      <InputWrapper {...rest} ref={ref}>
+        {lefIcon}
+        {children}
+        {rightIcon}
+      </InputWrapper>
+    );
+  }
+);
+
+export function InputWrapper({
   className,
   children,
   ...props
