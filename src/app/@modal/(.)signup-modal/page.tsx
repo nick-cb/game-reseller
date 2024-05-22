@@ -6,7 +6,7 @@ import React, { useRef, useEffect } from 'react';
 import { SignupView } from '@/components/pages/auth/SignupView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
-export default function SignupModal({ searchParams }: { searchParams: Record<string, string> }) {
+export default function SignupModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
@@ -22,8 +22,8 @@ export default function SignupModal({ searchParams }: { searchParams: Record<str
       }}
     >
       <SnackContextProvider>
-        <DialogContent as="div">
-          <SignupView order={searchParams['order']} modal />
+        <DialogContent as="div" className='h-min overflow-hidden p-8'>
+          <SignupView />
         </DialogContent>
       </SnackContextProvider>
     </Dialog>

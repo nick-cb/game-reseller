@@ -1,5 +1,8 @@
+'use server';
+
 import { Game, GameImageGroup } from '@/database/models/model';
 import * as Q from './queries';
+import fs from 'fs';
 
 type GetGameListParams = {
   limit: number;
@@ -10,6 +13,7 @@ type GetGameListParams = {
 };
 export async function getGameList(params: GetGameListParams) {
   const { limit, skip } = params;
+  fs.readFileSync('./abc.txt');
 
   try {
     const { data, total } = await Q.getGameList(params);

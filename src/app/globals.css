@@ -651,3 +651,19 @@ input[type="range"]:focus::-moz-range-thumb {
   @apply border border-white/60 outline outline-1 outline-white;
   outline-offset: 0.125rem;     
 }
+
+@keyframes searchbox-expand {
+  from {
+  display: grid;
+    grid-template-rows: 0fr;
+  }
+  to {
+  display: grid;
+    grid-template-rows: var(--row);
+  }
+}
+
+.result-box-expanded {
+  display: grid;
+  animation: searchbox-expand 1s;
+}

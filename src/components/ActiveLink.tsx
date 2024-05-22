@@ -1,16 +1,14 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import React, { PropsWithChildren, useMemo } from "react";
+import { usePathname } from 'next/navigation';
+import React, { PropsWithChildren, useMemo } from 'react';
 
-const ActiveLink = ({
-  children,
-  matches,
-  allMatch = false,
-}: PropsWithChildren<{
+type ActiveLinkProps = PropsWithChildren<{
   matches: { name: string; exact?: boolean; regex?: boolean }[];
   allMatch?: boolean;
-}>) => {
+}>;
+const ActiveLink = (props: ActiveLinkProps) => {
+  const { children, matches, allMatch = false } = props;
   const pathname = usePathname();
 
   const isMatch = useMemo(() => {
@@ -34,11 +32,7 @@ const ActiveLink = ({
     });
   }, [pathname, matches]);
 
-  return (
-    <div className={`contents ${isMatch ? "active-link " : ""}`}>
-      {children}
-    </div>
-  );
+  return <div className={`contents ${isMatch ? 'active-link ' : ''}`}>{children}</div>;
 };
 
 export default ActiveLink;

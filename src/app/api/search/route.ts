@@ -6,6 +6,9 @@ import { groupImageByType } from '@/actions/share/queries/images';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const keyword = searchParams.get('keyword');
+  if (!keyword) {
+    return NextResponse.json({ data: [] });
+  }
   const { data } = await query<
     (Game & {
       images: GameImageGroup;

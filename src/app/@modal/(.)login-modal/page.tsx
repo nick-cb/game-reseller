@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { LoginView } from '@/components/pages/auth/LoginView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
-export default function LoginModal({ searchParams }: { searchParams: Record<string, string> }) {
+export default function LoginModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
@@ -25,8 +25,8 @@ export default function LoginModal({ searchParams }: { searchParams: Record<stri
       className="z-50 h-max min-h-[560px]"
     >
       <SnackContextProvider>
-        <DialogContent as="div" className={'h-min overflow-hidden'}>
-          <LoginView order={searchParams['order']} modal />
+        <DialogContent as="div" className={'h-min overflow-hidden p-8'}>
+          <LoginView />
         </DialogContent>
       </SnackContextProvider>
     </Dialog>

@@ -1,11 +1,7 @@
 import Image from "next/image";
 import { SignupView } from "@/components/pages/auth/SignupView";
 
-export default function SignupPage({
-  searchParams,
-}: {
-  searchParams: Record<string, string>;
-}) {
+export default function SignupPage() {
   const random = Math.floor(Math.random() * 10 + 1);
 
   return (
@@ -28,7 +24,7 @@ export default function SignupPage({
           className="object-cover hidden lg:block w-[300px] xl:w-[400px] 2xl:w-auto"
         />
         <div className="px-4 overflow-hidden flex-grow">
-          <SignupView order={searchParams["order"]} />
+          <SignupView />
         </div>
       </div>
     </div>

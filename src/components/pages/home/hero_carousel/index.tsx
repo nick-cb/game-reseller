@@ -1,14 +1,14 @@
+import CollectionActions from '@/actions/collections-actions';
 import {
   DesktopIndicator,
   MobileIndicator,
 } from '@/components/pages/home/hero_carousel/HeroCarouselIndicator';
 import { ScrollItem } from '@/components/scroll/ScrollPrimitive';
+import { mergeCls } from '@/utils';
 import { HCarousel } from './HeroCarousel';
 import { HeroCarouselDesktopCover, HeroCarouselMobileCover } from './HeroCarouselCover';
 import { HeroCarouselImage } from './HeroCarouselImage';
 import './hero-carousel.css';
-import { mergeCls } from '@/utils';
-import CollectionActions from '@/actions/collections-actions';
 
 export async function HeroCarousel() {
   const { data } = await CollectionActions.homepage.getHeroCarousel();

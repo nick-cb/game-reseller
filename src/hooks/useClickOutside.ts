@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useSyncExternalStore, useCallback } from 'react';
 
-export const useClickOutside = (
-  ref: React.RefObject<any>,
-  initial = false
-): [boolean, Function, React.MutableRefObject<any>] => {
-  const [visible, setVisible] = useState<boolean>(initial);
-
-  const handleClickOutside = (event: any) => {
-    if (ref.current && !ref.current.contains(event.target)) setVisible(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [ref]);
-
-  return [visible, setVisible, ref];
+export const useClickOutside = (ref: React.RefObject<any>) => {
+  const isClickOutside = useRef(true);
+  return useSyncExternalStore(
+    useCallback((listener) => {
+      const handler = (event: MouseEvent) => {
+        isClickOutside.current = ref.current && !ref.current.contains(event.target);
+        listener();
+      };
+      document.addEventListener('click', handler, true);
+      return () => {
+        document.removeEventListener('click', handler, true);
+      };
+    }, []),
+    () => isClickOutside.current,
+    () => isClickOutside.current
+  );
 };
 
 export const useClickOutsideCallback = <T extends HTMLElement>(
@@ -31,9 +29,9 @@ export const useClickOutsideCallback = <T extends HTMLElement>(
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside, true);
     return () => {
-      document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, []);
 

@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import React from 'react';
-import { currencyFormatter } from '@/utils';
+import { currencyFormatter, mergeCls } from '@/utils';
 
 type PortraitGameCardProps = {
   game: any;
   className?: string;
 };
-const PortraitGameCard = ({ game, className = '' }: PortraitGameCardProps) => {
+const PortraitGameCard = (props: PortraitGameCardProps) => {
+  const { game, className = '' } = props;
   return (
     <Link
       href={`/${game.slug}`}
@@ -14,13 +15,13 @@ const PortraitGameCard = ({ game, className = '' }: PortraitGameCardProps) => {
       className={className + ' group flex h-full cursor-pointer flex-col justify-between'}
     >
       <div
-        className={
-          'relative overflow-hidden xs-right-pad:aspect-[3/4] ' +
-          'after:absolute after:inset-0 after:h-full after:w-full after:rounded ' +
-          'after:bg-white after:opacity-0 after:transition-opacity ' +
-          'rounded bg-white/25 group-hover:after:opacity-[0.1] ' +
-          'h-28 xs-right-pad:h-auto '
-        }
+        className={mergeCls(
+          'relative overflow-hidden xs-right-pad:aspect-[3/4]',
+          'after:absolute after:inset-0 after:h-full after:w-full after:rounded',
+          'after:bg-white after:opacity-0 after:transition-opacity',
+          'rounded bg-white/25 group-hover:after:opacity-[0.1]',
+          'h-28 xs-right-pad:h-auto'
+        )}
       >
         <img
           src={game.images.portraits[0]?.url + '?h=480&w=360&resize=1'}

@@ -1,3 +1,5 @@
+'use server';
+
 import { query, querySingle, sql } from '@/database';
 import { groupImageByType } from '../../share/queries/images';
 import { Game, GameImageGroup } from '@/database/models/model';
