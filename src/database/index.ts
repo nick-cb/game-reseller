@@ -1,5 +1,4 @@
 import mysql, { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { z } from 'zod';
 
 // export const connection = mysql.createConnection(
 //   process.env.DATABASE_URL || "",

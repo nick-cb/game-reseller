@@ -28,6 +28,8 @@ export type GameImageGroup = {
   logos: GameImages[];
 };
 
+export type GameWithImages = Game & { images: GameImageGroup };
+
 export type GameImages = {
   ID: number;
   url: string;

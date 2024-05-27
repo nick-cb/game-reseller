@@ -5,7 +5,7 @@ import Image from "next/image";
 export function MobileGameList({
   gameList,
 }: {
-  gameList: (Pick<Game, "name" | "developer" | "sale_price"> & {
+  gameList: (Pick<Game, "ID" | "name" | "developer" | "sale_price"> & {
     images: GameImageGroup;
   })[];
 }) {
@@ -15,7 +15,7 @@ export function MobileGameList({
       <ul className="flex flex-col gap-2">
         {gameList.map((game) => {
           return (
-            <li className={"w-full bg-paper rounded px-3 py-2 flex gap-4 "}>
+            <li key={game.ID} className={"w-full bg-paper rounded px-3 py-2 flex gap-4 "}>
               <Image
                 src={game?.images.portraits[0]?.url}
                 alt={""}

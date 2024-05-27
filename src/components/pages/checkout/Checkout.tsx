@@ -5,9 +5,12 @@ import { CheckoutForm } from '@/components/pages/checkout/CheckoutForm';
 import { MobileGameList } from '@/components/pages/checkout/MobileGameList';
 import { OrderSummary } from '@/components/pages/checkout/OrderSummary';
 import { PaymentItem } from '@/components/pages/checkout/SavedCardItem';
-import { PaymentTabButton, SavePayment, SpriteIcon } from '@/components/pages/payment/PaymentRadioTab';
+import {
+  PaymentTabButton,
+  SavePayment,
+  SpriteIcon,
+} from '@/components/pages/payment/PaymentRadioTab';
 import { StripeCheckoutForm, StripeElementsNullish } from '@/components/pages/payment/Stripe';
-import { Game, GameImageGroup } from '@/database/models/model';
 import { stripe } from '@/utils';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -20,17 +23,24 @@ import {
 import { ScrollItem } from '@/components/scroll/ScrollPrimitive';
 import UserActions from '@/actions/users-actions';
 
+type RequiredGameAttributes =
+  | 'ID'
+  | 'name'
+  | 'type'
+  | 'developer'
+  | 'publisher'
+  | 'sale_price'
+  | 'slug'
+  | 'images';
 export type CheckoutViewProps = {
-  gameList: (Pick<
-    Game,
-    'ID' | 'name' | 'type' | 'developer' | 'publisher' | 'sale_price' | 'slug'
-  > & {
-    checked: boolean;
-    images: GameImageGroup;
-  })[];
+  gameList: Array<
+    Pick<GameWithImages, RequiredGameAttributes> & {
+      checked: boolean;
+    }
+  >;
   cartId?: number;
 };
-export async function CheckoutView(props: CheckoutViewProps) {
+export async function CheckoutView(props: Prettify<CheckoutViewProps>) {
   const { gameList, cartId } = props;
   const cookie = cookies().get('refresh_token');
   if (!cookie) {

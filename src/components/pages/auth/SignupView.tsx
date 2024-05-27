@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StrategyLayout, StrategyItem, GobackButton } from './StrategyLayout';
 import { StrategyList } from './StrategyList';
+import { Suspense } from 'react';
 
 export function SignupView() {
   const router = useRouter();
@@ -26,7 +27,9 @@ export function SignupView() {
           <StrategyList actionType="signup" />
         </StrategyItem>
         <StrategyItem strategy="email">
-          <EmailSignupForm />
+          <Suspense>
+            <EmailSignupForm />
+          </Suspense>
           <GobackButton />
         </StrategyItem>
       </StrategyLayout>

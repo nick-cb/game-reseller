@@ -42,10 +42,7 @@ export function SnackContextProvider({ children }: PropsWithChildren) {
     <SnackContext.Provider value={{ showMessage }}>
       <dialog
         open={snackQueue.length > 0}
-        className="pointer-events-none fixed inset-0 z-50 mx-auto flex 
-        h-full w-full flex-col items-center justify-start 
-        gap-2
-        bg-transparent pt-[116px] backdrop:pointer-events-none"
+        className="pointer-events-none fixed inset-0 z-50 mx-auto flex h-full w-full flex-col items-center justify-start gap-2 bg-transparent pt-[116px] backdrop:pointer-events-none"
       >
         {snackQueue.map((snack) => (
           <Snack key={snack.id} snack={snack} onHide={shift} />

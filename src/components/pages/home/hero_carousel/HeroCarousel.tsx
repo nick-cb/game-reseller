@@ -20,7 +20,7 @@ export function HCarousel(props: HCarouselProps) {
   const { length, children, Indicator } = props;
   const { b640: sm } = useBreakpoints(breakpoints);
   const [index, setIndex] = useState(-1);
-  let prev = useRef(0);
+  const prev = useRef(0);
   const mainListRef = useRef<HTMLUListElement>(null);
   const previewListRef = useRef<HTMLUListElement>(null);
 

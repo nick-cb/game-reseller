@@ -9,6 +9,7 @@ import CollectionActions from '@/actions/collections-actions';
 import TagsActions from '@/actions/tags-actions';
 import { Collections, Tags } from '@/database/models/model';
 import { Icon } from '@/components/Icon';
+import { Suspense } from 'react';
 
 export async function BrowseSideBar() {
   const [{ data: tags }, { data: collections }] = await Promise.all([
@@ -17,29 +18,31 @@ export async function BrowseSideBar() {
   ]);
 
   return (
-    <FilterContextProvider>
-      <div className="fixed bottom-0 left-0 right-0 z-50 block bg-default p-2 md:hidden">
-        <Filter tags={tags || []} />
-      </div>
-      {/* TODO: Using action to search */}
-      <form className="col-start-4 col-end-5 hidden md:block">
-        <noscript>
-          <button
-            className="mb-4 w-full rounded bg-primary
+    <Suspense>
+      <FilterContextProvider>
+        <div className="fixed bottom-0 left-0 right-0 z-50 block bg-default p-2 md:hidden">
+          <Filter tags={tags || []} />
+        </div>
+        {/* TODO: Using action to search */}
+        <form className="col-start-4 col-end-5 hidden md:block">
+          <noscript>
+            <button
+              className="mb-4 w-full rounded bg-primary
             py-2 text-white shadow-md shadow-white/10 transition-[filter] hover:brightness-105"
-          >
-            Submit filter
-          </button>
-        </noscript>
-        <BrowseSearch />
-        <hr className="my-4 border-white/20" />
-        <AccordionGroup>
-          <CategoryAccordition collections={collections} />
-          <hr className="my-4 border-white_primary/20" />
-          <TagsAccordion tags={tags} />
-        </AccordionGroup>
-      </form>
-    </FilterContextProvider>
+            >
+              Submit filter
+            </button>
+          </noscript>
+          <BrowseSearch />
+          <hr className="my-4 border-white/20" />
+          <AccordionGroup>
+            <CategoryAccordition collections={collections} />
+            <hr className="my-4 border-white_primary/20" />
+            <TagsAccordion tags={tags} />
+          </AccordionGroup>
+        </form>
+      </FilterContextProvider>
+    </Suspense>
   );
 }
 

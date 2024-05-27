@@ -1,9 +1,9 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, Suspense, useMemo } from 'react';
 
-type HideOnRouteProps = {
+type HideOnRouteProps = PropsWithChildren<{
   exact?: boolean;
   matches: {
     pathname: string;
@@ -17,8 +17,16 @@ type HideOnRouteProps = {
     exact?: boolean;
     regex?: boolean;
   }[];
-};
-export function HideOnRoute({ children, matches, exact }: PropsWithChildren<HideOnRouteProps>) {
+}>;
+export function HideOnRoute(props: HideOnRouteProps) {
+  return (
+    <Suspense>
+      <HideOnRouteImplementation {...props} />
+    </Suspense>
+  );
+}
+function HideOnRouteImplementation(props: HideOnRouteProps) {
+  const { children, matches, exact } = props;
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isMatch = useMemo(() => {

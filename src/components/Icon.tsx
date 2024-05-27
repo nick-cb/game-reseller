@@ -1,5 +1,3 @@
-import { mergeCls } from '@/utils';
-
 const Icons = {
   media: [
     'play',
@@ -58,7 +56,6 @@ export function Icon<T extends IconNames>(props: IconProps<T>) {
     height,
     size = 24,
     fill = 'white',
-    className,
     ...rest
   } = props;
   const iconWidth = width ?? size ?? 24;
@@ -67,14 +64,12 @@ export function Icon<T extends IconNames>(props: IconProps<T>) {
   const cat =
     category || Object.keys(Icons).find((key) => (Icons[key as IconKeys] as any).includes(name));
   return (
-    <svg
-      width={iconWidth}
-      height={iconHeight}
-      fill={fill}
-      className={mergeCls(className, 'h-5 w-5')}
-      {...rest}
-    >
-      <use xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`} />
+    <svg width={iconWidth} height={iconHeight} fill={fill} {...rest}>
+      <use
+        width={iconWidth}
+        height={iconHeight}
+        xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`}
+      />
     </svg>
   );
 }

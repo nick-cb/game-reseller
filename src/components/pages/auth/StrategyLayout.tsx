@@ -3,6 +3,7 @@
 import React, { createContext, startTransition, useRef, useState } from 'react';
 import { mergeCls } from '@/utils';
 import { Strategy } from '@/components/pages/auth/LoginView';
+import { useSearchParams } from 'next/navigation';
 
 const context = createContext({
   selected: 'no-strategy' as Strategy,
@@ -11,8 +12,9 @@ const context = createContext({
 
 export function StrategyLayout(props: React.PropsWithChildren) {
   const { children } = props;
+  const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selected, setSelected] = useState<Strategy>('no-strategy');
+  const [selected, setSelected] = useState<Strategy>(searchParams.get("strategy") as Strategy || 'no-strategy');
   const changeStrategy = (event: React.MouseEvent<HTMLButtonElement>) => {
     const container = containerRef.current;
     if (!container) {

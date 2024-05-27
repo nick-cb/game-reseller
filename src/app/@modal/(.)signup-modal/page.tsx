@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent } from '@/components/Dialog';
 import { useRouter } from 'next/navigation';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, Suspense } from 'react';
 import { SignupView } from '@/components/pages/auth/SignupView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
@@ -22,8 +22,10 @@ export default function SignupModal() {
       }}
     >
       <SnackContextProvider>
-        <DialogContent as="div" className='h-min overflow-hidden p-8'>
-          <SignupView />
+        <DialogContent as="div" className="h-min overflow-hidden p-8">
+          <Suspense>
+            <SignupView />
+          </Suspense>
         </DialogContent>
       </SnackContextProvider>
     </Dialog>

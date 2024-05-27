@@ -128,11 +128,11 @@ export function IntersectionObserverRoot(props: React.PropsWithChildren) {
   const { children, ...rest } = props;
 
   if (isValidElement(children)) {
-    if ('ref' in children) {
-      if (children.ref) {
-        store.updateContainerRef(children.ref as React.RefObject<HTMLElement>);
+    if ('ref' in children.props) {
+      if (children.props.ref) {
+        store.updateContainerRef(children.props.ref as React.RefObject<HTMLElement>);
       }
-      const ref = (children.ref as React.RefObject<HTMLElement>) || containerRef;
+      const ref = (children.props.ref as React.RefObject<HTMLElement>) || containerRef;
       return React.cloneElement(children, { ...children.props, ...rest, ref: ref });
     }
     return React.cloneElement(children, { ...children.props, ...rest, ref: containerRef });

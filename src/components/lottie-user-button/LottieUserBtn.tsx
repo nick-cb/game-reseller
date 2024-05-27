@@ -44,9 +44,7 @@ export function LoginUserButton() {
           },
         }}
         onMouseEnter={handler}
-        className="relative flex h-full items-center gap-2 overflow-hidden rounded px-2 
-        after:absolute after:inset-0 after:rounded after:bg-white/[.15]
-        after:opacity-0 after:transition-opacity hover:after:opacity-100"
+        className="relative flex h-full items-center gap-2 overflow-hidden rounded px-2 after:absolute after:inset-0 after:rounded after:bg-white/[.15] after:opacity-0 after:transition-opacity hover:after:opacity-100"
         prefetch={true}
       >
         <svg

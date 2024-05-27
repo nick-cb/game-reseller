@@ -173,7 +173,7 @@ function StarRating({ earned_score, avg_rating }: { earned_score: number; avg_ra
         const remainder = earned_score < starIndex ? avg_rating % 1 : 0;
         const starId = 'star-rating-id-' + starIndex;
         return (
-          <li>
+          <li key={starIndex}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="svg"

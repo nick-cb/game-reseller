@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useReducer } from 'react';
+import React, { FormEvent, useContext, useEffect, useReducer } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input, InputWrapper } from '../../Input';
 import StandardButton from '../../StandardButton';
@@ -17,6 +17,14 @@ function usePasswordToggle() {
   }, false);
 }
 
+const defaultValues = {
+  full_name: null,
+  display_name: null,
+  email: '',
+  password: '',
+  confirm_password: '',
+  avatar: '',
+};
 export type EmailSignupFormPayload = {
   full_name: string | null;
   display_name: string | null;
@@ -42,16 +50,10 @@ export function EmailSignupForm() {
         avatar: z.string().default(''),
       })
     ),
-    defaultValues: {
-      full_name: null,
-      display_name: null,
-      email: '',
-      password: '',
-      confirm_password: '',
-      avatar: '',
-    },
+    defaultValues: defaultValues,
   });
-  const { handleSubmit, register } = form;
+  const { formState, handleSubmit, register } = form;
+  const { isSubmitSuccessful } = formState;
   const [isShowPassword, showPassword] = usePasswordToggle();
   const [isShowConfirmPassword, showConfirmPassword] = usePasswordToggle();
 
@@ -62,14 +64,23 @@ export function EmailSignupForm() {
       return;
     }
     showMessage({ message: 'Signup successfully', type: 'success' });
-    setTimeout(() => {
-      if (order) {
-        location.reload();
-      } else {
-        window.location.href = BASE_URL;
-      }
-    }, 1000);
+    return await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1000);
+    });
   };
+
+  useEffect(() => {
+    if (!isSubmitSuccessful) {
+      return;
+    }
+    if (order) {
+      location.reload();
+    } else {
+      window.location.href = BASE_URL;
+    }
+  }, [isSubmitSuccessful]);
 
   return (
     <form
@@ -169,10 +180,9 @@ export function EmailLoginForm() {
       password: '',
     },
   });
-  const { register, handleSubmit } = form;
-  const [showPassword, changePassword] = useReducer((state: boolean, _: FormEvent) => {
-    return !state;
-  }, false);
+  const { formState, register, handleSubmit } = form;
+  const { isSubmitSuccessful } = formState;
+  const [isShowPassword, showPassword] = usePasswordToggle();
 
   const submitHandler = async (values: EmailLoginFormPayload) => {
     const { error } = await AuthActions.users.login(values);
@@ -181,14 +191,20 @@ export function EmailLoginForm() {
       return;
     }
     showMessage({ message: 'Login successfully', type: 'success' });
-    setTimeout(() => {
-      if (order) {
-        window.location.href = BASE_URL + '/' + order + '/order';
-      } else {
-        window.location.href = BASE_URL;
-      }
-    }, 1000);
+    return await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1000);
+    });
   };
+
+  useEffect(() => {
+    if (order) {
+      window.location.href = BASE_URL + '/' + order + '/order';
+    } else {
+      window.location.href = BASE_URL;
+    }
+  }, [isSubmitSuccessful]);
 
   return (
     <form
@@ -201,7 +217,7 @@ export function EmailLoginForm() {
         Email
       </label>
       <InputWrapper className="w-80">
-        <Icon name="mail" fill="white" className="ml-3 h-5 w-5" />
+        <Icon name="mail" fill="white" className="ml-3" />
         <Input
           placeholder="Enter your email"
           type="email"
@@ -213,19 +229,22 @@ export function EmailLoginForm() {
       <label htmlFor="password" className="my-auto block w-max">
         Password
       </label>
-      <InputWrapper className="w-80">
-        <Icon name="lock-password" fill="white" className="ml-3 h-5 w-5" />
+      <InputWrapper className="w-80 overflow-clip">
+        <Icon name="lock-password" fill="white" className="ml-3" />
         <Input
           placeholder="Enter your password"
-          type={showPassword ? 'text' : 'password'}
+          type={isShowPassword ? 'text' : 'password'}
           {...register('password')}
           className="p-3 !text-base"
         />
-        <Icon
-          name={showPassword ? 'eye' : 'eye-off'}
-          onClick={changePassword}
-          className="ml-3 mr-3 h-5 w-5"
-        />
+        <label className="relative h-full has-[input:focus]:bg-paper">
+          <input
+            type="checkbox"
+            onChange={showPassword}
+            className="absolute h-full w-full opacity-0"
+          />
+          <Icon name={isShowPassword ? 'eye' : 'eye-off'} className="h-full !w-9 px-2" />
+        </label>
       </InputWrapper>
       <hr className="my-1 border-paper_2 3/4sm:hidden" />
       <div className="flex items-center gap-2 3/4sm:col-span-2">

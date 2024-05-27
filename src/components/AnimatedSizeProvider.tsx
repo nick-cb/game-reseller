@@ -108,7 +108,7 @@ export const AnimatedSizeItem = React.memo(function ({
     if (current && active) {
       const { width, height } = current.getBoundingClientRect();
       // console.log({ current, width, height });
-      if (!!delay) {
+      if (delay) {
         setTimeout(() => {
           updateSize(current, width, height);
         }, delay);

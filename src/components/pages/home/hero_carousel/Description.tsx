@@ -1,4 +1,4 @@
-import { Game, GameImageGroup } from '@/database/models/model';
+import { Game, GameImageGroup, GameWithImages } from '@/database/models/model';
 import React from 'react';
 
 export type HeroCarouselGame = Pick<
@@ -7,7 +7,11 @@ export type HeroCarouselGame = Pick<
 > & {
   images: GameImageGroup;
 };
-export const Description = ({ game }: { game: HeroCarouselGame }) => {
+type DescriptionProps = {
+  game: Pick<GameWithImages, 'ID' | 'description' | 'images'>
+}
+export const Description = (props: DescriptionProps) => {
+  const { game } = props;
   return (
     <div className="flex max-w-sm flex-grow flex-col justify-evenly">
       <div

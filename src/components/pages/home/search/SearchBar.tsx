@@ -189,7 +189,7 @@ export function MobileSearchResult(props: SearchResultProps) {
   );
 }
 
-function GameNameScrollText({ children }: React.PropsWithChildren<{}>) {
+function GameNameScrollText({ children }: React.PropsWithChildren) {
   return (
     <IntersectionObserverContainer options={{ threshold: [1] }}>
       <IntersectionObserverRoot>

@@ -1,30 +1,31 @@
-import Image from "next/image";
-import { SignupView } from "@/components/pages/auth/SignupView";
+import Image from 'next/image';
+import { SignupView } from '@/components/pages/auth/SignupView';
+import { Suspense } from 'react';
 
 export default function SignupPage() {
   const random = Math.floor(Math.random() * 10 + 1);
 
   return (
-    <div className="flex justify-center items-center my-auto">
+    <div className="my-auto flex items-center justify-center">
       <Image
-        src={`/images/login-splash-${random < 10 ? "0" + random : random}.jpg`}
-        alt={""}
+        src={`/images/login-splash-${random < 10 ? '0' + random : random}.jpg`}
+        alt={''}
         width={500}
         height={250}
-        className="object-cover fixed inset-0 z-0 blur-lg opacity-40 h-full w-full"
+        className="fixed inset-0 z-0 h-full w-full object-cover opacity-40 blur-lg"
       />
-      <div className="bg-paper_2 rounded flex overflow-hidden shadow-md shadow-paper_3 z-[1]">
+      <div className="z-[1] flex overflow-hidden rounded bg-paper_2 shadow-md shadow-paper_3">
         <Image
-          src={`/images/login-splash-${
-            random < 10 ? "0" + random : random
-          }.jpg`}
-          alt={""}
+          src={`/images/login-splash-${random < 10 ? '0' + random : random}.jpg`}
+          alt={''}
           width={500}
           height={250}
-          className="object-cover hidden lg:block w-[300px] xl:w-[400px] 2xl:w-auto"
+          className="hidden w-[300px] object-cover lg:block xl:w-[400px] 2xl:w-auto"
         />
-        <div className="px-4 overflow-hidden flex-grow">
-          <SignupView />
+        <div className="flex-grow overflow-hidden px-4">
+          <Suspense>
+            <SignupView />
+          </Suspense>
         </div>
       </div>
     </div>

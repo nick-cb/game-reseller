@@ -25,7 +25,7 @@ const Carousel3D = ({ data }: { data: any[] }) => {
       return;
     }
     const childrenArr = Array.from(children);
-    let tz = Math.round(
+    const tz = Math.round(
       current.clientWidth / 2 / Math.tan(Math.PI / childrenArr.length)
     );
     const rotateBy = 360 / childrenArr.length;

@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    ppr: true,
+    reactCompiler: true,
+  },
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if

@@ -1,4 +1,3 @@
-import { Game, GameImageGroup } from '@/database/models/model';
 import { ButtonGroup } from './ButtonGroup';
 import { Description } from './Description';
 import Image from 'next/image';
@@ -8,12 +7,15 @@ import {
 } from '@/components/intersection/IntersectionObserver';
 import { ScrollText } from '@/components/scroll/ScrollText';
 
-export type HeroCarouselGame = Pick<
-  Game,
-  'ID' | 'name' | 'slug' | 'description' | 'avg_rating' | 'developer'
-> & {
-  images: GameImageGroup;
-};
+type RequiredGameAttributes =
+  | 'ID'
+  | 'name'
+  | 'slug'
+  | 'description'
+  | 'avg_rating'
+  | 'developer'
+  | 'images';
+export type HeroCarouselGame = Pick<GameWithImages, RequiredGameAttributes>;
 type HeroCarouselDesktopCoverProps = {
   game: HeroCarouselGame;
 };

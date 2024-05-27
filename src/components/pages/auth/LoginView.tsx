@@ -4,7 +4,7 @@ import { EmailLoginForm } from '@/components/pages/auth/email';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { StrategyList } from './StrategyList';
 import { GobackButton, StrategyItem, StrategyLayout } from '@/components/pages/auth/StrategyLayout';
 
@@ -26,7 +26,9 @@ export function LoginView() {
           <StrategyList actionType="login" />
         </StrategyItem>
         <StrategyItem strategy="email">
-          <EmailLoginForm />
+          <Suspense>
+            <EmailLoginForm />
+          </Suspense>
           <GobackButton />
         </StrategyItem>
       </StrategyLayout>

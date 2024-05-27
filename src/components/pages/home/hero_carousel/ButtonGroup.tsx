@@ -1,21 +1,25 @@
-import { HeroCarouselGame } from "@/components/pages/home/hero_carousel/Description";
-import Link from "next/link";
-import React from "react";
+import { Game } from '@/database/models/model';
+import Link from 'next/link';
+import React from 'react';
 
-export const ButtonGroup = ({ game }: { game: HeroCarouselGame }) => {
+type ButtonGroupProps = {
+  game: Pick<Game, 'ID' | 'slug'>;
+};
+export const ButtonGroup = (props: ButtonGroupProps) => {
+  const { game } = props;
   return (
     <div className="flex gap-4">
       <Link
         href={`${game.slug}/order`}
-        className="bg-white text-default lg:w-40 w-36 py-3 lg:py-4 rounded text-sm text-center"
+        className="w-36 rounded bg-white py-3 text-center text-sm text-default lg:w-40 lg:py-4"
       >
         BUY NOW
       </Link>
       <a
         href="#"
-        className="relative overflow-hidden text-white lg:w-40 w-36 py-3 lg:py-4 rounded text-sm z-10
-          hover:bg-white/[0.16] transition-colors duration-200
-          text-center"
+        className="relative z-10 w-36 overflow-hidden rounded py-3 text-center text-sm text-white transition-colors
+          duration-200 hover:bg-white/[0.16] lg:w-40
+          lg:py-4"
       >
         ADD TO WISHLIST
       </a>

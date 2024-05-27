@@ -20,8 +20,8 @@ const loading = () => {
           >
             {Array(5)
               .fill(null)
-              .map(() => (
-                <li>
+              .map((_, index) => (
+                <li key={index}>
                   <div className="relative w-4 h-1 rounded sm:h-auto sm:w-24 sm:aspect-video bg-white/25"></div>
                 </li>
               ))}

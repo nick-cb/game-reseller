@@ -1,5 +1,6 @@
 import { LoginView } from '@/components/pages/auth/LoginView';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 export default function LoginPage() {
   const random = Math.floor(Math.random() * 10 + 1);
@@ -22,7 +23,9 @@ export default function LoginPage() {
           className="hidden object-cover lg:block"
         />
         <div className="flex-grow overflow-hidden px-8">
-          <LoginView />
+          <Suspense>
+            <LoginView />
+          </Suspense>
         </div>
       </div>
     </div>

@@ -2,29 +2,11 @@
 
 import { query, querySingle, sql } from '@/database';
 import { groupImageByType } from '../../share/queries/images';
-import Reviews, {
-  Game,
-  GameImageGroup,
-  Polls,
-  SystemDetails,
-  Systems,
-  Tags,
-  VideoRecipes,
-  VideoVariants,
-  Videos,
-} from '@/database/models/model';
 import { DefaultPagination } from '@/utils';
 
-export type FindBySlugResult = Game & {
-  images: GameImageGroup;
-  videos: (Videos & {
-    recipes: (VideoRecipes & {
-      variants: VideoVariants[];
-    })[];
-  })[];
-  systems: (Systems & {
-    details: SystemDetails[];
-  })[];
+export type FindBySlugResult = GameWithImages & {
+  videos: FindVideoResult;
+  systems: FindSystemDetailsResult;
   tags: Tags[];
   reviews: Reviews[];
   polls: Polls[];

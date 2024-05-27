@@ -17,7 +17,7 @@ export function OrderSummary({
       <ul className="flex flex-col gap-4 max-h-[430px] overflow-scroll scrollbar-hidden">
         {gameList.map((game) => {
           return (
-            <li className={"flex gap-4"}>
+            <li key={game.ID} className={"flex gap-4"}>
               <Image
                 src={game?.images.portraits[0]?.url}
                 alt={""}
