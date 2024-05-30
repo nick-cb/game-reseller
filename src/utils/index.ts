@@ -1,4 +1,3 @@
-import { OmitGameId, FVideoFullInfo } from '@/type';
 import { ReactElement, JSXElementConstructor } from 'react';
 import Stripe from 'stripe';
 import { global } from 'styled-jsx/css';
@@ -144,7 +143,7 @@ const priority = {
   high: 1,
   audio: 0,
 };
-export function getVideoSources(video: OmitGameId<FVideoFullInfo>) {
+export function getVideoSources(video: FindVideoArrayResult[number]) {
   return video.recipes
     .filter(({ recipe }) => !recipe?.includes('hls'))
     .map(({ variants }) => {
@@ -152,7 +151,7 @@ export function getVideoSources(video: OmitGameId<FVideoFullInfo>) {
       return sortedVariants[0];
     });
 }
-export function getAudioSourcesFromVideo(video: OmitGameId<FVideoFullInfo>) {
+export function getAudioSourcesFromVideo(video: FindVideoArrayResult[number]) {
   return video.recipes
     .filter(({ recipe }) => !recipe?.includes('hls'))
     .map(({ variants }) => {

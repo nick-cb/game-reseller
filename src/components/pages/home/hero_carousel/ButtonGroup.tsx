@@ -1,4 +1,3 @@
-import { Game } from '@/database/models/model';
 import Link from 'next/link';
 import React from 'react';
 

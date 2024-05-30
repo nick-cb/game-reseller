@@ -1,7 +1,6 @@
+import { groupImageByType } from '@/+actions/+share/queries/images';
 import { query, sql } from '@/database';
-import { Game, GameImageGroup } from '@/database/models/model';
 import { NextResponse } from 'next/server';
-import { groupImageByType } from '@/actions/share/queries/images';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

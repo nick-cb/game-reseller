@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import { GameImageGroup, GameImages } from '@/database/models/model';
 import { MediaControls, Video, VideoAudio } from '@/components/media/MediaPrimitive';
 import { VideoContainer } from '@/components/media/Video';
 import { AudioContainer } from '@/components/media/Audio';
@@ -10,17 +9,17 @@ import {
   IntersectionObserverRoot,
 } from '../../../intersection/IntersectionObserver';
 import { ScrollItem, VideoScrollItem } from '@/components/scroll/ScrollPrimitive';
-import { IndicatorList, NextPrevControls } from '@/components/pages/game/game-item-carousel/Indicators';
-import { FindBySlugResult } from '@/actions/games-actions/game-detail-page/queries';
-import { OmitGameId, FVideoFullInfo } from '@/type';
+import {
+  IndicatorList,
+  NextPrevControls,
+} from '@/components/pages/game/game-item-carousel/Indicators';
+import { FindBySlugResult } from '@/+actions/games-actions/game-detail-page/queries';
 
 type LinearCarouselProps = {
   images: GameImageGroup;
   videos: FindBySlugResult['videos'];
 };
-export const isVideo = (
-  media: OmitGameId<GameImages> | OmitGameId<FVideoFullInfo>
-): media is OmitGameId<FVideoFullInfo> => {
+export const isVideo = (media: GameImages | FindVideoItemResult): media is FindVideoItemResult => {
   return 'recipes' in media;
 };
 export const breakpoints = [640, 1536] as const;

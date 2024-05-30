@@ -1,12 +1,11 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { Game } from '@/database/models/model';
 import { useContext, useTransition } from 'react';
 import { SnackContext } from '../../SnackContext';
 import { LoadingIcon } from '../../loading/LoadingIcon';
-import CartActions from '@/actions/cart-actions';
-import UserActions from '@/actions/users-actions';
+import CartActions from '@/+actions/cart-actions';
+import UserActions from '@/+actions/users-actions';
 
 export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'name'> }) {
   const router = useRouter();

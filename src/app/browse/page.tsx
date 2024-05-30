@@ -2,7 +2,7 @@ import React from 'react';
 import PortraitGameCard from '@/components/PortraitGameCard';
 import { z } from 'zod';
 import Pagination from '@/components/Pagination';
-import GameActions from '@/actions/games-actions';
+import GameActions from '@/+actions/games-actions';
 
 type PageProps = {
   searchParams: { [K in string]: string | string[] | undefined };

@@ -1,4 +1,4 @@
-import GameActions from '@/actions/games-actions';
+import GameActions from '@/+actions/games-actions';
 import { AddToCartButton } from '@/components/pages/game/AddToCartBtn';
 import { AvgRating } from '@/components/pages/game/AvgRating';
 import { BuyNowButton } from '@/components/pages/game/BuyNowButton';

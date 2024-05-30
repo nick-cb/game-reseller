@@ -19,20 +19,17 @@ export const connectDB = async () => {
 };
 
 const DATABASE_URL = process.env.DATABASE_URL;
-const options = 
-  DATABASE_URL
-    ? {uri: DATABASE_URL} 
-    : 
-    {
+const options = DATABASE_URL
+  ? { uri: DATABASE_URL }
+  : {
       host: process.env.DATABASE_HOST ?? 'localhost',
       port: parseInt(process.env.DATABASE_PORT ?? '3306'),
       database: process.env.DATABASE_NAME ?? 'game_reseller',
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       waitForConnections: true,
-      connectTimeout: 30000
+      connectTimeout: 30000,
     };
-console.log({ options });
 export const pool = mysql.createPool(options);
 
 type Primitive = string | number | bigint | boolean | null | undefined;
@@ -158,6 +155,7 @@ export async function insertSingle(params: ReturnType<typeof sql>) {
   const connection = await pool.getConnection();
   try {
     const result = await connection.query<ResultSetHeader>(query, values);
+    connection.release();
     return { data: result[0] };
   } catch (error) {
     connection.release();
@@ -170,6 +168,7 @@ export async function updateSingle(params: ReturnType<typeof sql>) {
   const connection = await pool.getConnection();
   try {
     const result = await connection.query<RowDataPacket[]>(query, values);
+    connection.release();
     return { data: result[0][0] };
   } catch (error) {
     connection.release();

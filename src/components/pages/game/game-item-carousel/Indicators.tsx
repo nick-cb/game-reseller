@@ -8,10 +8,8 @@ import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
-import { GameImageGroup, GameImages } from '@/database/models/model';
 import { isVideo } from '@/components/pages/game/game-item-carousel/GameItemCarousel';
 import { useScroll, ScrollItem } from '@/components/scroll/ScrollPrimitive';
-import { OmitGameId, FVideoFullInfo } from '@/type';
 
 export type NextPrevControlsProps = {
   totalItems: number;
@@ -57,7 +55,7 @@ export function NextPrevControls() {
 }
 
 export type IndicatorProps = {
-  item: OmitGameId<FVideoFullInfo> | OmitGameId<GameImages>;
+  item: FindVideoItemResult | GameImages;
   index: number;
   isActive?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -116,7 +114,7 @@ function IndicatorNextPrevButton() {
 }
 
 export type IndicatorListProps = {
-  videos: OmitGameId<FVideoFullInfo>[];
+  videos: FindVideoArrayResult;
   images: GameImageGroup;
 };
 

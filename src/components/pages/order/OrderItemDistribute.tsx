@@ -1,11 +1,10 @@
 'use client';
 
-import { Orders } from '@/database/models/model';
 import { useLayoutEffect } from 'react';
 import Image from 'next/image';
 import { fire } from '@/utils/confettie';
 
-export function OrderItemDistribute({ gameList }: { gameList: Orders['items'] }) {
+export function OrderItemDistribute({ gameList }: { gameList: any }) {
   useLayoutEffect(() => {
     fire(0.25, {
       spread: 26,
@@ -41,7 +40,7 @@ export function OrderItemDistribute({ gameList }: { gameList: Orders['items'] })
   ];
   return (
     <>
-      {gameList.map((item, index) => {
+      {gameList.map((item: any, index: number) => {
         const image = item.images.portraits[0];
         const shadowColor = image.colors.highestSat;
         if (!list[index]) {

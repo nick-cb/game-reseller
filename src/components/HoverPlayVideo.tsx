@@ -1,11 +1,9 @@
-import { GameItem } from '@/actions/collections-actions';
-import { Game, GameImageGroup } from '@/database/models/model';
-import { FVideoFullInfo } from '@/type';
+import { GameItem } from '@/+actions/collections-actions';
 import { currencyFormatter, mergeCls } from '@/utils';
 import Link from 'next/link';
 
 export type FeatureCardItem = Pick<Game, 'ID' | 'name' | 'slug' | 'description' | 'sale_price'> & {
-  videos: FVideoFullInfo[];
+  videos: FindVideoArrayResult[];
   images: GameImageGroup;
 };
 type FeatureCardProps = {

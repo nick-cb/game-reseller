@@ -1,5 +1,5 @@
-import CartActions from '@/actions/cart-actions';
-import UserActions from '@/actions/users-actions';
+import CartActions from '@/+actions/cart-actions';
+import UserActions from '@/+actions/users-actions';
 import { CartContext } from '@/components/pages/cart/CartContext';
 import { CartTotal } from '@/components/pages/cart/CartTotal';
 import { CheckoutButton } from '@/components/pages/cart/CheckoutButton';
@@ -7,7 +7,6 @@ import { ItemCheckBox } from '@/components/pages/cart/ItemCheckedBox';
 import { RemoveItemBtn } from '@/components/pages/cart/RemoveItemBtn';
 import { CheckoutView } from '@/components/pages/checkout/Checkout';
 import { CheckoutModal } from '@/components/pages/checkout/CheckoutForm';
-import { Game } from '@/database/models/model';
 import { currencyFormatter, pascalCase } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';

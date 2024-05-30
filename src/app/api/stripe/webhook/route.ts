@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/utils';
-import OrderActions from '@/actions/order-actions';
+import OrderActions from '@/+actions/order-actions';
 
 export async function POST(request: Request) {
   const payload = await request.text();

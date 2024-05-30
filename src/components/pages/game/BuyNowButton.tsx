@@ -2,8 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import StandardButton from '../../StandardButton';
-import { Game } from '@/database/models/model';
-import UserActions from '@/actions/users-actions';
+import UserActions from '@/+actions/users-actions';
 
 export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
   const router = useRouter();

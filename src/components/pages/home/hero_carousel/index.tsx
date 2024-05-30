@@ -1,4 +1,4 @@
-import CollectionActions from '@/actions/collections-actions';
+import CollectionActions from '@/+actions/collections-actions';
 import {
   DesktopIndicator,
   MobileIndicator,
@@ -11,7 +11,10 @@ import { HeroCarouselImage } from './HeroCarouselImage';
 import './hero-carousel.css';
 
 export async function HeroCarousel() {
-  const { data } = await CollectionActions.homepage.getHeroCarousel();
+  const { data, error } = await CollectionActions.homepage.getHeroCarousel();
+  if (error) {
+    throw new Error(error.message);
+  }
   const { game_list } = data;
 
   return (

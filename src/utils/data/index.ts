@@ -1,4 +1,3 @@
-import { GameImages } from '@/database/models/model';
 import { LandscapeImages, PortraitImages } from '../config';
 
 export function groupImages(images: GameImages[]) {

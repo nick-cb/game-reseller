@@ -1,4 +1,4 @@
-import GameActions from '@/actions/games-actions';
+import GameActions from '@/+actions/games-actions';
 import React from 'react';
 import GameCard from './GameCard';
 import Link from 'next/link';

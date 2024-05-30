@@ -1,6 +1,5 @@
 "use client";
 
-import { Game } from "@/database/models/model";
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { flushSync } from "react-dom";
 import { SnackContext } from "../../SnackContext";

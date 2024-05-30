@@ -5,9 +5,8 @@ import { CollectionRadio } from '@/components/pages/browse/CollectionRadio';
 import FilterContextProvider from '@/components/pages/browse/FilterContext';
 import { RadioGroup } from '@/components/Radio';
 import Filter from './Filter';
-import CollectionActions from '@/actions/collections-actions';
-import TagsActions from '@/actions/tags-actions';
-import { Collections, Tags } from '@/database/models/model';
+import CollectionActions from '@/+actions/collections-actions';
+import TagsActions from '@/+actions/tags-actions';
 import { Icon } from '@/components/Icon';
 import { Suspense } from 'react';
 

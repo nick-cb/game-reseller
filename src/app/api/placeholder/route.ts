@@ -1,12 +1,10 @@
 import { query, sql } from '@/database';
-import { Game, GameImages } from '@/database/models/model';
-import { OmitGameId } from '@/type';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   const { data } = await query<
     (Game & {
-      images: OmitGameId<GameImages>[];
+      images: GameImages[];
     })[]
   >(sql`
       select *

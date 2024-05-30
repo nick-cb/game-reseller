@@ -1,12 +1,11 @@
 'use client';
 
-import { Carts, Game } from '@/database/models/model';
 import { useContext, useTransition } from 'react';
 import { SnackContext } from '../../SnackContext';
 import { useRouter } from 'next/navigation';
 import { LoadingIcon } from '../../loading/LoadingIcon';
 import { mergeCls } from '@/utils';
-import CartActions from '@/actions/cart-actions';
+import CartActions from '@/+actions/cart-actions';
 
 type RemoveItemBtnProps = {
   cart: Pick<Carts, 'ID'>;

@@ -1,6 +1,6 @@
 'use client';
 
-import GameActions from '@/actions/games-actions';
+import GameActions from '@/+actions/games-actions';
 import { Input } from '@/components/Input';
 import Pagination from '@/components/Pagination';
 import PortraitGameCard from '@/components/PortraitGameCard';

@@ -15,7 +15,7 @@ import { useCartContext } from '../cart/CartContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useStripeNullish } from '@/components/pages/payment/Stripe';
-import CheckoutActions from '@/actions/checkout-actions';
+import CheckoutActions from '@/+actions/checkout-actions';
 
 const checkoutContext = createContext<{
   stripe: Stripe | null;

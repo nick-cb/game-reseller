@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import GameActions from '@/actions/games-actions';
+import GameActions from '@/+actions/games-actions';
 import { CheckoutView } from '@/components/pages/checkout/Checkout';
-import UserActions from '@/actions/users-actions';
+import UserActions from '@/+actions/users-actions';
 
 export type ExchangeRate = {
   date: string;

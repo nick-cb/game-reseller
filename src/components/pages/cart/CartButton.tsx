@@ -1,5 +1,5 @@
-import CartActions from '@/actions/cart-actions';
-import UserActions from '@/actions/users-actions';
+import CartActions from '@/+actions/cart-actions';
+import UserActions from '@/+actions/users-actions';
 import Link from 'next/link';
 
 export async function CartButton() {

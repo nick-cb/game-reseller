@@ -1,4 +1,3 @@
-import Reviews, { CriticAvg, Game } from '@/database/models/model';
 import { ScrollContainer, ScrollItem } from '@/components/scroll/ScrollPrimitive';
 import {
   IntersectionObserverContainer,

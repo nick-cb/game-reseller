@@ -2,7 +2,7 @@ import React, { FormEvent, useContext, useEffect, useReducer } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input, InputWrapper } from '../../Input';
 import StandardButton from '../../StandardButton';
-import AuthActions from '@/actions/auth-actions';
+import AuthActions from '@/+actions/auth-actions';
 import { BASE_URL } from '@/utils/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -16,6 +16,8 @@ function usePasswordToggle() {
     return !state;
   }, false);
 }
+
+const Divider = () => <hr className="my-1 border-paper_2 3/4sm:hidden" />;
 
 const defaultValues = {
   full_name: null,
@@ -94,7 +96,7 @@ export function EmailSignupForm() {
         <Icon name="user" fill="white" className="ml-3" />
         <Input placeholder="Full name" {...register('full_name')} className="p-3" />
       </InputWrapper>
-      <hr className="my-1 border-paper_2 3/4sm:hidden" />
+      <Divider />
       <label htmlFor="display-name" className="my-auto block w-max">
         Display name
       </label>
@@ -102,7 +104,7 @@ export function EmailSignupForm() {
         <Icon name="robot-2" className="ml-3" />
         <Input placeholder="Darth vader" {...register('display_name')} className="p-3" />
       </InputWrapper>
-      <hr className="my-1 border-paper_2 3/4sm:hidden" />
+      <Divider />
       <label htmlFor="email" className="my-auto block w-max">
         Email
       </label>
@@ -110,7 +112,7 @@ export function EmailSignupForm() {
         <Icon name="mail" className="ml-3" />
         <Input placeholder="Enter your email" type="email" {...register('email')} className="p-3" />
       </InputWrapper>
-      <hr className="my-1 border-paper_2 3/4sm:hidden" />
+      <Divider />
       <label htmlFor="password" className="my-auto block w-max">
         Password
       </label>
@@ -129,6 +131,7 @@ export function EmailSignupForm() {
           className="ml-3 mr-3 h-5 w-5"
         />
       </InputWrapper>
+      <Divider />
       <label htmlFor="confirm-password" className="my-auto block w-max">
         Confirm password
       </label>
@@ -225,7 +228,7 @@ export function EmailLoginForm() {
           className="p-3 !text-base"
         />
       </InputWrapper>
-      <hr className="my-1 border-paper_2 3/4sm:hidden" />
+      <Divider />
       <label htmlFor="password" className="my-auto block w-max">
         Password
       </label>
@@ -246,7 +249,7 @@ export function EmailLoginForm() {
           <Icon name={isShowPassword ? 'eye' : 'eye-off'} className="h-full !w-9 px-2" />
         </label>
       </InputWrapper>
-      <hr className="my-1 border-paper_2 3/4sm:hidden" />
+      <Divider />
       <div className="flex items-center gap-2 3/4sm:col-span-2">
         <input type="checkbox" />
         <label>Remember me</label>

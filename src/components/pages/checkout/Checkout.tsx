@@ -1,4 +1,4 @@
-import CheckoutActions from '@/actions/checkout-actions';
+import CheckoutActions from '@/+actions/checkout-actions';
 import { Accordion, AccordionBody, AccordionGroup, AccordionHeader } from '@/components/Accordion';
 import { SnackContextProvider } from '@/components/SnackContext';
 import { CheckoutForm } from '@/components/pages/checkout/CheckoutForm';
@@ -21,7 +21,7 @@ import {
   IntersectionObserverRoot,
 } from '../../intersection/IntersectionObserver';
 import { ScrollItem } from '@/components/scroll/ScrollPrimitive';
-import UserActions from '@/actions/users-actions';
+import UserActions from '@/+actions/users-actions';
 
 type RequiredGameAttributes =
   | 'ID'
@@ -40,7 +40,7 @@ export type CheckoutViewProps = {
   >;
   cartId?: number;
 };
-export async function CheckoutView(props: Prettify<CheckoutViewProps>) {
+export async function CheckoutView(props: CheckoutViewProps) {
   const { gameList, cartId } = props;
   const cookie = cookies().get('refresh_token');
   if (!cookie) {

@@ -1,7 +1,6 @@
 'use client';
 
-import AuthActions from '@/actions/auth-actions';
-import { Users } from '@/database/models/model';
+import AuthActions from '@/+actions/auth-actions';
 import { useClickOutsideCallback } from '@/hooks/useClickOutside';
 import Image from 'next/image';
 import Link from 'next/link';

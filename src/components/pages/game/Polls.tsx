@@ -1,9 +1,7 @@
-import { Polls } from '@/database/models/model';
-import { OmitGameId } from '@/type';
 import Image from 'next/image';
 
 type PollProps = {
-  polls: OmitGameId<Polls>[];
+  polls: Polls[];
 };
 export function Polls(props: PollProps) {
   const { polls } = props;

@@ -1,5 +1,4 @@
-import CollectionActions, { GameItem } from '@/actions/collections-actions';
-import { Collections } from '@/database/models/model';
+import CollectionActions, { GameItem } from '@/+actions/collections-actions';
 import { currencyFormatter } from '@/utils';
 import Link from 'next/link';
 import React from 'react';
