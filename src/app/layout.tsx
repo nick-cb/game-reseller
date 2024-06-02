@@ -39,7 +39,7 @@ export default function RootLayout({
         <body className={atkinsonHyper.className + ' bg-default'}>
           <Header />
           <Nav />
-          <main className="mx-auto max-w-[1952px] px-4 pb-16 pt-[116px] text-white_primary lg:px-24 xl:px-44">
+          <main className="mx-auto max-w-[1952px] px-4 pb-16 pt-20 text-white_primary lg:px-24 xl:px-44">
             <SnackContextProvider>{children}</SnackContextProvider>
             {modal}
           </main>
@@ -99,6 +99,7 @@ function Nav() {
         { pathname: '^.*/order/', regex: true },
       ]}
     >
+      <div className='h-[56px]' />
       <nav className="fixed top-[56px] z-10 flex w-full gap-4 bg-default px-4 lg:px-24 xl:px-44">
         <div
           className={

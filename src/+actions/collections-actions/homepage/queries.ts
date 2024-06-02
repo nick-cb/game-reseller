@@ -1,6 +1,6 @@
 'use server';
 
-import { query, querySingle, sql } from '@/database';
+import { query, querySingle, sql } from '@/db/query-helper';
 
 const groupImageByType = (type: string, colors = false) => {
   const colorQuery = colors

@@ -1,6 +1,6 @@
 'use server';
 
-import { insertSingle, querySingle, sql } from '@/database';
+import { insertSingle, querySingle, sql } from '@/db/query-helper';
 
 export async function createCart(params: Partial<Carts>) {
   return insertSingle(sql`

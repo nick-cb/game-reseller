@@ -1,36 +1,5 @@
-import mysql, { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-
-// export const connection = mysql.createConnection(
-//   process.env.DATABASE_URL || "",
-// );
-export const connectDB = async () => {
-  // try {
-  //   const connection = await mysql.createConnection({
-  //     host: "localhost",
-  //     port: 3306,
-  //     database: "game_reseller",
-  //     user: "root",
-  //   });
-  //   await connection.connect();
-  //   return connection;
-  // } catch (error: any) {
-  //   process.exit(1);
-  // }
-};
-
-const DATABASE_URL = process.env.DATABASE_URL;
-const options = DATABASE_URL
-  ? { uri: DATABASE_URL }
-  : {
-      host: process.env.DATABASE_HOST ?? 'localhost',
-      port: parseInt(process.env.DATABASE_PORT ?? '3306'),
-      database: process.env.DATABASE_NAME ?? 'game_reseller',
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      waitForConnections: true,
-      connectTimeout: 30000,
-    };
-export const pool = mysql.createPool(options);
+import { db } from '@/db/connection';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 type Primitive = string | number | bigint | boolean | null | undefined;
 function isTemplateLitteral(
@@ -96,17 +65,16 @@ export async function query<T extends any[]>(
 ) {
   const { debugQuery } = options;
   const { query, values } = params.toQuery();
-  const connection = await pool.getConnection();
   try {
     if (debugQuery) {
-      const sql = connection.format(query, values);
+      const sql = db.connection.format(query, values);
       console.log(sql);
     }
-    const result = await connection.query<T>(query, values);
-    connection.release();
+    const result = await db.connection.query<T>(query, values);
+    db.connection.release();
     return { data: result[0] || [] } as { data: T };
   } catch (error) {
-    connection.release();
+    db.connection.release();
     throw error;
   }
 }
@@ -117,14 +85,13 @@ export async function querySingle<T extends any>(
 ) {
   const { debugQuery } = options;
   const { query, values } = params.toQuery();
-  const connection = await pool.getConnection();
   try {
     if (debugQuery) {
-      const sql = connection.format(query, values);
+      const sql = db.connection.format(query, values);
       console.log(sql);
     }
-    const result = await connection.query<RowDataPacket[]>(query, values);
-    connection.release();
+    const result = await db.connection.query<RowDataPacket[]>(query, values);
+    db.connection.release();
 
     const data = result[0][0];
     if (data) {
@@ -132,46 +99,43 @@ export async function querySingle<T extends any>(
     }
     return { data: undefined };
   } catch (error) {
-    connection.release();
+    db.connection.release();
     throw error;
   }
 }
 
 export async function insert(params: ReturnType<typeof sql>) {
   const { query, values } = params.toQuery();
-  const connection = await pool.getConnection();
   try {
-    const result = await connection.query<RowDataPacket[]>(query, values);
-    connection.release();
+    const result = await db.connection.query<RowDataPacket[]>(query, values);
+    db.connection.release();
     return { data: result };
   } catch (error) {
-    connection.release();
+    db.connection.release();
     throw error;
   }
 }
 
 export async function insertSingle(params: ReturnType<typeof sql>) {
   const { query, values } = params.toQuery();
-  const connection = await pool.getConnection();
   try {
-    const result = await connection.query<ResultSetHeader>(query, values);
-    connection.release();
+    const result = await db.connection.query<ResultSetHeader>(query, values);
+    db.connection.release();
     return { data: result[0] };
   } catch (error) {
-    connection.release();
+    db.connection.release();
     throw error;
   }
 }
 
 export async function updateSingle(params: ReturnType<typeof sql>) {
   const { query, values } = params.toQuery();
-  const connection = await pool.getConnection();
   try {
-    const result = await connection.query<RowDataPacket[]>(query, values);
-    connection.release();
+    const result = await db.connection.query<RowDataPacket[]>(query, values);
+    db.connection.release();
     return { data: result[0][0] };
   } catch (error) {
-    connection.release();
+    db.connection.release();
     throw error;
   }
 }

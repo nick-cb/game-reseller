@@ -1,5 +1,5 @@
 import CollectionActions, { GameItem } from '@/+actions/collections-actions';
-import { currencyFormatter } from '@/utils';
+import { currencyFormatter, mergeCls } from '@/utils';
 import Link from 'next/link';
 import React from 'react';
 
@@ -42,9 +42,9 @@ export function Pillar({ data }: PillarProps) {
       </div>
       <div
         id={'pillar-' + data.collection_key}
-        className="scrollbar-hidden cols-min-80 grid snap-x
-        snap-mandatory grid-cols-2 flex-col gap-2
-        overflow-scroll md:flex"
+        className={mergeCls(
+          'scrollbar-hidden cols-min-80 grid snap-x snap-mandatory grid-cols-2 flex-col gap-2 overflow-scroll md:flex'
+        )}
       >
         {data.game_list.slice(0, 6).map((game, index) => (
           <Link
@@ -56,8 +56,9 @@ export function Pillar({ data }: PillarProps) {
             }}
           >
             <div
-              className="flex snap-start items-center gap-4 rounded
-              px-2 py-2 transition-colors hover:bg-paper_2"
+              className={mergeCls(
+                'flex snap-start items-center gap-4 rounded px-2 py-2 transition-colors hover:bg-paper_2'
+              )}
             >
               <div className="relative aspect-[3/4] h-28 overflow-hidden rounded md:h-18">
                 <img
@@ -81,9 +82,9 @@ export function Pillar({ data }: PillarProps) {
         <div className="col-start-3 row-start-1 row-end-3 w-56 md:hidden"></div>
       </div>
       <div
-        className="pointer-events-none absolute
-        -right-2 bottom-0 h-[calc(100%-28px)] w-80 bg-gradient-to-l 
-        from-default md:hidden"
+        className={mergeCls(
+          'pointer-events-none absolute -right-2 bottom-0 h-[calc(100%-28px)] w-80 bg-gradient-to-l from-default md:hidden'
+        )}
       ></div>
     </div>
   );

@@ -93,7 +93,7 @@ export function EmailSignupForm() {
         Full name
       </label>
       <InputWrapper className="w-80">
-        <Icon name="user" fill="white" className="ml-3" />
+        <Icon name="user" className="ml-3" />
         <Input placeholder="Full name" {...register('full_name')} className="p-3" />
       </InputWrapper>
       <Divider />
@@ -117,7 +117,7 @@ export function EmailSignupForm() {
         Password
       </label>
       <InputWrapper className="w-80">
-        <Icon name="lock-password" fill="white" className="ml-3 h-5 w-5" />
+        <Icon name="lock-password" className="ml-3 h-5 w-5" />
         <Input
           placeholder="Enter your password"
           type={isShowPassword ? 'text' : 'password'}
@@ -136,7 +136,7 @@ export function EmailSignupForm() {
         Confirm password
       </label>
       <InputWrapper className="w-80">
-        <Icon name="lock-password" fill="white" className="ml-3 h-5 w-5" />
+        <Icon name="lock-password" className="ml-3 h-5 w-5" />
         <Input
           placeholder="Re-Enter your password"
           type={isShowConfirmPassword ? 'text' : 'password'}
@@ -184,7 +184,7 @@ export function EmailLoginForm() {
     },
   });
   const { formState, register, handleSubmit } = form;
-  const { isSubmitSuccessful } = formState;
+  const { isSubmitted, isSubmitSuccessful } = formState;
   const [isShowPassword, showPassword] = usePasswordToggle();
 
   const submitHandler = async (values: EmailLoginFormPayload) => {
@@ -202,12 +202,15 @@ export function EmailLoginForm() {
   };
 
   useEffect(() => {
+    if (!isSubmitted) {
+      return;
+    }
     if (order) {
       window.location.href = BASE_URL + '/' + order + '/order';
     } else {
       window.location.href = BASE_URL;
     }
-  }, [isSubmitSuccessful]);
+  }, [isSubmitted, isSubmitSuccessful]);
 
   return (
     <form
@@ -220,7 +223,7 @@ export function EmailLoginForm() {
         Email
       </label>
       <InputWrapper className="w-80">
-        <Icon name="mail" fill="white" className="ml-3" />
+        <Icon name="mail" className="ml-3" />
         <Input
           placeholder="Enter your email"
           type="email"
@@ -233,26 +236,26 @@ export function EmailLoginForm() {
         Password
       </label>
       <InputWrapper className="w-80 overflow-clip">
-        <Icon name="lock-password" fill="white" className="ml-3" />
+        <Icon name="lock-password" className="ml-3" />
         <Input
           placeholder="Enter your password"
           type={isShowPassword ? 'text' : 'password'}
           {...register('password')}
           className="p-3 !text-base"
         />
-        <label className="relative h-full has-[input:focus]:bg-paper">
+        <label className="relative flex h-full items-center px-3 has-[input:focus]:bg-paper">
           <input
             type="checkbox"
             onChange={showPassword}
             className="absolute h-full w-full opacity-0"
           />
-          <Icon name={isShowPassword ? 'eye' : 'eye-off'} className="h-full !w-9 px-2" />
+          <Icon name={isShowPassword ? 'eye' : 'eye-off'} />
         </label>
       </InputWrapper>
       <Divider />
       <div className="flex items-center gap-2 3/4sm:col-span-2">
-        <input type="checkbox" />
-        <label>Remember me</label>
+        <input id="remember-user-checkbox" type="checkbox" className='w-4 h-4' />
+        <label htmlFor="remember-user-checkbox">Remember me</label>
       </div>
       <StandardButton
         type="submit"

@@ -1,6 +1,6 @@
 'use server';
 
-import { query, sql } from '@/database';
+import { query, sql } from '@/db/query-helper';
 
 type GetTagListParams = {
   groupName: string;

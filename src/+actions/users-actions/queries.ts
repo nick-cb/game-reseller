@@ -1,6 +1,6 @@
 'use server';
 
-import { insertSingle, querySingle, sql, updateSingle } from '@/database';
+import { insertSingle, querySingle, sql, updateSingle } from '@/db/query-helper';
 import { isUndefined } from '@/utils';
 
 export type CreateUserParams = {

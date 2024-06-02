@@ -110,7 +110,7 @@ export function SearchBar(props: DesktopSearchBar2Props) {
             )}
           />
         </form>
-        <SpinnerIcon className="ml-auto" isLoading={isLoading} />
+        {/* <SpinnerIcon className="ml-auto" isLoading={isLoading} /> */}
       </div>
       {data ? (
         <SearchResult data={data} keyword={keyword} isOutside={isOutside} isLoading={isLoading} />

@@ -1,4 +1,4 @@
-import { query, sql } from '@/database';
+import { query, sql } from '@/db/query-helper';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

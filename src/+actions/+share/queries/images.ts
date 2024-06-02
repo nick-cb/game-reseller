@@ -1,6 +1,6 @@
 import "server-only";
 
-import { sql } from '@/database';
+import { sql } from '@/db/query-helper';
 
 export const groupImageByType = (type: string | string[], colors = false) => {
   const colorQuery = colors

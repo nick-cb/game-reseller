@@ -112,7 +112,7 @@ export async function getUserInfoInCookie() {
   if (typeof payload === 'string') {
     return null;
   }
-  return payload as jwt.JwtPayload & { user: { ID: number } };
+  return payload.user;
 }
 
 export async function checkLoginStatus() {

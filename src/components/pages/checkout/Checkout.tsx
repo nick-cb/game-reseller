@@ -103,7 +103,7 @@ export async function CheckoutView(props: CheckoutViewProps) {
             ) : null}
             <Accordion index={1}>
               <div
-                className="col-start-1 h-max rounded bg-paper"
+                className="col-start-1 h-max rounded"
                 style={{ gridRow: `${paymentMethods.length + 1} / -1` }}
               >
                 {userHasPaymentMethods ? (
@@ -113,7 +113,7 @@ export async function CheckoutView(props: CheckoutViewProps) {
                 ) : (
                   <h3 className="mb-4 text-xl uppercase">Payment methods</h3>
                 )}
-                <AccordionBody remountChild className="rounded-b bg-paper px-3 py-4 pb-4">
+                <AccordionBody remountChild className="rounded-b py-4 pb-4">
                   <IntersectionObserverContainer>
                     <ul className={'flex gap-4 3/4sm:gap-8 ' + ' snap-x snap-mandatory '}>
                       <PaymentTabButton method="stripe" index={0}>

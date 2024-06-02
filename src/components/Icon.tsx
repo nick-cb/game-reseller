@@ -1,3 +1,5 @@
+import { mergeCls } from '@/utils';
+
 const Icons = {
   media: [
     'play',
@@ -30,7 +32,7 @@ const Icons = {
     'mail-unread',
     'mail-volume',
   ] as const,
-  system: ['lock-password', 'eye', 'eye-off'] as const,
+  system: ['lock-password', 'eye', 'eye-off', 'check', 'loader-4'] as const,
   user: ['user', 'robot', 'robot-2'] as const,
   design: ['shapes'] as const,
 };
@@ -54,22 +56,25 @@ export function Icon<T extends IconNames>(props: IconProps<T>) {
     category,
     width,
     height,
-    size = 24,
+    size = 20,
     fill = 'white',
+    className,
     ...rest
   } = props;
-  const iconWidth = width ?? size ?? 24;
-  const iconHeight = height ?? size ?? 24;
+  const iconWidth = width ?? size ?? 20;
+  const iconHeight = height ?? size ?? 20;
 
   const cat =
     category || Object.keys(Icons).find((key) => (Icons[key as IconKeys] as any).includes(name));
   return (
-    <svg width={iconWidth} height={iconHeight} fill={fill} {...rest}>
-      <use
-        width={iconWidth}
-        height={iconHeight}
-        xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`}
-      />
+    <svg
+      width={iconWidth}
+      height={iconHeight}
+      fill={fill}
+      className={mergeCls('flex-shrink-0', className)}
+      {...rest}
+    >
+      <use xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`} />
     </svg>
   );
 }

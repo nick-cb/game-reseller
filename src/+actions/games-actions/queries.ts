@@ -1,6 +1,6 @@
 'use server';
 
-import { query, querySingle, sql } from '@/database';
+import { query, querySingle, sql } from '@/db/query-helper';
 import { groupImageByType } from '../+share/queries/images';
 
 export type GetMinimalInfoParams = {

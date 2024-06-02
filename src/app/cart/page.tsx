@@ -18,7 +18,7 @@ export default async function cartPage() {
   if (!user) {
     redirect('/');
   }
-  const { data: cart } = await CartActions.cartPage.getUserCart({ user: { user_id: user.userId } });
+  const { data: cart } = await CartActions.cartPage.getUserCart({ user: { user_id: user.ID } });
   let totalPrice = 0;
   for (const game of cart.game_list) {
     totalPrice += game.sale_price;
@@ -57,9 +57,7 @@ export default async function cartPage() {
             {cart.game_list.map((item, index) => {
               return (
                 <li
-                  className={
-                    'group relative flex flex-col gap-4 rounded bg-paper_2 px-4 py-4 shadow-sm shadow-black/25 md:flex-row md:gap-8 '
-                  }
+                  className="group relative flex h-max flex-col gap-4 rounded bg-paper_2 px-4 py-4 shadow-sm shadow-black/25 md:flex-row md:gap-8"
                   key={item.ID}
                 >
                   <ItemCheckBox index={index} />

@@ -1,7 +1,7 @@
 'use server';
 
 import { groupImageByType } from '@/+actions/+share/queries/images';
-import { query, querySingle, sql } from '@/database';
+import { query, querySingle, sql } from '@/db/query-helper';
 
 type GetGameListParams = {
   limit: number;

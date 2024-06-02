@@ -1,33 +1,40 @@
 'use client';
 
-import { ButtonHTMLAttributes, DetailedHTMLProps, PropsWithChildren, SVGProps } from 'react';
+import { PropsWithChildren, SVGProps, useCallback } from 'react';
 import { HookFormRadio } from '../../Radio';
 import { useController, useFormContext } from 'react-hook-form';
 import { useScroll } from '@/components/scroll/ScrollPrimitive';
 import { mergeCls } from '@/utils';
+import { useIntersectionEvent } from '@/components/intersection/IntersectionObserver';
 
 type PaymentTabButtonProps = PropsWithChildren<{ index: number; method: 'stripe' | 'paypal' }>;
 export function PaymentTabButton(props: PaymentTabButtonProps) {
   const { children, index, method } = props;
   const { control } = useFormContext();
-  const {
-    field: { onChange, value, ref },
-  } = useController({ control, name: 'payment_method' });
+  const { field } = useController({ control, name: 'payment_method' });
+  const { onChange, value, ref } = field;
   const { entries, scrollToIndex } = useScroll();
-  const active = entries[index]?.isIntersecting;
-  if (active && value !== method) {
-    onChange(method);
-  }
+  const active = !!entries[index]?.isIntersecting;
+  useIntersectionEvent(
+    'change',
+    useCallback(
+      ({ entries }) => {
+        const active = entries[index]?.isIntersecting;
+        onChange(active ? method : value);
+      },
+      [method]
+    )
+  );
 
   return (
     <li
-      className={
-        ' snap-start rounded-md border-2 border-solid 3/4sm:h-24 3/4sm:w-28 ' +
-        ' h-20 w-24 ' +
-        ' transition-colors hover:bg-white/25 ' +
-        ' relative gap-2 ' +
-        (active ? ' border-primary ' : ' border-white/25 ')
-      }
+      className={mergeCls(
+        'snap-start rounded-md border-2 border-solid 3/4sm:h-24 3/4sm:w-28',
+        'h-20 w-24',
+        'transition-colors hover:bg-white/25',
+        'relative gap-2',
+        active ? ' border-primary ' : ' border-white/25'
+      )}
     >
       <input
         type={'radio'}
@@ -44,12 +51,12 @@ export function PaymentTabButton(props: PaymentTabButtonProps) {
       />
       <label
         htmlFor={method}
-        className={
-          'block h-full w-full rounded-md bg-paper text-sm ' +
-          'absolute inset-0 flex h-full w-full flex-col items-center justify-center ' +
-          'after:absolute after:inset-0 after:rounded-md hover:after:bg-white_primary/[.15] ' +
-          'transition-colors '
-        }
+        className={mergeCls(
+          'block h-full w-full rounded-md bg-paper text-sm',
+          'absolute inset-0 flex h-full w-full flex-col items-center justify-center',
+          'after:absolute after:inset-0 after:rounded-md hover:after:bg-white_primary/[.15]',
+          'transition-colors'
+        )}
       >
         {children}
       </label>

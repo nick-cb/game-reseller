@@ -1,6 +1,6 @@
 'use server';
 
-import { querySingle, sql } from '@/database';
+import { querySingle, sql } from '@/db/query-helper';
 import { groupImageByType } from '../+share/queries/images';
 
 export type UserCart = Carts & {

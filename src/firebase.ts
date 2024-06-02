@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { AppOptions } from "firebase-admin";
 import { getStorage } from "firebase-admin/storage";
-import serviceAccount from "@/web-shop-ban-game-next-13-firebase-adminsdk-uo65f-8d096820e0.json";
+import serviceAccount from "@/game-reseller-firebase-adminsdk-uo65f-8d096820e0.json";
 
 const firebaseConfig: AppOptions = {
   credential: admin.credential.cert(serviceAccount),

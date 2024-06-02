@@ -1,6 +1,6 @@
 'use server';
 
-import { querySingle, sql } from "@/database";
+import { querySingle, sql } from "@/db/query-helper";
 
 export async function updateOrderPaymentIntent(orderID: number, paymentIntent: string) {
   return await querySingle(sql`
