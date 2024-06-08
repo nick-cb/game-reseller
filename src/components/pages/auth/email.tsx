@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { SnackContext } from '@/components/SnackContext';
 import { mergeCls } from '@/utils';
 import { Icon } from '@/components/Icon';
+import { useStrategyLayout } from './StrategyLayout';
 
 function usePasswordToggle() {
   return useReducer((state: boolean, _: FormEvent) => {
@@ -86,71 +87,81 @@ export function EmailSignupForm(props: EmailSignupFormProps) {
   }, [isSubmitSuccessful]);
 
   return (
-    <form
-      onSubmit={handleSubmit(submitHandler)}
-      className={'grid gap-x-4 gap-y-2 3/4sm:grid-cols-[max-content_min-content] 3/4sm:gap-y-4'}
-    >
-      <label htmlFor="first-name" className="my-auto block w-max">
-        Full name
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="user" className="ml-3" />
-        <Input placeholder="Full name" {...register('full_name')} className="p-3" />
-      </InputWrapper>
-      <Divider />
-      <label htmlFor="display-name" className="my-auto block w-max">
-        Display name
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="robot-2" className="ml-3" />
-        <Input placeholder="Darth vader" {...register('display_name')} className="p-3" />
-      </InputWrapper>
-      <Divider />
-      <label htmlFor="email" className="my-auto block w-max">
-        Email
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="mail" className="ml-3" />
-        <Input placeholder="Enter your email" type="email" {...register('email')} className="p-3" />
-      </InputWrapper>
-      <Divider />
-      <label htmlFor="password" className="my-auto block w-max">
-        Password
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="lock-password" className="ml-3 h-5 w-5" />
-        <Input
-          placeholder="Enter your password"
-          type={isShowPassword ? 'text' : 'password'}
-          {...register('password')}
-          className="p-3 !text-base"
-        />
-        <Icon
-          name={isShowPassword ? 'eye' : 'eye-off'}
-          data-type="password"
-          onClick={showPassword}
-          className="ml-3 mr-3 h-5 w-5"
-        />
-      </InputWrapper>
-      <Divider />
-      <label htmlFor="confirm-password" className="my-auto block w-max">
-        Confirm password
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="lock-password" className="ml-3 h-5 w-5" />
-        <Input
-          placeholder="Re-Enter your password"
-          type={isShowConfirmPassword ? 'text' : 'password'}
-          {...register('password')}
-          className="w-[unset] flex-1 p-3 !text-base"
-        />
-        <Icon
-          name={isShowPassword ? 'eye' : 'eye-off'}
-          data-type="confirm_password"
-          onClick={showConfirmPassword}
-          className="h-full !w-10 p-3"
-        />
-      </InputWrapper>
+    <form onSubmit={handleSubmit(submitHandler)} className={'flex flex-col gap-4'}>
+      <div>
+        <label htmlFor="display-name" className="mb-2 block text-sm sm:text-base">
+          Display name
+        </label>
+        <InputWrapper>
+          <Icon name="robot-2" className="ml-3" />
+          <Input
+            placeholder="Darth vader"
+            {...register('display_name')}
+            className="flex-grow p-3 3/4sm:!text-base"
+          />
+        </InputWrapper>
+      </div>
+      <div>
+        <label htmlFor="email" className="mb-2 block text-sm sm:text-base">
+          Email
+        </label>
+        <InputWrapper>
+          <Icon name="mail" className="ml-3" />
+          <Input
+            placeholder="Enter your email"
+            type="email"
+            {...register('email')}
+            className="flex-grow p-3 3/4sm:!text-base"
+          />
+        </InputWrapper>
+      </div>
+      <div>
+        <label htmlFor="password" className="mb-2 block text-sm sm:text-base">
+          Password
+        </label>
+        <InputWrapper>
+          <Icon name="lock-password" className="ml-3" />
+          <Input
+            placeholder="Enter your password"
+            type={isShowPassword ? 'text' : 'password'}
+            {...register('password')}
+            className="w-[20ch] flex-grow p-3 3/4sm:w-auto sm:!text-base"
+          />
+          <label className="relative flex items-center self-stretch px-3 has-[input:focus]:bg-paper">
+            <input
+              type="checkbox"
+              // tabIndex={selected === 'email' ? 0 : -1}
+              onChange={showPassword}
+              className="absolute h-full w-full opacity-0"
+            />
+            <Icon name={isShowPassword ? 'eye' : 'eye-off'} />
+          </label>
+        </InputWrapper>
+      </div>
+      <div>
+        <label htmlFor="confirm-password" className="mb-2 block text-sm sm:text-base">
+          Confirm password
+        </label>
+        <InputWrapper>
+          <Icon name="lock-password" className="ml-3 h-5 w-5" />
+          <Input
+            placeholder="Re-Enter your password"
+            type={isShowConfirmPassword ? 'text' : 'password'}
+            {...register('password')}
+            className="w-[20ch] flex-grow p-3 3/4sm:w-auto 3/4sm:!text-base"
+          />
+          <label className="relative flex items-center self-stretch px-3 has-[input:focus]:bg-paper">
+            <input
+              type="checkbox"
+              // tabIndex={selected === 'email' ? 0 : -1}
+              onChange={showConfirmPassword}
+              className="absolute h-full w-full opacity-0"
+            />
+            <Icon name={isShowConfirmPassword ? 'eye' : 'eye-off'} />
+          </label>
+        </InputWrapper>
+      </div>
+
       <StandardButton
         type="submit"
         className="mt-2 shadow shadow-default 3/4sm:col-span-2"
@@ -189,6 +200,7 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
   const { formState, register, handleSubmit } = form;
   const { isSubmitted, isSubmitSuccessful } = formState;
   const [isShowPassword, showPassword] = usePasswordToggle();
+  const { selected } = useStrategyLayout();
 
   const submitHandler = async (values: EmailLoginFormPayload) => {
     const { error } = await AuthActions.users.login(values);
@@ -216,9 +228,9 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
   }, [isSubmitted, isSubmitSuccessful]);
 
   return (
-    <form className={mergeCls('flex flex-col gap-4')} onSubmit={handleSubmit(submitHandler)}>
+    <form onSubmit={handleSubmit(submitHandler)} className={'flex flex-col gap-4'}>
       <div>
-        <label htmlFor="email" className="mb-2 block">
+        <label htmlFor="email" className="mb-2 block text-sm sm:text-base">
           Email
         </label>
         <InputWrapper>
@@ -226,13 +238,14 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
           <Input
             placeholder="Enter your email"
             type="email"
+            tabIndex={selected === 'email' ? 0 : -1}
             {...register('email')}
             className="flex-grow p-3 3/4sm:!text-base"
           />
         </InputWrapper>
       </div>
       <div>
-        <label htmlFor="password" className="mb-2 block">
+        <label htmlFor="password" className="mb-2 block text-sm sm:text-base">
           Password
         </label>
         <InputWrapper className="overflow-clip">
@@ -240,12 +253,14 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
           <Input
             placeholder="Enter your password"
             type={isShowPassword ? 'text' : 'password'}
+            tabIndex={selected === 'email' ? 0 : -1}
             {...register('password')}
-            className="flex-grow p-3 w-[20ch] 3/4sm:w-auto 3/4sm:!text-base"
+            className="w-[20ch] flex-grow p-3 3/4sm:w-auto 3/4sm:!text-base"
           />
           <label className="relative flex items-center self-stretch px-3 has-[input:focus]:bg-paper">
             <input
               type="checkbox"
+              tabIndex={selected === 'email' ? 0 : -1}
               onChange={showPassword}
               className="absolute h-full w-full opacity-0"
             />
@@ -254,14 +269,19 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
         </InputWrapper>
       </div>
       <div className="flex items-center gap-2 3/4sm:col-span-2">
-        <input id="remember-user-checkbox" type="checkbox" className="h-4 w-4" />
-        <input id="remember-user-checkbox" type="checkbox" className="h-4 w-4" />
+        <input
+          id="remember-user-checkbox"
+          type="checkbox"
+          tabIndex={selected === 'email' ? 0 : -1}
+          className="h-4 w-4"
+        />
         <label htmlFor="remember-user-checkbox">Remember me</label>
       </div>
       <StandardButton
         type="submit"
-        className="mt-2 shadow-sm shadow-default 3/4sm:col-span-2"
         loading={form.formState.isSubmitting}
+        tabIndex={selected === 'email' ? 0 : -1}
+        className="mt-2 shadow-sm shadow-default 3/4sm:col-span-2"
       >
         Login
       </StandardButton>

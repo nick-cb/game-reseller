@@ -25,11 +25,11 @@ export function SignupView(props: SignupViewProps) {
       <StrategyLayout>
         <StrategyItem
           strategy="no-strategy"
-          className={'flex w-max flex-col items-center justify-center gap-4'}
+          className={'gap-4 flex flex-col w-full md:w-96'}
         >
           <StrategyList actionType="signup" />
         </StrategyItem>
-        <StrategyItem strategy="email">
+        <StrategyItem strategy="email" className='w-full md:w-96'>
           <EmailSignupForm />
           <GobackButton />
         </StrategyItem>

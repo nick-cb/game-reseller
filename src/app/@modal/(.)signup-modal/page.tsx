@@ -21,9 +21,10 @@ export default function SignupModal(props: PageProps) {
       onClose={() => {
         router.back();
       }}
+      className="w-auto md:max-w-max"
     >
       <SnackContextProvider>
-        <DialogContent as="div" className="h-min overflow-hidden p-8">
+        <DialogContent as="div" className="h-min overflow-hidden p-4 sm:p-8">
           <Suspense>
             <SignupView searchParams={searchParams} />
           </Suspense>

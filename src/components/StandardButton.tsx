@@ -22,8 +22,8 @@ const StandardButton = ({
   return (
     <button
       className={mergeCls(
-        'w-full rounded py-4',
-        'bg-primary text-white shadow-md shadow-black/40 transition-[filter] [&:not([disabled])]:hover:brightness-125',
+        'w-full rounded py-3 sm:py-4',
+        'bg-primary text-white shadow shadow-black/40 transition-[filter] [&:not([disabled])]:hover:brightness-125',
         'btn-default-scale flex items-center justify-center gap-2 [--duration:150ms]',
         'disabled:bg-[hsl(209,_70%,_45%)]',
         className

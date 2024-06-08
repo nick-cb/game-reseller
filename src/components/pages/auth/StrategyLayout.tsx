@@ -14,7 +14,9 @@ export function StrategyLayout(props: React.PropsWithChildren) {
   const { children } = props;
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selected, setSelected] = useState<Strategy>(searchParams.get("strategy") as Strategy || 'no-strategy');
+  const [selected, setSelected] = useState<Strategy>(
+    (searchParams.get('strategy') as Strategy) || 'no-strategy'
+  );
   const changeStrategy = (event: React.MouseEvent<HTMLButtonElement>) => {
     const container = containerRef.current;
     if (!container) {
@@ -65,7 +67,10 @@ export function StrategyLayout(props: React.PropsWithChildren) {
         changeStrategy,
       }}
     >
-      <div ref={containerRef} className={'relative grid place-items-center transition-all duration-300'}>
+      <div
+        ref={containerRef}
+        className={'relative grid place-items-center transition-all duration-300'}
+      >
         {children}
       </div>
     </context.Provider>
@@ -77,11 +82,12 @@ export function useStrategyLayout() {
 }
 
 export function GobackButton() {
-  const { changeStrategy } = useStrategyLayout();
+  const { selected, changeStrategy } = useStrategyLayout();
   return (
     <button
       data-button-strategy="no-strategy"
       onClick={changeStrategy}
+      tabIndex={selected === 'no-strategy' ? -1 : 0}
       className={mergeCls(
         'mt-4 w-full rounded border border-white/60 py-2 text-sm transition-colors hover:bg-white/25'
       )}
@@ -112,4 +118,3 @@ export function StrategyItem(props: StrategyItemProps) {
     />
   );
 }
-

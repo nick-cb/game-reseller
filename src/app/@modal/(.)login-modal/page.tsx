@@ -23,7 +23,7 @@ export default function LoginModal(props: PageProps) {
       onClose={() => {
         router.back();
       }}
-      className="z-50 w-auto md:max-w-max"
+      className="w-auto md:max-w-max"
     >
       <SnackContextProvider>
         <DialogContent as="div" className={'h-min overflow-hidden p-4 sm:p-8'}>

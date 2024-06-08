@@ -14,15 +14,17 @@ export default function SignupPage(props: PageProps) {
         height={250}
         className="fixed inset-0 z-0 h-full w-full object-cover opacity-40 blur-lg"
       />
-      <div className="z-[1] flex overflow-hidden rounded bg-paper_2 shadow-md shadow-paper_3">
+      <div className="z-[1] flex w-11/12 overflow-hidden rounded bg-paper_2 shadow shadow-paper_3/80 2xl:w-4/5">
+        <div>
         <Image
           src={`/images/login-splash-${random < 10 ? '0' + random : random}.jpg`}
           alt={''}
           width={500}
           height={250}
-          className="hidden w-[300px] object-cover lg:block xl:w-[400px] 2xl:w-auto"
+          className="w-full hidden h-full object-cover md:block"
         />
-        <div className="flex-grow overflow-hidden px-4">
+        </div>
+        <div className="min-w-max flex-grow overflow-hidden px-4 md:px-8">
           <SignupView searchParams={searchParams} />
         </div>
       </div>

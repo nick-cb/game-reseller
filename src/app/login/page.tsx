@@ -21,7 +21,7 @@ export default function LoginPage(props: PageProps) {
             alt={''}
             width={500}
             height={250}
-            className="w-ful hidden h-full object-cover md:block"
+            className="w-full hidden h-full object-cover md:block"
           />
         </div>
         <div className="min-w-max flex-grow overflow-hidden px-4 md:px-8">
