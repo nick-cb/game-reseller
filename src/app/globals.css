@@ -672,6 +672,10 @@ input[type='range']:focus::-moz-range-thumb {
   animation: searchbox-expand 1s;
 }
 
+input {
+  all: unset;
+}
+
 input[type='checkbox'] {
   all: unset;
 }
@@ -722,4 +726,12 @@ input[type='checkbox'] {
 
 #cart-item-checkbox:has(:checked) ~ div:nth-of-type(2) {
   @apply opacity-100 transition-opacity delay-0 duration-150;
+}
+
+.home-category-row-grid {
+  --gap-count: calc(var(--column) - 1);
+  display: grid;
+  /* grid-template-columns: repeat(11, calc(calc(100% - var(--gap-count) * var(--gap)) / var(--column))); */
+  grid-template-columns: repeat(11, calc(calc(100% - calc(var(--gap-count) * var(--gap))) / var(--column)));
+  column-gap: var(--gap);
 }

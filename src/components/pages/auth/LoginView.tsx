@@ -3,14 +3,19 @@
 import { EmailLoginForm } from '@/components/pages/auth/email';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import React, { Suspense } from 'react';
+import React from 'react';
 import { StrategyList } from './StrategyList';
 import { GobackButton, StrategyItem, StrategyLayout } from '@/components/pages/auth/StrategyLayout';
+import { z } from 'zod';
 
 export type Strategy = 'no-strategy' | 'email' | 'facebook' | 'google' | 'apple';
-export function LoginView() {
-  const searchParams = useSearchParams();
+type LoginViewProps = {
+  searchParams: PageProps['searchParams'];
+};
+export function LoginView(props: LoginViewProps) {
+  const { searchParams } = props;
+  const type = z.string().catch('').parse(searchParams.type);
+  const orderId = z.number().catch(0).parse(searchParams.orderId);
 
   return (
     <>
@@ -21,14 +26,12 @@ export function LoginView() {
       <StrategyLayout>
         <StrategyItem
           strategy="no-strategy"
-          className={'flex w-max flex-col items-center justify-center gap-4'}
+          className={'gap-4 flex flex-col w-full md:w-96'}
         >
           <StrategyList actionType="login" />
         </StrategyItem>
-        <StrategyItem strategy="email">
-          <Suspense>
-            <EmailLoginForm />
-          </Suspense>
+        <StrategyItem strategy="email" className='w-full md:w-96'>
+          <EmailLoginForm orderId={orderId} />
           <GobackButton />
         </StrategyItem>
       </StrategyLayout>
@@ -38,7 +41,7 @@ export function LoginView() {
           prefetch
           href={{
             pathname: '/signup',
-            ...(searchParams.get('type') === 'modal' ? { query: { type: 'modal' } } : {}),
+            ...(type === 'modal' ? { query: { type: 'modal' } } : {}),
           }}
           className="cursor-pointer text-white_primary"
         >

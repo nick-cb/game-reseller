@@ -6,7 +6,8 @@ import React, { useRef, useEffect, Suspense } from 'react';
 import { SignupView } from '@/components/pages/auth/SignupView';
 import { SnackContextProvider } from '@/components/SnackContext';
 
-export default function SignupModal() {
+export default function SignupModal(props: PageProps) {
+  const { searchParams } = props;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
@@ -24,7 +25,7 @@ export default function SignupModal() {
       <SnackContextProvider>
         <DialogContent as="div" className="h-min overflow-hidden p-8">
           <Suspense>
-            <SignupView />
+            <SignupView searchParams={searchParams} />
           </Suspense>
         </DialogContent>
       </SnackContextProvider>

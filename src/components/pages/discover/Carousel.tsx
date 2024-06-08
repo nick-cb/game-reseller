@@ -7,7 +7,7 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { Icon } from '../../Icon';
-import { mergeCls } from '@/utils';
+import { currencyFormatter, mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll/ScrollPrimitive';
 import CollectionActions from '@/+actions/collections-actions';
 
@@ -45,29 +45,49 @@ async function CategoryRow({ name }: CarouselProps) {
           <IntersectionObserverRoot>
             <ul
               id={collection.collection_key}
-              className="scrollbar-hidden flex snap-x snap-mandatory grid-cols-10 gap-4 overflow-scroll"
+              className={mergeCls(
+                'scrollbar-hidden home-category-row-grid snap-x snap-mandatory overflow-x-scroll',
+                '[--column:3] 3/4sm:[--column:4] sm:[--column:4] md:[--column:5] 2xl:[--column:6]',
+                '[--gap:14px] 3/4sm:[--gap:18px] lg:[--gap:24px]'
+              )}
             >
-              {/* <div style={{ inlineSize: '208px' }} className="shrink-0 xs-right-pad:hidden" /> */}
               {collection.game_list.map((game, index) => (
-                <ScrollItem key={game.ID} index={index}>
-                  <PortraitGameCard
-                    key={game.ID}
-                    game={game}
-                    className={mergeCls(
-                      'w-[calc(calc(100vw_-_32px)/2_-_13px)] flex-shrink-0 snap-start',
-                      'last-of-type:snap-end',
-                      '3/4sm:w-[calc(calc(100vw_-_32px)/3_-_13px)]',
-                      'sm:w-[calc(calc(100vw_-_32px)/4_-_13px)]',
-                      'md:w-[calc(calc(100vw_-_32px)/4_-_13px)]',
-                      'lg:w-[calc(calc(100vw_-_192px)/5_-_13px)]',
-                      'xl:w-[calc(calc(100vw_-_352px)/5_-_13px)]',
-                      '2xl:w-[calc(calc(100vw_-_352px)/7_-_13px)]',
-                      '4xl:w-[calc(calc(100vw_-_352px)/9_-_13px)]'
-                    )}
-                  />
+                <ScrollItem
+                  key={index}
+                  index={index}
+                  className="group row-span-4 grid snap-start grid-rows-subgrid gap-y-2"
+                  tabIndex={0}
+                >
+                  <Link href={`/${game.slug}`} className="contents">
+                    <div
+                      className={mergeCls(
+                        'relative h-20 overflow-hidden rounded sm:h-full',
+                        'after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity group-hover:after:opacity-[0.1]'
+                      )}
+                    >
+                      <img
+                        src={game.images.portraits[0].url + '?h=480&w=360&resize=1'}
+                        className="relative hidden h-full sm:block"
+                      />
+                      <img
+                        src={game.images.landscapes[0].url + '?h=168&w=168&resize=1'}
+                        className="relative h-full object-cover sm:hidden"
+                      />
+                    </div>
+                    <p className="line-clamp-2 text-xs text-white_primary sm:text-sm">
+                      {game.name}
+                    </p>
+                    <p className="hidden truncate text-xs text-white/60 sm:block">
+                      {game.developer}
+                    </p>
+                    <p className="text-xs text-white_primary sm:text-sm">
+                      {parseInt(game.sale_price.toString()) === 0
+                        ? 'Free'
+                        : currencyFormatter(game.sale_price)}
+                    </p>
+                  </Link>
                 </ScrollItem>
               ))}
-              <div style={{ inlineSize: '208px' }} className="shrink-0 xs-right-pad:hidden" />
             </ul>
           </IntersectionObserverRoot>
         </div>

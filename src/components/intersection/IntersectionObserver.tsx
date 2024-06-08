@@ -4,6 +4,7 @@ import React, {
   createContext,
   isValidElement,
   use,
+  useCallback,
   useRef,
   useState,
   useSyncExternalStore,
@@ -13,7 +14,6 @@ class Store {
   private containerRef: React.RefObject<HTMLElement>;
   private options: Exclude<IntersectionObserverInit, 'root'>;
   private _listeners: Set<() => void> = new Set();
-  private event: IntersectionObserverEvent | undefined;
   data = {
     observer: null as IntersectionObserver | null,
     entries: [] as IntersectionObserverEntry[],
@@ -41,7 +41,6 @@ class Store {
         lastVisibleIndex: -1,
         observer: new IntersectionObserver(
           (entries) => {
-            this.event = 'change';
             let firstVisibleIndex = -1;
             let lastVisibleIndex = -1;
             const oldEntries = this.data.entries;
@@ -69,10 +68,13 @@ class Store {
               firstVisibleIndex: firstVisibleIndex,
               lastVisibleIndex: lastVisibleIndex,
             };
+            const changeEvent = new CustomEvent('intersecion-change', {
+              detail: { name: 'intersecion-change' },
+            });
+            this.data.observer?.root?.dispatchEvent(changeEvent);
             for (const listener of this._listeners) {
               listener?.();
             }
-            this.event = undefined;
           },
           { ...this.options, root: this.containerRef.current }
         ),
@@ -81,12 +83,6 @@ class Store {
     return () => {
       this._listeners.delete(listener);
     };
-  }
-
-  getDataWithEvent(event: IntersectionObserverEvent, callback: (data: typeof this.data) => void) {
-    if (event === this.event) {
-      callback(this.data);
-    }
   }
 
   updateContainerRef(containerRef: React.RefObject<HTMLElement>) {
@@ -106,16 +102,25 @@ export function useIntersectionObserver() {
   return result;
 }
 
-type IntersectionObserverEvent = 'change';
+type IntersectionObserverEvent = 'intersecion-change';
 export function useIntersectionEvent(
   event: IntersectionObserverEvent,
   callback: (data: Store['data']) => void
 ) {
   const { store } = use(IntersectionObserverCtx);
+  const root = store.data.observer?.root;
   useSyncExternalStore(
-    store.subscribe,
-    () => store.getDataWithEvent(event, callback),
-    () => store.data
+    useCallback(() => {
+      const handler = () => {
+        callback(store.data);
+      };
+      root?.addEventListener(event, handler);
+      return () => {
+        root?.removeEventListener(event, handler);
+      };
+    }, [event, root]),
+    () => true,
+    () => true
   );
 }
 
@@ -160,4 +165,18 @@ export function IntersectionObserverRoot(props: React.PropsWithChildren) {
   }
 
   return children;
+}
+type HideOnIntersectingProps = React.PropsWithChildren<{
+  index: number;
+}>;
+export function HideOnNotIntersecting(props: HideOnIntersectingProps) {
+  const { children, index } = props;
+  const { entries } = useIntersectionObserver();
+  const isActive = entries[index]?.isIntersecting;
+
+  if (!isActive) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

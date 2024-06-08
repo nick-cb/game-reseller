@@ -5,6 +5,7 @@ import { VideoContainer } from '@/components/media/Video';
 import { AudioContainer } from '@/components/media/Audio';
 import { getAudioSourcesFromVideo, getVideoSources } from '@/utils';
 import {
+  HideOnNotIntersecting,
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '../../../intersection/IntersectionObserver';
@@ -39,21 +40,22 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                   <AudioContainer>
                     <VideoScrollItem
                       index={index}
-                      autoScrollInterval={5000}
-                      className="w-full shrink-0 snap-start overflow-hidden rounded"
+                      className="w-full shrink-0 snap-start overflow-hidden rounded hidden sm:block"
                     >
                       <div className="relative">
-                        <Video poster={video.thumbnail} autoPlay>
+                        <Video poster={video.thumbnail} autoPlay muted>
                           {getVideoSources(video).map((variant) => {
                             return <source key={variant.ID} src={variant.url} />;
                           })}
                         </Video>
-                        <VideoAudio>
+                        <VideoAudio autoPlay muted>
                           {getAudioSourcesFromVideo(videos[0]).map((variant) => {
                             return <source key={variant?.ID} src={variant?.url} />;
                           })}
                         </VideoAudio>
-                        <MediaControls />
+                        <HideOnNotIntersecting index={index}>
+                          <MediaControls />
+                        </HideOnNotIntersecting>
                       </div>
                     </VideoScrollItem>
                   </AudioContainer>
@@ -64,7 +66,6 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
               <ScrollItem
                 index={index + videos.length}
                 key={img.ID}
-                autoScrollInterval={5000}
                 className="w-full shrink-0 snap-start overflow-hidden rounded"
               >
                 <div className="relative aspect-video w-full">

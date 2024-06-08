@@ -43,9 +43,7 @@ const page = async ({ params }: { params: any }) => {
           <GameItemCarousel videos={game.videos} images={game.images} />
         </section>
         <section
-          className="col-span-3 
-          row-start-3 w-full sm:row-end-4 
-          md:col-start-3 md:col-end-4 md:row-start-1 md:[grid-column:-1/-3]"
+          className="col-span-3 row-start-3 w-full sm:row-end-4 md:col-start-3 md:col-end-4 md:row-start-1 md:[grid-column:-1/-3]"
         >
           <div className="top-[116px] flex flex-col gap-4 md:sticky">
             <div className="relative hidden aspect-[3/2] w-full items-center justify-center md:flex">

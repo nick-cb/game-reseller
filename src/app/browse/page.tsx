@@ -4,9 +4,6 @@ import { z } from 'zod';
 import Pagination from '@/components/Pagination';
 import GameActions from '@/+actions/games-actions';
 
-type PageProps = {
-  searchParams: { [K in string]: string | string[] | undefined };
-};
 const page = async (props: PageProps) => {
   const { searchParams } = props;
   const categories = z

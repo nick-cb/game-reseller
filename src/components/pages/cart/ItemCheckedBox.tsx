@@ -31,7 +31,7 @@ export function ItemCheckBox({ index }: { index: number }) {
       <label
         id="cart-item-checkbox"
         className={mergeCls(
-          'peer z-[1] flex items-center justify-center rounded bg-paper outline outline-2 outline-default',
+          'peer z-[1] grid rounded bg-paper outline outline-2 outline-default',
           'absolute -bottom-1 -right-2 block h-8 w-8 md:-left-2 md:-top-1 md:h-5 md:w-5',
           '[--scale:_0.9] active:animate-[btn-default-scale-animation_150ms]',
           'shadow-inner has-[:checked]:shadow-white_primary/10',
@@ -45,9 +45,16 @@ export function ItemCheckBox({ index }: { index: number }) {
           checked={optimisticChecked}
           onChange={onChange}
           className="peer absolute -bottom-1 -right-2 z-[1] block h-8 w-8 md:-left-2 md:-top-1 md:h-5 md:w-5"
+          style={{ gridArea: '1/1' }}
         />
-        {updating ? <Icon name="loader-4" className="animate-spin" /> : null}
-        {!updating && optimisticChecked ? <Icon name="check" /> : null}
+        <Icon
+          name="check"
+          className="opacity-0 peer-checked:opacity-100"
+          style={{ gridArea: '1/1', ...(updating ? { opacity: 0 } : {}) }}
+        />
+        {updating ? (
+          <Icon name="loader-4" className="animate-spin" style={{ gridArea: '1/1' }} />
+        ) : null}
       </label>
       <div className="pointer-events-none absolute left-0 top-0 h-full w-full">
         <div className="absolute bottom-0 right-0 rounded border-b border-l border-[#9c9c9c] opacity-100 md:left-0 md:top-0 md:border-b-0 md:border-l-0 md:border-r md:border-t" />

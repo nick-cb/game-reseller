@@ -34,8 +34,7 @@ export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'na
 
   return (
     <button
-      className="w-full rounded border border-white/60 py-2
-                text-sm text-white transition-colors hover:bg-paper"
+      className="w-full rounded border border-white/60 py-2 text-sm text-white transition-colors hover:bg-paper"
       onClick={addItemToCart}
     >
       <div className="mx-auto w-max">

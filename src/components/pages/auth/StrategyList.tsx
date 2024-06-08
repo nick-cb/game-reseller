@@ -32,13 +32,13 @@ function StrategyButton(props: StrategyButtonProps) {
       data-button-strategy={props.strategy}
       disabled={props.strategy !== 'email'}
       className={mergeCls(
-        'flex w-80 items-center overflow-hidden rounded transition-[filter] disabled:opacity-50 3/4sm:w-96',
+        'flex items-center overflow-hidden rounded transition-[filter] disabled:opacity-50',
         'bg-paper [&:not([disabled])]:hover:brightness-125'
       )}
       onClick={changeStrategy}
     >
       <div
-        className={mergeCls('flex w-20 items-center justify-center bg-default py-4')}
+        className={mergeCls('flex w-16 3/4sm:w-20 items-center justify-center bg-default py-4')}
         style={{
           backgroundColor: strategyConfigs[props.strategy].colors.bg,
         }}

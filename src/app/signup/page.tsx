@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { SignupView } from '@/components/pages/auth/SignupView';
-import { Suspense } from 'react';
 
-export default function SignupPage() {
+export default function SignupPage(props: PageProps) {
+  const { searchParams } = props;
   const random = Math.floor(Math.random() * 10 + 1);
 
   return (
@@ -23,9 +23,7 @@ export default function SignupPage() {
           className="hidden w-[300px] object-cover lg:block xl:w-[400px] 2xl:w-auto"
         />
         <div className="flex-grow overflow-hidden px-4">
-          <Suspense>
-            <SignupView />
-          </Suspense>
+          <SignupView searchParams={searchParams} />
         </div>
       </div>
     </div>

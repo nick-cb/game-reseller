@@ -3,15 +3,18 @@
 import { EmailSignupForm } from '@/components/pages/auth/email';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { StrategyLayout, StrategyItem, GobackButton } from './StrategyLayout';
 import { StrategyList } from './StrategyList';
-import { Suspense } from 'react';
+import { z } from 'zod';
 
-export function SignupView() {
+type SignupViewProps = {
+  searchParams: PageProps['searchParams'];
+};
+export function SignupView(props: SignupViewProps) {
+  const { searchParams } = props;
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const modal = searchParams.get('type') === 'modal';
+  const type = z.string().catch('').parse(searchParams.type);
 
   return (
     <>
@@ -27,9 +30,7 @@ export function SignupView() {
           <StrategyList actionType="signup" />
         </StrategyItem>
         <StrategyItem strategy="email">
-          <Suspense>
-            <EmailSignupForm />
-          </Suspense>
+          <EmailSignupForm />
           <GobackButton />
         </StrategyItem>
       </StrategyLayout>
@@ -39,10 +40,10 @@ export function SignupView() {
           prefetch
           href={{
             pathname: '/login',
-            ...(modal ? { query: { type: 'modal' } } : {}),
+            ...(type === 'modal' ? { query: { type: 'modal' } } : {}),
           }}
           onClick={(event) => {
-            if (!modal) {
+            if (type !== 'modal') {
               event.preventDefault();
               router.push('/login');
             }

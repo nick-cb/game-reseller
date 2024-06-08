@@ -34,9 +34,9 @@ const PortraitGameCard = (props: PortraitGameCardProps) => {
           height={480}
         />
       </div>
-      <p className="mt-4 text-sm text-white_primary">{game.name}</p>
-      <p className="mt-1 text-xs text-white/60">{game.developer}</p>
-      <p className="mt-2 text-sm text-white_primary">
+      <p className="text-sm text-white_primary">{game.name}</p>
+      <p className="text-xs text-white/60">{game.developer}</p>
+      <p className="text-sm text-white_primary">
         {parseInt(game.sale_price) === 0 ? 'Free' : currencyFormatter(game.sale_price)}
       </p>
     </Link>

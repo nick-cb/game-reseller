@@ -35,6 +35,7 @@ class Store {
     if (!audio) {
       return () => {};
     }
+    audio.volume = 0;
     const notify = (event: Event) => {
       const audio = this.audioRef.current;
       if (!audio) {

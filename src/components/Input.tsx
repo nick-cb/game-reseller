@@ -1,3 +1,4 @@
+import { mergeCls } from '@/utils';
 import React, { forwardRef } from 'react';
 import { LabelHTMLAttributes, useState } from 'react';
 
@@ -73,9 +74,10 @@ export function InputWrapper({
 }: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
   return (
     <div
-      className={`flex items-center rounded
-      bg-white/[0.15] transition-colors 
-      hover:bg-white/[0.25] ${className}`}
+      className={mergeCls(
+        "flex items-center rounded bg-white/[0.15] transition-colors hover:bg-white/[0.25]",
+        className
+      )}
       {...props}
     >
       {children}
@@ -91,9 +93,10 @@ export const Input = React.forwardRef<
     <input
       ref={ref}
       name="keyword"
-      className={`w-[30ch] border-0 bg-transparent p-2
-        text-sm text-white outline-0
-        outline-offset-0 ${className}`}
+      className={mergeCls(
+        'border-0 bg-transparent p-2 text-sm text-white outline-0 outline-offset-0',
+        className
+      )}
       {...props}
     />
   );

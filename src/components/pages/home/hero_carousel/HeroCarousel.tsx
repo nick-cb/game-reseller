@@ -5,6 +5,7 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { useBreakpoints } from '@/hooks/useBreakpoint';
+import { mergeCls } from '@/utils';
 import React, { createContext, PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 export type ContextProps = {
@@ -83,10 +84,10 @@ export function HCarousel(props: HCarouselProps) {
       <IntersectionObserverContainer>
         <IntersectionObserverRoot>
           <ul
-            className={
-              'main-list gap-4 sm:gap-0 ' +
-              'lg:aspect-media scrollbar-hidden relative aspect-[9/11] snap-x snap-mandatory overflow-scroll rounded-lg sm:aspect-[1.6] sm:w-[75%] lg:w-4/5'
-            }
+            className={mergeCls(
+              'main-list scrollbar-hidden relative snap-x snap-mandatory gap-4 overflow-scroll rounded-lg sm:gap-0',
+              'lg:aspect-media aspect-[9/11] sm:aspect-[1.6] sm:w-[75%] lg:w-4/5'
+            )}
             ref={mainListRef}
           >
             {children}

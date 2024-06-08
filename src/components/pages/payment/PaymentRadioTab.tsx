@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, SVGProps, useCallback } from 'react';
+import { PropsWithChildren, SVGProps, startTransition } from 'react';
 import { HookFormRadio } from '../../Radio';
 import { useController, useFormContext } from 'react-hook-form';
 import { useScroll } from '@/components/scroll/ScrollPrimitive';
@@ -12,28 +12,25 @@ export function PaymentTabButton(props: PaymentTabButtonProps) {
   const { children, index, method } = props;
   const { control } = useFormContext();
   const { field } = useController({ control, name: 'payment_method' });
-  const { onChange, value, ref } = field;
+  const { onChange, ref } = field;
   const { entries, scrollToIndex } = useScroll();
   const active = !!entries[index]?.isIntersecting;
-  useIntersectionEvent(
-    'change',
-    useCallback(
-      ({ entries }) => {
-        const active = entries[index]?.isIntersecting;
-        onChange(active ? method : value);
-      },
-      [method]
-    )
-  );
+
+  useIntersectionEvent('intersecion-change', ({ entries }) => {
+    startTransition(() => {
+      const active = entries[index]?.isIntersecting;
+      if (active) {
+        onChange(method);
+      }
+    });
+  });
 
   return (
     <li
       className={mergeCls(
-        'snap-start rounded-md border-2 border-solid 3/4sm:h-24 3/4sm:w-28',
-        'h-20 w-24',
+        'relative h-20 w-24 snap-start gap-2 rounded-md border-2 border-solid 3/4sm:h-24 3/4sm:w-28',
         'transition-colors hover:bg-white/25',
-        'relative gap-2',
-        active ? ' border-primary ' : ' border-white/25'
+        active ? 'border-primary' : 'border-white/25'
       )}
     >
       <input

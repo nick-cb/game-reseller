@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect } from 'react';
+import React, { use, useEffect, useRef } from 'react';
 import { VideoCtx, useVideo } from './Video';
 import { AudioCtx, useAudio } from './Audio';
 import { isNil, mergeCls } from '@/utils';
@@ -38,7 +38,7 @@ export function PlayPauseBtn(props: JSX.IntrinsicElements['button']) {
       )}
       {...props}
     >
-      {playing ? <Icon name="pause" fill="white" /> : <Icon name="play" fill="white" />}
+      {playing ? <Icon name="pause" variant="fill" /> : <Icon name="play" variant="fill" />}
     </button>
   );
 }
@@ -84,9 +84,11 @@ export function VolumeSlider(props: JSX.IntrinsicElements['input']) {
   function changeVolume(event: React.FormEvent<HTMLInputElement>) {
     const value = (event.target as HTMLInputElement).value;
     if (audio) {
+      audio.muted = false;
       audio.volume = parseInt(value) / 100;
     }
     if (video) {
+      video.muted = false;
       video.volume = parseInt(value) / 100;
     }
   }
@@ -121,14 +123,19 @@ export function VolumeProgress() {
 
 export function VolumeButton(props: JSX.IntrinsicElements['button']) {
   const { volume, audio } = useAudio({ events: ['volumechange', 'loadedmetadata'] });
+  const previousUserValue = useRef(0.5);
+  if (volume > 0) {
+    previousUserValue.current = volume;
+  }
   const click = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!audio) {
       return;
     }
-    if (volume === 1) {
+    audio.muted = false;
+    if (volume > 0) {
       audio.volume = 0;
     } else {
-      audio.volume = 1;
+      audio.volume = previousUserValue.current;
     }
     props.onClick?.(e);
   };
@@ -243,7 +250,7 @@ export function MediaControls() {
       }}
       className="absolute bottom-0 left-0 right-0 z-[1] bg-gradient-to-t from-black/50 transition-opacity"
     >
-      <div className="relative mx-12 flex items-center">
+      <div className="relative mx-10 flex items-center">
         <VideoProgress />
         <VideoProgressSlider className="absolute" />
       </div>

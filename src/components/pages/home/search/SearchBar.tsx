@@ -5,7 +5,6 @@ import { Input } from '@/components/Input';
 import Pagination from '@/components/Pagination';
 import PortraitGameCard from '@/components/PortraitGameCard';
 import SearchIcon from '@/components/SearchIcon';
-import SpinnerIcon from '@/components/SpinnerIcon';
 import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
@@ -104,7 +103,7 @@ export function SearchBar(props: DesktopSearchBar2Props) {
             onChange={onChange}
             autoComplete={'off'}
             className={mergeCls(
-              'h-10 border-0 px-2 py-2 outline-0 outline-offset-0',
+              'border-0 px-2 py-2 outline-0 outline-offset-0',
               'bg-transparent text-sm text-white',
               'w-full transition-[width] duration-300 ease-in-out sm:!w-[12ch] sm:focus:!w-[30ch]'
             )}
@@ -179,12 +178,17 @@ export function MobileSearchResult(props: SearchResultProps) {
 
   return (
     <div className="mt-4 overflow-scroll">
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="mb-8 grid grid-cols-2 gap-4">
         {defferedData.map((game) => {
           return <PortraitGameCard key={game.ID} game={game} />;
         })}
       </div>
-      <Pagination total={total} perPage={limit} currentPage={page} className='w-max overflow-hidden' />
+      <Pagination
+        total={total}
+        perPage={limit}
+        currentPage={page}
+        className="w-max overflow-hidden"
+      />
     </div>
   );
 }

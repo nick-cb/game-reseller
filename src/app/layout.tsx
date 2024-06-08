@@ -65,24 +65,15 @@ function Header() {
   return (
     <header className="fixed top-0 z-20 flex min-h-[56px] w-full justify-between bg-paper px-4 py-2 lg:px-24 xl:px-44">
       <Link href={`/`}>
-        <Image
-          src={
-            'https://firebasestorage.googleapis.com/v0/b/images-b3099.appspot.com/o/269863143_480068400349256_2256909955739492979_n.png?alt=media&token=3a12e3c5-a40d-4747-8607-a42eb4917cd2'
-          }
-          alt={'logo-of-a-penguine'}
-          width={40}
-          height={40}
-        />
+        <Image src={'/images/logo.png'} alt={'logo-of-a-penguine'} width={40} height={40} />
       </Link>
-      <Suspense>
-        <HideOnRoute matches={[{ pathname: '/login' }, { pathname: '/signup' }]}>
-          <div className="flex items-center gap-4 pl-4 text-sm text-white_primary">
-            <DesktopSearch />
-            <CartButton />
-            <AuthControls />
-          </div>
-        </HideOnRoute>
-      </Suspense>
+      <HideOnRoute matches={[{ pathname: '/login' }, { pathname: '/signup' }]}>
+        <div className="flex items-center gap-4 pl-4 text-sm text-white_primary">
+          <DesktopSearch />
+          <CartButton />
+          <AuthControls />
+        </div>
+      </HideOnRoute>
     </header>
   );
 }
@@ -92,14 +83,14 @@ function Nav() {
     <HideOnRoute
       matches={[
         { pathname: '/order' },
-        { pathname: '/login' },
+        { pathname: '/login', not: [{ type: 'query', key: 'type' }] },
         { pathname: '/signup' },
         { pathname: '/cart' },
         { pathname: '/checkout' },
         { pathname: '^.*/order/', regex: true },
       ]}
     >
-      <div className='h-[56px]' />
+      <div className="h-[56px]" />
       <nav className="fixed top-[56px] z-10 flex w-full gap-4 bg-default px-4 lg:px-24 xl:px-44">
         <div
           className={

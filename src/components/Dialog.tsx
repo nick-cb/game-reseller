@@ -1,50 +1,41 @@
-"use client";
+'use client';
 
-import { useClickOutsideCallback } from "@/hooks/useClickOutside";
+import { useClickOutsideCallback } from '@/hooks/useClickOutside';
 import React, {
-  DetailedHTMLProps,
-  DialogHTMLAttributes,
   createContext,
   useContext,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
 export const animationsComplete = (element: HTMLElement) =>
-  Promise.allSettled(
-    element.getAnimations().map((animation) => animation.finished),
-  );
+  Promise.allSettled(element.getAnimations().map((animation) => animation.finished));
 
+type DialogProps = JSX.IntrinsicElements['dialog'] & {
+  remountChild?: boolean;
+  onOpening?: (event: Event) => void;
+  onOpened?: (event: Event) => void;
+};
 const dialogContext = createContext<{
   dialogEl: React.RefObject<HTMLDialogElement> | null;
 }>({ dialogEl: null });
-export const Dialog = React.forwardRef<
-  HTMLDialogElement,
-  DetailedHTMLProps<
-    DialogHTMLAttributes<HTMLDialogElement>,
-    HTMLDialogElement
-  > & {
-    remountChild?: boolean;
-    onOpening?: (event: Event) => void;
-    onOpened?: (event: Event) => void;
-  }
->(function (
-  {
-    className = "",
+export function Dialog(props: DialogProps) {
+  const {
+    className = '',
     children,
     remountChild,
     onOpened,
     onOpening,
     onClose,
-    ...props
-  },
-  userRef,
-) {
+    ref,
+    ...rest
+  } = props;
   const [visible, setVisible] = useState(!remountChild);
   const internalRef = useRef<HTMLDialogElement>(null);
-  useImperativeHandle(userRef, () => {
+  // @ts-ignore
+  useImperativeHandle(ref, () => {
     return internalRef.current as HTMLDialogElement;
   });
 
@@ -55,27 +46,27 @@ export const Dialog = React.forwardRef<
     }
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(async (mutation) => {
-        if (mutation.attributeName === "open") {
+        if (mutation.attributeName === 'open') {
           const dialog = mutation.target as HTMLDialogElement;
 
-          const isOpen = dialog.hasAttribute("open");
+          const isOpen = dialog.hasAttribute('open');
           if (!isOpen) return;
 
-          dialog.removeAttribute("inert");
+          dialog.removeAttribute('inert');
           if (remountChild) {
             setVisible(true);
           }
 
           // set focus
-          const focusTarget = dialog.querySelector("[autofocus]");
+          const focusTarget = dialog.querySelector('[autofocus]');
           focusTarget
             ? // @ts-ignore
               focusTarget.focus()
-            : dialog.querySelector("button")?.focus();
+            : dialog.querySelector('button')?.focus();
 
-          onOpening?.(new Event("opening"));
+          onOpening?.(new Event('opening'));
           await animationsComplete(dialog);
-          onOpened?.(new Event("opened"));
+          onOpened?.(new Event('opened'));
         }
       });
     });
@@ -94,16 +85,16 @@ export const Dialog = React.forwardRef<
       <dialog
         ref={internalRef}
         className={
-          "flex bg-paper_2 rounded-lg shadow-lg shadow-black/60 text-white_primary " +
-          "overflow-x-hidden overflow-y-scroll scrollbar-hidden " +
-          "inset-0 m-auto fixed " +
-          "[&:not([open])]:opacity-0 [&:not([open])]:pointer-events-none " +
-          "[&:not([open])]:p-0 " +
-          "backdrop:backdrop-blur-xl backdrop-brightness-50 " +
-          "[&:is([open])]:animate-[300ms_slide-in-down] [animation-fill-mode:_forwards] " +
-          "[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] " +
-          "animate-[300ms_scale-down_forwards] " +
-          "transition-opacity " +
+          'rounded-lg bg-paper_2 text-white_primary shadow-lg shadow-black/60 ' +
+          'scrollbar-hidden overflow-x-hidden overflow-y-scroll ' +
+          'fixed inset-0 m-auto ' +
+          '[&:not([open])]:pointer-events-none [&:not([open])]:opacity-0 ' +
+          '[&:not([open])]:p-0 ' +
+          'backdrop-brightness-50 backdrop:backdrop-blur-xl ' +
+          '[animation-fill-mode:_forwards] [&:is([open])]:animate-[300ms_slide-in-down] ' +
+          '[animation-timing-function:_cubic-bezier(0.5,_-0.3,_0.1,_1.5)] ' +
+          'animate-[300ms_scale-down_forwards] ' +
+          'transition-opacity ' +
           className
         }
         onClose={async (event) => {
@@ -111,21 +102,21 @@ export const Dialog = React.forwardRef<
           if (!dialog) {
             return;
           }
-          dialog.setAttribute("inert", "");
+          dialog.setAttribute('inert', '');
           await animationsComplete(dialog);
           if (remountChild) {
             setVisible(false);
           }
           return onClose?.(event);
         }}
-        {...props}
+        {...rest}
       >
         {/* {visible ? children : null} */}
         <React.Fragment key={String(visible)}>{children}</React.Fragment>
       </dialog>
     </dialogContext.Provider>
   );
-});
+}
 
 export function DialogContent<C extends keyof JSX.IntrinsicElements>({
   as,
@@ -135,14 +126,14 @@ export function DialogContent<C extends keyof JSX.IntrinsicElements>({
   as: C;
   closeOnClickOutside?: boolean;
 } & JSX.IntrinsicElements[C]) {
-  const Component = typeof as === "string" ? `${as}` : as;
+  const Component = typeof as === 'string' ? `${as}` : as;
   const { dialogEl } = useContext(dialogContext);
   const contentContainerRef = useClickOutsideCallback<any>(() => {
     const dialog = dialogEl?.current;
     if (!dialog) {
       return;
     }
-    const isOpen = dialog?.hasAttribute("open");
+    const isOpen = dialog?.hasAttribute('open');
     if (isOpen) {
       dialog?.close();
     }

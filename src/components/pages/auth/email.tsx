@@ -7,7 +7,6 @@ import { BASE_URL } from '@/utils/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { SnackContext } from '@/components/SnackContext';
-import { useSearchParams } from 'next/navigation';
 import { mergeCls } from '@/utils';
 import { Icon } from '@/components/Icon';
 
@@ -35,9 +34,11 @@ export type EmailSignupFormPayload = {
   confirm_password: string;
   avatar: string;
 };
-export function EmailSignupForm() {
-  const searchParams = useSearchParams();
-  const order = searchParams.get('order');
+type EmailSignupFormProps = {
+  orderId?: number;
+};
+export function EmailSignupForm(props: EmailSignupFormProps) {
+  const { orderId } = props;
   const { showMessage } = useContext(SnackContext);
   const form = useForm<EmailSignupFormPayload>({
     mode: 'onBlur',
@@ -77,7 +78,7 @@ export function EmailSignupForm() {
     if (!isSubmitSuccessful) {
       return;
     }
-    if (order) {
+    if (orderId) {
       location.reload();
     } else {
       window.location.href = BASE_URL;
@@ -165,9 +166,11 @@ export type EmailLoginFormPayload = {
   email: string;
   password: string;
 };
-export function EmailLoginForm() {
-  const searchParams = useSearchParams();
-  const order = searchParams.get('order');
+type EmailLoginFormProps = {
+  orderId?: number;
+};
+export function EmailLoginForm(props: EmailLoginFormProps) {
+  const { orderId } = props;
   const { showMessage } = useContext(SnackContext);
   const form = useForm<EmailLoginFormPayload>({
     mode: 'onBlur',
@@ -205,61 +208,59 @@ export function EmailLoginForm() {
     if (!isSubmitted) {
       return;
     }
-    if (order) {
-      window.location.href = BASE_URL + '/' + order + '/order';
+    if (orderId) {
+      window.location.href = BASE_URL + '/' + orderId + '/order';
     } else {
       window.location.href = BASE_URL;
     }
   }, [isSubmitted, isSubmitSuccessful]);
 
   return (
-    <form
-      className={mergeCls(
-        'grid gap-x-4 gap-y-2 [grid-area:1_/_1] 3/4sm:grid-cols-[max-content_min-content] 3/4sm:gap-y-4'
-      )}
-      onSubmit={handleSubmit(submitHandler)}
-    >
-      <label htmlFor="email" className="my-auto block w-max">
-        Email
-      </label>
-      <InputWrapper className="w-80">
-        <Icon name="mail" className="ml-3" />
-        <Input
-          placeholder="Enter your email"
-          type="email"
-          {...register('email')}
-          className="p-3 !text-base"
-        />
-      </InputWrapper>
-      <Divider />
-      <label htmlFor="password" className="my-auto block w-max">
-        Password
-      </label>
-      <InputWrapper className="w-80 overflow-clip">
-        <Icon name="lock-password" className="ml-3" />
-        <Input
-          placeholder="Enter your password"
-          type={isShowPassword ? 'text' : 'password'}
-          {...register('password')}
-          className="p-3 !text-base"
-        />
-        <label className="relative flex h-full items-center px-3 has-[input:focus]:bg-paper">
-          <input
-            type="checkbox"
-            onChange={showPassword}
-            className="absolute h-full w-full opacity-0"
-          />
-          <Icon name={isShowPassword ? 'eye' : 'eye-off'} />
+    <form className={mergeCls('flex flex-col gap-4')} onSubmit={handleSubmit(submitHandler)}>
+      <div>
+        <label htmlFor="email" className="mb-2 block">
+          Email
         </label>
-      </InputWrapper>
-      <Divider />
+        <InputWrapper>
+          <Icon name="mail" className="ml-3" />
+          <Input
+            placeholder="Enter your email"
+            type="email"
+            {...register('email')}
+            className="flex-grow p-3 3/4sm:!text-base"
+          />
+        </InputWrapper>
+      </div>
+      <div>
+        <label htmlFor="password" className="mb-2 block">
+          Password
+        </label>
+        <InputWrapper className="overflow-clip">
+          <Icon name="lock-password" className="ml-3" />
+          <Input
+            placeholder="Enter your password"
+            type={isShowPassword ? 'text' : 'password'}
+            {...register('password')}
+            className="flex-grow p-3 w-[20ch] 3/4sm:w-auto 3/4sm:!text-base"
+          />
+          <label className="relative flex items-center self-stretch px-3 has-[input:focus]:bg-paper">
+            <input
+              type="checkbox"
+              onChange={showPassword}
+              className="absolute h-full w-full opacity-0"
+            />
+            <Icon name={isShowPassword ? 'eye' : 'eye-off'} />
+          </label>
+        </InputWrapper>
+      </div>
       <div className="flex items-center gap-2 3/4sm:col-span-2">
-        <input id="remember-user-checkbox" type="checkbox" className='w-4 h-4' />
+        <input id="remember-user-checkbox" type="checkbox" className="h-4 w-4" />
+        <input id="remember-user-checkbox" type="checkbox" className="h-4 w-4" />
         <label htmlFor="remember-user-checkbox">Remember me</label>
       </div>
       <StandardButton
         type="submit"
-        className="mt-2 shadow shadow-default 3/4sm:col-span-2"
+        className="mt-2 shadow-sm shadow-default 3/4sm:col-span-2"
         loading={form.formState.isSubmitting}
       >
         Login

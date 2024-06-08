@@ -38,8 +38,8 @@ export function StrategyLayout(props: React.PropsWithChildren) {
         { width: width + 'px', height: heigh + 'px' },
       ],
       {
-        duration: 150,
-        easing: 'ease-in-out',
+        duration: 300,
+        easing: 'ease-out',
       }
     );
     currentStrat?.animate(
@@ -47,14 +47,14 @@ export function StrategyLayout(props: React.PropsWithChildren) {
         { transform: 'translateX(0px)', opacity: 1 },
         { transform: 'translateX(-100%)', opacity: 0 },
       ],
-      { duration: 300, fill: 'forwards', easing: 'ease-in-out' }
+      { duration: 300, fill: 'forwards', easing: 'ease-out' }
     );
     nextStrat?.animate(
       [
         { transform: 'translateX(100%)', opacity: 0 },
         { transform: 'translateX(0px)', opacity: 1 },
       ],
-      { duration: 300, fill: 'forwards', easing: 'ease-in-out' }
+      { duration: 300, fill: 'forwards', easing: 'ease-out' }
     );
   };
 
@@ -65,7 +65,7 @@ export function StrategyLayout(props: React.PropsWithChildren) {
         changeStrategy,
       }}
     >
-      <div ref={containerRef} className={'relative grid transition-all duration-300'}>
+      <div ref={containerRef} className={'relative grid place-items-center transition-all duration-300'}>
         {children}
       </div>
     </context.Provider>

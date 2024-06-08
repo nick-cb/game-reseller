@@ -27,7 +27,6 @@ export type UpsertChoosenPaymentMethodParams = {
   paymentMethod: string;
   paymentMethods: Stripe.PaymentMethod[];
 };
-
 export async function upsertChoosenPaymentMethod(params: UpsertChoosenPaymentMethodParams) {
   const {user, paymentMethod, paymentMethods} = params;
   let stripeId = user.stripe_id;
@@ -51,10 +50,10 @@ export type DedupePaymentMethodParams = {
   newPaymentMethod: Stripe.PaymentMethod;
   paymentMethods: Stripe.PaymentMethod[];
 };
-
 export async function dedupePaymentMethod(params: DedupePaymentMethodParams) {
   const {newPaymentMethod, paymentMethods} = params;
   const {fingerprint: newFingerprint} = newPaymentMethod.card || {};
+
   const existPaymentMethod = paymentMethods.find((method) => {
     const {fingerprint: oldFingerprint} = method.card || {};
     if (!!oldFingerprint && !!newFingerprint && newFingerprint === oldFingerprint) {
@@ -62,6 +61,7 @@ export async function dedupePaymentMethod(params: DedupePaymentMethodParams) {
     }
     return undefined;
   });
+
   return existPaymentMethod || newPaymentMethod || undefined;
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { MouseEvent, useEffect, useRef } from 'react';
+import React, { MouseEvent, useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import { useIntersectionObserver } from '../intersection/IntersectionObserver';
 import { useVideo } from '../media/Video';
 import { useAudio } from '../media/Audio';
@@ -88,13 +88,13 @@ export function VideoScrollItem(props: ScrollItemProps) {
   return <li ref={ref} {...rest} />;
 }
 
+type ScrollToNextOffViewOptions = { cycle: boolean } | MouseEvent;
+const isOption = (value: any): value is { cycle: boolean } => {
+  return 'cycle' in value;
+};
 export function useScroll() {
   const { entries, observer, lastVisibleIndex, firstVisibleIndex } = useIntersectionObserver();
 
-  const isOption = (value: any): value is { cycle: boolean } => {
-    return 'cycle' in value;
-  };
-  type ScrollToNextOffViewOptions = { cycle: boolean } | MouseEvent;
   const scrollToNextOffView = (options?: ScrollToNextOffViewOptions) => {
     let cycle = false;
     if (isOption(options)) {
@@ -148,7 +148,7 @@ export function useScroll() {
     }
     const index =
       typeof payload === 'number' ? payload : Number(payload.currentTarget.dataset.index);
-    const target = entries[index]?.target;
+    const target = entries[index]?.target || {};
     if ('offsetLeft' in target) {
       const scrollLeft = target.offsetLeft as number;
       (observer.root as HTMLUListElement).scrollTo({
@@ -158,5 +158,33 @@ export function useScroll() {
     }
   };
 
-  return { scrollToNextOffView, scrollToPrevOffView, scrollToIndex, entries, observer };
+  return {
+    scrollToNextOffView,
+    scrollToPrevOffView,
+    scrollToIndex,
+    entries,
+    observer,
+    firstVisibleIndex,
+    lastVisibleIndex,
+  };
+}
+
+export function useScrollState() {
+  const { observer } = useIntersectionObserver();
+  const stateRef = useRef({ isScrolling: false });
+  useSyncExternalStore(
+    useCallback(() => {
+      const handler = () => {
+        stateRef.current = { isScrolling: true };
+      };
+      observer?.root?.addEventListener('scroll', handler);
+      return () => {
+        observer?.root?.removeEventListener('scroll', handler);
+      };
+    }, []),
+    () => stateRef.current,
+    () => stateRef.current
+  );
+
+  return stateRef.current;
 }

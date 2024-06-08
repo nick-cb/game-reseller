@@ -3,7 +3,7 @@
 import { mergeCls } from '@/utils';
 import Image from 'next/image';
 import { Icon } from '@/components/Icon';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
@@ -62,7 +62,15 @@ export type IndicatorProps = {
 };
 
 function Indicator(props: IndicatorProps) {
+  const { entries, scrollToIndex } = useScroll();
   const { item, index, isActive, onClick } = props;
+
+  useEffect(() => {
+    if (!isActive || entries[index]?.isIntersecting) {
+      return;
+    }
+    scrollToIndex(index);
+  }, [isActive, index]);
 
   return (
     <button
@@ -80,7 +88,7 @@ function Indicator(props: IndicatorProps) {
         width={96}
         height={56}
       />
-      {isVideo(item) ? <Icon name="play" className="absolute opacity-60" fill="white" /> : null}
+      {isVideo(item) ? <Icon name="play" className="absolute opacity-60" variant="fill" /> : null}
     </button>
   );
 }

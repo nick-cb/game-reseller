@@ -24,12 +24,10 @@ const checkoutContext = createContext<{
   stripe: null,
   elements: null,
 });
-
 export function useCheckout() {
   const value = useContext(checkoutContext);
   return value;
 }
-
 export const checkoutModalCtx = createContext<{
   hideModal: () => void;
   showModal: () => void;
@@ -37,12 +35,11 @@ export const checkoutModalCtx = createContext<{
   hideModal: () => {},
   showModal: () => {},
 });
-export function CheckoutModal({
-  SubmitButton,
-  children,
-}: PropsWithChildren<{
+
+type CheckoutModalProps = PropsWithChildren<{
   SubmitButton: React.ReactElement;
-}>) {
+}>;
+export function CheckoutModal({ SubmitButton, children }: CheckoutModalProps) {
   const { gameList } = useCartContext();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { showMessage } = useContext(SnackContext);
@@ -108,9 +105,6 @@ export function CheckoutForm(props: CheckoutFormProps) {
     if (!stripe || !elements) {
       return;
     }
-    // We're using the dialog element, which will be put on the top-level layer
-    // and cover everything, include the Stripe's iframe. So we need to move the
-    // iframe to it own dialog element to make it visible.
     const observer = observeNextActionModal();
     try {
       const methodId = method_id || (await createPaymentMethod(stripe, elements));
@@ -171,6 +165,9 @@ export function CheckoutForm(props: CheckoutFormProps) {
   };
 
   const observeNextActionModal = () => {
+    // We're using the dialog element, which will be put on the top-level layer
+    // and cover everything, include the Stripe's iframe. So we need to move the
+    // iframe to it own dialog element to make it visible.
     const observer = new MutationObserver((mutationList) => {
       for (const mutation of mutationList) {
         const addedNode = mutation.addedNodes.item(0);
@@ -191,13 +188,7 @@ export function CheckoutForm(props: CheckoutFormProps) {
   return (
     <>
       <FormProvider {...form}>
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault();
-            await form.handleSubmit(handleSubmit)();
-          }}
-          {...rest}
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)} {...rest}>
           {children}
         </form>
       </FormProvider>
