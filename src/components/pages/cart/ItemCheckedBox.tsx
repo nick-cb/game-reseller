@@ -37,7 +37,8 @@ export function ItemCheckBox({ index }: { index: number }) {
           'shadow-inner has-[:checked]:shadow-white_primary/10',
           '[--tw-shadow-colored:_inset_0_1px_2px_1px_var(--tw-shadow-color)]',
           'has-[:disabled]:bg-paper',
-          'after:absolute after:inset-0 after:rounded after:transition-colors hover:after:bg-white_primary/25 has-[:disabled]:after:hidden has-[:focus]:after:bg-white_primary/25'
+          'after:absolute after:inset-0 after:rounded after:transition-colors hover:after:bg-white_primary/25 has-[:disabled]:after:hidden has-[:focus]:after:bg-white_primary/25',
+          'before:absolute before:inset-0 before:rounded before:outline before:outline-0 before:outline-offset-1 has-[:focus]:before:outline-1'
         )}
       >
         <input
@@ -62,7 +63,7 @@ export function ItemCheckBox({ index }: { index: number }) {
       </div>
       <div
         className={mergeCls(
-          'pointer-events-none absolute bottom-0 right-0 z-[1] md:left-0 md:top-0',
+          'pointer-events-none absolute bottom-0 right-0 z-[1] peer-has-[:focus]:hidden md:left-0 md:top-0',
           'h-[calc(2rem_-_0.25rem_+_2px)] w-[calc(2rem_-_0.5rem_+_2px)]',
           'md:h-[calc(1.25rem_-_0.25rem_+_2px)] md:w-[calc(1.25rem_-_0.5rem_+_2px)]',
           'rounded-tl border-l border-t border-[#9c9c9c] md:rounded-br-md md:border-b md:border-l-0 md:border-r md:border-t-0'

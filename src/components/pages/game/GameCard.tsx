@@ -1,7 +1,9 @@
-import { currencyFormatter } from '@/utils';
+import { currencyFormatter, mergeCls } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { AddToCartButton } from './AddToCartBtn';
+import { Button } from '@/components/Buttons';
 
 type GameCardProps = {
   game: Pick<Game, 'ID' | 'name' | 'slug' | 'description' | 'sale_price'> & {
@@ -20,10 +22,12 @@ const GameCard = (props: GameCardProps) => {
           <Image src={images.landscapes[0]?.url} alt={`landscape of ${type} ${game.name}`} fill />
         </div>
         <div
-          className="col-start-1 col-end-6 row-start-2 flex flex-col
-        gap-2 px-4 py-4 text-white_primary sm:col-start-3
-        sm:row-start-1
-        sm:px-2 md:px-4 lg:px-8"
+          className={mergeCls(
+            'col-start-1 col-end-6 row-start-2 flex flex-col',
+            'gap-2 px-4 py-4 text-white_primary sm:col-start-3',
+            'sm:row-start-1',
+            'sm:px-2 md:px-4 lg:px-8'
+          )}
         >
           <div className="flex items-center gap-2">
             <p className="w-max self-start whitespace-nowrap rounded bg-paper px-2 py-1 text-xs text-white_primary">
@@ -37,25 +41,20 @@ const GameCard = (props: GameCardProps) => {
         </div>
       </Link>
       <div
-        className="col-start-1 col-end-6 row-start-3 flex
-        flex-col justify-end
-        gap-2 border-t border-white/20
-        px-4 py-2 sm:row-start-2 sm:flex-row sm:items-center
-        sm:gap-4 sm:py-4"
+        className={mergeCls(
+          'col-end-1 row-start-3 border-t border-white/20 px-4 py-4 [grid-column:_1_/_-1]',
+          'flex items-center justify-end gap-4 sm:row-start-2 sm:flex-row'
+        )}
       >
         <p className="text-white_primary">
           {parseInt(game.sale_price.toString()) ? currencyFormatter(game.sale_price) : 'Free'}
         </p>
-        <button className="w-full rounded bg-primary py-2 text-white transition-[filter] hover:brightness-105 sm:w-44">
-          Buy now
-        </button>
-        <button
-          className="w-full
-          rounded border border-white/60 py-2 text-sm
-          text-white transition-colors hover:bg-paper sm:w-44"
-        >
-          Add to cart
-        </button>
+        <Button size="sm" className="min-w-32">
+          Buy Now
+        </Button>
+        <AddToCartButton game={game} size="sm" className="min-w-32">
+          Add To Cart
+        </AddToCartButton>
       </div>
     </div>
   );

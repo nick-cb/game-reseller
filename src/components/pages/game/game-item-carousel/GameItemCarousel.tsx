@@ -40,7 +40,7 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                   <AudioContainer>
                     <VideoScrollItem
                       index={index}
-                      className="w-full shrink-0 snap-start overflow-hidden rounded hidden sm:block"
+                      className="w-full shrink-0 snap-start overflow-hidden rounded hidden sm:block mx-auto"
                     >
                       <div className="relative">
                         <Video poster={video.thumbnail} autoPlay muted>

@@ -6,6 +6,7 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { ScrollText } from '@/components/scroll/ScrollText';
+import { mergeCls } from '@/utils';
 
 type RequiredGameAttributes =
   | 'ID'
@@ -23,10 +24,10 @@ export function HeroCarouselDesktopCover(props: HeroCarouselDesktopCoverProps) {
   const { game } = props;
   return (
     <div
-      className={
-        'main-item-cover absolute inset-0 flex flex-col-reverse justify-between gap-4 p-8 lg:gap-8 ' +
+      className={mergeCls(
+        'main-item-cover absolute inset-0 flex flex-col-reverse justify-between gap-4 p-8 lg:gap-8',
         'hidden sm:flex'
-      }
+      )}
     >
       <ButtonGroup game={game} />
       <Description game={game} />
@@ -39,11 +40,11 @@ export function HeroCarouselMobileCover(props: HeroCarouselDesktopCoverProps) {
   return (
     <div className="absolute bottom-0 mt-auto grid h-max w-full gap-x-4 p-4 [grid-template-columns:max-content_auto] sm:hidden">
       <div
-        className={
-          'relative flex w-16 items-center ' +
-          'p-1 before:absolute before:inset-0 before:rounded-lg before:bg-white/20 before:backdrop-blur-md ' +
-          'row-span-2 min-w-0 '
-        }
+        className={mergeCls(
+          'relative flex w-16 items-center',
+          'p-1 before:absolute before:inset-0 before:rounded-lg before:bg-white/20 before:backdrop-blur-md',
+          'row-span-2 min-w-0'
+        )}
       >
         <Image
           src={game.images.logos[0]?.url || ''}
@@ -66,9 +67,10 @@ function MobileCoverTitle(props: MobileCoverTitleProps) {
   const { game } = props;
   return (
     <div
-      className={
-        'relative col-start-2 col-end-3 ' + ' w-[calc(100%+16px)] min-w-0 overflow-hidden '
-      }
+      className={mergeCls(
+        'relative col-start-2 col-end-3',
+        'w-[calc(100%+16px)] min-w-0 overflow-hidden'
+      )}
     >
       <IntersectionObserverContainer options={{ threshold: [1] }}>
         <IntersectionObserverRoot>

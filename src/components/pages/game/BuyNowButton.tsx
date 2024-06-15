@@ -1,16 +1,15 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import StandardButton from '../../StandardButton';
 import UserActions from '@/+actions/users-actions';
+import { Button } from '@/components/Buttons';
 
 export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
   const router = useRouter();
   const pathname = usePathname();
 
   return (
-    <StandardButton
-      className="text-sm"
+    <Button
       onClick={async () => {
         const isLogin = await UserActions.users.checkLoginStatus();
         if (!isLogin) {
@@ -21,6 +20,6 @@ export function BuyNowButton({ game }: { game: Pick<Game, 'ID' | 'slug'> }) {
       }}
     >
       BUY NOW
-    </StandardButton>
+    </Button>
   );
 }

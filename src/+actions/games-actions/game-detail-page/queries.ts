@@ -113,7 +113,7 @@ export async function findBySlug(params: FindBySlugParams) {
                        )
                    )
     from polls p
-    where p.ID = g.ID
+    where p.game_id = g.ID
   `;
 
   return await querySingle<FindBySlugResult>(sql`

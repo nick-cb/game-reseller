@@ -4,10 +4,15 @@ import { redirect } from 'next/navigation';
 import GameActions from '@/+actions/games-actions';
 import { CheckoutView } from '@/components/pages/checkout/Checkout';
 import UserActions from '@/+actions/users-actions';
+import { z } from 'zod';
 
-export default async function ItemOrderModalPage({ params }: { params: any }) {
-  const { slug } = params;
-  const { data } = await GameActions.gameDetailPage.findBySlug(slug.replace('(.)', ''));
+export default async function ItemOrderModalPage({ params }: PageProps) {
+  const slug = z
+    .string()
+    .catch('')
+    .transform((a) => a.replace('(.)', ''))
+    .parse(params.slug);
+  const { data } = await GameActions.gameDetailPage.findBySlug({ slug });
   const cookie = cookies().get('refresh_token');
   if (!cookie) {
     redirect('/');

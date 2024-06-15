@@ -1,3 +1,4 @@
+import { mergeCls } from '@/utils';
 import Image from 'next/image';
 
 type PollProps = {
@@ -11,11 +12,11 @@ export function Polls(props: PollProps) {
         return (
           <div
             key={poll.ID}
-            className={
-              'rounded-md bg-paper ' +
-              ' flex items-center xl:flex-col xl:justify-center ' +
-              ' gap-4 p-4 xl:aspect-[4/3] xl:gap-0 xl:p-0 '
-            }
+            className={mergeCls(
+              'rounded-md bg-paper ',
+              'flex items-center xl:flex-col xl:justify-center',
+              'gap-4 p-4 xl:aspect-[4/3] xl:gap-0 xl:p-0'
+            )}
           >
             {poll.result_emoji ? (
               <Image

@@ -17,6 +17,9 @@ function isBackNavigation(navigateEvent: any) {
   if (navigateEvent.navigationType === 'push' || navigateEvent.navigationType === 'replace') {
     return false;
   }
+  if ('navigation' in window === false) {
+    return false;
+  }
   if (
     navigateEvent.destination.index !== -1 &&
     //@ts-ignore
@@ -94,14 +97,13 @@ const CURRENCY = {
       currency: 'USD',
     },
   },
-};
+} as const;
 
-export function currencyFormatter(
-  num: number,
-  { currency }: { currency: 'VND' | 'USD' } = {
-    currency: 'VND',
-  }
-) {
+type CurrentcyFormatterOptions = {
+  currency: 'VND' | 'USD';
+};
+export function currencyFormatter(num: number, options?: CurrentcyFormatterOptions) {
+  const { currency = 'VND' } = options || {};
   return Intl.NumberFormat(CURRENCY[currency].locale, CURRENCY[currency].options).format(num);
 }
 

@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { PropsWithChildren, createContext, useContext, useState } from "react";
-import { flushSync } from "react-dom";
-import { SnackContext } from "../../SnackContext";
+import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { SnackContext } from '../../SnackContext';
 
 export type CartContextProps = {
   updating: boolean;
-  gameList: (Pick<Game, "ID" | "sale_price"> & { checked: boolean })[];
+  gameList: (Pick<Game, 'ID' | 'sale_price'> & { checked: boolean })[];
   changeSelectGame: (
-    game: Pick<Game, "ID" | "sale_price"> & { checked: boolean },
-    options?: { toggle: boolean },
+    game: Pick<Game, 'ID' | 'sale_price'> & { checked: boolean },
+    options?: { toggle: boolean }
   ) => Promise<void>;
 };
 const cartContext = createContext<CartContextProps>({
@@ -23,16 +23,16 @@ export function CartContext({
   gameList = [],
   toggleCheck,
 }: PropsWithChildren<{
-  gameList?: CartContextProps["gameList"];
-  toggleCheck: (game: Pick<Game, "ID">) => Promise<string | undefined>;
+  gameList?: CartContextProps['gameList'];
+  toggleCheck: (game: Pick<Game, 'ID'>) => Promise<string | undefined>;
 }>) {
   const [updating, setUpdating] = useState(false);
-  const [list, setList] = useState<CartContextProps["gameList"]>(gameList);
+  const [list, setList] = useState<CartContextProps['gameList']>(gameList);
   const { showMessage } = useContext(SnackContext);
 
   async function changeSelectGame(
-    game: CartContextProps["gameList"][number],
-    options?: { toggle: boolean },
+    game: CartContextProps['gameList'][number],
+    options?: { toggle: boolean }
   ) {
     flushSync(() => {
       setUpdating(true);
@@ -43,7 +43,7 @@ export function CartContext({
       const item = list[exist];
       const response = await toggleCheck({ ID: item.ID });
       if (response) {
-        showMessage({ message: response, type: "error" });
+        showMessage({ message: response, type: 'error' });
       }
       if (toggle) {
         list[exist] = {
@@ -57,9 +57,7 @@ export function CartContext({
   }
 
   return (
-    <cartContext.Provider
-      value={{ updating, gameList: list, changeSelectGame }}
-    >
+    <cartContext.Provider value={{ updating, gameList: list, changeSelectGame }}>
       {children}
     </cartContext.Provider>
   );

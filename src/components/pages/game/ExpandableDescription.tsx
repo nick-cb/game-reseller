@@ -26,7 +26,8 @@ export default function ExpandableDescription(
           <label
             className={mergeCls(
               'group relative flex h-12 items-center justify-center rounded bg-paper',
-              'after:absolute after:inset-0 after:rounded after:bg-white/25 after:opacity-0 after:transition-opacity hover:after:opacity-100'
+              'after:absolute after:inset-0 after:rounded after:bg-white/25 after:opacity-0 after:transition-opacity hover:after:opacity-100',
+              'has-[:focus]:after:opacity-100',
             )}
           >
             <input type="checkbox" name="expandable-description" className="hidden" />

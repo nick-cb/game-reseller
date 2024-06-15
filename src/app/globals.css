@@ -279,7 +279,7 @@ main {
   transition: transform 0.3s ease-out;
 }
 
-button {
+button:not(:disabled) {
   --duration: 150ms;
   --scale: 0.98;
 }

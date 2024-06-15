@@ -6,8 +6,13 @@ import { SnackContext } from '../../SnackContext';
 import { LoadingIcon } from '../../loading/LoadingIcon';
 import CartActions from '@/+actions/cart-actions';
 import UserActions from '@/+actions/users-actions';
+import { Button, ButtonProps } from '@/components/Buttons';
 
-export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'name'> }) {
+type AddToCartButtonProps = Exclude<ButtonProps, 'variant'> & {
+  game: Pick<Game, 'ID' | 'slug' | 'name'>;
+};
+export function AddToCartButton(props: AddToCartButtonProps) {
+  const { game, children, ...rest } = props;
   const router = useRouter();
   const params = useParams();
   const { showMessage } = useContext(SnackContext);
@@ -33,14 +38,11 @@ export function AddToCartButton({ game }: { game: Pick<Game, 'ID' | 'slug' | 'na
   };
 
   return (
-    <button
-      className="w-full rounded border border-white/60 py-2 text-sm text-white transition-colors hover:bg-paper"
-      onClick={addItemToCart}
-    >
-      <div className="mx-auto w-max">
+    <Button variant="secondary" onClick={addItemToCart} {...rest}>
+      <div className="absolute">
         <LoadingIcon loading={adding} />
       </div>
-      {!adding ? <span>Add to cart</span> : null}
-    </button>
+      {!adding ? (children ?? <span>Add to cart</span>) : null}
+    </Button>
   );
 }

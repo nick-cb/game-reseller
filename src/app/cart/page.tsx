@@ -1,10 +1,11 @@
 import CartActions from '@/+actions/cart-actions';
 import UserActions from '@/+actions/users-actions';
+import { Button } from '@/components/Buttons';
 import { CartContext } from '@/components/pages/cart/CartContext';
 import { CartTotal } from '@/components/pages/cart/CartTotal';
 import { CheckoutButton } from '@/components/pages/cart/CheckoutButton';
 import { ItemCheckBox } from '@/components/pages/cart/ItemCheckedBox';
-import { RemoveItemBtn } from '@/components/pages/cart/RemoveItemBtn';
+import { RemoveItemButton } from '@/components/pages/cart/RemoveItemButton';
 import { CheckoutView } from '@/components/pages/checkout/Checkout';
 import { CheckoutModal } from '@/components/pages/checkout/CheckoutForm';
 import { currencyFormatter, pascalCase } from '@/utils';
@@ -53,57 +54,14 @@ export default async function cartPage() {
       <div className="relative flex flex-col gap-8 md:flex-row xl:gap-16">
         <div className="md:w-[65%]">
           <h2 className="pb-4 text-xl">My cart</h2>
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-8">
             {cart.game_list.map((item, index) => {
               return (
                 <li
-                  className="group relative flex h-max flex-col gap-4 rounded bg-paper_2 px-4 py-4 shadow-sm shadow-black/25 md:flex-row md:gap-8"
                   key={item.ID}
+                  className="group relative flex h-max flex-col gap-4 rounded bg-paper_2 px-4 py-4 shadow-sm shadow-black/25 md:flex-row md:gap-8"
                 >
-                  <ItemCheckBox index={index} />
-                  <div className="hidden md:block">
-                    <Image
-                      src={item.images.portraits[0].url || ''}
-                      alt={''}
-                      width={130}
-                      height={200}
-                      className="rounded"
-                    />
-                  </div>
-                  <div className="block md:hidden">
-                    <Image
-                      src={item.images.landscapes[0].url || ''}
-                      alt={''}
-                      width={300}
-                      height={200}
-                      className="h-[100px] w-full rounded object-cover 3/4sm:h-[300px]"
-                    />
-                  </div>
-                  <div className="flex flex-grow flex-col text-sm">
-                    <div className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs uppercase shadow-sm shadow-default">
-                      {pascalCase(item.type, '_')}
-                    </div>
-                    <div className="mb-1 mt-2 flex justify-between">
-                      <p className="block text-base font-bold">{item.name}</p>
-                      <p className="block">
-                        {item.sale_price === 0 ? 'Free' : currencyFormatter(item.sale_price)}
-                      </p>
-                    </div>
-                    <p className="text-xs text-white_primary/60">{item.developer}</p>
-                    <hr className="my-3 w-[calc(100%+32px)] -translate-x-4 border-white/60 md:hidden" />
-                    <div className="mx-auto flex w-4/5 gap-4 md:mx-[unset] md:mt-auto md:w-full md:justify-end">
-                      <button
-                        className={
-                          'block w-36 rounded px-2 py-2 hover:text-white_primary ' +
-                          ' text-white_primary/60 shadow-sm outline outline-1 transition-colors hover:bg-paper hover:shadow-default/25 ' +
-                          ' w-full md:w-auto '
-                        }
-                      >
-                        Move to wishlist
-                      </button>
-                      <RemoveItemBtn cart={cart} game={item} />
-                    </div>
-                  </div>
+                  <Item index={index} item={item} cart={cart} />
                 </li>
               );
             })}
@@ -122,5 +80,57 @@ export default async function cartPage() {
         </div>
       </div>
     </CartContext>
+  );
+}
+
+type ItemProps = {
+  index: number;
+  item: Awaited<ReturnType<typeof CartActions.cartPage.getUserCart>>['data']['game_list'][number];
+  cart: Awaited<ReturnType<typeof CartActions.cartPage.getUserCart>>['data'];
+};
+function Item(props: ItemProps) {
+  const { index, cart, item } = props;
+
+  return (
+    <>
+      <ItemCheckBox index={index} />
+      <div className="hidden md:block">
+        <Image
+          src={item.images.portraits[0].url || ''}
+          alt={''}
+          width={130}
+          height={200}
+          className="rounded"
+        />
+      </div>
+      <div className="block md:hidden">
+        <Image
+          src={item.images.landscapes[0].url || ''}
+          alt={''}
+          width={300}
+          height={200}
+          className="h-[100px] w-full rounded object-cover 3/4sm:h-[300px]"
+        />
+      </div>
+      <div className="flex flex-grow flex-col text-sm">
+        <div className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs uppercase shadow-sm shadow-default">
+          {pascalCase(item.type, '_')}
+        </div>
+        <div className="mb-1 mt-2 flex justify-between">
+          <p className="block text-base font-bold">{item.name}</p>
+          <p className="block">
+            {item.sale_price === 0 ? 'Free' : currencyFormatter(item.sale_price)}
+          </p>
+        </div>
+        <p className="text-xs text-white_primary/60">{item.developer}</p>
+        <hr className="my-3 w-[calc(100%+32px)] -translate-x-4 border-white/60 md:hidden" />
+        <div className="mx-auto flex w-4/5 gap-4 md:mx-[unset] md:mt-auto md:w-full md:justify-end">
+          <Button size="sm" variant="secondary" disabled title="Feature incoming">
+            <span className="min-w-28">Move to wishlist</span>
+          </Button>
+          <RemoveItemButton cart={cart} item={{ ...item }} />
+        </div>
+      </div>
+    </>
   );
 }

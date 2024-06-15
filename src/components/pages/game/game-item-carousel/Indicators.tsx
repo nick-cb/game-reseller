@@ -94,26 +94,31 @@ function Indicator(props: IndicatorProps) {
 }
 
 function IndicatorNextPrevButton() {
-  const { scrollToPrevOffView, scrollToNextOffView } = useScroll();
+  const { entries, firstVisibleIndex, lastVisibleIndex, scrollToIndex, scrollToNextOffView } =
+    useScroll();
+  if (!entries[lastVisibleIndex + 1]) {
+    return null;
+  }
   return (
     <>
       <button
+        data-index={Math.max(0, firstVisibleIndex - (lastVisibleIndex - firstVisibleIndex) - 1)}
+        onClick={scrollToIndex}
         className={mergeCls(
           'h-8 w-8 rounded-full bg-white/40',
           'absolute left-0 top-1/2 flex -translate-y-1/2',
           'items-center justify-center'
         )}
-        onClick={scrollToPrevOffView}
       >
         <Icon name="arrow-left-s" variant="line" fill="white" />
       </button>
       <button
+        onClick={scrollToNextOffView}
         className={mergeCls(
           'h-8 w-8 rounded-full bg-white/40',
           'absolute right-0 top-1/2 flex -translate-y-1/2',
           'items-center justify-center'
         )}
-        onClick={scrollToNextOffView}
       >
         <Icon name="arrow-right-s" variant="line" fill="white" />
       </button>

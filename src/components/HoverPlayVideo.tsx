@@ -14,7 +14,7 @@ export async function FeatureCard(props: FeatureCardProps) {
   const hasVideos = item.videos;
 
   return (
-    <Link href={'/' + item.slug} className="relative">
+    <Link href={'/' + item.slug} className="relative contents">
       <div
         className={mergeCls(
           'aspect-media cols-min-1 relative overflow-hidden after:pointer-events-none',

@@ -160,6 +160,7 @@ export async function getPillarGroup(params: GetPillarGroupParams) {
   return query<CategoryRow[]>(sql`
     select c.ID,
            c.name,
+           c.collection_key,
            cd.collection_id,
            json_arrayagg(
                json_object(

@@ -38,13 +38,11 @@ const page = async ({ params }: { params: any }) => {
           />
         </div>
       ) : null}
-      <div className="grid grid-cols-3 grid-rows-[min-content_auto] gap-4 md:grid-cols-5 md:gap-8 lg:gap-16 xl:grid-cols-6">
+      <div className="grid grid-cols-3 grid-rows-[min-content_auto] gap-8 md:grid-cols-5 md:gap-12 lg:gap-16 xl:grid-cols-6">
         <section className="col-span-full col-start-1 row-start-1 row-end-2 md:[grid-column:-3/1]">
           <GameItemCarousel videos={game.videos} images={game.images} />
         </section>
-        <section
-          className="col-span-3 row-start-3 w-full sm:row-end-4 md:col-start-3 md:col-end-4 md:row-start-1 md:[grid-column:-1/-3]"
-        >
+        <section className="col-span-3 row-start-3 w-full sm:row-end-4 md:col-start-3 md:col-end-4 md:row-start-1 md:[grid-column:-1/-3]">
           <div className="top-[116px] flex flex-col gap-4 md:sticky">
             <div className="relative hidden aspect-[3/2] w-full items-center justify-center md:flex">
               <Image
@@ -55,7 +53,7 @@ const page = async ({ params }: { params: any }) => {
                 className="rounded object-contain"
               />
             </div>
-            <p className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs text-white_primary shadow-sm shadow-black/60">
+            <p className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs text-white_primary shadow-sm shadow-black/25">
               {pascalCase(game.type, '_')}
             </p>
             <p className="text-white_primary">
@@ -86,7 +84,7 @@ const page = async ({ params }: { params: any }) => {
           </section>
         ) : null}
         {game.polls && (
-          <section className="col-span-full col-start-1 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8 xl:[grid-column:-3/1]">
+          <section className="col-span-full col-start-1 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:gap-8 xl:[grid-column:-3/1]">
             <Polls polls={game.polls} />
           </section>
         )}

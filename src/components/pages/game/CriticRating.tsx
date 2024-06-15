@@ -20,7 +20,7 @@ export function CriticRating({ game }: CriticRatingProps) {
   return (
     <>
       <h2 className="pb-4 text-xl text-white_primary">{game.name} Ratings & Reviews</h2>
-      <ul className="mb-4 flex gap-4">
+      <ul className="flex gap-4">
         {game.critic_pct && (
           <li className=" flex flex-col items-center">
             <div className="relative w-max">
@@ -55,6 +55,7 @@ export function CriticRating({ game }: CriticRatingProps) {
           </li>
         )}
       </ul>
+      <br />
       <IntersectionObserverContainer>
         <IntersectionObserverRoot>
           <ScrollContainer className="scrollbar-hidden flex snap-x snap-mandatory gap-8 overflow-x-scroll">

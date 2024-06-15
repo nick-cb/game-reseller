@@ -4,7 +4,7 @@ import GameCard from './GameCard';
 import Link from 'next/link';
 
 type RelatedGamesProps = {
-  game: { ID: number };
+  game: { ID: number; slug: string };
 };
 export async function RelatedGames(props: RelatedGamesProps) {
   const { game } = props;
@@ -44,10 +44,8 @@ export async function RelatedGames(props: RelatedGamesProps) {
           ))}
           {dlcAndAddons.length > 3 ? (
             <Link
-              href={'#'}
-              className="block w-full rounded border border-white_primary/60 py-4
-                  text-center text-sm 
-                  transition-colors hover:bg-paper"
+              href={`${game.slug}/add-ons`}
+              className="block w-full rounded border border-white_primary/60 py-4 text-center text-sm transition-colors hover:bg-paper"
             >
               See more
             </Link>
