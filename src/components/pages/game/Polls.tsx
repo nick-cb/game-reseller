@@ -1,3 +1,4 @@
+import { Text } from '@/components/Typography';
 import { mergeCls } from '@/utils';
 import Image from 'next/image';
 
@@ -13,7 +14,7 @@ export function Polls(props: PollProps) {
           <div
             key={poll.ID}
             className={mergeCls(
-              'rounded-md bg-paper ',
+              'rounded-md bg-paper',
               'flex items-center xl:flex-col xl:justify-center',
               'gap-4 p-4 xl:aspect-[4/3] xl:gap-0 xl:p-0'
             )}
@@ -28,10 +29,12 @@ export function Polls(props: PollProps) {
               />
             ) : null}
             <div className="flex-col items-center justify-center xl:flex">
-              <p className="mb-1 text-xs text-white_primary/60 md:text-sm xl:mb-2">
+              <Text dim className="mb-1 xl:mb-2">
                 {poll.result_text}
-              </p>
-              <p className="text-bold text-sm md:text-base">{poll.result_title}</p>
+              </Text>
+              <Text size="base" className="text-bold">
+                {poll.result_title}
+              </Text>
             </div>
           </div>
         );

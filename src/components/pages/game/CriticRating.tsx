@@ -3,7 +3,8 @@ import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '../../intersection/IntersectionObserver';
-import {ScrollBulletIndicator} from "@/components/scroll/Indicators";
+import { ScrollBulletIndicator } from '@/components/scroll/Indicators';
+import { Text } from '@/components/Typography';
 
 const criticRec = {
   weak: '51.548667764616276',
@@ -19,39 +20,47 @@ type CriticRatingProps = {
 export function CriticRating({ game }: CriticRatingProps) {
   return (
     <>
-      <h2 className="pb-4 text-xl text-white_primary">{game.name} Ratings & Reviews</h2>
+      <Text as="h2" className="pb-4 text-xl">
+        {game.name} Ratings & Reviews
+      </Text>
       <ul className="flex gap-4">
         {game.critic_pct && (
           <li className=" flex flex-col items-center">
             <div className="relative w-max">
               <RatingCircle rating={game.critic_pct} />
-              <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm">
+              <Text className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 {game.critic_pct + '%'}
-              </p>
+              </Text>
             </div>
-            <p className="mt-2 text-center text-sm sm:text-base">Critics Recommend</p>
+            <Text size="base" className="mt-2 text-center">
+              Critics Recommend
+            </Text>
           </li>
         )}
         {game.critic_avg && (
           <li className=" flex flex-col items-center">
             <div className="relative w-max">
               <RatingCircle rating={game.critic_avg} />
-              <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm">
+              <Text className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 {game.critic_avg}
-              </p>
+              </Text>
             </div>
-            <p className="mt-2 text-center text-sm sm:text-base">Top Critic Average</p>
+            <Text size="base" className="mt-2 text-center">
+              Top Critic Average
+            </Text>
           </li>
         )}
         {game.critic_rec && (
           <li className=" flex flex-col items-center">
             <div className="relative w-max">
               <TieredRatingCircle rating={game.critic_rec.toLowerCase() as CriticAvg} />
-              <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm">
+              <Text className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 {game.critic_rec}
-              </p>
+              </Text>
             </div>
-            <p className="mt-2 text-center text-sm sm:text-base">OpenCritic Rating</p>
+            <Text size="base" className="mt-2 text-center">
+              OpenCritic Rating
+            </Text>
           </li>
         )}
       </ul>
@@ -66,8 +75,8 @@ export function CriticRating({ game }: CriticRatingProps) {
                   index={index}
                   className="w-4/5 flex-shrink-0 snap-start rounded-md bg-paper p-4 sm:w-[calc(100%/2-16px)] sm:odd:snap-start"
                 >
-                  <p>{review.outlet}</p>
-                  <p className="text-sm text-white_primary/60">by {review.author}</p>
+                  <Text size="base">{review.outlet}</Text>
+                  <Text dim>by {review.author}</Text>
                   <hr className="my-4 border-white_primary/25" />
                   {review.type === 'star' ? (
                     <StarRating
@@ -75,12 +84,14 @@ export function CriticRating({ game }: CriticRatingProps) {
                       avg_rating={review.avg_rating}
                     />
                   ) : (
-                    <p>
+                    <Text>
                       {Math.round(review.earned_score! * 100) / 100}/{review.total_score}
-                    </p>
+                    </Text>
                   )}
                   <br />
-                  <p className="wrap-balance text-sm text-white_primary/60">{review.body}</p>
+                  <Text dim className="wrap-balance">
+                    {review.body}
+                  </Text>
                 </ScrollItem>
               );
             })}

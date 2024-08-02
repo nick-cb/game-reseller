@@ -15,6 +15,7 @@ import {
   NextPrevControls,
 } from '@/components/pages/game/game-item-carousel/Indicators';
 import { FindBySlugResult } from '@/+actions/games-actions/game-detail-page/queries';
+import { PlaceholderWrapper } from '@/components/Image';
 
 type LinearCarouselProps = {
   images: GameImageGroup;
@@ -40,14 +41,16 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                   <AudioContainer>
                     <VideoScrollItem
                       index={index}
-                      className="w-full shrink-0 snap-start overflow-hidden rounded hidden sm:block mx-auto"
+                      className="mx-auto hidden w-full shrink-0 snap-start overflow-hidden rounded sm:block"
                     >
                       <div className="relative">
-                        <Video poster={video.thumbnail} autoPlay muted>
-                          {getVideoSources(video).map((variant) => {
-                            return <source key={variant.ID} src={variant.url} />;
-                          })}
-                        </Video>
+                        <PlaceholderWrapper>
+                          <Video poster={video.thumbnail} autoPlay muted>
+                            {getVideoSources(video).map((variant) => {
+                              return <source key={variant.ID} src={variant.url} />;
+                            })}
+                          </Video>
+                        </PlaceholderWrapper>
                         <VideoAudio autoPlay muted>
                           {getAudioSourcesFromVideo(videos[0]).map((variant) => {
                             return <source key={variant?.ID} src={variant?.url} />;
@@ -69,7 +72,9 @@ export default function GameItemCarousel(props: LinearCarouselProps) {
                 className="w-full shrink-0 snap-start overflow-hidden rounded"
               >
                 <div className="relative aspect-video w-full">
-                  <Image src={img.url} alt={img.type} fill />
+                  <PlaceholderWrapper>
+                    <Image src={img.url} alt={img.type} fill />
+                  </PlaceholderWrapper>
                 </div>
               </ScrollItem>
             ))}

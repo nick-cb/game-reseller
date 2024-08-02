@@ -58,7 +58,7 @@ export function CheckoutModal({ SubmitButton, children }: CheckoutModalProps) {
       >
         {SubmitButton}
       </form>
-      <Dialog ref={dialogRef} remountChild className="w-full !bg-default !p-0 lg:w-3/4 2xl:w-1/2">
+      <Dialog ref={dialogRef} remountChild className="w-full !bg-default !p-0 lg:w-3/4 2xl:w-2/3">
         <DialogContent as="div" className="w-full p-4">
           {children}
         </DialogContent>

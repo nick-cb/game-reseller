@@ -19,7 +19,7 @@ export const BulletIndicator = React.forwardRef<
       ref={ref}
       data-index={index}
       className={mergeCls(
-        'h-2 w-2 rounded-md bg-paper_2 transition-colors',
+        'h-3 w-3 rounded-md bg-paper_2 transition-colors',
         active && 'bg-white/60',
         className
       )}

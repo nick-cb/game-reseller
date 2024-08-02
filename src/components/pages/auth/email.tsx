@@ -10,6 +10,8 @@ import { SnackContext } from '@/components/SnackContext';
 import { mergeCls } from '@/utils';
 import { Icon } from '@/components/Icon';
 import { useStrategyLayout } from './StrategyLayout';
+import { Button } from '@/components/Buttons';
+import { LoadingIcon } from '@/components/loading/LoadingIcon';
 
 function usePasswordToggle() {
   return useReducer((state: boolean, _: FormEvent) => {
@@ -277,14 +279,17 @@ export function EmailLoginForm(props: EmailLoginFormProps) {
         />
         <label htmlFor="remember-user-checkbox">Remember me</label>
       </div>
-      <StandardButton
+      <Button
         type="submit"
-        loading={form.formState.isSubmitting}
+        // loading={form.formState.isSubmitting}
         tabIndex={selected === 'email' ? 0 : -1}
         className="mt-2 shadow-sm shadow-default 3/4sm:col-span-2"
       >
+        <div className="absolute">
+          <LoadingIcon loading={form.formState.isSubmitting} />
+        </div>
         Login
-      </StandardButton>
+      </Button>
     </form>
   );
 }

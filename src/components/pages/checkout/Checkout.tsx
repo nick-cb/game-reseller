@@ -11,7 +11,7 @@ import {
   SpriteIcon,
 } from '@/components/pages/payment/PaymentRadioTab';
 import { StripeCheckoutForm, StripeElementsNullish } from '@/components/pages/payment/Stripe';
-import { stripe } from '@/utils';
+import { mergeCls, stripe } from '@/utils';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -71,13 +71,13 @@ export async function CheckoutView(props: CheckoutViewProps) {
       <StripeElementsNullish amount={amount} currency={'vnd'}>
         <CheckoutForm
           payWithStripe={await CheckoutActions.payments.payWithStripe({
-            cartId: cartId!,
+            cartId: cartId,
             user,
             amount,
             gameList,
             paymentMethods,
           })}
-          className={'flex grid-cols-[calc(70%-32px)_30%] flex-col gap-8 md:grid'}
+          className={'flex grid-cols-[calc(64%-48px)_35%] flex-col gap-12 md:grid'}
           style={{ gridTemplateRows: `repeat(${4 + paymentMethods.length},min-content)` }}
         >
           <MobileGameList gameList={gameList} />
@@ -128,11 +128,10 @@ export async function CheckoutView(props: CheckoutViewProps) {
                     <br />
                     <IntersectionObserverRoot>
                       <ul
-                        className={
-                          'flex h-full w-[calc(100%+16px)] -translate-x-2 gap-8 rounded px-2 ' +
-                          ' scrollbar-hidden overflow-y-hidden overflow-x-scroll ' +
-                          ' snap-x snap-mandatory '
-                        }
+                        className={mergeCls(
+                          'flex h-full w-[calc(100%+16px)] -translate-x-2 gap-8 rounded px-2',
+                          'scrollbar-hidden snap-x snap-mandatory overflow-y-hidden overflow-x-scroll'
+                        )}
                       >
                         <ScrollItem index={0} className={'stripe-card w-full shrink-0 snap-center'}>
                           <StripeCheckoutForm amount={amount} />

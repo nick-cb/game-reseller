@@ -125,7 +125,7 @@ export function isNil(a: any): a is null | undefined {
 }
 
 export function mergeCls(...args: any[]) {
-  let cls = args[0] ?? '';
+  let cls = args[0] && typeof args[0] === 'string' ? args[0] : '';
   for (const cl of args.splice(1)) {
     if (!cl) {
       continue;

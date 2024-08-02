@@ -5,6 +5,8 @@ import { VideoCtx, useVideo } from './Video';
 import { AudioCtx, useAudio } from './Audio';
 import { isNil, mergeCls } from '@/utils';
 import { Icon } from '../Icon';
+import { Text } from '../Typography';
+import { useStyleId } from '@/hooks/useStyleId';
 
 export function Video(props: React.JSX.IntrinsicElements['video']) {
   const { videoRef } = use(VideoCtx);
@@ -55,7 +57,7 @@ export function Timer() {
   const totalSecond = (Math.floor(duration) % 60).toString().padStart(2, '0');
   const format = `${currentMinute}:${currentSecond}/${totalMinute}:${totalSecond}`;
 
-  return <div className="tabular-nums">{format}</div>;
+  return <Text className="tabular-nums">{format}</Text>;
 }
 
 export function Audio(props: JSX.IntrinsicElements['audio']) {
@@ -181,6 +183,7 @@ export function VideoProgressSlider(props: JSX.IntrinsicElements['input']) {
       min={0}
       max={duration}
       value={currentTime}
+      step={0.000001}
       onInput={seek}
       className={mergeCls('relative w-full', props.className)}
     />
@@ -188,21 +191,29 @@ export function VideoProgressSlider(props: JSX.IntrinsicElements['input']) {
 }
 
 export function VideoProgress() {
+  const id = useStyleId();
   const { currentTime, duration } = useVideo({
     events: ['timeupdate', 'loadedmetadata', 'seeking', 'seek'],
   });
+
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center bg-none">
-      <div
-        className="h-1 bg-blue-500"
-        style={{ width: `${(currentTime / duration) * 100}%` }}
-      ></div>
-      <div
-        className="right-0 h-1 bg-white/30"
-        style={{
-          width: `calc(100% - ${(currentTime / duration) * 100}%)`,
-        }}
-      ></div>
+    <div
+      id={id}
+      className="group pointer-events-none absolute inset-0 flex items-center bg-white/30 bg-none after:bg-blue-500"
+    >
+      <style>
+        {`
+          #${id}::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: ${(currentTime / duration) * 100}%;
+            pointer-events: none;
+          }
+        `}
+      </style>
     </div>
   );
 }

@@ -1,4 +1,6 @@
 import GameActions from '@/+actions/games-actions';
+import { MoneyFormatter } from '@/components/MoneyFormatter';
+import { Text } from '@/components/Typography';
 import { AddToCartButton } from '@/components/pages/game/AddToCartBtn';
 import { AvgRating } from '@/components/pages/game/AvgRating';
 import { BuyNowButton } from '@/components/pages/game/BuyNowButton';
@@ -11,9 +13,9 @@ import SystemRequirements from '@/components/pages/game/SystemRequirements';
 import { FullDescription } from '@/components/pages/game/game-item-carousel/FullDescription';
 import GameItemCarousel from '@/components/pages/game/game-item-carousel/GameItemCarousel';
 import { InfoLineItems } from '@/components/pages/game/game-item-carousel/InfoLineItems';
-import { currencyFormatter, pascalCase } from '@/utils';
-import Image from 'next/image';
+import { pascalCase } from '@/utils';
 import React, { Suspense } from 'react';
+import Image from 'next/image';
 
 const page = async ({ params }: { params: any }) => {
   const { slug } = params;
@@ -53,12 +55,13 @@ const page = async ({ params }: { params: any }) => {
                 className="rounded object-contain"
               />
             </div>
-            <p className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-xs text-white_primary shadow-sm shadow-black/25">
+            <Text
+              size="xs"
+              className="w-max rounded bg-white_primary/[.15] px-2 py-1 text-white_primary shadow-sm shadow-black/25"
+            >
               {pascalCase(game.type, '_')}
-            </p>
-            <p className="text-white_primary">
-              {game.sale_price > 0 ? currencyFormatter(game.sale_price) : 'Free'}
-            </p>
+            </Text>
+            <MoneyFormatter amount={game.sale_price} />
             <div className="flex flex-col gap-2">
               <BuyNowButton game={game} />
               <AddToCartButton game={game} />
@@ -79,7 +82,9 @@ const page = async ({ params }: { params: any }) => {
         </Suspense>
         {game.avg_rating ? (
           <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
-            <h2 className="pb-4 text-xl">Player Ratings</h2>
+            <Text as="h2" className="pb-4 text-xl">
+              Player Ratings
+            </Text>
             <AvgRating avg_rating={game.avg_rating} />
           </section>
         ) : null}

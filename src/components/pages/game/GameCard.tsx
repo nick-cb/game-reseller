@@ -43,18 +43,20 @@ const GameCard = (props: GameCardProps) => {
       <div
         className={mergeCls(
           'col-end-1 row-start-3 border-t border-white/20 px-4 py-4 [grid-column:_1_/_-1]',
-          'flex items-center justify-end gap-4 sm:row-start-2 sm:flex-row'
+          'flex sm:items-center justify-end gap-4 flex-col sm:flex-row'
         )}
       >
         <p className="text-white_primary">
           {parseInt(game.sale_price.toString()) ? currencyFormatter(game.sale_price) : 'Free'}
         </p>
-        <Button size="sm" className="min-w-32">
-          Buy Now
-        </Button>
-        <AddToCartButton game={game} size="sm" className="min-w-32">
-          Add To Cart
-        </AddToCartButton>
+        <div className='flex gap-4 w-full sm:w-auto'>
+          <Button size="sm" className="w-full sm:min-w-32">
+            Buy Now
+          </Button>
+          <AddToCartButton game={game} size="sm" className="w-full sm:min-w-32">
+            Add To Cart
+          </AddToCartButton>
+        </div>
       </div>
     </div>
   );

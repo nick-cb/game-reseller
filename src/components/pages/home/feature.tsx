@@ -1,7 +1,8 @@
 import { currencyFormatter, mergeCls } from '@/utils';
-import { FeatureCard } from '../../HoverPlayVideo';
 import CollectionActions from '@/+actions/collections-actions';
 import Link from 'next/link';
+import { Text } from '@/components/Typography';
+import { MoneyFormatter } from '@/components/MoneyFormatter';
 
 export async function Feature() {
   const { data: feature, error } = await CollectionActions.homepage.getFeatureRow();
@@ -14,6 +15,7 @@ export async function Feature() {
       <ul
         className={mergeCls(
           'scrollbar-hidden grid snap-x snap-mandatory grid-cols-3 overflow-scroll',
+          '[--tw-cols-min:300px]',
           'gap-[14px] 3/4sm:gap-[18px] lg:gap-6'
         )}
       >
@@ -22,7 +24,7 @@ export async function Feature() {
             <li
               key={item.ID}
               className={mergeCls(
-                'group w-4/5 flex-shrink-0 cursor-pointer snap-center first-of-type:snap-start sm:w-full sm:flex-shrink',
+                'group flex-shrink-0 cursor-pointer snap-center first-of-type:snap-start sm:w-full sm:flex-shrink',
                 'row-span-4 grid grid-rows-subgrid gap-y-4'
               )}
             >
@@ -36,9 +38,15 @@ export async function Feature() {
                 >
                   <img src={item.images.landscapes[0]?.url + '?h=480&w=854&resize=1'} />
                 </div>
-                <h2 className="text-white_primary">{item.name}</h2>
-                <p className="line-clamp-5 text-sm text-white/60">{item.description}</p>
-                <p>{item.sale_price === 0 ? 'Free' : currencyFormatter(item.sale_price)}</p>
+                <Text as="h3" size="base">
+                  {item.name}
+                </Text>
+                <Text className="line-clamp-4 md:line-clamp-5" dim>
+                  {item.description}
+                </Text>
+                <Text>
+                  <MoneyFormatter amount={item.sale_price} />
+                </Text>
               </Link>
             </li>
           );

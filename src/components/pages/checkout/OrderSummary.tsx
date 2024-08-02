@@ -1,46 +1,48 @@
-import { currencyFormatter } from "@/utils";
-import Image from "next/image";
+import { MoneyFormatter } from '@/components/MoneyFormatter';
+import { Text } from '@/components/Typography';
+import Image from 'next/image';
 
-export function OrderSummary({
-  gameList,
-  totalAmount,
-}: {
+type OrderSummaryProps = {
   totalAmount: number;
-  gameList: (Pick<Game, "ID" | "name" | "sale_price" | "developer"> & {
+  gameList: (Pick<Game, 'ID' | 'name' | 'sale_price' | 'developer'> & {
     images: GameImageGroup;
   })[];
-}) {
+};
+export function OrderSummary(props: OrderSummaryProps) {
+  const { gameList, totalAmount } = props;
   return (
     <div>
-      <h2 className="uppercase text-lg mb-4">Order summary</h2>
-      <ul className="flex flex-col gap-4 max-h-[430px] overflow-scroll scrollbar-hidden">
+      <h2 className="mb-4 text-lg uppercase">Order summary</h2>
+      <ul className="scrollbar-hidden flex max-h-[430px] flex-col gap-4 overflow-scroll">
         {gameList.map((game) => {
           return (
-            <li key={game.ID} className={"flex gap-4"}>
+            <li key={game.ID} className={'flex gap-4'}>
               <Image
                 src={game?.images.portraits[0]?.url}
-                alt={""}
+                alt={''}
                 width={128}
                 height={280}
                 className="rounded object-cover"
               />
               <div className="flex flex-col">
-                <p className="font-bold text-white_primary">{game.name}</p>
-                <p className="text-white_primary/60 text-sm">
-                  {game.developer}
-                </p>
-                <p className="mt-4 block text-sm">
-                  {currencyFormatter(game.sale_price)}
-                </p>
+                <Text size="base" className="font-bold">
+                  {game.name}
+                </Text>
+                <Text dim>{game.developer}</Text>
+                <Text className="mt-4 block">
+                  <MoneyFormatter amount={game.sale_price} />
+                </Text>
               </div>
             </li>
           );
         })}
       </ul>
-      <hr className="border-white_primary/60 my-8" />
-      <div className="flex justify-between items-center">
-        <div>Total</div>
-        <div>{currencyFormatter(totalAmount)}</div>
+      <hr className="my-8 border-white_primary/60" />
+      <div className="flex items-center justify-between">
+        <Text size="base">Total</Text>
+        <Text size="base">
+          <MoneyFormatter amount={totalAmount} />
+        </Text>
       </div>
     </div>
   );

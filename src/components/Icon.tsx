@@ -32,7 +32,18 @@ const Icons = {
     'mail-unread',
     'mail-volume',
   ] as const,
-  system: ['lock-password', 'eye', 'eye-off', 'check', 'loader-4'] as const,
+  system: [
+    'lock-password',
+    'eye',
+    'eye-off',
+    'check',
+    'loader-4',
+    'star',
+    'star-s',
+    'star-half',
+    'star-half-s',
+    'star-smile',
+  ] as const,
   user: ['user', 'robot', 'robot-2'] as const,
   design: ['shapes'] as const,
 };
@@ -72,9 +83,12 @@ export function Icon<T extends IconNames>(props: IconProps<T>) {
       height={iconHeight}
       fill={fill}
       className={mergeCls('flex-shrink-0', className)}
+      version="1.1"
       {...rest}
     >
-      <use xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`} />
+      <use
+        xlinkHref={`/svg/remixicon.${cat}.svg#${'ri-' + name + '-' + variant}`}
+      />
     </svg>
   );
 }

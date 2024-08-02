@@ -5,7 +5,7 @@ import {
   IntersectionObserverContainer,
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
-import { mergeCls } from '@/utils';
+import { Text } from '@/components/Typography';
 
 export default function SystemRequirements({ systems }: { systems: any[] }) {
   return (
@@ -20,12 +20,7 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
         })}
       </ul>
       <IntersectionObserverRoot>
-        <ul
-          className={mergeCls(
-            'flex gap-8',
-            'scrollbar-hidden snap-x snap-mandatory overflow-scroll'
-          )}
-        >
+        <ul className="scrollbar-hidden flex snap-x snap-mandatory gap-8 overflow-scroll">
           {systems.map((system, index) => {
             const recommended = system.details.filter((detail: any) => !!detail.recommended);
             return (
@@ -34,21 +29,21 @@ export default function SystemRequirements({ systems }: { systems: any[] }) {
                 index={index}
                 className="grid w-full flex-shrink-0 snap-center auto-rows-min grid-cols-2 gap-x-8 gap-y-4"
               >
-                <h3 className="text-sm">Minimum</h3>
-                <h3 className="text-sm">{recommended.length > 0 && 'Recommended'}</h3>
+                <Text as="h3">Minimum</Text>
+                <Text as="h3">{recommended.length > 0 && 'Recommended'}</Text>
                 {system.details.map((detail: any) => {
                   return (
                     <React.Fragment key={detail.ID}>
                       {detail.minimum ? (
                         <div className="h-min grid-cols-1 text-sm">
-                          <div className="text-white_primary/60">{detail.title}</div>
-                          <div>{detail.minimum}</div>
+                          <Text dim>{detail.title}</Text>
+                          <Text>{detail.minimum}</Text>
                         </div>
                       ) : null}
                       {detail.recommended ? (
                         <div className="h-min grid-cols-2 text-sm">
-                          <div className="text-white_primary/60">{detail.title}</div>
-                          <div>{detail.recommended}</div>
+                          <Text dim>{detail.title}</Text>
+                          <Text>{detail.recommended}</Text>
                         </div>
                       ) : null}
                     </React.Fragment>

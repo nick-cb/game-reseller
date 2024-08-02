@@ -9,6 +9,7 @@ import { HCarousel } from './HeroCarousel';
 import { HeroCarouselDesktopCover, HeroCarouselMobileCover } from './HeroCarouselCover';
 import { HeroCarouselImage } from './HeroCarouselImage';
 import './hero-carousel.css';
+import { PlaceholderWrapper } from '@/components/Image';
 
 export async function HeroCarousel() {
   const { data, error } = await CollectionActions.homepage.getHeroCarousel();
@@ -38,14 +39,16 @@ export async function HeroCarousel() {
               'w-11/12 sm:w-full'
             )}
           >
-            <HeroCarouselImage
-              desktopSrc={[item.images.landscapes[0]?.url]}
-              mobileSrc={[item.images.portraits[0]?.url]}
-            />
+            <PlaceholderWrapper>
+              <HeroCarouselImage
+                desktopSrc={[item.images.landscapes[0]?.url]}
+                mobileSrc={[item.images.portraits[0]?.url]}
+              />
+            </PlaceholderWrapper>
             <div
               className={mergeCls(
                 'bg-gradient-to-t from-paper_3 via-paper_3/80 via-40% to-transparent',
-                'absolute  bottom-0 flex h-1/2 w-full items-end',
+                'absolute bottom-0 flex h-1/2 w-full items-end',
                 'pointer-events-none sm:hidden'
               )}
             ></div>
@@ -57,5 +60,3 @@ export async function HeroCarousel() {
     </div>
   );
 }
-
-export default HeroCarousel;

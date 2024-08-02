@@ -23,7 +23,7 @@ export function NextPrevControls() {
       <div
         className={mergeCls(
           'absolute z-[1] flex h-full w-12 items-center justify-center',
-          'left-0  bg-gradient-to-r',
+          'left-0 bg-gradient-to-r',
           'from-paper_3/40 to-default/0',
           '-translate-x-full transition-transform group-hover:translate-x-0'
         )}
@@ -96,18 +96,15 @@ function Indicator(props: IndicatorProps) {
 function IndicatorNextPrevButton() {
   const { entries, firstVisibleIndex, lastVisibleIndex, scrollToIndex, scrollToNextOffView } =
     useScroll();
-  if (!entries[lastVisibleIndex + 1]) {
-    return null;
-  }
+
   return (
     <>
       <button
         data-index={Math.max(0, firstVisibleIndex - (lastVisibleIndex - firstVisibleIndex) - 1)}
         onClick={scrollToIndex}
         className={mergeCls(
-          'h-8 w-8 rounded-full bg-white/40',
           'absolute left-0 top-1/2 flex -translate-y-1/2',
-          'items-center justify-center'
+          'transition-color flex h-8 w-8 items-center justify-center rounded-full bg-paper_2 transition-colors hover:bg-white/20'
         )}
       >
         <Icon name="arrow-left-s" variant="line" fill="white" />
@@ -115,9 +112,8 @@ function IndicatorNextPrevButton() {
       <button
         onClick={scrollToNextOffView}
         className={mergeCls(
-          'h-8 w-8 rounded-full bg-white/40',
           'absolute right-0 top-1/2 flex -translate-y-1/2',
-          'items-center justify-center'
+          'transition-color flex h-8 w-8 items-center justify-center rounded-full bg-paper_2 transition-colors hover:bg-white/20'
         )}
       >
         <Icon name="arrow-right-s" variant="line" fill="white" />

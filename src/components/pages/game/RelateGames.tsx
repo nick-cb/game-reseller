@@ -2,6 +2,7 @@ import GameActions from '@/+actions/games-actions';
 import React from 'react';
 import GameCard from './GameCard';
 import Link from 'next/link';
+import { Text } from '@/components/Typography';
 
 type RelatedGamesProps = {
   game: { ID: number; slug: string };
@@ -20,7 +21,9 @@ export async function RelatedGames(props: RelatedGamesProps) {
     <>
       {editions.length ? (
         <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
-          <h2 className="pb-4 text-xl text-white_primary">Editions</h2>
+          <Text as="h2" className="pb-4 text-xl">
+            Editions
+          </Text>
           {editions.map((edition) => (
             <React.Fragment key={edition.ID}>
               <div className="flex flex-col gap-4">
@@ -33,7 +36,9 @@ export async function RelatedGames(props: RelatedGamesProps) {
       ) : null}
       {dlcAndAddons.length > 0 ? (
         <section className="col-span-full col-start-1 xl:[grid-column:-3/1]">
-          <h2 className="pb-4 text-xl text-white_primary">Add-ons</h2>
+          <Text as="h2" className="pb-4 text-xl">
+            Add-ons
+          </Text>
           {dlcAndAddons.slice(0, 3).map((edition) => (
             <React.Fragment key={edition.ID}>
               <div className="flex flex-col gap-4">

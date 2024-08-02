@@ -193,7 +193,7 @@ export async function findMappingListByIndexedInfo(params: FindMappingListByInde
     select g.*,
       json_object(
         'portraits', (${groupImageByType('portrait')}),
-        'landscapes', json_array(),
+        'landscapes', (${groupImageByType('landscape')}),
         'logos', json_array()
       ) as images
     from games g

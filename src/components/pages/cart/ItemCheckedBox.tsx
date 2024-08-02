@@ -33,7 +33,7 @@ export function ItemCheckBox({ index }: { index: number }) {
         className={mergeCls(
           'peer z-[1] grid rounded bg-paper outline outline-2 outline-default',
           'absolute -bottom-1 -right-2 block h-8 w-8 md:-left-2 md:-top-1 md:h-5 md:w-5',
-          '[--scale:_0.9] active:animate-[btn-default-scale-animation_150ms]',
+          '[--scale:_0.9] active:animate-[btn-default-scale-animation_150ms_forwards]',
           'shadow-inner has-[:checked]:shadow-white_primary/10',
           '[--tw-shadow-colored:_inset_0_1px_2px_1px_var(--tw-shadow-color)]',
           'has-[:disabled]:bg-paper',

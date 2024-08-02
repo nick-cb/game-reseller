@@ -1,5 +1,4 @@
 import React from 'react';
-import PortraitGameCard from '../../PortraitGameCard';
 import Link from 'next/link';
 import { CarouselButton } from './Carouse.client';
 import {
@@ -7,18 +6,18 @@ import {
   IntersectionObserverRoot,
 } from '@/components/intersection/IntersectionObserver';
 import { Icon } from '../../Icon';
-import { currencyFormatter, mergeCls } from '@/utils';
+import { mergeCls } from '@/utils';
 import { ScrollItem } from '@/components/scroll/ScrollPrimitive';
 import CollectionActions from '@/+actions/collections-actions';
+import { Text } from '@/components/Typography';
+import { MoneyFormatter } from '@/components/MoneyFormatter';
+import { PlaceholderWrapper } from '@/components/Image';
 
 type CarouselProps = {
   name: string;
 };
-
-/**
- * @params name: Object
- * */
-async function CategoryRow({ name }: CarouselProps) {
+export async function CategoryRow(props: CarouselProps) {
+  const { name } = props;
   const { data } = await CollectionActions.homepage.getCategoryRow({ names: [name] });
   const collection = data[0] || [];
 
@@ -26,17 +25,19 @@ async function CategoryRow({ name }: CarouselProps) {
     <section className="relative pb-8">
       <IntersectionObserverContainer>
         <div className={'mb-4 flex justify-between'}>
-          <Link
-            className="group flex w-max items-center gap-2 pr-4 text-lg text-white"
-            href={`/browse?collection=${collection.collection_key}`}
-          >
-            {collection.name[0].toUpperCase() + collection.name.substring(1)}
-            <Icon
-              name="arrow-right-s"
-              variant="line"
-              className="fill-white transition-transform ease-in-out group-hover:translate-x-2"
-            />
-          </Link>
+          <h2 className="text-lg text-white">
+            <Link
+              className="group flex w-max items-center gap-2 pr-4"
+              href={`/browse?collection=${collection.collection_key}`}
+            >
+              {collection.name[0].toUpperCase() + collection.name.substring(1)}
+              <Icon
+                name="arrow-right-s"
+                variant="line"
+                className="fill-white transition-transform ease-in-out group-hover:translate-x-2"
+              />
+            </Link>
+          </h2>
           <div className={'flex items-center gap-2'}>
             <CarouselButton />
           </div>
@@ -53,39 +54,12 @@ async function CategoryRow({ name }: CarouselProps) {
             >
               {collection.game_list.map((game, index) => (
                 <ScrollItem
-                  key={index}
+                  key={game.ID}
                   index={index}
                   className="group row-span-4 grid snap-start grid-rows-subgrid gap-y-2"
                   tabIndex={0}
                 >
-                  <Link href={`/${game.slug}`} className="contents">
-                    <div
-                      className={mergeCls(
-                        'relative h-20 overflow-hidden rounded sm:h-full',
-                        'after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity group-hover:after:opacity-[0.1]'
-                      )}
-                    >
-                      <img
-                        src={game.images.portraits[0].url + '?h=480&w=360&resize=1'}
-                        className="relative hidden h-full sm:block"
-                      />
-                      <img
-                        src={game.images.landscapes[0].url + '?h=168&w=168&resize=1'}
-                        className="relative h-full object-cover sm:hidden"
-                      />
-                    </div>
-                    <p className="line-clamp-2 text-xs text-white_primary sm:text-sm">
-                      {game.name}
-                    </p>
-                    <p className="hidden truncate text-xs text-white/60 sm:block">
-                      {game.developer}
-                    </p>
-                    <p className="text-xs text-white_primary sm:text-sm">
-                      {parseInt(game.sale_price.toString()) === 0
-                        ? 'Free'
-                        : currencyFormatter(game.sale_price)}
-                    </p>
-                  </Link>
+                  <Item game={game} />
                 </ScrollItem>
               ))}
             </ul>
@@ -96,4 +70,41 @@ async function CategoryRow({ name }: CarouselProps) {
   );
 }
 
-export default CategoryRow;
+type ItemProps = {
+  game: Pick<GameWithImages, 'slug' | 'images' | 'name' | 'developer' | 'sale_price'>;
+};
+function Item(props: ItemProps) {
+  const { game } = props;
+  return (
+    <Link href={`/${game.slug}`} className="contents">
+      <PlaceholderWrapper
+        className={mergeCls(
+          'relative h-20 overflow-hidden rounded sm:h-full',
+          'after:absolute after:inset-0 after:bg-white after:opacity-0 after:transition-opacity group-hover:after:opacity-[0.1]'
+        )}
+      >
+        <picture>
+          <source
+            media="(min-width:640px)"
+            srcSet={encodeURI(game.images.portraits[0].url) + '?h=480&w=360&resize=1 640w'}
+            width={360}
+            height={480}
+          />
+          <img
+            src={game.images.landscapes[0].url + '?h=480&w=360&resize=1'}
+            width={168}
+            height={168}
+            className='object-cover h-full'
+          />
+        </picture>
+      </PlaceholderWrapper>
+      <Text className="line-clamp-2">{game.name}</Text>
+      <Text className="hidden truncate sm:block" size="xs" dim>
+        {game.developer}
+      </Text>
+      <Text>
+        <MoneyFormatter amount={game.sale_price} />
+      </Text>
+    </Link>
+  );
+}

@@ -85,10 +85,10 @@ function Nav() {
       ]}
     >
       <div className="h-[56px]" />
-      <nav className="fixed top-[56px] z-10 flex w-full gap-4 bg-default px-4 lg:px-24 xl:px-44">
+      <nav className="fixed top-[56px] z-10 flex w-full gap-4 bg-default/90 px-4 lg:px-24 xl:px-44 backdrop-blur-md">
         <div
           className={
-            'pointer-events-none absolute inset-0 backdrop-blur '
+            'pointer-events-none absolute inset-0'
             // " [--extended-by:50px] [--cutoff:calc(100%-var(--extended-by))] [--blur:25px] " +
             // " bottom-[calc(-1*var(--extended-by))] " +
             // " [-webkit-mask-image:linear-gradient(to_bottom,_black_0,_black_var(--cutoff),_transparent_var(--cutoff))] " +

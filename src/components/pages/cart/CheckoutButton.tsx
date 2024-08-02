@@ -1,13 +1,13 @@
 "use client";
 
-import StandardButton from "../../StandardButton";
+import { Button } from "@/components/Buttons";
 import { useCartContext } from "./CartContext";
 
 export function CheckoutButton() {
   const { updating } = useCartContext();
   return (
-    <StandardButton disabled={updating} className="mt-8">
+    <Button disabled={updating} className="mt-8 w-full">
       Go to checkout
-    </StandardButton>
+    </Button>
   );
 }

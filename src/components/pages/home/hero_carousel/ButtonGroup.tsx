@@ -16,9 +16,7 @@ export const ButtonGroup = (props: ButtonGroupProps) => {
       </Link>
       <a
         href="#"
-        className="relative z-10 w-36 overflow-hidden rounded py-3 text-center text-sm text-white transition-colors
-          duration-200 hover:bg-white/[0.16] lg:w-40
-          lg:py-4"
+        className="relative z-10 w-36 overflow-hidden rounded py-3 text-center text-sm text-white transition-colors duration-200 hover:bg-white/[0.16] lg:w-40 lg:py-4"
       >
         ADD TO WISHLIST
       </a>

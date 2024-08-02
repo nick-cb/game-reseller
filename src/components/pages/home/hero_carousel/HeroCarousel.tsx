@@ -84,11 +84,11 @@ export function HCarousel(props: HCarouselProps) {
       <IntersectionObserverContainer>
         <IntersectionObserverRoot>
           <ul
+            ref={mainListRef}
             className={mergeCls(
               'main-list scrollbar-hidden relative snap-x snap-mandatory gap-4 overflow-scroll rounded-lg sm:gap-0',
               'lg:aspect-media aspect-[9/11] sm:aspect-[1.6] sm:w-[75%] lg:w-4/5'
             )}
-            ref={mainListRef}
           >
             {children}
           </ul>

@@ -12,7 +12,7 @@ export function FullDescription(props: FullDescriptionProps) {
   const { longDescription, longDescriptionImages } = props;
   return (
     <ExpandableDescription>
-      <article className="text-sm text-white_primary/60 transition-colors hover:text-white_primary/80">
+      <article className="text-sm text-on_surface_dim transition-colors hover:text-on_surface">
         <ReactMarkdown
           components={{ p: 'div', h1: 'h2' }}
           className="description-container"

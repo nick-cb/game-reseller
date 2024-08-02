@@ -15,8 +15,7 @@ export default function RequirementButton({ index, system }: RequirementButtonPr
     <button
       data-index={index}
       className={mergeCls(
-        'rounded-t border-b-[3px] px-2 py-7 text-sm font-bold uppercase',
-        'transition-colors',
+        'rounded-t border-b-[3px] px-2 py-7 text-sm font-bold uppercase transition-colors',
         isActive ? 'border-b-white' : 'border-b-paper  hover:border-b-white/60'
       )}
       onClick={scrollToIndex}

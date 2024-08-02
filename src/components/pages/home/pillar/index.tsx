@@ -1,6 +1,7 @@
 import CollectionActions, { GameItem } from '@/+actions/collections-actions';
 import { ButtonLink } from '@/components/Buttons';
-import { currencyFormatter } from '@/utils';
+import { MoneyFormatter } from '@/components/MoneyFormatter';
+import { Text } from '@/components/Typography';
 import Link from 'next/link';
 import React from 'react';
 
@@ -33,7 +34,9 @@ export function Pillar({ data }: PillarProps) {
   return (
     <div className="relative w-full">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="translate-x-2 text-xl">{data.name[0].toUpperCase() + data.name.slice(1)}</h2>
+        <Text className="translate-x-2" size="lg">
+          {data.name[0].toUpperCase() + data.name.slice(1)}
+        </Text>
         <ButtonLink
           href={'/browse?collection=' + data.collection_key}
           variant="secondary"
@@ -46,6 +49,7 @@ export function Pillar({ data }: PillarProps) {
         id={'pillar-' + data.collection_key}
         className="scrollbar-hidden cols-min-80 grid snap-x snap-mandatory grid-cols-2 flex-col gap-2 overflow-scroll md:flex"
       >
+        <div className="col-start-3 row-start-1 row-end-3 w-56 md:hidden"></div>
         {data.game_list.slice(0, 6).map((game, index) => (
           <Link
             key={game.ID}
@@ -56,7 +60,7 @@ export function Pillar({ data }: PillarProps) {
             }}
           >
             <div className="flex snap-start items-center gap-4 rounded px-2 py-2 transition-colors hover:bg-paper_2">
-              <div className="relative aspect-[3/4] h-28 overflow-hidden rounded md:h-18">
+              <div className="relative h-24 flex-shrink-0 overflow-hidden rounded">
                 <img
                   src={game.images.portraits[0]?.url + '?h=128&w=96&quality=medium&resize=1'}
                   alt=""
@@ -66,10 +70,10 @@ export function Pillar({ data }: PillarProps) {
                 />
               </div>
               <div>
-                <p className="mb-2 text-sm">{game.name}</p>
-                <p className="text-sm text-white/60">
-                  {game.sale_price === 0 ? 'Free' : currencyFormatter(game.sale_price)}
-                </p>
+                <Text className="mb-2">{game.name}</Text>
+                <Text>
+                  <MoneyFormatter amount={game.sale_price} />
+                </Text>
               </div>
             </div>
           </Link>
@@ -77,7 +81,7 @@ export function Pillar({ data }: PillarProps) {
         {/* Add this column which span 3 row to allow the last one scroll to the start */}
         <div className="col-start-3 row-start-1 row-end-3 w-56 md:hidden"></div>
       </div>
-      <div className="pointer-events-none absolute -right-2 bottom-0 h-[calc(100%-28px)] w-80 bg-gradient-to-l from-default md:hidden"></div>
+      {/* <div className="pointer-events-none absolute -right-2 bottom-0 h-[calc(100%-28px)] w-80 bg-gradient-to-l from-default md:hidden"></div> */}
     </div>
   );
 }

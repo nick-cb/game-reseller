@@ -18,7 +18,7 @@ export default function ItemOrderModal({ children }: PropsWithChildren) {
       onClose={() => {
         router.back();
       }}
-      className="lg:w-3/4 2xl:w-1/2 p-4 !overflow-y-hidden"
+      className="lg:w-3/4 2xl:w-2/3 p-4 !overflow-y-hidden !bg-default"
     >
       <DialogContent
         as="div"

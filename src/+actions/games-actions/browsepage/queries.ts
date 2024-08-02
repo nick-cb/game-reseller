@@ -34,8 +34,8 @@ export async function getGameList(params: GetGameListParams) {
     select g.*,
            json_object(
                'portraits', (${groupImageByType('portrait')}),
-               'landscapes', json_array(),
-               'logos', json_array()
+               'landscapes', (${groupImageByType('landscape')}),
+               'logos', (${groupImageByType('logo', true)})
            ) as images
     from games g
     where g.type = 'base_game'
@@ -51,7 +51,7 @@ export async function getGameList(params: GetGameListParams) {
     limit ${limit} offset ${skip};
   `;
   const [games, { data: { total } = { total: 0 } }] = await Promise.all([
-    query<GameRow[]>(selectQuery),
+    query<GameRow[]>(selectQuery, {debugQuery: true}),
     querySingle<{ total: number }>(countQuery),
   ]);
 

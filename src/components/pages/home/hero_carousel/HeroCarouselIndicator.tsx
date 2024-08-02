@@ -1,7 +1,9 @@
 'use client';
 
+import { PlaceholderWrapper } from '@/components/Image';
 import { carouselCtx } from '@/components/pages/home/hero_carousel/HeroCarousel';
 import { ScrollBulletIndicator } from '@/components/scroll/Indicators';
+import { mergeCls } from '@/utils';
 import Image from 'next/image';
 import React, { DetailedHTMLProps, HTMLAttributes, LiHTMLAttributes, useContext } from 'react';
 
@@ -54,21 +56,24 @@ export function DesktopIndicator(props: DesktopIndicatorProps) {
         <Indicator
           key={item.ID}
           index={itemIndex}
-          className="hero-carousel-preview-item relative h-full w-full overflow-hidden rounded-xl after:absolute after:inset-0 after:bg-paper hover:bg-paper_2"
+          className={mergeCls(
+            'hero-carousel-preview-item relative h-full w-full overflow-hidden rounded-xl',
+            'after:absolute after:inset-0 after:bg-paper hover:bg-paper_2'
+          )}
           title={item.name}
         >
           <div className="flex h-full w-full items-center gap-4 p-2 focus:bg-paper_2 lg:p-3">
-            <div className="relative z-[1] aspect-[0.75] h-full shrink-0 overflow-hidden rounded-lg">
+            <PlaceholderWrapper className="relative z-[1] aspect-[0.75] h-full shrink-0 overflow-hidden rounded-lg min-w-11 min-h-14">
               {item.images.portraits[0].url && (
                 <Image
                   alt=""
                   className="absolute"
-                  src={decodeURIComponent(item.images.portraits[0].url)}
+                  src={decodeURI(item.images.portraits[0].url)}
                   width={54}
                   height={72}
                 />
               )}
-            </div>
+            </PlaceholderWrapper>
             <p className="z-[1] line-clamp-2 text-sm text-white_primary">{item.name}</p>
           </div>
         </Indicator>

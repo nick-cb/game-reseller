@@ -1,7 +1,7 @@
 'use server';
 
-import {stripe} from '@/utils';
-import {PayPalButtonsComponentProps} from '@paypal/react-paypal-js';
+import { stripe } from '@/utils';
+import { PayPalButtonsComponentProps } from '@paypal/react-paypal-js';
 import Stripe from 'stripe';
 import * as Q from './queries';
 import CartActions from '../cart-actions';
@@ -13,7 +13,7 @@ export type PayWithStripeClientPayload = {
   save: boolean;
 };
 export type PayWithStripeParams = {
-  cartId: number;
+  cartId?: number;
   paymentMethods: Stripe.PaymentMethod[];
   user: Pick<Users, 'ID' | 'full_name' | 'stripe_id'>;
   amount: number;
@@ -28,20 +28,20 @@ export type UpsertChoosenPaymentMethodParams = {
   paymentMethods: Stripe.PaymentMethod[];
 };
 export async function upsertChoosenPaymentMethod(params: UpsertChoosenPaymentMethodParams) {
-  const {user, paymentMethod, paymentMethods} = params;
+  const { user, paymentMethod, paymentMethods } = params;
   let stripeId = user.stripe_id;
   if (!stripeId) {
     const newCustomer = await stripe.customers.create({
       name: user.full_name || '',
     });
     stripeId = newCustomer.id;
-    const {error} = await UserActions.users.updateUserByID(user.ID, {
-      user: {stripe_id: stripeId},
+    const { error } = await UserActions.users.updateUserByID(user.ID, {
+      user: { stripe_id: stripeId },
     });
   }
 
   const newPaymentMethod = await stripe.paymentMethods.retrieve(paymentMethod);
-  const dedupedMethod = await dedupePaymentMethod({newPaymentMethod, paymentMethods});
+  const dedupedMethod = await dedupePaymentMethod({ newPaymentMethod, paymentMethods });
 
   return dedupedMethod;
 }
@@ -51,11 +51,11 @@ export type DedupePaymentMethodParams = {
   paymentMethods: Stripe.PaymentMethod[];
 };
 export async function dedupePaymentMethod(params: DedupePaymentMethodParams) {
-  const {newPaymentMethod, paymentMethods} = params;
-  const {fingerprint: newFingerprint} = newPaymentMethod.card || {};
+  const { newPaymentMethod, paymentMethods } = params;
+  const { fingerprint: newFingerprint } = newPaymentMethod.card || {};
 
   const existPaymentMethod = paymentMethods.find((method) => {
-    const {fingerprint: oldFingerprint} = method.card || {};
+    const { fingerprint: oldFingerprint } = method.card || {};
     if (!!oldFingerprint && !!newFingerprint && newFingerprint === oldFingerprint) {
       return method;
     }
@@ -106,7 +106,9 @@ export async function payWithStripe(params: PayWithStripeParams) {
       // TODO: Handle error
     }
 
-    await CartActions.carts.deleteCartByID(cartId);
+    if (cartId) {
+      await CartActions.carts.deleteCartByID(cartId);
+    }
 
     return {
       orderID: data.ID,
