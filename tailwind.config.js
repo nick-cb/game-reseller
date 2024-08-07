@@ -18,6 +18,8 @@ module.exports = {
         paper_3: 'hsl(0, 0%, 4%)',
         white_primary: 'hsl(0, 0%, 96%)',
         primary: 'hsl(209, 100%, 45%)',
+        on_surface: 'hsl(0, 0%, 96%)',
+        on_surface_dim: 'hsl(0, 0%, 76%)',
       },
       screens: {
         xs: '384px',
